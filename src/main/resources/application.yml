@@ -1,0 +1,4 @@
+server:
+  port: 18081
+  wss-port: 18089
+  max-http-header-size: 1000000
