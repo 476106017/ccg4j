@@ -1,5 +1,7 @@
 package org.example.card.follow;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.Patten;
@@ -7,16 +9,19 @@ import org.example.constant.Patten;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class Fairy extends FollowCard {
-    public final String NAME = "妖精";
-    public String MARK = """
-        瞬念召唤：1点>0。如果分数>1则消失
+    public String name = "妖精";
+    public String job = "妖精";
+    public String mark = """
+        瞬念召唤：一点>0。如果分数>1则消失
         """;
+    public String subMark = "";
 
     public int atk = 1;
     public int hp = 1;
     public int maxHp = 1;
-    public String job = "妖精";
     {pattens.add(Patten.Ones);}
 
     @Override

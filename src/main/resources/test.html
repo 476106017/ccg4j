@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/common/common :: headJq('聊天室')">
+
+    <meta charset="utf-8">
+
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.20.1/locale/zh-cn.js"></script>
+    
+</head>
+
+<body>
+
+<div id="app">
+    <b id="name"></b>
+    <input type="button" onclick="initIm()" value="重连"/>
+    <br/>
+    <input id="msgContent" name="msgContent" placeholder="请输入消息">
+    <select id="msgType" name="msgType">
+        <option value="00">全部</option>
+    </select>
+    <input type="button" onclick="sendMsg()" value="发送"/>
+    <input type="button" onclick="cleanMsg()" value="清空"/>
+    <br/>
+    <input type="button" onclick="$('#msgContent').val('jr')" value="匹配"/>
+    <input type="button" onclick="$('#msgContent').val('zb')" value="准备"/>
+    <ul id="msgList"></ul>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+        var userName, socket;
+        // Socket连接
+        function initIm() {
+            userName = prompt("请输入用户名进入聊天室");
+            if ($.trim(userName)) {
+                socket = io.connect("localhost:18089", {
+                    'query': 'name=' + userName
+                });
+
+                $("#name").html("你好，"+userName);
+
+                // 成功连接事件
+                socket.on('connect', function () {});
+                // 断开连接事件
+                socket.on('disconnect', function () {});
+
+                // 监听receiveMsg接收消息事件
+                socket.on('receiveMsg', function (data) {
+                    $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
+                });
+            } else {
+                alert("非法用户名");
+            }
+        }
+
+        initIm();
+
+        // 发送消息
+        function sendMsg() {
+            let input = $("#msgContent").val()
+            let index = input.indexOf(" ")
+            if(index==-1) index=input.length;
+            let msgEvent = input.substring(0,index);
+            let msgContent = input.substring(index+1,input.length);
+            socket.emit(msgEvent, {
+                "msg": msgContent
+            });
+            $("#msgContent").val('');
+            $('#msgList').append("<li style=\"background-color: #ccc;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + input+  "</li>");
+        }
+        // 清空消息
+        function cleanMsg() {
+            var result = confirm("你确定清空消息吗");
+            if (result) {
+                $('#msgList').html('');
+            }
+        }
+	</script>
+
+</body>
+
+</html>

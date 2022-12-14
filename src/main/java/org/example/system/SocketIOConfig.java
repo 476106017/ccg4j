@@ -1,8 +1,10 @@
 package org.example.system;
 
 import com.corundumstudio.socketio.Configuration;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
+import com.corundumstudio.socketio.listener.ConnectListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +22,10 @@ public class SocketIOConfig {
         Configuration config = new Configuration();
         config.setOrigin(null);// 跨域
         config.setPort(port);
-        config.setWorkerThreads(100);
+        config.setAllowCustomRequests(true);
         config.getSocketConfig().setReuseAddress(true);
-        return new SocketIOServer(config);
+        SocketIOServer server = new SocketIOServer(config);
+        return server;
     }
     @Bean
     public SpringAnnotationScanner springAnnotationScanner(SocketIOServer ssrv) {

@@ -5,6 +5,11 @@ import org.example.game.GameInfo;
 
 public abstract class AmuletCard extends Card{
 
-    public final CardType type = CardType.AMULET;
+    public final CardType TYPE = CardType.AMULET;
+
+    @Override
+    public String getType() {
+        return TYPE.getName();
+    }
 
 }

@@ -1,5 +1,7 @@
 package org.example.card.follow;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.Patten;
@@ -8,12 +10,19 @@ import org.example.game.GameInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class FairyWhisperer extends FollowCard {
-    public final String NAME = "妖之轻语者";
-    public final String MARK = """
+    public String name = "妖之轻语者";
+    public String job = "";
+    public String mark = """
         战吼：获得X张妖精（X是当前分数）
         """;
     public String subMark = "X等于{score}";
+
+    public String getSubMark() {
+        return subMark.replaceAll("\\{score}",info.getPlayerInfos()[owner].getScore()+"");
+    }
 
     public int atk = 1;
     public int hp = 1;

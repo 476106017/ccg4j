@@ -7,20 +7,19 @@ import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
 import org.example.card.follow.Bahamut;
 import org.example.card.follow.FairyWhisperer;
 import org.example.card.spell.DarkSnare;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
-import org.example.system.RoomMsg;
+import org.example.system.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.example.system.Database.*;
 
@@ -39,6 +38,12 @@ public class MatchHandler {
     public void onConnect(SocketIOClient client) {
         String name = client.getHandshakeData().getSingleUrlParam("name");
         UUID uuid = client.getSessionId();
+
+        String oldName = userNames.get(uuid);
+        if(Strings.isNotBlank(oldName)){
+            // 已经注册过
+            return;
+        }
         if (name == null) {
             System.err.println("客户端" + uuid + "建立websocket连接失败，token不能为null");
             client.disconnect();
@@ -57,74 +62,97 @@ public class MatchHandler {
         userDecks.put(uuid, playerDeck);
         // endregion TODO 先由临时玩家游玩，直接拥有全部卡牌
         userNames.put(uuid,name);
+        socketIOServer.getClient(uuid).sendEvent("receiveMsg", name+"（"+uuid+"）登录成功！");
     }
 
 
     @OnDisconnect
     public void onDisConnect(SocketIOClient client) {
         System.out.println("客户端" + client.getSessionId() + "断开websocket连接成功");
-        userNames.remove(client.getSessionId());
     }
 
     /**
      * 加入房间进行匹配
      * */
-    @OnEvent(value = "joinRoom")
-    public void onTestJoinRoomEvent(SocketIOClient client) {
-        UUID sessionId = client.getSessionId();
-        String oldRoom = userRoom.get(sessionId);
-        client.leaveRoom(oldRoom);
-
-        // 找到房间另一个玩家
-        Optional<UUID> waitRoomUser = roomUser.get(waitRoom)
-            .stream().filter(p->!sessionId.equals(p)).findAny();
-        if(waitRoom.isBlank()){
-            waitRoom = UUID.randomUUID().toString();
-            socketIOServer.getClient(sessionId).sendEvent("joinRoomResp", "waiting");
-        }else {
-            waitRoom = "";
-            socketIOServer.getClient(sessionId).sendEvent("joinRoomResp", "matched");
-            socketIOServer.getClient(waitRoomUser.get()).sendEvent("joinRoomResp", "matched");
+    @OnEvent(value = "jr")
+    public void onTestJoinRoomEvent(SocketIOClient client) throws InterruptedException {
+        UUID me = client.getSessionId();
+        Set<String> allRooms = client.getAllRooms();
+        if(allRooms.size()>1){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "请不要重复进入房间！");
+            return;
         }
-        client.joinRoom(waitRoom);
-        userRoom.put(sessionId,waitRoom);
+
+        if(waitRoom.isBlank()){
+            waitUser = me;
+            waitRoom = UUID.randomUUID().toString();
+            client.joinRoom(waitRoom);
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "进入房间（"+waitRoom+"），等待对手");
+        }else {
+            client.joinRoom(waitRoom);
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "进入房间（"+waitRoom+"）");
+            socketIOServer.getClient(me).sendEvent("receiveMsg",
+                "匹配成功！ 【"+userNames.get(me)+"】vs【"+userNames.get(waitUser)+"】");
+            socketIOServer.getClient(waitUser).sendEvent("receiveMsg",
+                "匹配成功！ 【"+userNames.get(waitUser)+"】vs【"+userNames.get(me)+"】");
+            waitRoom = "";
+            waitUser = null;
+        }
     }
 
     /**
      * 准备比赛
      * */
-    @OnEvent(value = "readyMatch")
-    public void onTestRoomEvent(SocketIOClient client,  RoomMsg data) {
-        UUID uuid = client.getSessionId();
-        String name = userNames.get(uuid);
-        String room = data.getRoom();
-        socketIOServer.getRoomOperations(room).sendEvent("readyMatchResp", name + "已经就绪");
-
-        String room1 = userRoom.get(uuid);// db中玩家所处房间
-        if(!room1.equals(room)){
-            socketIOServer.getRoomOperations(room).sendEvent("readyMatchResp", "房间异常解散");
-            socketIOServer.getRoomOperations(room1).sendEvent("readyMatchResp", "房间异常解散");
-            client.leaveRoom(room);
-            client.leaveRoom(room1);
+    @OnEvent(value = "zb")
+    public void onTestRoomEvent(SocketIOClient client,  Msg data) {
+        UUID me = client.getSessionId();
+        String name = userNames.get(me);
+        String room = client.getAllRooms().stream().findFirst().get();
+        if(roomGame.get(room)!=null){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "比赛已经开始了！");
             return;
         }
-        UUID readyMatch = roomReadyMatch.get(room);
-        if(readyMatch != null){
-            roomReadyMatch.put(room, uuid);
-        }else {
-            // 比赛开始
-            GameInfo info = new GameInfo();
-            info.thisPlayer().setDeck(
-                userDecks.get(readyMatch).getActiveDeck());
-            info.thisPlayer().setUuid(readyMatch);
-            info.thisPlayer().setName(userNames.get(readyMatch));
-            info.oppositePlayer().setDeck(
-                userDecks.get(uuid).getActiveDeck());
-            info.oppositePlayer().setUuid(uuid);
-            info.oppositePlayer().setName(name);
-            roomGame.put(room,info);
-            socketIOServer.getRoomOperations(room).sendEvent("readyMatchResp", "比赛开始");
 
+        UUID readyMatch = roomReadyMatch.get(room);
+        if(readyMatch == null){
+            roomReadyMatch.put(room, me);
+            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", name + "已经就绪!");
+        }else if(readyMatch == me) {
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "你已经就绪了！");
+        }else{
+            // 比赛开始
+            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "比赛开始，请选择三张手牌交换");
+            GameInfo info = new GameInfo();
+
+            GameInfo.PlayerInfo p0 = info.thisPlayer();
+            List<Card> activeDeck0 = userDecks.get(readyMatch).getActiveDeck();
+            activeDeck0.forEach(card -> {
+                card.owner=0;
+                card.info=info;
+                card.initCounter();
+            });
+            p0.setDeck(userDecks.get(readyMatch).getActiveDeck());
+            p0.setUuid(readyMatch);
+            p0.setName(userNames.get(readyMatch));
+            p0.shuffle();
+            p0.draw(3);
+            socketIOServer.getClient(readyMatch).sendEvent("receiveMsg", "你的手牌:\n"+p0.describeHand());
+
+            GameInfo.PlayerInfo p1 = info.oppositePlayer();
+            List<Card> activeDeck1 = userDecks.get(me).getActiveDeck();
+            activeDeck1.forEach(card -> {
+                card.owner=1;
+                card.info=info;
+                card.initCounter();
+            });
+            p1.setDeck(activeDeck1);
+            p1.setUuid(me);
+            p1.setName(name);
+            p1.shuffle();
+            p1.draw(3);
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "你的手牌:\n"+p1.describeHand());
+
+            roomGame.put(room,info);
         }
     }
 
@@ -141,9 +169,11 @@ public class MatchHandler {
      * 发送房间消息
      * */
     @OnEvent(value = "roomChat")
-    public void roomChat(SocketIOClient client, RoomMsg data) {
+    public void roomChat(SocketIOClient client, Msg data) {
         String name = userNames.get(client.getSessionId());
-        socketIOServer.getRoomOperations(data.getRoom()).sendEvent("roomChat", "【房间】" +name+ "："+ data.getMsg());
+        for (String room : client.getAllRooms()) {
+            socketIOServer.getRoomOperations(room).sendEvent("roomChat", "【房间】" +name+ "："+ data.getMsg());
+        }
     }
 
 

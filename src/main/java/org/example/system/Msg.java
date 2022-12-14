@@ -3,8 +3,7 @@ package org.example.system;
 import lombok.Data;
 
 @Data
-public class RoomMsg {
-    String room;
+public class Msg {
 
     String msg;
 

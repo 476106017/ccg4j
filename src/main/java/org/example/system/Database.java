@@ -10,9 +10,8 @@ public class Database {
 
     public static Map<UUID,String> userNames = new ConcurrentHashMap<>();
     public static Map<UUID, PlayerDeck> userDecks = new ConcurrentHashMap<>();
-    public static Map<UUID,String> userRoom = new ConcurrentHashMap<>();
-    public static Map<String, Set<UUID>> roomUser = new ConcurrentHashMap<>();
     public static String waitRoom = "";// 匹配中的房间
+    public static UUID waitUser;// 匹配中的人
     public static Map<String,  UUID> roomReadyMatch = new ConcurrentHashMap<>();
     public static Map<String, GameInfo> roomGame = new ConcurrentHashMap<>();
 

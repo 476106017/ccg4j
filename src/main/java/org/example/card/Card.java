@@ -10,17 +10,18 @@ import java.util.List;
 
 public abstract class Card extends GameObj {
     public GameInfo info = null;
+    public int owner = 0;
 
-    public CardType type = null;
-
-    public String job = "";
-
-    public String MARK = "";
-    public String subMark = "";
+    public abstract String getType();
+    public abstract String getName();
+    public abstract String getJob();
+    public abstract String getMark();
+    public abstract String getSubMark();
 
     public int target = 0;
 
     public List<Patten> pattens = new ArrayList<>();
+
 
     public void initCounter(){};
 

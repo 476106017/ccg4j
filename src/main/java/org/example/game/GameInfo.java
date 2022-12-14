@@ -2,17 +2,29 @@ package org.example.game;
 
 import lombok.Data;
 import org.example.card.Card;
+import org.example.constant.Patten;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Data
 public class GameInfo {
     int turn;
-    int turnPlayer = 1;
-    boolean gameset = false;
+    int turnPlayer;
+    boolean gameset;
 
+    PlayerInfo[] playerInfos;
 
-    PlayerInfo[] playerInfos = new PlayerInfo[2];
+    public GameInfo() {
+        this.turn = 0;
+        this.turnPlayer = 0;
+        this.gameset = false;
+        this.playerInfos = new PlayerInfo[2];
+        this.playerInfos[0] = new PlayerInfo();
+        this.playerInfos[1] = new PlayerInfo();
+    }
 
     public void gameset(){
         // TODO 结束游戏，需要通知到双方玩家
@@ -23,7 +35,21 @@ public class GameInfo {
         return playerInfos[turnPlayer];
     }
     public PlayerInfo oppositePlayer(){
-        return playerInfos[3-turnPlayer];
+        return playerInfos[1-turnPlayer];
+    }
+    public PlayerInfo playerByUuid(UUID uuid){
+        if(playerInfos[0].uuid == uuid){
+            return playerInfos[0];
+        }else {
+            return playerInfos[1];
+        }
+    }
+    public PlayerInfo anotherPlayerByUuid(UUID uuid){
+        if(playerInfos[0].uuid == uuid){
+            return playerInfos[1];
+        }else {
+            return playerInfos[0];
+        }
     }
 
     public void damageLeader(Leader leader,int damage){
@@ -48,7 +74,8 @@ public class GameInfo {
         int hp;
         List<Leader> leaderEffects;
         int[] dices;
-        int step = 0; // 0换牌 1骰子 2使用 3指定
+        int score;
+        AtomicInteger step = new AtomicInteger(-1); // 0换牌完成 1骰子 2使用 3指定
         int diceNum = 0; // 第几次投掷骰子
         int diceMax = 3;
         int deckMax = 60;
@@ -59,7 +86,7 @@ public class GameInfo {
         List<Card> area = new ArrayList<>();
         List<Card> graveyard = new ArrayList<>();
         Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
-        Map<String,Integer> counter = new HashMap<>();// 计数器
+        Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
         Leader leader = new Leader();
 
         public Integer getCount(String key){
@@ -72,6 +99,18 @@ public class GameInfo {
             counter.merge(key, time, Integer::sum);
         }
 
+
+        public void shuffle(){
+            Collections.shuffle(deck);
+        }
+        public void draw(int num){
+            addHand(deck.subList(0,num));
+            deck = deck.subList(num,deck.size());
+        }
+        public void back(List<Card> cards){
+            addDeck(cards);
+            hand.removeAll(cards);
+        }
         public void addDeck(List<Card> cards){
             int cardsSize = cards.size();
             int deckSize = deck.size();
@@ -101,6 +140,25 @@ public class GameInfo {
         public void addGraveyard(List<Card> cards){
             graveyard.addAll(cards);
             graveyardCount+=cards.size();
+        }
+
+        public String describeHand(){
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hand.size(); i++) {
+                Card card = hand.get(i);
+                String pattenNames = card.pattens.stream().map(Patten::getName).collect(Collectors.joining("|"));
+                sb.append("【").append(i+1).append("】\t")
+                    .append(card.getType()).append("\t")
+                    .append(card.getName()).append("\t")
+                    .append(pattenNames).append("\t")
+                    .append(card.getJob()).append("\n")
+                    .append(card.getMark());
+                if(!card.getSubMark().isBlank()){
+                    sb.append(card.getSubMark()).append("\n");
+                }
+                sb.append("\n");
+            }
+            return sb.toString();
         }
 
     }
