@@ -14,12 +14,15 @@ import org.example.card.follow.FairyWhisperer;
 import org.example.card.spell.DarkSnare;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
+import org.example.game.PlayerInfo;
 import org.example.system.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.example.system.Database.*;
 
@@ -121,10 +124,9 @@ public class MatchHandler {
             socketIOServer.getClient(me).sendEvent("receiveMsg", "你已经就绪了！");
         }else{
             // 比赛开始
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "比赛开始，请选择三张手牌交换");
-            GameInfo info = new GameInfo();
+            GameInfo info = new GameInfo(socketIOServer,room);
 
-            GameInfo.PlayerInfo p0 = info.thisPlayer();
+            PlayerInfo p0 = info.thisPlayer();
             List<Card> activeDeck0 = userDecks.get(readyMatch).getActiveDeck();
             activeDeck0.forEach(card -> {
                 card.owner=0;
@@ -138,7 +140,7 @@ public class MatchHandler {
             p0.draw(3);
             socketIOServer.getClient(readyMatch).sendEvent("receiveMsg", "你的手牌:\n"+p0.describeHand());
 
-            GameInfo.PlayerInfo p1 = info.oppositePlayer();
+            PlayerInfo p1 = info.oppositePlayer();
             List<Card> activeDeck1 = userDecks.get(me).getActiveDeck();
             activeDeck1.forEach(card -> {
                 card.owner=1;

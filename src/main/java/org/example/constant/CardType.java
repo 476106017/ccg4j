@@ -6,7 +6,7 @@ public enum CardType {
     SPELL("法术"),
     ;
 
-    private String name;
+    private final String name;
 
     CardType(String name) {
         this.name = name;

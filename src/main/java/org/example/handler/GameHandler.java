@@ -7,14 +7,15 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.example.card.Card;
 import org.example.game.GameInfo;
-import org.example.game.PlayerDeck;
+import org.example.game.PlayerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static org.example.system.Database.*;
+import static org.example.system.Database.roomGame;
+import static org.example.system.Database.userNames;
 
 @Service
 @ConditionalOnClass(SocketIOServer.class)
@@ -33,7 +34,7 @@ public class GameHandler {
         String name = userNames.get(me);
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
-        GameInfo.PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo player = info.playerByUuid(me);
         // endregion
 
         // region 交换
@@ -51,7 +52,7 @@ public class GameHandler {
             }
             indexs.add(indexI);
         }
-        if(player.getStep().get()!=-1){
+        if(player.getStep()!=-1){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "已经过了换牌步骤!");
             return;
         }
@@ -71,11 +72,12 @@ public class GameHandler {
 
         socketIOServer.getClient(me).sendEvent("receiveMsg", "交换后的手牌:\n"+player.describeHand());
 
-        player.getStep().set(0);
-        if(info.anotherPlayerByUuid(me).getStep().get()==0){
+        player.setStep(0);
+        if(info.anotherPlayerByUuid(me).getStep()==0){
             String turnPlayerName = info.getPlayerInfos()[info.getTurnPlayer()].getName();
             // 两名玩家都换完了，开始游戏
             socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "双方均交换完成，游戏开始！由【"+turnPlayerName+"】先出牌。");
+
 
         }
     }
