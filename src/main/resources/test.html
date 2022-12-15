@@ -65,9 +65,7 @@
             if(index==-1) index=input.length;
             let msgEvent = input.substring(0,index);
             let msgContent = input.substring(index+1,input.length);
-            socket.emit(msgEvent, {
-                "msg": msgContent
-            });
+            socket.emit(msgEvent, msgContent);
             $("#msgContent").val('');
             $('#msgList').append("<li style=\"background-color: #ccc;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + input+  "</li>");
         }

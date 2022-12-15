@@ -15,7 +15,6 @@ import org.example.card.spell.DarkSnare;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.game.PlayerInfo;
-import org.example.system.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
@@ -107,10 +106,10 @@ public class MatchHandler {
      * 准备比赛
      * */
     @OnEvent(value = "zb")
-    public void onTestRoomEvent(SocketIOClient client,  Msg data) {
+    public void onTestRoomEvent(SocketIOClient client,  String data) {
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().findFirst().get();
+        String room = client.getAllRooms().stream().filter(s->!s.isEmpty()).findFirst().get();
         if(roomGame.get(room)!=null){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "比赛已经开始了！");
             return;
@@ -171,10 +170,10 @@ public class MatchHandler {
      * 发送房间消息
      * */
     @OnEvent(value = "roomChat")
-    public void roomChat(SocketIOClient client, Msg data) {
+    public void roomChat(SocketIOClient client, String data) {
         String name = userNames.get(client.getSessionId());
         for (String room : client.getAllRooms()) {
-            socketIOServer.getRoomOperations(room).sendEvent("roomChat", "【房间】" +name+ "："+ data.getMsg());
+            socketIOServer.getRoomOperations(room).sendEvent("roomChat", "【房间】" +name+ "："+ data);
         }
     }
 

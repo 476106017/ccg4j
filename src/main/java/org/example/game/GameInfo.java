@@ -7,7 +7,11 @@ import org.example.card.Card;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static org.example.system.Database.schedule;
 
 @Data
 public class GameInfo {
@@ -17,6 +21,7 @@ public class GameInfo {
     int turn;
     int turnPlayer;
     boolean gameset;
+    ScheduledFuture<?> rope;
 
     PlayerInfo[] playerInfos;
 
@@ -87,9 +92,36 @@ public class GameInfo {
         }
     }
 
+    public void startTurn(){
+        beforeTurn();
+        msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp，请出牌");
+        if(rope.isDone()){// 前一个绳子烧完了，就只给十秒
+            rope = schedule.scheduleWithFixedDelay(this::endTurn, 0, 10, TimeUnit.SECONDS);
+            msg("只有10秒时间出牌！");
+        }else{
+            rope = schedule.scheduleWithFixedDelay(this::endTurn, 0, 1, TimeUnit.MINUTES);
+            msg("请在60秒时间内出牌！");
+        }
+    }
+
+    public void endTurn(){
+        msg(thisPlayer().getName()+"的回合结束");
+        afterTurn();
+        if(turnPlayer==0){
+            turnPlayer = 1;
+        }else {
+            turnPlayer = 0;
+            turn++;
+        }
+        thisPlayer().ppMax++;
+        thisPlayer().ppNum = thisPlayer().ppMax;
+        startTurn();
+    }
+
+
     public void beforeTurn(){
         Map<String, Card> nameCard =
-            thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o));
+            thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
         while(thisPlayer().getArea().size()<5){
             Optional<Card> first = nameCard.values().stream().filter(Card::canInstantBegin).findFirst();
@@ -105,7 +137,6 @@ public class GameInfo {
             // endregion
         }
 
-        msg(thisPlayer().getName()+"的回合，请出牌");
     }
     public void afterTurn(){
         Map<String, Card> nameCard =

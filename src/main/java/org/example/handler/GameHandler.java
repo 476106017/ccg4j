@@ -50,7 +50,7 @@ public class GameHandler {
                 socketIOServer.getClient(me).sendEvent("receiveMsg", "输入序号错误:"+index);
                 return;
             }
-            indexs.add(indexI);
+            indexs.add(indexI-1);//这里转成下标
         }
         if(player.getStep()!=-1){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "已经过了换牌步骤!");
@@ -78,7 +78,7 @@ public class GameHandler {
             // 两名玩家都换完了，开始游戏
             socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "双方均交换完成，游戏开始！由【"+turnPlayerName+"】先出牌。");
 
-
+            info.startTurn();
         }
     }
 }
