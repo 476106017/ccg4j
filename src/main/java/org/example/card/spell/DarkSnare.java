@@ -41,6 +41,11 @@ public class DarkSnare extends SpellCard {
     }
 
     @Override
+    public Integer targetNum() {
+        return 1;
+    }
+
+    @Override
     public List<GameObj> targetable() {
         List<GameObj> targetable = super.targetable();
         targetable.addAll(info.oppositePlayer().getArea());

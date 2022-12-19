@@ -27,6 +27,10 @@ public abstract class Card extends GameObj {
 
     public void initCounter(){}
 
+    public Integer targetNum(){
+        return 0;
+    }
+
     public List<GameObj> targetable(){return new ArrayList<>();}
 
     public void play(List<GameObj> targets){

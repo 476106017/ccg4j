@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.GameObj;
 import org.example.game.PlayerInfo;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class Bahamut extends FollowCard {
     }
 
     @Override
-    public void fanfare() {
-        super.fanfare();
+    public void fanfare(List<GameObj> targets) {
+        super.fanfare(targets);
     }
 
     public boolean canInstantEnd() {
