@@ -220,10 +220,10 @@ public class GameInfo {
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t");
-            if("随从".equals(card.getType())){
+             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
-                sb.append(follow.atk).append("攻\t");
-                sb.append(follow.hp).append("/").append(follow.maxHp).append("血\t");
+                sb.append(follow.getAtk()).append("攻\t");
+                sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
             }
             sb.append("\n");
         }
@@ -235,8 +235,8 @@ public class GameInfo {
                 .append(card.getName()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
-                sb.append(follow.atk).append("攻\t");
-                sb.append(follow.hp).append("/").append(follow.maxHp).append("血\t");
+                sb.append(follow.getAtk()).append("攻\t");
+                sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
             }
             sb.append("\n");
         }

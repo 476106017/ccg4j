@@ -14,7 +14,8 @@
 
 <body>
 
-<div id="app">
+<div id="app" style="margin-left: 100px;">
+    <ul id="msgList" style="margin-left: -50px;"></ul>
     <b id="name"></b>
     <input type="button" onclick="initIm()" value="重连"/>
     <br/>
@@ -29,7 +30,7 @@
     <input type="button" onclick="$('#msgContent').val('zb')" value="准备"/>
     <input type="button" onclick="$('#msgContent').val('chat')" value="聊天"/>
     <input type="button" onclick="$('#msgContent').val('swap')" value="换牌"/>
-    <ul id="msgList"></ul>
+    <input type="button" onclick="$('#msgContent').val('info')" value="战场信息"/>
 </div>
 
 <script type="text/javascript" th:inline="javascript">

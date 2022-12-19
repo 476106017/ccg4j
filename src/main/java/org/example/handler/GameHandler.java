@@ -114,12 +114,12 @@ public class GameHandler {
         }catch (Exception e){
             indexI = -1;
         }
-        if(indexI <= 0 || indexI > player.getDeck().size()){
+        if(indexI <= 0 || indexI > player.getHand().size()){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "输入手牌序号错误:"+split[0]);
             return;
         }
 
-        Card card = player.getDeck().get(indexI - 1);
+        Card card = player.getHand().get(indexI - 1);
         List<GameObj> targetable = card.targetable();
         // 只有一个参数
         if(split.length == 1){
@@ -142,10 +142,10 @@ public class GameHandler {
                             .append(targetCard.getName()).append("\t");
                         if(gameObj instanceof FollowCard followCard){
                             sb.append("随从\t")
-                                .append(followCard.atk).append("/").append(followCard.hp);
+                                .append(followCard.getAtk()).append("/").append(followCard.getHp());
                         }else if(gameObj instanceof AmuletCard amuletCard){
                             sb.append("护符\t")
-                                .append(amuletCard.count).append("/").append(amuletCard.timer);
+                                .append(amuletCard.getCount()).append("/").append(amuletCard.getTimer());
                         }
                     }
                 }
@@ -185,4 +185,13 @@ public class GameHandler {
     }
 
 
+    @OnEvent(value = "info")
+    public void info(SocketIOClient client, String msg){
+
+        UUID me = client.getSessionId();
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+
+        socketIOServer.getClient(me).sendEvent("receiveMsg", info.describeGame());
+    }
 }

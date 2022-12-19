@@ -1,7 +1,11 @@
 package org.example.card;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.constant.CardType;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public abstract class AmuletCard extends Card{
 
     public final CardType TYPE = CardType.AMULET;

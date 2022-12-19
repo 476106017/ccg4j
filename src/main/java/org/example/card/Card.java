@@ -37,6 +37,10 @@ public abstract class Card extends GameObj {
     public List<GameObj> targetable(){return new ArrayList<>();}
 
     public void play(List<GameObj> targets){
+        if(ownerPlayer().getPpNum() < getCost()){
+            info.msgToThisPlayer("你没有足够的PP来使用该卡牌！");
+            throw new RuntimeException();
+        }
         int ppNum = ownerPlayer().getPpNum() - getCost();
         ownerPlayer().setPpNum(ppNum);
 

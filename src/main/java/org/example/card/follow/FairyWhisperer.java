@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,8 @@ public class FairyWhisperer extends FollowCard {
     public int hp = 1;
     public int maxHp = 1;
 
-    public void fanfare() {
+    @Override
+    public void fanfare(List<GameObj> targets) {
         List<Card> fairies = new ArrayList<>();
         for (int i = 0; i < getCost(); i++) {
             fairies.add(new Fairy());
