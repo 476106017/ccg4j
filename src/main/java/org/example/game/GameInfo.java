@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Data;
 import org.example.card.Card;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,6 +75,11 @@ public class GameInfo {
         }else {
             return playerInfos[0];
         }
+    }
+
+    public void destroy(PlayerInfo playerInfo, List<Card> cards){
+        playerInfo.getGraveyard().addAll(cards);
+        playerInfo.getArea().removeAll(cards);
     }
 
     public void damageLeader(Leader leader,int damage){

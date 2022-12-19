@@ -31,6 +31,9 @@ public class Bahamut extends FollowCard {
     @Override
     public void fanfare(List<GameObj> targets) {
         super.fanfare(targets);
+        List<Card> area = oppositePlayer().getArea();
+        info.destroy(ownerPlayer(),area);
+        info.msg("随着巴哈姆特的一声怒吼，对面的战场被清理的一干二净");
     }
 
     public boolean canInstantEnd() {

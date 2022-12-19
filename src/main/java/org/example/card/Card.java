@@ -14,6 +14,9 @@ public abstract class Card extends GameObj {
     public PlayerInfo ownerPlayer(){
         return info.getPlayerInfos()[owner];
     }
+    public PlayerInfo oppositePlayer(){
+        return info.getPlayerInfos()[1-owner];
+    }
 
     public abstract String getType();
     public abstract Integer getCost();
