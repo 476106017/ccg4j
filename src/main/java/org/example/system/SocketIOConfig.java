@@ -20,6 +20,7 @@ public class SocketIOConfig {
         Configuration config = new Configuration();
         config.setOrigin(null);// 跨域
         config.setPort(port);
+        config.setPingTimeout(60*60*1000);
         config.setAllowCustomRequests(true);
         config.getSocketConfig().setReuseAddress(true);
         SocketIOServer server = new SocketIOServer(config);

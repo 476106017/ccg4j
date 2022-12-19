@@ -14,8 +14,8 @@ public class PlayerInfo {
     int hp;
     List<Leader> leaderEffects;
     int step = -1; // 0换牌完成 1使用 2指定
-    int ppNum = 1;
-    int ppMax = 1;
+    int ppNum = 0;
+    int ppMax = 0;
     int deckMax = 60;
     int handMax = 9;
     int areaMax = 5;

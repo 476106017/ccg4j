@@ -32,7 +32,7 @@ public class GameHandler {
     Gson gson;
 
     @OnEvent(value = "swap")
-    public void checkDeck(SocketIOClient client, String msg) {
+    public void swap(SocketIOClient client, String msg) {
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
@@ -44,6 +44,7 @@ public class GameHandler {
         // region 交换
         Set<Integer> indexs = new HashSet<>();
         for (String index : msg.split("\\s+")) {
+            if(index.isEmpty()) continue;
             Integer indexI;
             try {
                 indexI = Integer.valueOf(index);
@@ -80,7 +81,7 @@ public class GameHandler {
         if(info.anotherPlayerByUuid(me).getStep()==0){
             String turnPlayerName = info.getPlayerInfos()[info.getTurnPlayer()].getName();
             // 两名玩家都换完了，开始游戏
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "双方均交换完成，游戏开始！由【"+turnPlayerName+"】先出牌。");
+            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
 
             info.startTurn();
         }
@@ -182,4 +183,6 @@ public class GameHandler {
 
 
     }
+
+
 }

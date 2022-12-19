@@ -21,6 +21,11 @@ public class Bahamut extends FollowCard {
         """;
     public String subMark = "总消耗pp等于{allCost}";
 
+    public String getSubMark() {
+        return subMark.replaceAll("\\{allCost}",
+            info.getPlayerInfos()[owner].getCount("allCost")+"");
+    }
+
     public int atk = 50;
     public int hp = 50;
     public int maxHp = 50;

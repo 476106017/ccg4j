@@ -16,6 +16,6 @@ public class Database {
     public static Map<String,  UUID> roomReadyMatch = new ConcurrentHashMap<>();
     public static Map<String, GameInfo> roomGame = new ConcurrentHashMap<>();
 
-    public static ScheduledExecutorService schedule = Executors.newSingleThreadScheduledExecutor();
+    public static ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
 
 }
