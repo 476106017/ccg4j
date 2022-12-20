@@ -14,12 +14,14 @@ import org.example.card.follow.FairyWhisperer;
 import org.example.card.spell.DarkSnare;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
-import org.example.system.Msg;
+import org.example.game.PlayerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.example.system.Database.*;
 
@@ -104,10 +106,10 @@ public class MatchHandler {
      * 准备比赛
      * */
     @OnEvent(value = "zb")
-    public void onTestRoomEvent(SocketIOClient client,  Msg data) {
+    public void onTestRoomEvent(SocketIOClient client,  String data) {
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().findFirst().get();
+        String room = client.getAllRooms().stream().filter(s->!s.isEmpty()).findFirst().get();
         if(roomGame.get(room)!=null){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "比赛已经开始了！");
             return;
@@ -121,58 +123,25 @@ public class MatchHandler {
             socketIOServer.getClient(me).sendEvent("receiveMsg", "你已经就绪了！");
         }else{
             // 比赛开始
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "比赛开始，请选择三张手牌交换");
-            GameInfo info = new GameInfo();
+            GameInfo info = new GameInfo(socketIOServer,room);
 
-            GameInfo.PlayerInfo p0 = info.thisPlayer();
+            // 加载双方牌组
             List<Card> activeDeck0 = userDecks.get(readyMatch).getActiveDeck();
             activeDeck0.forEach(card -> {
                 card.owner=0;
                 card.info=info;
                 card.initCounter();
             });
-            p0.setDeck(userDecks.get(readyMatch).getActiveDeck());
-            p0.setUuid(readyMatch);
-            p0.setName(userNames.get(readyMatch));
-            p0.shuffle();
-            p0.draw(3);
-            socketIOServer.getClient(readyMatch).sendEvent("receiveMsg", "你的手牌:\n"+p0.describeHand());
-
-            GameInfo.PlayerInfo p1 = info.oppositePlayer();
             List<Card> activeDeck1 = userDecks.get(me).getActiveDeck();
             activeDeck1.forEach(card -> {
                 card.owner=1;
                 card.info=info;
                 card.initCounter();
             });
-            p1.setDeck(activeDeck1);
-            p1.setUuid(me);
-            p1.setName(name);
-            p1.shuffle();
-            p1.draw(3);
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "你的手牌:\n"+p1.describeHand());
+            // 初始化游戏
+            info.zeroTurn(readyMatch,me);
 
             roomGame.put(room,info);
-        }
-    }
-
-    /**
-     * 发送广播消息
-     * */
-    @OnEvent(value = "broadcastChat")
-    public void broadcastChat(SocketIOClient client, String data) {
-        String name = userNames.get(client.getSessionId());
-        socketIOServer.getBroadcastOperations().sendEvent("broadcastChat", "【全体】" +name+ "："+ data);
-    }
-
-    /**
-     * 发送房间消息
-     * */
-    @OnEvent(value = "roomChat")
-    public void roomChat(SocketIOClient client, Msg data) {
-        String name = userNames.get(client.getSessionId());
-        for (String room : client.getAllRooms()) {
-            socketIOServer.getRoomOperations(room).sendEvent("roomChat", "【房间】" +name+ "："+ data.getMsg());
         }
     }
 

@@ -9,12 +9,13 @@
     <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.20.1/moment.min.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.20.1/locale/zh-cn.js"></script>
-    
+
 </head>
 
 <body>
 
-<div id="app">
+<div id="app" style="margin-left: 100px;">
+    <ul id="msgList" style="margin-left: -50px;"></ul>
     <b id="name"></b>
     <input type="button" onclick="initIm()" value="重连"/>
     <br/>
@@ -27,7 +28,9 @@
     <br/>
     <input type="button" onclick="$('#msgContent').val('jr')" value="匹配"/>
     <input type="button" onclick="$('#msgContent').val('zb')" value="准备"/>
-    <ul id="msgList"></ul>
+    <input type="button" onclick="$('#msgContent').val('chat')" value="聊天"/>
+    <input type="button" onclick="$('#msgContent').val('swap')" value="换牌"/>
+    <input type="button" onclick="$('#msgContent').val('info')" value="战场信息"/>
 </div>
 
 <script type="text/javascript" th:inline="javascript">
@@ -65,9 +68,7 @@
             if(index==-1) index=input.length;
             let msgEvent = input.substring(0,index);
             let msgContent = input.substring(index+1,input.length);
-            socket.emit(msgEvent, {
-                "msg": msgContent
-            });
+            socket.emit(msgEvent, msgContent);
             $("#msgContent").val('');
             $('#msgList').append("<li style=\"background-color: #ccc;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + input+  "</li>");
         }
