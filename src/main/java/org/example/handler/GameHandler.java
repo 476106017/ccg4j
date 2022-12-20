@@ -87,8 +87,10 @@ public class GameHandler {
         }
     }
 
-    @OnEvent(value = "play")
-    public void play(SocketIOClient client, String msg) {
+    /* 回合结束 */
+    @OnEvent(value = "turn")
+    public void turn(SocketIOClient client, String msg){
+
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
@@ -99,10 +101,22 @@ public class GameHandler {
 
         if("end".equals(msg)){
             info.endTurn();
-            return;
         }
+    }
+
+    /* 出牌 */
+    @OnEvent(value = "play")
+    public void play(SocketIOClient client, String msg) {
+        // region 获取游戏对象
+        UUID me = client.getSessionId();
+        String name = userNames.get(me);
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.playerByUuid(me);
+        // endregion
+
         if(msg.isBlank()){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "打出卡牌：play <手牌序号>；结束回合：play end");
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "打出卡牌：play <手牌序号> （<目标序号>）；");
             return;
         }
 
@@ -181,6 +195,63 @@ public class GameHandler {
 
         }
 
+
+    }
+    @OnEvent(value = "attack")
+    public void attack(SocketIOClient client, String msg){
+
+        // region 获取游戏对象
+        UUID me = client.getSessionId();
+        String name = userNames.get(me);
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo enemy = info.anotherPlayerByUuid(me);
+        // endregion
+
+
+        String[] split = msg.split("\\s+");
+
+        if(msg.isBlank() || split.length!=2){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "攻击：attack <随从序号> <目标序号>");
+            return;
+        }
+
+
+        Integer indexI;
+        try {
+            indexI = Integer.valueOf(split[0]);
+        }catch (Exception e){
+            indexI = -1;
+        }
+        if(indexI <= 0 || indexI > player.getArea().size()){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "输入随从序号错误:"+split[0]);
+            return;
+        }else if(player.getArea().get(indexI-1) instanceof AmuletCard amuletCard){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "无法让护符卡攻击:"+amuletCard.getName());
+            return;
+        }
+
+        Integer indexII;
+        try {
+            indexII = Integer.valueOf(split[1]);
+        }catch (Exception e){
+            indexII = -1;
+        }
+        if(indexII <= 0 || indexII > enemy.getArea().size()){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "输入目标序号错误:"+split[1]);
+            return;
+        }else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "无法攻击护符卡:"+amuletCard.getName());
+            return;
+        }
+
+        FollowCard follow = (FollowCard)player.getArea().get(indexI-1);
+        FollowCard target = (FollowCard)enemy.getArea().get(indexII-1);
+        info.msg(follow.ownerPlayer().getName()+"的"+ follow.getName()+"攻击了对手的"+target.getName()+"！");
+        target.damaged(follow.getAtk());
+        info.msg(target.ownerPlayer().getName()+"的"+ target.getName()+"反击！");
+        follow.damaged(target.getAtk());
 
     }
 

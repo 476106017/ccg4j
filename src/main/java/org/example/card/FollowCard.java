@@ -9,39 +9,30 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class FollowCard extends Card{
+public abstract class FollowCard extends AreaCard{
     public final CardType TYPE = CardType.FOLLOW;
     public int atk = 0;
     public int hp = 0;
     public int maxHp = 0;
-    public void entering(){}
-
-    public void fanfare(List<GameObj> targets){
-        info.msg(getName() + "发动战吼！");
-    }
-    public void deathrattle(){}
-
-    @Override
-    public void play(List<GameObj> targets) {
-        super.play(targets);
-        info.msg(ownerPlayer().getName() + "使用了" + getName());
-        fanfare(targets);
-
-        ownerPlayer().getArea().add(this);
-        ownerPlayer().getHand().remove(this);
-    }
 
     @Override
     public String getType() {
         return TYPE.getName();
     }
 
-    public boolean damagedDeath(int damage){
+    public boolean damaged(int damage){
+        if(!ownerPlayer().getArea().contains(this)){
+            // 可能被攻击对象亡语效果击杀了本卡，此时不再计算伤害
+            info.msg((ownerPlayer().getName())+"的"+getName()+"已退场，忽略该伤害");
+            return false;
+        }
+        info.msg((ownerPlayer().getName())+"的"+getName()+"受到了"+damage+"点伤害");
         if(hp>damage){
             hp -= damage;
             return false;
         }else {
             hp = 0;
+            death();
             return true;
         }
     }
