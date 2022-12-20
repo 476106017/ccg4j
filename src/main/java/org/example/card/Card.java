@@ -4,12 +4,15 @@ import org.example.game.GameInfo;
 import org.example.game.GameObj;
 import org.example.game.PlayerInfo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Card extends GameObj {
     public GameInfo info = null;
     public int owner = 0;
+
+    public Card parentCard = null;
 
     public PlayerInfo ownerPlayer(){
         return info.getPlayerInfos()[owner];
@@ -32,6 +35,19 @@ public abstract class Card extends GameObj {
     }
 
     public List<GameObj> targetable(){return new ArrayList<>();}
+
+    public <T extends Card> T createCard(Class<T> clazz){
+        try {
+            T card = clazz.getDeclaredConstructor().newInstance();
+            card.parentCard = this;
+            card.owner = this.owner;
+            card.info = this.info;
+            return card;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     public void play(List<GameObj> targets){
         if(ownerPlayer().getPpNum() < getCost()){

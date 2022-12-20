@@ -19,7 +19,7 @@
     <b id="name"></b>
     <input type="button" onclick="initIm()" value="重连"/>
     <br/>
-    <input id="msgContent" name="msgContent" placeholder="请输入消息">
+    <input id="msgContent" name="msgContent" onkeydown="if(event.keyCode==13){sendMsg();}" placeholder="请输入消息">
     <select id="msgType" name="msgType">
         <option value="00">全部</option>
     </select>
@@ -54,6 +54,7 @@
                 // 监听receiveMsg接收消息事件
                 socket.on('receiveMsg', function (data) {
                     $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
+                    scrollToEnd();
                 });
             } else {
                 alert("非法用户名");
@@ -62,6 +63,7 @@
 
         initIm();
 
+        
         // 发送消息
         function sendMsg() {
             let input = $("#msgContent").val()
@@ -72,6 +74,7 @@
             socket.emit(msgEvent, msgContent);
             $("#msgContent").val('');
             $('#msgList').append("<li style=\"background-color: #ccc;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + input+  "</li>");
+            scrollToEnd();
         }
         // 清空消息
         function cleanMsg() {
@@ -79,6 +82,10 @@
             if (result) {
                 $('#msgList').html('');
             }
+        }
+        function scrollToEnd(){//滚动到底部
+            var h = $(document).height()-$(window).height();
+            $(document).scrollTop(h); 
         }
 	</script>
 

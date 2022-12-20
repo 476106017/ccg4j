@@ -32,7 +32,8 @@ public class FairyWhisperer extends FollowCard {
     public void fanfare(List<GameObj> targets) {
         List<Card> fairies = new ArrayList<>();
         for (int i = 0; i < getCost(); i++) {
-            fairies.add(new Fairy());
+            Fairy fairy = createCard(Fairy.class);
+            fairies.add(fairy);
         }
         info.thisPlayer().addHand(fairies);
     }

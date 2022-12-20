@@ -163,6 +163,7 @@ public class GameHandler {
                         }
                     }
                 }
+                socketIOServer.getClient(me).sendEvent("receiveMsg", sb.toString());
 
             }
         }else{
@@ -213,7 +214,7 @@ public class GameHandler {
         String[] split = msg.split("\\s+");
 
         if(msg.isBlank() || split.length!=2){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "攻击：attack <随从序号> <目标序号>");
+            socketIOServer.getClient(me).sendEvent("receiveMsg", "攻击：attack <随从序号> <目标随从序号(对方主战者序号是0)>");
             return;
         }
 
@@ -238,10 +239,16 @@ public class GameHandler {
         }catch (Exception e){
             indexII = -1;
         }
-        if(indexII <= 0 || indexII > enemy.getArea().size()){
+        if(indexII < 0 || indexII > enemy.getArea().size()){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "输入目标序号错误:"+split[1]);
             return;
-        }else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
+        } else if (indexII == 0) {
+            // TODO 可否直接攻击
+            FollowCard follow = (FollowCard)player.getArea().get(indexI-1);
+            info.msg(follow.ownerPlayer().getName()+"的"+ follow.getName()+"直接攻击对手的主战者！");
+            info.damageLeader(enemy.getLeader(),follow.getAtk());
+            return;
+        } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "无法攻击护符卡:"+amuletCard.getName());
             return;
         }

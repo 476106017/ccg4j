@@ -11,7 +11,8 @@ public class PlayerInfo {
 
     String name;
     UUID uuid;
-    int hp;
+    int hp = 20;
+    int hpMax = 20;
     List<Leader> leaderEffects;
     int step = -1; // 0换牌完成 1使用 2指定
     int ppNum = 0;

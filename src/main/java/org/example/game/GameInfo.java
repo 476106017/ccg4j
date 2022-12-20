@@ -87,14 +87,16 @@ public class GameInfo {
 
     public void damageLeader(Leader leader,int damage){
         if(thisPlayer().getLeader().equals(leader)){
-            int hp = thisPlayer().hp;
-            hp -= damage;
+            int hp = thisPlayer().getHp();
+            thisPlayer().setHp(hp - damage);
+            msg(thisPlayer().getName()+"的主战者受到"+damage+"点伤害！（剩余"+thisPlayer().getHp()+"点生命值）");
             if(hp < 0){
                 gameset();
             }
         }else {
-            int hp = oppositePlayer().hp;
-            hp -= damage;
+            int hp = oppositePlayer().getHp();
+            oppositePlayer().setHp(hp - damage);
+            msg(oppositePlayer().getName()+"的主战者受到"+damage+"点伤害！（剩余"+oppositePlayer().getHp()+"点生命值）");
             if (hp < 0) {
                 gameset();
             }
@@ -204,15 +206,20 @@ public class GameInfo {
         PlayerInfo thisPlayer = thisPlayer();
         PlayerInfo oppositePlayer = oppositePlayer();
 
+        sb.append("局面信息\n");
+        sb.append("剩余pp：").append(thisPlayer.getPpNum()).append("\n");
+        sb.append("\n");
         sb.append(oppositePlayer.name)
-            .append("：牌").append(oppositePlayer.deck.size())
-            .append("：墓").append(oppositePlayer.graveyardCount)
-            .append("：手").append(oppositePlayer.hand.size())
+            .append("\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
+            .append("\t牌：").append(oppositePlayer.deck.size())
+            .append("\t墓：").append(oppositePlayer.graveyardCount)
+            .append("\t手：").append(oppositePlayer.hand.size())
             .append("\n");
         sb.append(thisPlayer.name)
-            .append("：牌").append(thisPlayer.deck.size())
-            .append("：墓").append(thisPlayer.graveyardCount)
-            .append("：手").append(thisPlayer.hand.size())
+            .append("\t血：").append(thisPlayer.getHp()).append("/").append(thisPlayer.getHpMax())
+            .append("\t牌：").append(thisPlayer.deck.size())
+            .append("\t墓：").append(thisPlayer.graveyardCount)
+            .append("\t手：").append(thisPlayer.hand.size())
             .append("\n");
 
         sb.append("\n");
@@ -243,6 +250,7 @@ public class GameInfo {
             }
             sb.append("\n");
         }
+        sb.append("\n");
 
         sb.append("我的手牌：\n").append(thisPlayer.describeHand());
 
