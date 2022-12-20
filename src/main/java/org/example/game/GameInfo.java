@@ -2,6 +2,7 @@ package org.example.game;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Data;
+import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 
@@ -163,12 +164,13 @@ public class GameInfo {
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
         while(thisPlayer().getArea().size()<5){
-            Optional<Card> first = nameCard.values().stream().filter(Card::canInstantBegin).findFirst();
+            Optional<Card> first = nameCard.values().stream()
+                .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInstantBegin()).findFirst();
             if (first.isEmpty()) {
                 break;
             }
             // region 从牌堆召唤到场上
-            Card card = first.get();
+            AreaCard card = (AreaCard)first.get();
             thisPlayer().getArea().add(card);
             thisPlayer().getDeck().remove(card);
             card.afterInstantBegin();
@@ -182,12 +184,13 @@ public class GameInfo {
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
         while(thisPlayer().getArea().size()<5){
-            Optional<Card> first = nameCard.values().stream().filter(Card::canInstantEnd).findFirst();
+            Optional<Card> first = nameCard.values().stream()
+                .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInstantEnd()).findFirst();
             if (first.isEmpty()) {
                 break;
             }
             // region 从牌堆召唤到场上
-            Card card = first.get();
+            AreaCard card = (AreaCard)first.get();
             thisPlayer().getArea().add(card);
             thisPlayer().getDeck().remove(card);
             card.afterInstantEnd();

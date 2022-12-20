@@ -24,6 +24,9 @@ public class PlayerInfo {
     List<Card> area = new ArrayList<>();
     List<Card> graveyard = new ArrayList<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
+    public void countToGraveyard(int count){
+        graveyardCount += count;
+    }
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
     Leader leader = new Leader();
 
@@ -51,6 +54,7 @@ public class PlayerInfo {
         addDeck(cards);
         hand.removeAll(cards);
     }
+
     public void addDeck(List<Card> cards){
         int cardsSize = cards.size();
         int deckSize = deck.size();

@@ -6,7 +6,7 @@ import org.example.constant.CardType;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class AmuletCard extends Card{
+public abstract class AmuletCard extends AreaCard{
 
     public final CardType TYPE = CardType.AMULET;
     public int count = 0;

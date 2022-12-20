@@ -25,9 +25,6 @@ public abstract class Card extends GameObj {
     public abstract String getMark();
     public abstract String getSubMark();
 
-    public int target = 0;
-
-
     public void initCounter(){}
 
     public Integer targetNum(){
@@ -48,7 +45,6 @@ public abstract class Card extends GameObj {
 
         ownerPlayer().getDeck().stream().filter(card -> getCost() > card.canRust())
             .forEach(Card::afterRust);
-
     }
 
     public Integer canRust() {
@@ -57,21 +53,4 @@ public abstract class Card extends GameObj {
 
     public void afterRust(){}
 
-    /**
-     * 回合结束的瞬召
-     */
-    public boolean canInstantBegin() {
-        return false;
-    }
-
-    /**
-     * 回合开始的瞬召
-     */
-    public boolean canInstantEnd() {
-        return false;
-    }
-
-    public void afterInstantBegin(){}
-
-    public void afterInstantEnd(){}
 }
