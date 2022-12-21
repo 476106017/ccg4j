@@ -20,4 +20,8 @@ public class AnalyzingArtifact  extends FollowCard {
     private int hp = 1;
     private int maxHp = 1;
 
+    @Override
+    public void deathrattle() {
+        ownerPlayer().draw(1);
+    }
 }
