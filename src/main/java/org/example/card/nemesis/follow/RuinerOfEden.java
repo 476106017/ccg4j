@@ -12,20 +12,20 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class RuinerOfEden extends FollowCard {
-    public Integer cost = 8;
-    public String name = "幻境粉碎者";
-    public String job = "复仇者";
-    public String race = "";
-    public String mark = """
+    private Integer cost = 8;
+    private String name = "幻境粉碎者";
+    private String job = "复仇者";
+    private String race = "";
+    private String mark = """
         瞬念召唤：回合开始时被破坏的5费以上随从大于10个
         入场时：召唤3个世界驱除者
         离场时：增加1张灾祸降临到牌堆中
         """;
-    public String subMark = "";
+    private String subMark = "";
 
-    public int atk = 5;
-    public int hp = 5;
-    public int maxHp = 5;
+    private int atk = 5;
+    private int hp = 5;
+    private int maxHp = 5;
 
     @Override
     public void entering() {

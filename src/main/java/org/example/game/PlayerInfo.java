@@ -3,6 +3,7 @@ package org.example.game;
 import lombok.Data;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.nemesis.Yuwan;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +32,7 @@ public class PlayerInfo {
         graveyardCount += count;
     }
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
-    Leader leader = new Leader(this);
+    Leader leader = new Yuwan(this);
 
     public PlayerInfo(GameInfo info) {
         this.info = info;

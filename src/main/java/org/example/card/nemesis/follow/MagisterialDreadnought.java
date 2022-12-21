@@ -11,20 +11,20 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class MagisterialDreadnought extends FollowCard {
-    public Integer cost = 5;
-    public String name = "正义暴君";
-    public String job = "复仇者";
-    public String race = "";
-    public String mark = """
+    private Integer cost = 5;
+    private String name = "正义暴君";
+    private String job = "复仇者";
+    private String race = "";
+    private String mark = """
         瞬念召唤：回合开始时被破坏的5费以上随从大于5个
         入场时：召唤1个世界驱除者
         离场时：增加2张幻境粉碎者到牌堆中
         """;
-    public String subMark = "";
+    private String subMark = "";
 
-    public int atk = 5;
-    public int hp = 5;
-    public int maxHp = 5;
+    private int atk = 5;
+    private int hp = 5;
+    private int maxHp = 5;
 
     @Override
     public void entering() {

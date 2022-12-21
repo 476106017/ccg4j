@@ -18,7 +18,7 @@ public class Bahamut extends FollowCard {
     public String job = "中立";
     public String race = "龙";
     public String mark = """
-        瞬念召唤：回合结束时总消耗pp>=50,破坏对手牌库直至5张
+        瞬念召唤：回合结束时在卡牌上的总消耗pp>=50,破坏对手牌库直至5张
         战吼：破坏对手场上全部卡牌
         """;
     public String subMark = "总消耗pp等于{allCost}";

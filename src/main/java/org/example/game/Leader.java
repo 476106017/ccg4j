@@ -6,23 +6,42 @@ import org.example.card.Card;
 import org.example.constant.EffectTiming;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Leader extends GameObj {
+public abstract class Leader extends GameObj {
 
     private PlayerInfo playerInfo;
 
-    private String job;
+    public abstract String getName();
+    public abstract String getJob();
+    public abstract String getSkillName();
+    public abstract String getSkillMark();
+    public abstract int getSkillCost();
+    public boolean isCanUseSkill(){
+        return true;
+    }
 
     private List<Effect> effects;
 
-    public Leader(PlayerInfo playerInfo) {
-        this.playerInfo = playerInfo;
-    }
+
+    public void skill(GameObj target){
+        GameInfo info = playerInfo.getInfo();
+        UUID me = playerInfo.getUuid();
+
+        if(!isCanUseSkill()){
+            info.msgTo(me,"现在无法使用主战者技能！");
+            return;
+        }
+        if(getSkillCost() > getPlayerInfo().getPpNum()){
+            info.msgTo(me,"没有足够的pp以使用主战者技能！");
+            return;
+        }
+    };
 
     public void addEffect(Effect effect){
         effects.add(effect);
