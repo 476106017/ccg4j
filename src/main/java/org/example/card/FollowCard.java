@@ -23,10 +23,10 @@ public abstract class FollowCard extends AreaCard{
     public boolean damaged(int damage){
         if(!ownerPlayer().getArea().contains(this)){
             // 可能被攻击对象亡语效果击杀了本卡，此时不再计算伤害
-            info.msg((ownerPlayer().getName())+"的"+getName()+"已退场，忽略该伤害");
+            info.msg(getNameWithOwner()+"已退场，忽略该伤害");
             return false;
         }
-        info.msg((ownerPlayer().getName())+"的"+getName()+"受到了"+damage+"点伤害");
+        info.msg(getNameWithOwner()+"受到了"+damage+"点伤害");
         if(hp>damage){
             hp -= damage;
             return false;

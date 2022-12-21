@@ -100,7 +100,7 @@ public class GameHandler {
         // endregion
 
         if("end".equals(msg)){
-            info.endTurn();
+            info.endTurnOfCommand();
         }
     }
 
@@ -245,7 +245,7 @@ public class GameHandler {
         } else if (indexII == 0) {
             // TODO 可否直接攻击
             FollowCard follow = (FollowCard)player.getArea().get(indexI-1);
-            info.msg(follow.ownerPlayer().getName()+"的"+ follow.getName()+"直接攻击对手的主战者！");
+            info.msg(follow.getNameWithOwner()+"直接攻击对手的主战者！");
             info.damageLeader(enemy.getLeader(),follow.getAtk());
             return;
         } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
@@ -255,9 +255,9 @@ public class GameHandler {
 
         FollowCard follow = (FollowCard)player.getArea().get(indexI-1);
         FollowCard target = (FollowCard)enemy.getArea().get(indexII-1);
-        info.msg(follow.ownerPlayer().getName()+"的"+ follow.getName()+"攻击了对手的"+target.getName()+"！");
+        info.msg(follow.getNameWithOwner()+"攻击了对手的"+target.getName()+"！");
         target.damaged(follow.getAtk());
-        info.msg(target.ownerPlayer().getName()+"的"+ target.getName()+"反击！");
+        info.msg(follow.getNameWithOwner()+"反击！");
         follow.damaged(target.getAtk());
 
     }

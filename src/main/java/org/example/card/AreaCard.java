@@ -18,8 +18,9 @@ public abstract class AreaCard  extends Card{
     public void deathrattle(){}
 
     public void death(){
-        info.msg((ownerPlayer().getName())+"的"+getName()+"因被破坏而送入墓地！");
+        info.msg(getNameWithOwner()+"因被破坏而送入墓地！");
         deathrattle();
+        ownerPlayer().getDeck().forEach(Card::charge);
         ownerPlayer().getGraveyard().add(this);
         ownerPlayer().countToGraveyard(1);
         ownerPlayer().getArea().remove(this);

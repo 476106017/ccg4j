@@ -133,11 +133,14 @@ public class GameInfo {
             }
             thisPlayer().ppNum = thisPlayer().ppMax;
             msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
-            if(rope!=null && rope.isDone()){// 前一个绳子烧完了，就只给十秒
-                rope = schedule.schedule(this::endTurn, 10, TimeUnit.SECONDS);
+            // 前一个绳子烧完了，就只给十秒
+            oppositePlayer().setShortRope(rope!=null && rope.isDone());
+
+            if(thisPlayer().isShortRope()){
+                rope = schedule.schedule(this::endTurnOfTimeout, 10, TimeUnit.SECONDS);
                 msg("倒计时10秒！");
             }else{
-                rope = schedule.schedule(this::endTurn, 600, TimeUnit.SECONDS);
+                rope = schedule.schedule(this::endTurnOfTimeout, 600, TimeUnit.SECONDS);
                 msg("倒计时60秒！");
             }
             msgToThisPlayer(describeGame());
@@ -146,6 +149,15 @@ public class GameInfo {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void endTurnOfTimeout(){
+        thisPlayer().setShortRope(true);
+        endTurn();
+    }
+    public void endTurnOfCommand(){
+        thisPlayer().setShortRope(false);
+        endTurn();
     }
 
     public void endTurn(){

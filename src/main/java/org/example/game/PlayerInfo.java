@@ -11,6 +11,7 @@ public class PlayerInfo {
 
     String name;
     UUID uuid;
+    boolean shortRope = false;
     int hp = 20;
     int hpMax = 20;
     List<Leader> leaderEffects;

@@ -1,5 +1,7 @@
 package org.example.card;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.game.GameInfo;
 import org.example.game.GameObj;
 import org.example.game.PlayerInfo;
@@ -8,9 +10,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public abstract class Card extends GameObj {
     public GameInfo info = null;
     public int owner = 0;
+
+    public int needCharge = 0;
 
     public Card parentCard = null;
 
@@ -24,6 +30,9 @@ public abstract class Card extends GameObj {
     public abstract String getType();
     public abstract Integer getCost();
     public abstract String getName();
+    public String getNameWithOwner(){
+        return ownerPlayer().getName()+"的"+getName();
+    };
     public abstract String getJob();
     public abstract String getMark();
     public abstract String getSubMark();
@@ -63,10 +72,26 @@ public abstract class Card extends GameObj {
             .forEach(Card::afterRust);
     }
 
+    // 腐蚀
     public Integer canRust() {
         return 99;
     }
 
     public void afterRust(){}
+
+    // 注能
+    public void charge(){
+        if(getNeedCharge() > 0){
+            setNeedCharge(getNeedCharge() - 1);
+            info.msg(getNameWithOwner()+"积累了1点注能！");
+            if(getNeedCharge() == 0){
+                info.msg(getNameWithOwner()+"注能完成！");
+                afterCharge();
+            }
+        }
+    }
+
+    public void afterCharge(){}
+
 
 }
