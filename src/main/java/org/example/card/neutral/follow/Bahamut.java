@@ -1,7 +1,8 @@
-package org.example.card.follow;
+package org.example.card.neutral.follow;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.GameObj;
@@ -14,7 +15,8 @@ import java.util.List;
 public class Bahamut extends FollowCard {
     public Integer cost = 9;
     public String name = "巴哈姆特";
-    public String job = "龙";
+    public String job = "中立";
+    public String race = "龙";
     public String mark = """
         瞬念召唤：回合结束时总消耗pp>=50,破坏对手牌库直至5张
         战吼：破坏对手场上全部卡牌
@@ -30,13 +32,10 @@ public class Bahamut extends FollowCard {
     public int hp = 50;
     public int maxHp = 50;
 
-    public void entering() {
-    }
-
     @Override
     public void fanfare(List<GameObj> targets) {
         super.fanfare(targets);
-        List<Card> area = oppositePlayer().getArea();
+        List<AreaCard> area = oppositePlayer().getArea();
         info.destroy(ownerPlayer(),area);
         info.msg("随着巴哈姆特的一声怒吼，对面的战场被清理的一干二净");
     }

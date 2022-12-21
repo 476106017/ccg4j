@@ -36,8 +36,8 @@ public class GameInfo {
         this.turnPlayer = 0;
         this.gameset = false;
         this.playerInfos = new PlayerInfo[2];
-        this.playerInfos[0] = new PlayerInfo();
-        this.playerInfos[1] = new PlayerInfo();
+        this.playerInfos[0] = new PlayerInfo(this);
+        this.playerInfos[1] = new PlayerInfo(this);
 
         msg("比赛开始，请选择三张手牌交换");
 
@@ -84,7 +84,7 @@ public class GameInfo {
         }
     }
 
-    public void destroy(PlayerInfo playerInfo, List<Card> cards){
+    public void destroy(PlayerInfo playerInfo, List<AreaCard> cards){
         playerInfo.getGraveyard().addAll(cards);
         playerInfo.getArea().removeAll(cards);
     }

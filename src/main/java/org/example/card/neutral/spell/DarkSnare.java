@@ -1,11 +1,10 @@
-package org.example.card.spell;
+package org.example.card.neutral.spell;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.example.card.Card;
+import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.constant.CardType;
 import org.example.game.GameObj;
 import org.example.game.Leader;
 
@@ -17,7 +16,8 @@ import java.util.Random;
 public class DarkSnare extends SpellCard {
     public Integer cost = 4;
     public String name = "暗黑陷阱";
-    public String job = "陷阱";
+    public String job = "中立";
+    public String race = "陷阱";
     public String mark = """
         腐蚀：4 对随机一只敌方随从造成X点伤害,如果击杀：成长
         —————————————
@@ -72,8 +72,8 @@ public class DarkSnare extends SpellCard {
 
     @Override
     public void afterRust() {
-        List<Card> follows = info.oppositePlayer().getArea()
-            .stream().filter(card -> CardType.FOLLOW.equals(card.getType()))
+        List<AreaCard> follows = info.oppositePlayer().getArea()
+            .stream().filter(areaCard -> "随从".equals(areaCard.getType()))
             .toList();
         if(!follows.isEmpty()){
             int randIndex = new Random().nextInt(follows.size());

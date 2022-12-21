@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class PlayerInfo {
+    GameInfo info;
 
     String name;
     UUID uuid;
@@ -33,6 +34,10 @@ public class PlayerInfo {
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
     Leader leader = new Leader();
 
+    public PlayerInfo(GameInfo info) {
+        this.info = info;
+    }
+
     Map<Integer,List<GameRecord>> turnRecords = new HashMap<>();
 
     public Integer getCount(String key){
@@ -52,6 +57,7 @@ public class PlayerInfo {
     public void draw(int num){
         addHand(deck.subList(0,num));
         deck = deck.subList(num,deck.size());
+        info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
     }
     public void back(List<Card> cards){
         addDeck(cards);
@@ -97,7 +103,7 @@ public class PlayerInfo {
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t")
                 .append(card.getCost()).append("\t")
-                .append(card.getJob()).append("\n")
+                .append(card.getRace()).append("\n")
                 .append(card.getMark());
             if(!card.getSubMark().isBlank()){
                 sb.append(card.getSubMark()).append("\n");

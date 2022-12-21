@@ -15,12 +15,40 @@ public abstract class FollowCard extends AreaCard{
     public int hp = 0;
     public int maxHp = 0;
     public int turnAge = 0;
+    public boolean isDash = false;
     public int turnAttackMax = 1;
     public int turnAttack = 0;
 
     @Override
     public String getType() {
         return TYPE.getName();
+    }
+
+    public void acquireDash(){
+        info.msg(getNameWithOwner()+"获得了【突进】");
+        this.setDash(true);
+    }
+
+    public void changeStatus(int atk,int hp){
+        // region 构造消息
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getNameWithOwner()).append("获得了");
+        if(atk>0)sb.append("+");
+        sb.append(atk).append("/");
+        if(hp>0)sb.append("+");
+        sb.append(hp);
+        info.msg(sb.toString());
+        // endregion 构造消息
+
+        int finalAtk = this.getAtk()+atk;
+        int finalHp = this.getHp()+hp;
+        int finalMaxHp = this.getMaxHp()+hp;
+        setAtk(finalAtk);
+        setHp(finalHp);
+        setMaxHp(finalMaxHp);
+        if(getHp()<=0){
+            death();
+        }
     }
 
     public void turnAttackOnce(){

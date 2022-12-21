@@ -10,6 +10,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class AreaCard  extends Card{
+    public abstract String getType();
     public void entering(){}
 
     public void fanfare(List<GameObj> targets){

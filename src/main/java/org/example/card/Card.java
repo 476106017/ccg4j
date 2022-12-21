@@ -34,6 +34,7 @@ public abstract class Card extends GameObj {
         return ownerPlayer().getName()+"的"+getName();
     };
     public abstract String getJob();
+    public abstract String getRace();
     public abstract String getMark();
     public abstract String getSubMark();
 

@@ -249,7 +249,7 @@ public class GameHandler {
             info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getName());
             return;
         } else if (myCard instanceof FollowCard followCard) {
-            if(followCard.getTurnAge() == 0){
+            if(followCard.getTurnAge() == 0 && !followCard.isDash()){
                 info.msgToThisPlayer("无法让刚入场的随从攻击");
                 return;
             }
@@ -266,11 +266,14 @@ public class GameHandler {
             indexII = -1;
         }
         if(indexII < 0 || indexII > enemy.getArea().size()){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "输入目标序号错误:"+split[1]);
+            info.msgTo(me, "输入目标序号错误:"+split[1]);
             return;
         } else if (indexII == 0) {
             // TODO 可否直接攻击
             FollowCard myFollow = (FollowCard) myCard;
+            if(myFollow.getTurnAge() == 0 && myFollow.isDash()){
+                info.msgTo(me,"突进随从在入场回合，无法直接攻击对手的主战者");
+            }
             info.msg(myFollow.getNameWithOwner()+"直接攻击对手的主战者！");
             myFollow.turnAttackOnce();
             info.damageLeader(enemy.getLeader(),myFollow.getAtk());

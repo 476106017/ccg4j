@@ -1,9 +1,10 @@
-package org.example.card.follow;
+package org.example.card.fairy.follow;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.card.fairy.follow.Fairy;
 import org.example.game.GameObj;
 
 import java.util.ArrayList;
@@ -14,7 +15,8 @@ import java.util.List;
 public class FairyWhisperer extends FollowCard {
     public Integer cost = 2;
     public String name = "妖之轻语者";
-    public String job = "";
+    public String job = "妖精";
+    public String race = "人类";
     public String mark = """
         战吼：获得X张妖精（X是当前费用）
         """;
