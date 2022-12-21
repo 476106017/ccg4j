@@ -22,7 +22,7 @@ public class Fairy extends FollowCard {
     public int maxHp = 1;
 
     @Override
-    public boolean canInstantEnd() {
+    public boolean canInvocationEnd() {
         return ownerPlayer().getPpNum() == 1;
     }
 }

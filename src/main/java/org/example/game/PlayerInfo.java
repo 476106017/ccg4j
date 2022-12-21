@@ -16,7 +16,6 @@ public class PlayerInfo {
     boolean shortRope = false;
     int hp = 20;
     int hpMax = 20;
-    List<Leader> leaderEffects;
     int step = -1; // 0换牌完成 1使用
     int ppNum = 0;
     int ppMax = 0;
@@ -32,10 +31,14 @@ public class PlayerInfo {
         graveyardCount += count;
     }
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
-    Leader leader = new Leader();
+    Leader leader = new Leader(this);
 
     public PlayerInfo(GameInfo info) {
         this.info = info;
+    }
+
+    public PlayerInfo getEnemy(){
+        return info.anotherPlayerByUuid(getUuid());
     }
 
     Map<Integer,List<GameRecord>> turnRecords = new HashMap<>();
@@ -50,6 +53,12 @@ public class PlayerInfo {
         counter.merge(key, time, Integer::sum);
     }
 
+    public void heal(int hp){
+        setHp(getHp() + hp);
+    }
+    public void addHpMax(int hpMax){
+        setHpMax(getHpMax() + hpMax);
+    }
 
     public void shuffle(){
         Collections.shuffle(deck);
@@ -70,14 +79,18 @@ public class PlayerInfo {
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
+        info.msg(getName() + "的" + cards.size() + "张卡加入到了牌堆中");
         deck.addAll(cards);
     }
     public void addHand(List<Card> cards){
         int cardsSize = cards.size();
         int handSize = hand.size();
-        if(handSize + cardsSize > handMax){
+        int handTotal = handSize + cardsSize;
+        if(handTotal > handMax){
             hand.addAll(cards.subList(0,handMax-handSize));
-            addGraveyard(cards.subList(handMax-handSize,cardsSize));// 手牌爆的牌全到墓地
+            info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌仅记入墓地数！");
+
+            countToGraveyard(handTotal-handMax);
         }else{
             hand.addAll(cards);
         }
@@ -90,9 +103,14 @@ public class PlayerInfo {
         }
         area.addAll(cards);
     }
-    public void addGraveyard(List<Card> cards){
-        graveyard.addAll(cards);
-        graveyardCount+=cards.size();
+
+    public void summon(AreaCard areaCard){
+        if(getArea().size() == getAreaMax()){
+            info.msg(areaCard.getNameWithOwner() + "掉出了战场！");
+            return;
+        }
+        getArea().add(areaCard);
+        areaCard.entering();// 发动入场时
     }
 
     public String describeHand(){

@@ -36,16 +36,16 @@ public class Bahamut extends FollowCard {
     public void fanfare(List<GameObj> targets) {
         super.fanfare(targets);
         List<AreaCard> area = oppositePlayer().getArea();
-        info.destroy(ownerPlayer(),area);
+        info.destroy(area);
         info.msg("随着巴哈姆特的一声怒吼，对面的战场被清理的一干二净");
     }
 
-    public boolean canInstantEnd() {
+    public boolean canInvocationEnd() {
         return ownerPlayer().getCount("allCost") >= 50;
     }
 
     @Override
-    public void afterInstantEnd() {
+    public void afterInvocationEnd() {
         PlayerInfo oppositePlayer = info.oppositePlayer();
         List<Card> deck = oppositePlayer.getDeck();
         if (deck.size()>5) {

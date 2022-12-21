@@ -19,9 +19,9 @@ public class DarkSnare extends SpellCard {
     public String job = "中立";
     public String race = "陷阱";
     public String mark = """
-        腐蚀：4 对随机一只敌方随从造成X点伤害,如果击杀：成长
+        腐蚀：4 对随机一个敌方随从造成X点伤害,如果击杀：成长
         —————————————
-        对一只敌方随从或对方玩家造成X点伤害
+        对一个敌方随从或对方玩家造成X点伤害
         """;
 
     public String subMark = "X等于{dark_snare_damage}";

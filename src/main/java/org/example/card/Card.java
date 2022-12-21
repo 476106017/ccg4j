@@ -37,6 +37,24 @@ public abstract class Card extends GameObj {
     public abstract String getRace();
     public abstract String getMark();
     public abstract String getSubMark();
+    /**
+     * 回合结束的瞬召
+     */
+    public boolean canInvocationBegin() {
+        return false;
+    }
+
+    /**
+     * 回合开始的瞬召
+     */
+    public boolean canInvocationEnd() {
+        return false;
+    }
+
+    public void afterInvocationBegin(){}
+
+    public void afterInvocationEnd(){}
+
 
     public void initCounter(){}
 
@@ -64,6 +82,8 @@ public abstract class Card extends GameObj {
             info.msgToThisPlayer("你没有足够的PP来使用该卡牌！");
             throw new RuntimeException();
         }
+        info.msg(ownerPlayer().getName() + "使用了" + getName());
+
         int ppNum = ownerPlayer().getPpNum() - getCost();
         ownerPlayer().setPpNum(ppNum);
 

@@ -6,6 +6,7 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.example.card.AmuletCard;
+import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.GameInfo;
@@ -17,9 +18,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.Executors;
 
-import static org.example.system.Database.roomGame;
-import static org.example.system.Database.userNames;
+import static org.example.system.Database.*;
 
 @Service
 @ConditionalOnClass(SocketIOServer.class)
@@ -83,6 +84,7 @@ public class GameHandler {
             // 两名玩家都换完了，开始游戏
             info.msg("双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
 
+            roomSchedule.put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
             info.startTurn();
         }
     }
@@ -145,6 +147,11 @@ public class GameHandler {
         }
 
         Card card = player.getHand().get(indexI - 1);
+        if(card instanceof AreaCard &&
+            player.getArea().size()==player.getAreaMax()){
+            info.msgTo(me,"场上放不下卡牌了！");
+            return;
+        }
         List<GameObj> targetable = card.targetable();
         // 只有一个参数
         if(split.length == 1){
@@ -159,7 +166,7 @@ public class GameHandler {
 
                     GameObj gameObj = targetable.get(i);
                     if(gameObj instanceof Leader leader){
-                        sb.append(leader.isMe()?"我方主战者":"敌方主战者");
+                        sb.append(player.getLeader()==leader?"我方主战者":"敌方主战者");
                     }else if (gameObj instanceof Card targetCard){
                         // 卡牌属于哪方
                         PlayerInfo ownerPlayer = targetCard.ownerPlayer();

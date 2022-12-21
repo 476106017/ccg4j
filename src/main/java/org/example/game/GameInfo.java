@@ -2,15 +2,10 @@ package org.example.game;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Data;
-import org.example.card.AmuletCard;
-import org.example.card.AreaCard;
-import org.example.card.Card;
-import org.example.card.FollowCard;
+import org.example.card.*;
+import org.example.constant.EffectTiming;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -59,9 +54,18 @@ public class GameInfo {
         server.getClient(oppositePlayer().getUuid()).sendEvent("receiveMsg", msg);
     }
 
-    public void gameset(){
-        // TODO 结束游戏，需要通知到双方玩家
+    public void gameset(PlayerInfo winner){
         gameset = true;
+        msg("游戏结束，获胜者："+winner.getName());
+
+        // 释放资源
+        roomReadyMatch.remove(getRoom());
+        roomGame.remove(getRoom());
+        roomSchedule.get(getRoom()).shutdown();
+        roomSchedule.remove(getRoom());
+        // 退出房间
+        server.getClient(thisPlayer().getUuid()).leaveRoom(getRoom());
+        server.getClient(oppositePlayer().getUuid()).leaveRoom(getRoom());
     }
 
     public PlayerInfo thisPlayer(){
@@ -85,9 +89,8 @@ public class GameInfo {
         }
     }
 
-    public void destroy(PlayerInfo playerInfo, List<AreaCard> cards){
-        playerInfo.getGraveyard().addAll(cards);
-        playerInfo.getArea().removeAll(cards);
+    public void destroy(List<AreaCard> cards){
+        cards.forEach(AreaCard::death);
     }
 
     public void damageLeader(Leader leader,int damage){
@@ -96,14 +99,14 @@ public class GameInfo {
             thisPlayer().setHp(hp - damage);
             msg(thisPlayer().getName()+"的主战者受到"+damage+"点伤害！（剩余"+thisPlayer().getHp()+"点生命值）");
             if(hp < 0){
-                gameset();
+                gameset(oppositePlayer());
             }
         }else {
             int hp = oppositePlayer().getHp();
             oppositePlayer().setHp(hp - damage);
             msg(oppositePlayer().getName()+"的主战者受到"+damage+"点伤害！（剩余"+oppositePlayer().getHp()+"点生命值）");
             if (hp < 0) {
-                gameset();
+                gameset(thisPlayer());
             }
         }
     }
@@ -142,10 +145,10 @@ public class GameInfo {
             oppositePlayer().setShortRope(rope!=null && rope.isDone());
 
             if(thisPlayer().isShortRope()){
-                rope = schedule.schedule(this::endTurnOfTimeout, 10, TimeUnit.SECONDS);
+                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 10, TimeUnit.SECONDS);
                 msg("倒计时10秒！");
             }else{
-                rope = schedule.schedule(this::endTurnOfTimeout, 600, TimeUnit.SECONDS);
+                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 600, TimeUnit.SECONDS);
                 msg("倒计时60秒！");
             }
             msgToThisPlayer(describeGame());
@@ -175,6 +178,22 @@ public class GameInfo {
 
 
     public void beforeTurn(){
+        // 发动主战者效果
+        List<Leader.Effect> usedUpEffects = new ArrayList<>();
+        thisPlayer().getLeader().getEffects().stream()
+            .filter(effect -> EffectTiming.BeginTurn.equals(effect.getTiming()))
+            .forEach(effect -> {
+                effect.getEffect().accept(thisPlayer());
+                int canUse = effect.getCanUse();
+                if(canUse == 1){
+                    // 用完了销毁
+                    usedUpEffects.add(effect);
+                    msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已用完");
+                }else if (canUse > 1){
+                    effect.setCanUse(canUse-1);
+                }
+            });
+        thisPlayer().getLeader().getEffects().removeAll(usedUpEffects);
 
         // 场上随从驻场回合+1、攻击次数清零
         // 发动回合开始效果
@@ -202,27 +221,60 @@ public class GameInfo {
             }
         });
 
-        // 查找牌堆是否有瞬召卡片
+        // 查找牌堆是否有瞬召卡片，同名字卡牌各取一张
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
-        while(thisPlayer().getArea().size()<5){
-            Optional<Card> first = nameCard.values().stream()
-                .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInstantBegin()).findFirst();
-            if (first.isEmpty()) {
-                break;
-            }
+        List<Card> canInvocation = nameCard.values().stream().filter(Card::canInvocationBegin).toList();
+
+        // 法术卡揭示到手牌
+        while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
+            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof SpellCard).findFirst();
+            if(first.isEmpty()) break;
+
+            // region 从牌堆召唤到手牌
+            SpellCard card = (SpellCard)first.get();
+            thisPlayer().getHand().add(card);
+            thisPlayer().getDeck().remove(card);
+            card.afterInvocationBegin();
+            msg(thisPlayer().getName()+"揭示了"+card.getName());
+            // endregion
+
+        }
+
+        // 瞬念召唤到场上
+        while(thisPlayer().getArea().size() < thisPlayer().getAreaMax()){
+            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof AreaCard).findFirst();
+            if(first.isEmpty()) break;
+
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
-            thisPlayer().getArea().add(card);
+            thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
-            card.afterInstantBegin();
+            card.afterInvocationBegin();
             msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             // endregion
         }
 
     }
     public void afterTurn(){
+        // 发动主战者效果
+        List<Leader.Effect> usedUpEffects = new ArrayList<>();
+        thisPlayer().getLeader().getEffects().stream()
+            .filter(effect -> EffectTiming.EndTurn.equals(effect.getTiming()))
+            .forEach(effect -> {
+                effect.getEffect().accept(thisPlayer());
+                int canUse = effect.getCanUse();
+                if(canUse == 1){
+                    // 用完了销毁
+                    usedUpEffects.add(effect);
+                    msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已用完");
+                }else if (canUse > 1){
+                    effect.setCanUse(canUse-1);
+                }
+            });
+        thisPlayer().getLeader().getEffects().removeAll(usedUpEffects);
+
         // 发动回合结束效果
         thisPlayer().getArea().forEach(areaCard -> {
             areaCard.effectEnd();
@@ -233,15 +285,15 @@ public class GameInfo {
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
         while(thisPlayer().getArea().size()<5){
             Optional<Card> first = nameCard.values().stream()
-                .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInstantEnd()).findFirst();
+                .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInvocationEnd()).findFirst();
             if (first.isEmpty()) {
                 break;
             }
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
-            thisPlayer().getArea().add(card);
+            thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
-            card.afterInstantEnd();
+            card.afterInvocationEnd();// 发动瞬念效果
             msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             // endregion
         }
