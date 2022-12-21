@@ -19,7 +19,7 @@ public abstract class AreaCard  extends Card{
     public void deathrattle(){}
 
     public void death(){
-        info.msg(getNameWithOwner()+"因被破坏而送入墓地！");
+        info.msg(getNameWithOwner()+"被送入墓地！");
         deathrattle();
         ownerPlayer().getDeck().forEach(Card::charge);
         ownerPlayer().getGraveyard().add(this);
@@ -55,20 +55,6 @@ public abstract class AreaCard  extends Card{
     public void afterInstantBegin(){}
 
     public void afterInstantEnd(){}
-
-    /**
-     * 回合结束的效果
-     */
-    public boolean canEffectBegin() {
-        return false;
-    }
-
-    /**
-     * 回合开始的效果
-     */
-    public boolean canEffectEnd() {
-        return false;
-    }
 
     public void effectBegin(){}
 

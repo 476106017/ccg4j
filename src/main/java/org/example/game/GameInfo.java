@@ -2,6 +2,7 @@ package org.example.game;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Data;
+import org.example.card.AmuletCard;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
@@ -176,12 +177,28 @@ public class GameInfo {
     public void beforeTurn(){
 
         // 场上随从驻场回合+1、攻击次数清零
+        // 发动回合开始效果
+        // 场上护符倒数-1
         thisPlayer().getArea().forEach(areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 int turnAgePlus = followCard.getTurnAge() + 1;
+                if(turnAgePlus>0){// 可能有随从会需要准备多个回合，还是判断下
+                    msg(followCard.getNameWithOwner() + "可以攻击了！");
+                }
                 followCard.setTurnAge(turnAgePlus);
 
                 followCard.setTurnAttack(0);
+            }
+            areaCard.effectBegin();
+            if(areaCard instanceof AmuletCard amuletCard){
+                int timer = amuletCard.getTimer();
+                if(timer > 0){
+                    amuletCard.setTimer(timer - 1);
+                    msg(amuletCard.getNameWithOwner() + "的倒数-1");
+                    if(amuletCard.getTimer() == 0){
+                        amuletCard.death();
+                    }
+                }
             }
         });
 
@@ -206,9 +223,14 @@ public class GameInfo {
 
     }
     public void afterTurn(){
+        // 发动回合结束效果
+        thisPlayer().getArea().forEach(areaCard -> {
+            areaCard.effectEnd();
+        });
+
+        // 查找牌堆是否有瞬召卡片
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
-
         while(thisPlayer().getArea().size()<5){
             Optional<Card> first = nameCard.values().stream()
                 .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInstantEnd()).findFirst();
