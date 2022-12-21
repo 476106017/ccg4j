@@ -163,12 +163,8 @@ public class GameInfo {
     public void endTurn(){
         msg(thisPlayer().getName()+"的回合结束");
         afterTurn();
-        if(turnPlayer==0){
-            turnPlayer = 1;
-        }else {
-            turnPlayer = 0;
-            turn++;
-        }
+        turn += turnPlayer;// 如果是玩家1就加回合数
+        turnPlayer = 1 ^ turnPlayer;
         startTurn();
     }
 
