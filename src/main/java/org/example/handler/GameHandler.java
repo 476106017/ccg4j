@@ -52,17 +52,17 @@ public class GameHandler {
                 indexI = -1;
             }
             if(indexI<1 || indexI>3){
-                socketIOServer.getClient(me).sendEvent("receiveMsg", "输入序号错误:"+index);
+                info.msgTo(me,"输入序号错误:"+index);
                 return;
             }
             indexs.add(indexI-1);//这里转成下标
         }
         if(player.getStep()!=-1){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "已经过了换牌步骤!");
+            info.msgTo(me,"已经过了换牌步骤!");
             return;
         }
         if(indexs.isEmpty()){
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", name +"交换了0张卡牌");
+            info.msg(name +"交换了0张卡牌");
         }else{
             List<Card> hand = player.getHand();
             List<Card> back = new ArrayList<>();
@@ -71,17 +71,17 @@ public class GameHandler {
             }
             player.draw(back.size());
             player.back(back);
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", name +"交换了"+back.size()+"张卡牌");
+            info.msg(name +"交换了"+back.size()+"张卡牌");
         }
         // endregion
 
-        socketIOServer.getClient(me).sendEvent("receiveMsg", "交换后的手牌:\n"+player.describeHand());
+        info.msgTo(me,"交换后的手牌:\n"+player.describeHand());
 
         player.setStep(0);
         if(info.anotherPlayerByUuid(me).getStep()==0){
             String turnPlayerName = info.getPlayerInfos()[info.getTurnPlayer()].getName();
             // 两名玩家都换完了，开始游戏
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", "双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
+            info.msg("双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
 
             info.startTurn();
         }
@@ -96,8 +96,14 @@ public class GameHandler {
         String name = userNames.get(me);
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo player = info.thisPlayer();
         // endregion
+
+        if(!me.equals(player.getUuid())){
+            info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
+
 
         if("end".equals(msg)){
             info.endTurnOfCommand();
@@ -112,11 +118,16 @@ public class GameHandler {
         String name = userNames.get(me);
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo player = info.thisPlayer();
         // endregion
 
+        if(!me.equals(player.getUuid())){
+            info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
+
         if(msg.isBlank()){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "打出卡牌：play <手牌序号> （<目标序号>）；");
+            info.msgTo(me,"打出卡牌：play <手牌序号> （<目标序号>）；");
             return;
         }
 
@@ -129,7 +140,7 @@ public class GameHandler {
             indexI = -1;
         }
         if(indexI <= 0 || indexI > player.getHand().size()){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "输入手牌序号错误:"+split[0]);
+            info.msgTo(me,"输入手牌序号错误:"+split[0]);
             return;
         }
 
@@ -163,13 +174,13 @@ public class GameHandler {
                         }
                     }
                 }
-                socketIOServer.getClient(me).sendEvent("receiveMsg", sb.toString());
+                info.msgTo(me, sb.toString());
 
             }
         }else{
             // 输入多个参数
             if(targetable.size()==0) {
-                socketIOServer.getClient(me).sendEvent("receiveMsg", "无法为该卡牌指定目标！");
+                info.msgTo(me,"无法为该卡牌指定目标！");
                 return;
             }else {
                 List<GameObj> targets = new ArrayList<>();
@@ -188,7 +199,7 @@ public class GameHandler {
                 }
                 // 指定目标数量错误
                 if (targets.size() != card.targetNum()) {
-                    socketIOServer.getClient(me).sendEvent("receiveMsg", "指定目标数量错误，应为："+card.targetNum());
+                    info.msgTo(me,"指定目标数量错误，应为："+card.targetNum());
                     return;
                 }
                 card.play(targets);
@@ -206,15 +217,19 @@ public class GameHandler {
         String name = userNames.get(me);
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
-        PlayerInfo enemy = info.anotherPlayerByUuid(me);
+        PlayerInfo player = info.thisPlayer();
+        PlayerInfo enemy = info.oppositePlayer();
         // endregion
 
+        if(!me.equals(player.getUuid())){
+            info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
 
         String[] split = msg.split("\\s+");
 
         if(msg.isBlank() || split.length!=2){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "攻击：attack <随从序号> <目标随从序号(对方主战者序号是0)>");
+            info.msgToThisPlayer("攻击：attack <随从序号> <目标随从序号(对方主战者序号是0)>");
             return;
         }
 
@@ -226,11 +241,22 @@ public class GameHandler {
             indexI = -1;
         }
         if(indexI <= 0 || indexI > player.getArea().size()){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "输入随从序号错误:"+split[0]);
+            info.msgToThisPlayer("输入随从序号错误:"+split[0]);
             return;
-        }else if(player.getArea().get(indexI-1) instanceof AmuletCard amuletCard){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "无法让护符卡攻击:"+amuletCard.getName());
+        }
+        Card myCard = player.getArea().get(indexI - 1);
+        if(myCard instanceof AmuletCard amuletCard){
+            info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getName());
             return;
+        } else if (myCard instanceof FollowCard followCard) {
+            if(followCard.getTurnAge() == 0){
+                info.msgToThisPlayer("无法让刚入场的随从攻击");
+                return;
+            }
+            if(followCard.getTurnAttack() == followCard.getTurnAttackMax()){
+                info.msgToThisPlayer("该随从已经攻击过了");
+                return;
+            }
         }
 
         Integer indexII;
@@ -244,21 +270,24 @@ public class GameHandler {
             return;
         } else if (indexII == 0) {
             // TODO 可否直接攻击
-            FollowCard follow = (FollowCard)player.getArea().get(indexI-1);
-            info.msg(follow.getNameWithOwner()+"直接攻击对手的主战者！");
-            info.damageLeader(enemy.getLeader(),follow.getAtk());
+            FollowCard myFollow = (FollowCard) myCard;
+            info.msg(myFollow.getNameWithOwner()+"直接攻击对手的主战者！");
+            myFollow.turnAttackOnce();
+            info.damageLeader(enemy.getLeader(),myFollow.getAtk());
             return;
         } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "无法攻击护符卡:"+amuletCard.getName());
+            info.msgToThisPlayer("无法攻击护符卡:"+amuletCard.getName());
             return;
         }
 
-        FollowCard follow = (FollowCard)player.getArea().get(indexI-1);
+        FollowCard myFollow = (FollowCard) myCard;
         FollowCard target = (FollowCard)enemy.getArea().get(indexII-1);
-        info.msg(follow.getNameWithOwner()+"攻击了对手的"+target.getName()+"！");
-        target.damaged(follow.getAtk());
-        info.msg(follow.getNameWithOwner()+"反击！");
-        follow.damaged(target.getAtk());
+        info.msg(myFollow.getNameWithOwner()+"攻击了对手的"+target.getName()+"！");
+        target.damaged(myFollow.getAtk());
+        myFollow.turnAttackOnce();
+
+        info.msg(target.getNameWithOwner()+"反击！");
+        myFollow.damaged(target.getAtk());
 
     }
 
@@ -270,6 +299,6 @@ public class GameHandler {
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
 
-        socketIOServer.getClient(me).sendEvent("receiveMsg", info.describeGame());
+        info.msgTo(me, info.describeGame());
     }
 }

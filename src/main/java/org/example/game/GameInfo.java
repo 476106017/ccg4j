@@ -47,6 +47,10 @@ public class GameInfo {
         server.getRoomOperations(room).sendEvent("receiveMsg", msg);
     }
 
+    public void msgTo(UUID uuid, String msg){
+        server.getClient(uuid).sendEvent("receiveMsg", msg);
+    }
+
     public void msgToThisPlayer(String msg){
         server.getClient(thisPlayer().getUuid()).sendEvent("receiveMsg", msg);
     }
@@ -170,6 +174,18 @@ public class GameInfo {
 
 
     public void beforeTurn(){
+
+        // 场上随从驻场回合+1、攻击次数清零
+        thisPlayer().getArea().forEach(areaCard -> {
+            if(areaCard instanceof FollowCard followCard){
+                int turnAgePlus = followCard.getTurnAge() + 1;
+                followCard.setTurnAge(turnAgePlus);
+
+                followCard.setTurnAttack(0);
+            }
+        });
+
+        // 查找牌堆是否有瞬召卡片
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 

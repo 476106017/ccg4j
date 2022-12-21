@@ -1,6 +1,7 @@
 package org.example.game;
 
 import lombok.Data;
+import org.example.card.AreaCard;
 import org.example.card.Card;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class PlayerInfo {
     int hp = 20;
     int hpMax = 20;
     List<Leader> leaderEffects;
-    int step = -1; // 0换牌完成 1使用 2指定
+    int step = -1; // 0换牌完成 1使用
     int ppNum = 0;
     int ppMax = 0;
     int deckMax = 60;
@@ -23,7 +24,7 @@ public class PlayerInfo {
     int areaMax = 5;
     List<Card> deck = new ArrayList<>();
     List<Card> hand = new ArrayList<>();
-    List<Card> area = new ArrayList<>();
+    List<AreaCard> area = new ArrayList<>();
     List<Card> graveyard = new ArrayList<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
     public void countToGraveyard(int count){
@@ -75,7 +76,7 @@ public class PlayerInfo {
             hand.addAll(cards);
         }
     }
-    public void addArea(List<Card> cards){
+    public void addArea(List<AreaCard> cards){
         int cardsSize = cards.size();
         int areaSize = area.size();
         if(areaSize + cardsSize > areaMax){

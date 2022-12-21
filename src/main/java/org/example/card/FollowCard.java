@@ -14,10 +14,17 @@ public abstract class FollowCard extends AreaCard{
     public int atk = 0;
     public int hp = 0;
     public int maxHp = 0;
+    public int turnAge = 0;
+    public int turnAttackMax = 1;
+    public int turnAttack = 0;
 
     @Override
     public String getType() {
         return TYPE.getName();
+    }
+
+    public void turnAttackOnce(){
+        setTurnAttack(getTurnAttack()+1);
     }
 
     public boolean damaged(int damage){
