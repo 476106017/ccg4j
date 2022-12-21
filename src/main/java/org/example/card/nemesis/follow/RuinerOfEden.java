@@ -29,6 +29,7 @@ public class RuinerOfEden extends FollowCard {
 
     @Override
     public void entering() {
+        info.msg(getName() + "发动入场时效果！");
         ownerPlayer().summon(createCard(WorldEliminator.class));
         ownerPlayer().summon(createCard(WorldEliminator.class));
         ownerPlayer().summon(createCard(WorldEliminator.class));

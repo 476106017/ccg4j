@@ -7,6 +7,7 @@ import org.example.card.nemesis.Yuwan;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Data
 public class PlayerInfo {
@@ -18,8 +19,8 @@ public class PlayerInfo {
     int hp = 20;
     int hpMax = 20;
     int step = -1; // 0换牌完成 1使用
-    int ppNum = 0;
-    int ppMax = 0;
+    int ppNum = 4;
+    int ppMax = 4;
     int deckMax = 60;
     int handMax = 9;
     int areaMax = 5;
@@ -62,12 +63,12 @@ public class PlayerInfo {
     }
 
     public void shuffle(){
-        Collections.shuffle(deck);
+        Collections.shuffle(getDeck());
     }
     public void draw(int num){
+        info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
         addHand(deck.subList(0,num));
         deck = deck.subList(num,deck.size());
-        info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
     }
     public void back(List<Card> cards){
         addDeck(cards);
@@ -76,14 +77,17 @@ public class PlayerInfo {
 
     public void addDeck(List<Card> cards){
         int cardsSize = cards.size();
-        int deckSize = deck.size();
+        int deckSize = getDeck().size();
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
         info.msg(getName() + "的" + cards.size() + "张卡加入到了牌堆中");
-        deck.addAll(cards);
+        getDeck().addAll(cards);
+        shuffle();
     }
     public void addHand(List<Card> cards){
+        String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
+        info.msgTo(getUuid(),cardNames + "加入了手牌");
         int cardsSize = cards.size();
         int handSize = hand.size();
         int handTotal = handSize + cardsSize;

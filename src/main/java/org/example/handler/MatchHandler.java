@@ -9,8 +9,11 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
+import org.example.card.fairy.amulet.ForestSymphony;
 import org.example.card.fairy.follow.FairyWhisperer;
+import org.example.card.nemesis.spell.CalamitysGenesis;
 import org.example.card.neutral.follow.Bahamut;
+import org.example.card.neutral.follow.TravelerGoblin;
 import org.example.card.neutral.spell.DarkSnare;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
@@ -58,6 +61,9 @@ public class MatchHandler {
             activeDeck.add(new Bahamut());
             activeDeck.add(new FairyWhisperer());
             activeDeck.add(new DarkSnare());
+            activeDeck.add(new TravelerGoblin());
+            activeDeck.add(new CalamitysGenesis());
+            activeDeck.add(new ForestSymphony());
 
         }
         userDecks.put(uuid, playerDeck);

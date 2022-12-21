@@ -46,10 +46,10 @@ public class CalamitysGenesis extends SpellCard {
                     .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                     .findAny();
                 if(findCard.isEmpty()){
-                    info.msg(this.name+"没有找到5费以上随从！");
+                    info.msg(this.getName()+"没有找到5费以上随从！");
                 }else {
-                    info.msg(this.name+"将1张5费以上随从加入手牌！");
                     FollowCard followCard = (FollowCard) findCard.get();
+                    info.msg(this.getName()+"将1张5费以上随从加入手牌！");
                     List<Card> addList = new ArrayList<>();
                     addList.add(followCard);
                     player.addHand(addList);

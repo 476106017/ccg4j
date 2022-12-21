@@ -80,7 +80,6 @@ public class DarkSnare extends SpellCard {
             FollowCard followCard = (FollowCard) follows.get(randIndex);
             Integer darkSnareDamage = info.getPlayerInfos()[owner].getCount("dark_snare_damage");
             if(followCard.damaged(darkSnareDamage)){
-                info.oppositePlayer().getArea().remove(followCard);
                 info.getPlayerInfos()[owner].count("dark_snare_damage");
             }
         }

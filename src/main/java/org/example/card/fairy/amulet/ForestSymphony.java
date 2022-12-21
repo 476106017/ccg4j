@@ -1,6 +1,7 @@
 package org.example.card.fairy.amulet;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.card.AmuletCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
@@ -8,6 +9,7 @@ import org.example.card.FollowCard;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ForestSymphony extends AmuletCard {
 

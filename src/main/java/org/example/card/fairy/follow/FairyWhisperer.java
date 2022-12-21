@@ -32,6 +32,7 @@ public class FairyWhisperer extends FollowCard {
 
     @Override
     public void fanfare(List<GameObj> targets) {
+        info.msg(getName() + "发动战吼！");
         List<Card> fairies = new ArrayList<>();
         for (int i = 0; i < getCost(); i++) {
             Fairy fairy = createCard(Fairy.class);

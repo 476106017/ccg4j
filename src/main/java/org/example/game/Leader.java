@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.constant.EffectTiming;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -26,7 +27,7 @@ public abstract class Leader extends GameObj {
         return true;
     }
 
-    private List<Effect> effects;
+    private List<Effect> effects = new ArrayList<>();
 
 
     public void skill(GameObj target){

@@ -28,13 +28,13 @@ public class Bahamut extends FollowCard {
             info.getPlayerInfos()[owner].getCount("allCost")+"");
     }
 
-    public int atk = 50;
-    public int hp = 50;
-    public int maxHp = 50;
+    public int atk = 13;
+    public int hp = 13;
+    public int maxHp = 13;
 
     @Override
     public void fanfare(List<GameObj> targets) {
-        super.fanfare(targets);
+        info.msg(getName() + "发动战吼！");
         List<AreaCard> area = oppositePlayer().getArea();
         info.destroy(area);
         info.msg("随着巴哈姆特的一声怒吼，对面的战场被清理的一干二净");

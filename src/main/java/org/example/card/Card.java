@@ -67,6 +67,7 @@ public abstract class Card extends GameObj {
     public <T extends Card> T createCard(Class<T> clazz){
         try {
             T card = clazz.getDeclaredConstructor().newInstance();
+            info.msg(getNameWithOwner()+"创造了"+card.getName());
             card.parentCard = this;
             card.owner = this.owner;
             card.info = this.info;
@@ -89,7 +90,7 @@ public abstract class Card extends GameObj {
 
         ownerPlayer().count("allCost",getCost());
 
-        ownerPlayer().getDeck().stream().filter(card -> getCost() > card.canRust())
+        ownerPlayer().getHand().stream().filter(card -> getCost() > card.canRust())
             .forEach(Card::afterRust);
     }
 

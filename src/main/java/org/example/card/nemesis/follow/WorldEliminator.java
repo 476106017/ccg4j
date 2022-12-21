@@ -24,6 +24,7 @@ public class WorldEliminator extends FollowCard {
 
     @Override
     public void deathrattle() {
+        info.msg(getName() + "发动亡语！");
         ownerPlayer().addHpMax(2);
         ownerPlayer().heal(2);
     }

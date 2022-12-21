@@ -28,6 +28,7 @@ public class MagisterialDreadnought extends FollowCard {
 
     @Override
     public void entering() {
+        info.msg(getName() + "发动入场时效果！");
         ownerPlayer().summon(createCard(WorldEliminator.class));
     }
 

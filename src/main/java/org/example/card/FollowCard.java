@@ -62,11 +62,11 @@ public abstract class FollowCard extends AreaCard{
             return false;
         }
         info.msg(getNameWithOwner()+"受到了"+damage+"点伤害");
-        if(hp>damage){
-            hp -= damage;
+        if(getHp()>damage){
+            setHp(getHp()- damage);
             return false;
         }else {
-            hp = 0;
+            setHp(0);
             death();
             return true;
         }

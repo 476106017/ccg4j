@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.game.GameObj;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -13,9 +14,7 @@ public abstract class AreaCard  extends Card{
     public void entering(){}
     public void leaving(){}
 
-    public void fanfare(List<GameObj> targets){
-        info.msg(getName() + "发动战吼！");
-    }
+    public void fanfare(List<GameObj> targets){}
     public void deathrattle(){}
 
     public void death(){

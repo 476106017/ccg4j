@@ -90,7 +90,8 @@ public class GameInfo {
     }
 
     public void destroy(List<AreaCard> cards){
-        cards.forEach(AreaCard::death);
+        List<AreaCard> cardsCopy = new ArrayList<>(cards);
+        cardsCopy.forEach(AreaCard::death);
     }
 
     public void damageLeader(Leader leader,int damage){
@@ -140,9 +141,8 @@ public class GameInfo {
                 thisPlayer().ppMax++;
             }
             thisPlayer().ppNum = thisPlayer().ppMax;
+            thisPlayer().draw(1);
             msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
-            // 前一个绳子烧完了，就只给十秒
-            oppositePlayer().setShortRope(rope!=null && rope.isDone());
 
             if(thisPlayer().isShortRope()){
                 rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 10, TimeUnit.SECONDS);
@@ -165,6 +165,7 @@ public class GameInfo {
     }
     public void endTurnOfCommand(){
         thisPlayer().setShortRope(false);
+        rope.cancel(true);
         endTurn();
     }
 
@@ -249,10 +250,10 @@ public class GameInfo {
 
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
+            msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
             card.afterInvocationBegin();
-            msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             // endregion
         }
 
@@ -276,9 +277,8 @@ public class GameInfo {
         thisPlayer().getLeader().getEffects().removeAll(usedUpEffects);
 
         // 发动回合结束效果
-        thisPlayer().getArea().forEach(areaCard -> {
-            areaCard.effectEnd();
-        });
+        List<AreaCard> areaCopy = new ArrayList<>(thisPlayer().getArea());
+        areaCopy.forEach(AreaCard::effectEnd);
 
         // 查找牌堆是否有瞬召卡片
         Map<String, Card> nameCard =
@@ -291,10 +291,10 @@ public class GameInfo {
             }
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
+            msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
             card.afterInvocationEnd();// 发动瞬念效果
-            msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             // endregion
         }
     }
@@ -343,6 +343,13 @@ public class GameInfo {
                 .append(card.getName()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
+                if(follow.getTurnAttack() < follow.getTurnAttackMax()){
+                    if(follow.getTurnAge()>0){
+                        sb.append("未攻击").append("\t");
+                    }else if(follow.isDash()){
+                        sb.append("突进").append("\t");
+                    }
+                }
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
             }

@@ -32,7 +32,7 @@ public class TravelerGoblin extends FollowCard {
 
     @Override
     public void fanfare(List<GameObj> targets) {
-        super.fanfare(targets);
+        info.msg(getName() + "发动战吼！");
         int turn = info.getTurn();
         if(turn ==1){
             ownerPlayer().draw(1);

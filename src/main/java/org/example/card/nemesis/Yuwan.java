@@ -50,6 +50,4 @@ public class Yuwan extends Leader {
         analyzingArtifact.setInfo(info);
         playerInfo.summon(analyzingArtifact);
     }
-
-    private List<Effect> effects;
 }

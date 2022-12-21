@@ -180,6 +180,7 @@ public class GameHandler {
                                 .append(amuletCard.getCount()).append("/").append(amuletCard.getTimer());
                         }
                     }
+                    sb.append("\n");
                 }
                 info.msgTo(me, sb.toString());
 
