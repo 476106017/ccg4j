@@ -22,7 +22,7 @@ public class CalamitysGenesis extends SpellCard {
     public Integer cost = 1;
     public String name = "灾祸模式";
     public String job = "复仇者";
-    public String race = "灾祸";
+    public String race = "灾厄";
     public String mark = """
         增加2张正义暴君到牌堆中。回合结束时，随机将1张5费以上随从由牌堆加入手牌。
         """;

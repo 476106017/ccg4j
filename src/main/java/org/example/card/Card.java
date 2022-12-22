@@ -6,9 +6,13 @@ import org.example.game.GameInfo;
 import org.example.game.GameObj;
 import org.example.game.PlayerInfo;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.example.constant.CounterKey.ALL_COST;
+import static org.example.constant.CounterKey.PLAY_NUM;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,6 +23,8 @@ public abstract class Card extends GameObj {
     public int needCharge = 0;
 
     public Card parentCard = null;
+
+    public Map<String,Integer> counter = new HashMap<>();
 
     public PlayerInfo ownerPlayer(){
         return info.getPlayerInfos()[owner];
@@ -37,6 +43,18 @@ public abstract class Card extends GameObj {
     public abstract String getRace();
     public abstract String getMark();
     public abstract String getSubMark();
+
+
+    public Integer getCount(String key){
+        return counter.get(key);
+    }
+    public void count(String key){
+        count(key,1);
+    }
+    public void count(String key,int time){
+        counter.merge(key, time, Integer::sum);
+    }
+
     /**
      * 回合开始的瞬召
      */
@@ -71,11 +89,23 @@ public abstract class Card extends GameObj {
             card.parentCard = this;
             card.owner = this.owner;
             card.info = this.info;
+            card.initCounter();
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
+    }
+    public Card copyCard(){
+        try {
+            Card card = this.getClass().getDeclaredConstructor().newInstance();
+            card.parentCard = this;
+            card.owner = this.owner;
+            card.info = this.info;
+            card.initCounter();
+            return card;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void play(List<GameObj> targets){
@@ -84,15 +114,21 @@ public abstract class Card extends GameObj {
             throw new RuntimeException();
         }
         info.msg(ownerPlayer().getName() + "使用了" + getName());
+        ownerPlayer().count(PLAY_NUM);
 
         int ppNum = ownerPlayer().getPpNum() - getCost();
         ownerPlayer().setPpNum(ppNum);
 
-        ownerPlayer().count("allCost",getCost());
+        ownerPlayer().count(ALL_COST,getCost());
 
         ownerPlayer().getHand().stream().filter(card -> getCost() > card.canRust())
             .forEach(Card::afterRust);
     }
+
+    // 轮回
+    public void afterTransmigration(){
+    }
+
 
     // 腐蚀
     public Integer canRust() {

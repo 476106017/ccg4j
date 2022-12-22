@@ -10,6 +10,8 @@ import org.example.game.PlayerInfo;
 
 import java.util.List;
 
+import static org.example.constant.CounterKey.ALL_COST;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Bahamut extends FollowCard {
@@ -25,7 +27,7 @@ public class Bahamut extends FollowCard {
 
     public String getSubMark() {
         return subMark.replaceAll("\\{allCost}",
-            info.getPlayerInfos()[owner].getCount("allCost")+"");
+            info.getPlayerInfos()[owner].getCount(ALL_COST)+"");
     }
 
     public int atk = 13;
@@ -41,7 +43,7 @@ public class Bahamut extends FollowCard {
     }
 
     public boolean canInvocationEnd() {
-        return ownerPlayer().getCount("allCost") >= 50;
+        return ownerPlayer().getCount(ALL_COST) >= 50;
     }
 
     @Override

@@ -24,20 +24,16 @@ public class DarkSnare extends SpellCard {
         对一个敌方随从或对方玩家造成X点伤害
         """;
 
-    public String subMark = "X等于{dark_snare_damage}";
+    public String subMark = "X等于{damage}";
     public int target = 1;
 
     public String getSubMark() {
-        return subMark.replaceAll("\\{dark_snare_damage}",
-            info.getPlayerInfos()[owner].getCount("dark_snare_damage")+"");
+        return subMark.replaceAll("\\{damage}",getCount("damage")+"");
     }
 
     @Override
     public void initCounter() {
-        // 第一次加载这张牌时候才初始化计数器
-        if(info.getPlayerInfos()[owner].getCount("dark_snare_damage")==null){
-            info.getPlayerInfos()[owner].count("dark_snare_damage");
-        }
+        this.count("damage");
     }
 
     @Override
@@ -57,7 +53,7 @@ public class DarkSnare extends SpellCard {
     public void play(List<GameObj> targets) {
         super.play(targets);
         GameObj target = targets.get(0);
-        Integer darkSnareDamage = info.getPlayerInfos()[owner].getCount("dark_snare_damage");
+        Integer darkSnareDamage = getCount("damage");
         if(target instanceof FollowCard followCard){
             followCard.damaged(darkSnareDamage);
         } else if (target instanceof Leader leader) {
@@ -79,9 +75,8 @@ public class DarkSnare extends SpellCard {
         if(!follows.isEmpty()){
             int randIndex = new Random().nextInt(follows.size());
             FollowCard followCard = (FollowCard) follows.get(randIndex);
-            Integer darkSnareDamage = info.getPlayerInfos()[owner].getCount("dark_snare_damage");
-            if(followCard.damaged(darkSnareDamage)){
-                info.getPlayerInfos()[owner].count("dark_snare_damage");
+            if(followCard.damaged(getCount("damage"))){
+                count("damage");
             }
         }
 

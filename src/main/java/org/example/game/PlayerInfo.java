@@ -7,7 +7,10 @@ import org.example.card.nemesis.Yuwan;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
 @Data
 public class PlayerInfo {
@@ -51,6 +54,9 @@ public class PlayerInfo {
     public void count(String key){
         count(key,1);
     }
+    public void clearCount(String key){
+        counter.remove(key);
+    }
     public void count(String key,int time){
         counter.merge(key, time, Integer::sum);
     }
@@ -64,8 +70,8 @@ public class PlayerInfo {
         setHpMax(getHpMax() + hpMax);
     }
 
-    public void shuffle(){
-        Collections.shuffle(getDeck());
+    public void shuffleGraveyard(){
+        Collections.shuffle(getGraveyard());
     }
     public void draw(int num){
         info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
@@ -84,8 +90,10 @@ public class PlayerInfo {
             cards.subList(0,deckMax-deckSize);
         }
         info.msg(getName() + "的" + cards.size() + "张卡加入到了牌堆中");
-        getDeck().addAll(cards);
-        shuffle();
+        cards.forEach(card -> {
+            int index = (int)(Math.random() * getDeck().size());
+            getDeck().add(index,card);
+        });
     }
     public void addHand(List<Card> cards){
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
@@ -119,6 +127,22 @@ public class PlayerInfo {
         }
         getArea().add(areaCard);
         areaCard.entering();// 发动入场时
+    }
+
+    public void transmigration(Predicate<? super Card> predicate,int num){
+        shuffleGraveyard();
+        List<Card> outGraveyardCards = new ArrayList<>();
+        getGraveyard().stream().filter(predicate)
+            .limit(num).forEach(card -> {
+                info.msgTo(getUuid(),card.getName()+"轮回到了牌堆中");
+                card.afterTransmigration();
+                outGraveyardCards.add(card);
+                getDeck().add(card.copyCard());
+            });
+        info.msg(getName() + "的"+num+"张牌轮回了");
+        count(TRANSMIGRATION_NUM,num);
+
+        getGraveyard().removeAll(outGraveyardCards);
     }
 
     public String describeHand(){

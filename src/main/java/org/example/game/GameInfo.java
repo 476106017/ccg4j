@@ -10,6 +10,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static org.example.constant.CounterKey.ALL_COST;
+import static org.example.constant.CounterKey.PLAY_NUM;
 import static org.example.system.Database.*;
 import static org.example.system.Database.userDecks;
 
@@ -94,6 +96,7 @@ public class GameInfo {
         cardsCopy.forEach(AreaCard::death);
     }
 
+
     public void damageLeader(Leader leader,int damage){
         if(thisPlayer().getLeader().equals(leader)){
             int hp = thisPlayer().getHp();
@@ -118,23 +121,22 @@ public class GameInfo {
         p0.setDeck(userDecks.get(u1).getActiveDeckInstance(0, this));
         p0.setUuid(u1);
         p0.setName(userNames.get(u1));
-        p0.shuffle();
+        Collections.shuffle(p0.getDeck());
         p0.draw(3);
-        p0.count("allCost",0);
         msgToThisPlayer("你的手牌:\n"+p0.describeHand());
 
         PlayerInfo p1 = oppositePlayer();
         p1.setDeck(userDecks.get(u2).getActiveDeckInstance(1, this));
         p1.setUuid(u2);
         p1.setName(userNames.get(u2));
-        p1.shuffle();
+        Collections.shuffle(p1.getDeck());
         p1.draw(3);
-        p1.count("allCost",0);
         msgToOppositePlayer("你的手牌:\n"+p1.describeHand());
 
     }
 
     public void startTurn(){
+        thisPlayer().clearCount(PLAY_NUM);
         beforeTurn();
         try {
             if(thisPlayer().ppMax<10){

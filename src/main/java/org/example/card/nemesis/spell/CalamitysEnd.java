@@ -16,7 +16,7 @@ public class CalamitysEnd extends SpellCard {
     public Integer cost = 0;
     public String name = "灾祸降临";
     public String job = "复仇者";
-    public String race = "灾祸";
+    public String race = "终极灾厄";
     public String mark = """
         揭示:回合开始时被破坏的5费以上随从大于20个
         破坏双方场上全部随从。
