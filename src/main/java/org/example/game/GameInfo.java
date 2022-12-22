@@ -115,7 +115,7 @@ public class GameInfo {
     public void zeroTurn(UUID u1, UUID u2){
 
         PlayerInfo p0 = thisPlayer();
-        p0.setDeck(userDecks.get(u1).getActiveDeck());
+        p0.setDeck(userDecks.get(u1).getActiveDeckInstance(0, this));
         p0.setUuid(u1);
         p0.setName(userNames.get(u1));
         p0.shuffle();
@@ -124,7 +124,7 @@ public class GameInfo {
         msgToThisPlayer("你的手牌:\n"+p0.describeHand());
 
         PlayerInfo p1 = oppositePlayer();
-        p1.setDeck(userDecks.get(u2).getActiveDeck());
+        p1.setDeck(userDecks.get(u2).getActiveDeckInstance(1, this));
         p1.setUuid(u2);
         p1.setName(userNames.get(u2));
         p1.shuffle();

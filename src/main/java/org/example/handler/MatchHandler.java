@@ -56,14 +56,14 @@ public class MatchHandler {
         System.out.println("客户端" + uuid + "建立websocket连接成功,用户名："+name);
         // region TODO 先由临时玩家游玩，直接拥有全部卡牌
         PlayerDeck playerDeck = new PlayerDeck();
-        List<Card> activeDeck = playerDeck.getActiveDeck();
+        List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
         for (int i = 0; i < 3; i++) {
-            activeDeck.add(new Bahamut());
-            activeDeck.add(new FairyWhisperer());
-            activeDeck.add(new DarkSnare());
-            activeDeck.add(new TravelerGoblin());
-            activeDeck.add(new CalamitysGenesis());
-            activeDeck.add(new ForestSymphony());
+            activeDeck.add(Bahamut.class);
+            activeDeck.add(FairyWhisperer.class);
+            activeDeck.add(DarkSnare.class);
+            activeDeck.add(TravelerGoblin.class);
+            activeDeck.add(CalamitysGenesis.class);
+            activeDeck.add(ForestSymphony.class);
 
         }
         userDecks.put(uuid, playerDeck);
@@ -82,7 +82,7 @@ public class MatchHandler {
      * 加入房间进行匹配
      * */
     @OnEvent(value = "jr")
-    public void onTestJoinRoomEvent(SocketIOClient client) throws InterruptedException {
+    public void joinRoom(SocketIOClient client) throws InterruptedException {
         UUID me = client.getSessionId();
         Set<String> allRooms = client.getAllRooms();
         if(allRooms.size()>1){
@@ -111,7 +111,7 @@ public class MatchHandler {
      * 准备比赛
      * */
     @OnEvent(value = "zb")
-    public void onTestRoomEvent(SocketIOClient client,  String data) {
+    public void ready(SocketIOClient client,  String data) {
         UUID me = client.getSessionId();
         String name = userNames.get(me);
         String room = client.getAllRooms().stream().filter(s->!s.isEmpty()).findFirst().get();
@@ -130,19 +130,6 @@ public class MatchHandler {
             // 比赛开始
             GameInfo info = new GameInfo(socketIOServer,room);
 
-            // 加载双方牌组
-            List<Card> activeDeck0 = userDecks.get(readyMatch).getActiveDeck();
-            activeDeck0.forEach(card -> {
-                card.owner=0;
-                card.info=info;
-                card.initCounter();
-            });
-            List<Card> activeDeck1 = userDecks.get(me).getActiveDeck();
-            activeDeck1.forEach(card -> {
-                card.owner=1;
-                card.info=info;
-                card.initCounter();
-            });
             // 初始化游戏
             info.zeroTurn(readyMatch,me);
 

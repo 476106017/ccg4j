@@ -36,10 +36,10 @@ public class DeckEditHandler {
 
     @OnEvent(value = "editDeck")
     public void editDeck(SocketIOClient client, String data) {
-        UUID sessionId = client.getSessionId();
-        List<Card> activeDeck = gson.fromJson(data, new TypeToken<List<Card>>() {}.getType());
-        userDecks.get(sessionId).setActiveDeck(activeDeck);
-        socketIOServer.getClient(sessionId).sendEvent("editDeckResp", "success");
+//        UUID sessionId = client.getSessionId();
+//        List<Card> activeDeck = gson.fromJson(data, new TypeToken<List<Card>>() {}.getType());
+//        userDecks.get(sessionId).setActiveDeck(activeDeck);
+//        socketIOServer.getClient(sessionId).sendEvent("editDeckResp", "success");
     }
 
 }
