@@ -138,6 +138,7 @@ public class GameHandler {
         Integer indexI;
         try {
             indexI = Integer.valueOf(split[0]);
+            split[0] = "";
         }catch (Exception e){
             indexI = -1;
         }
@@ -155,7 +156,7 @@ public class GameHandler {
         List<GameObj> targetable = card.targetable();
         // 只有一个参数
         if(split.length == 1){
-            if(targetable.size()==0){
+            if(targetable.isEmpty()){
                 card.play(targetable);
             }else {
                 StringBuilder sb = new StringBuilder();
@@ -199,11 +200,12 @@ public class GameHandler {
                     }catch (Exception e){
                         targetI = 0;
                     }
-
-                    GameObj target = targetable.get(targetI - 1);
-                    if(target!=null){
-                        targets.add(target);
-                    }
+                    try {
+                        GameObj target = targetable.get(targetI - 1);
+                        if(target!=null){
+                            targets.add(target);
+                        }
+                    }catch (Exception e){}
                 }
                 // 指定目标数量错误
                 if (targets.size() != card.targetNum()) {
@@ -299,6 +301,72 @@ public class GameHandler {
 
         info.msg(target.getNameWithOwner()+"反击！");
         myFollow.damaged(target.getAtk());
+
+    }
+
+    @OnEvent(value = "skill")
+    public void skill(SocketIOClient client, String msg){
+        // region 获取游戏对象
+        UUID me = client.getSessionId();
+        String name = userNames.get(me);
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.thisPlayer();
+        PlayerInfo enemy = info.oppositePlayer();
+        // endregion
+
+        if(!me.equals(player.getUuid())){
+            info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
+
+        Leader leader = player.getLeader();
+        List<GameObj> targetable = leader.targetable();
+        if(msg.isBlank()){
+            if(targetable.isEmpty()){
+                leader.skill(null);
+            }else {
+                StringBuilder sb = new StringBuilder();
+                sb.append("你需要指定目标以使用" + leader.getSkillName() + "：skill <目标序号>\n")
+                    .append("可指定的目标：\n");
+                for (int i = 0; i < targetable.size(); i++) {
+                    sb.append("【").append(i+1).append("】\t");
+
+                    GameObj gameObj = targetable.get(i);
+                    if(gameObj instanceof Leader leader1){
+                        sb.append(player.getLeader()==leader1?"我方主战者":"敌方主战者");
+                    }else if (gameObj instanceof Card targetCard){
+                        // 卡牌属于哪方
+                        PlayerInfo ownerPlayer = targetCard.ownerPlayer();
+                        sb.append(ownerPlayer == player ? "我方\t":"敌方\t")
+                            .append(targetCard.getName()).append("\t");
+                        if(gameObj instanceof FollowCard followCard){
+                            sb.append("随从\t")
+                                .append(followCard.getAtk()).append("/").append(followCard.getHp());
+                        }else if(gameObj instanceof AmuletCard amuletCard){
+                            sb.append("护符\t")
+                                .append(amuletCard.getCount()).append("/").append(amuletCard.getTimer());
+                        }
+                    }
+                    sb.append("\n");
+                }
+                info.msgTo(me, sb.toString());
+            }
+        }else {
+            Integer indexI;
+            try {
+                indexI = Integer.valueOf(msg);
+            }catch (Exception e){
+                indexI = -1;
+            }
+            GameObj target = null;
+            try {
+                target = targetable.get(indexI-1);
+            }catch (Exception e){
+                info.msgTo(me,"指定目标错误！");
+            }
+            leader.skill(target);
+        }
 
     }
 

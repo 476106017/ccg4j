@@ -112,6 +112,7 @@ public class PlayerInfo {
     }
 
     public void summon(AreaCard areaCard){
+        info.msg(getName() + "召唤了" + areaCard.getName());
         if(getArea().size() == getAreaMax()){
             info.msg(areaCard.getNameWithOwner() + "掉出了战场！");
             return;

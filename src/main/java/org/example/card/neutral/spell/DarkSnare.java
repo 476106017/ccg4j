@@ -48,8 +48,8 @@ public class DarkSnare extends SpellCard {
     @Override
     public List<GameObj> targetable() {
         List<GameObj> targetable = super.targetable();
-        targetable.addAll(info.oppositePlayer().getArea());
         targetable.add(info.oppositePlayer().getLeader());
+        targetable.addAll(info.oppositePlayer().getArea());
         return targetable;
     }
 
@@ -72,6 +72,7 @@ public class DarkSnare extends SpellCard {
 
     @Override
     public void afterRust() {
+        info.msg(getNameWithOwner()+"触发腐蚀效果");
         List<AreaCard> follows = info.oppositePlayer().getArea()
             .stream().filter(areaCard -> "随从".equals(areaCard.getType()))
             .toList();

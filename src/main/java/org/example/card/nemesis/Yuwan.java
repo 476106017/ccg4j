@@ -29,15 +29,17 @@ public class Yuwan extends Leader {
     private boolean canUseSkill = true;
 
     @Override
+    public List<GameObj> targetable() {
+        List<GameObj> targetable = super.targetable();
+        targetable.addAll(getPlayerInfo().getHand());
+        return targetable;
+    }
+
+    @Override
     public void skill(GameObj target) {
         super.skill(target);
         PlayerInfo playerInfo = getPlayerInfo();
         GameInfo info = playerInfo.getInfo();
-        if(target instanceof Leader ||
-            (target instanceof Card card && !playerInfo.getHand().contains(card))){
-            info.msgTo(playerInfo.getUuid(),"指定目标不正确！");
-            return;
-        }
 
         // 将1张手牌加入牌堆
         Card card = (Card) target;
@@ -49,5 +51,7 @@ public class Yuwan extends Leader {
         analyzingArtifact.setOwner(info.getTurnPlayer());
         analyzingArtifact.setInfo(info);
         playerInfo.summon(analyzingArtifact);
+
+        setCanUseSkill(false);
     }
 }

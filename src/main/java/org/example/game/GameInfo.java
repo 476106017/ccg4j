@@ -179,9 +179,11 @@ public class GameInfo {
 
 
     public void beforeTurn(){
-        // 发动主战者效果
+        // 主战者技能重置、发动主战者效果
         List<Leader.Effect> usedUpEffects = new ArrayList<>();
-        thisPlayer().getLeader().getEffects().stream()
+        Leader leader = thisPlayer().getLeader();
+        leader.setCanUseSkill(true);
+        leader.getEffects().stream()
             .filter(effect -> EffectTiming.BeginTurn.equals(effect.getTiming()))
             .forEach(effect -> {
                 effect.getEffect().accept(thisPlayer());
@@ -194,7 +196,7 @@ public class GameInfo {
                     effect.setCanUse(canUse-1);
                 }
             });
-        thisPlayer().getLeader().getEffects().removeAll(usedUpEffects);
+        leader.getEffects().removeAll(usedUpEffects);
 
         // 场上随从驻场回合+1、攻击次数清零
         // 发动回合开始效果

@@ -18,17 +18,17 @@ public abstract class Leader extends GameObj {
 
     private PlayerInfo playerInfo;
 
+    private boolean canUseSkill = true;
+
     public abstract String getName();
     public abstract String getJob();
     public abstract String getSkillName();
     public abstract String getSkillMark();
     public abstract int getSkillCost();
-    public boolean isCanUseSkill(){
-        return true;
-    }
 
     private List<Effect> effects = new ArrayList<>();
 
+    public List<GameObj> targetable(){return new ArrayList<>();}
 
     public void skill(GameObj target){
         GameInfo info = playerInfo.getInfo();
@@ -36,12 +36,17 @@ public abstract class Leader extends GameObj {
 
         if(!isCanUseSkill()){
             info.msgTo(me,"现在无法使用主战者技能！");
-            return;
+            throw new RuntimeException();
         }
         if(getSkillCost() > getPlayerInfo().getPpNum()){
             info.msgTo(me,"没有足够的pp以使用主战者技能！");
-            return;
+            throw new RuntimeException();
         }
+        if(target!=null && !targetable().contains(target)){
+            info.msgTo(me,"无法指定该目标！");
+            throw new RuntimeException();
+        }
+        info.msg(getPlayerInfo().getName() + "使用了"+getName()+"的主战者技能："+getSkillName());
     };
 
     public void addEffect(Effect effect){
