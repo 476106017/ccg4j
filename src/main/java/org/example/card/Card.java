@@ -38,14 +38,14 @@ public abstract class Card extends GameObj {
     public abstract String getMark();
     public abstract String getSubMark();
     /**
-     * 回合结束的瞬召
+     * 回合开始的瞬召
      */
     public boolean canInvocationBegin() {
         return false;
     }
 
     /**
-     * 回合开始的瞬召
+     * 回合结束的瞬召
      */
     public boolean canInvocationEnd() {
         return false;

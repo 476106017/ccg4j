@@ -226,7 +226,8 @@ public class GameInfo {
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
-        List<Card> canInvocation = nameCard.values().stream().filter(Card::canInvocationBegin).toList();
+        List<Card> canInvocation =
+            new ArrayList<>(nameCard.values().stream().filter(Card::canInvocationBegin).toList());
 
         // 法术卡揭示到手牌
         while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
@@ -235,10 +236,11 @@ public class GameInfo {
 
             // region 从牌堆召唤到手牌
             SpellCard card = (SpellCard)first.get();
+            msg(thisPlayer().getName()+"揭示了"+card.getName());
             thisPlayer().getHand().add(card);
             thisPlayer().getDeck().remove(card);
+            canInvocation.remove(card);
             card.afterInvocationBegin();
-            msg(thisPlayer().getName()+"揭示了"+card.getName());
             // endregion
 
         }
@@ -253,6 +255,7 @@ public class GameInfo {
             msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
             thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
+            canInvocation.remove(card);
             card.afterInvocationBegin();
             // endregion
         }
