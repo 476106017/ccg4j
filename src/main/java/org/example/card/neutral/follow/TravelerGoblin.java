@@ -37,8 +37,11 @@ public class TravelerGoblin extends FollowCard {
         if(turn ==1){
             ownerPlayer().draw(1);
         } else if (turn >= 8) {
+            ownerPlayer().heal(8);
             changeStatus(2,2);
             this.acquireDash();
+        }else{
+            info.msg(getName() + "战吼后什么也没有发生！");
         }
     }
 }

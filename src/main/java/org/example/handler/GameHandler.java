@@ -312,4 +312,18 @@ public class GameHandler {
 
         info.msgTo(me, info.describeGame());
     }
+    @OnEvent(value = "ff")
+    public void ff(SocketIOClient client, String msg){
+
+        UUID me = client.getSessionId();
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo enemy = info.anotherPlayerByUuid(me);
+
+        info.msg(player.getName() + "宣告投降！");
+        info.gameset(enemy);
+
+
+    }
 }

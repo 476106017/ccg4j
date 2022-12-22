@@ -56,9 +56,11 @@ public class PlayerInfo {
     }
 
     public void heal(int hp){
+        info.msg(this.getName()+"回复" + hp + "点（剩余"+this.getHp()+"点生命值）");
         setHp(getHp() + hp);
     }
     public void addHpMax(int hpMax){
+        info.msg(this.getName()+"血上限提升"+hpMax+"（提升后血量上限为"+this.getHpMax()+"）");
         setHpMax(getHpMax() + hpMax);
     }
 
