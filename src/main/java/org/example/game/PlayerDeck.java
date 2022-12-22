@@ -11,4 +11,7 @@ public class PlayerDeck {
     List<Card> activeDeck = new ArrayList<>();
     List<Card> availableDeck = new ArrayList<>();
 
+    public List<Card> getActiveDeck() {
+        return new ArrayList<>(activeDeck);
+    }
 }
