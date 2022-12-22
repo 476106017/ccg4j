@@ -39,7 +39,7 @@ public class RuinerOfEden extends FollowCard {
     public void leaving() {
         List<Card> addCards = new ArrayList<>();
         addCards.add(createCard(CalamitysEnd.class));
-        info.thisPlayer().addDeck(addCards);
+        ownerPlayer().addDeck(addCards);
     }
 
     @Override

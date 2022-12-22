@@ -31,6 +31,7 @@ public class EternalGarden extends AmuletCard {
 
     @Override
     public void effectEnd() {
+        info.msg(getName() + "发动回合结束效果！");
         Integer x = ownerPlayer().getCount(PLAY_NUM);
         ownerPlayer().heal(x);
 

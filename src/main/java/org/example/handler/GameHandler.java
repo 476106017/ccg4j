@@ -378,7 +378,7 @@ public class GameHandler {
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
 
-        info.msgTo(me, info.describeGame());
+        info.msgTo(me, info.describeGame(me));
     }
     @OnEvent(value = "ff")
     public void ff(SocketIOClient client, String msg){

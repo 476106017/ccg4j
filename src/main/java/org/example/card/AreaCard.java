@@ -19,12 +19,12 @@ public abstract class AreaCard  extends Card{
 
     public void death(){
         info.msg(getNameWithOwner()+"被送入墓地！");
-        leaving();
-        deathrattle();
         ownerPlayer().getDeck().forEach(Card::charge);
         ownerPlayer().getGraveyard().add(this);
         ownerPlayer().countToGraveyard(1);
         ownerPlayer().getArea().remove(this);
+        leaving();
+        deathrattle();
     }
 
     @Override

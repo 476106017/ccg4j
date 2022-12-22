@@ -37,7 +37,7 @@ public class MagisterialDreadnought extends FollowCard {
         List<Card> addCards = new ArrayList<>();
         addCards.add(createCard(RuinerOfEden.class));
         addCards.add(createCard(RuinerOfEden.class));
-        info.thisPlayer().addDeck(addCards);
+        ownerPlayer().addDeck(addCards);
     }
 
     @Override

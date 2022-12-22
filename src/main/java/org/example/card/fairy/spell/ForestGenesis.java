@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.card.fairy.follow.EternalSeedling;
 import org.example.card.nemesis.follow.MagisterialDreadnought;
 import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
@@ -33,8 +34,7 @@ public class ForestGenesis extends SpellCard {
         super.play(targets);
 
         List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(MagisterialDreadnought.class));
-        addCards.add(createCard(MagisterialDreadnought.class));
-        info.thisPlayer().addDeck(addCards);
+        addCards.add(createCard(EternalSeedling.class));
+        ownerPlayer().addDeck(addCards);
     }
 }

@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
 import org.example.card.fairy.amulet.ForestSymphony;
 import org.example.card.fairy.follow.FairyWhisperer;
+import org.example.card.fairy.spell.ForestGenesis;
 import org.example.card.nemesis.spell.CalamitysGenesis;
 import org.example.card.neutral.follow.Bahamut;
 import org.example.card.neutral.follow.TravelerGoblin;
@@ -63,6 +64,7 @@ public class MatchHandler {
             activeDeck.add(DarkSnare.class);
             activeDeck.add(TravelerGoblin.class);
             activeDeck.add(CalamitysGenesis.class);
+            activeDeck.add(ForestGenesis.class);
             activeDeck.add(ForestSymphony.class);
 
         }

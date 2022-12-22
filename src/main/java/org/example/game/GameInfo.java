@@ -153,7 +153,7 @@ public class GameInfo {
                 rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 600, TimeUnit.SECONDS);
                 msg("倒计时60秒！");
             }
-            msgToThisPlayer(describeGame());
+            msgToThisPlayer(describeGame(thisPlayer().getUuid()));
             msgToThisPlayer("请出牌！");
             msgToOppositePlayer("等待对手出牌......");
         }catch (Exception e){
@@ -176,6 +176,8 @@ public class GameInfo {
         afterTurn();
         turn += turnPlayer;// 如果是玩家1就加回合数
         turnPlayer = 1 ^ turnPlayer;
+        msg("——————————————————————————————————");
+
         startTurn();
     }
 
@@ -256,7 +258,7 @@ public class GameInfo {
 
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
-            msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
+            msg(thisPlayer().getName()+"发动瞬念召唤");
             thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
             canInvocation.remove(card);
@@ -298,7 +300,7 @@ public class GameInfo {
             }
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
-            msg(thisPlayer().getName()+"瞬念召唤了"+card.getName());
+            msg(thisPlayer().getName()+"发动瞬念召唤");
             thisPlayer().summon(card);
             thisPlayer().getDeck().remove(card);
             card.afterInvocationEnd();// 发动瞬念效果
@@ -306,13 +308,13 @@ public class GameInfo {
         }
     }
 
-    public String describeGame(){
+    public String describeGame(UUID uuid){
         StringBuilder sb = new StringBuilder();
-        PlayerInfo thisPlayer = thisPlayer();
-        PlayerInfo oppositePlayer = oppositePlayer();
+        PlayerInfo player = playerByUuid(uuid);
+        PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
 
         sb.append("局面信息\n");
-        sb.append("剩余pp：").append(thisPlayer.getPpNum()).append("\n");
+        sb.append("剩余pp：").append(player.getPpNum()).append("\n");
         sb.append("\n");
         sb.append(oppositePlayer.name)
             .append("\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
@@ -320,11 +322,11 @@ public class GameInfo {
             .append("\t墓：").append(oppositePlayer.graveyardCount)
             .append("\t手：").append(oppositePlayer.hand.size())
             .append("\n");
-        sb.append(thisPlayer.name)
-            .append("\t血：").append(thisPlayer.getHp()).append("/").append(thisPlayer.getHpMax())
-            .append("\t牌：").append(thisPlayer.deck.size())
-            .append("\t墓：").append(thisPlayer.graveyardCount)
-            .append("\t手：").append(thisPlayer.hand.size())
+        sb.append(player.name)
+            .append("\t血：").append(player.getHp()).append("/").append(player.getHpMax())
+            .append("\t牌：").append(player.deck.size())
+            .append("\t墓：").append(player.graveyardCount)
+            .append("\t手：").append(player.hand.size())
             .append("\n");
 
         sb.append("\n");
@@ -343,8 +345,8 @@ public class GameInfo {
             sb.append("\n");
         }
         sb.append("我方战场：\n");
-        for (int i = 0; i < thisPlayer.area.size(); i++) {
-            Card card = thisPlayer.area.get(i);
+        for (int i = 0; i < player.area.size(); i++) {
+            Card card = player.area.get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t");
@@ -364,7 +366,7 @@ public class GameInfo {
         }
         sb.append("\n");
 
-        sb.append("我的手牌：\n").append(thisPlayer.describeHand());
+        sb.append("我的手牌：\n").append(player.describeHand());
 
         return sb.toString();
     }

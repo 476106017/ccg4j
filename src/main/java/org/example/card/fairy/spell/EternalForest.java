@@ -48,7 +48,7 @@ public class EternalForest extends SpellCard {
         if(count < 30){
             List<Card> addCards = new ArrayList<>();
             addCards.add(createCard(EternalForest.class));
-            info.thisPlayer().addDeck(addCards);
+            ownerPlayer().addDeck(addCards);
         }else {
             info.gameset(ownerPlayer());
         }

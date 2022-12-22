@@ -6,6 +6,7 @@ import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.fairy.amulet.EternalGarden;
+import org.example.card.fairy.spell.EternalForest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class EternalBloom extends FollowCard {
         info.msg(getName() + "发动轮回时效果！");
 
         List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(EternalBloom.class));
-        info.thisPlayer().addDeck(addCards);
+        addCards.add(createCard(EternalForest.class));
+        ownerPlayer().addDeck(addCards);
     }
 }

@@ -49,7 +49,7 @@ public class EternalSeedling extends FollowCard {
 
         List<Card> addCards = new ArrayList<>();
         addCards.add(createCard(EternalSeedling.class));
-        info.thisPlayer().addDeck(addCards);
+        ownerPlayer().addDeck(addCards);
 
         // 墓地中的永恒树苗数量大于3，且场上没有永恒庭园
         long count = ownerPlayer().getGraveyard().stream()
@@ -66,7 +66,7 @@ public class EternalSeedling extends FollowCard {
         info.msg(getName() + "发动轮回时效果！");
 
         List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(EternalSeedling.class));
-        info.thisPlayer().addDeck(addCards);
+        addCards.add(createCard(EternalBloom.class));
+        ownerPlayer().addDeck(addCards);
     }
 }

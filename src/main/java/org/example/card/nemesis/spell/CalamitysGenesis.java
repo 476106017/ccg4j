@@ -36,7 +36,7 @@ public class CalamitysGenesis extends SpellCard {
         List<Card> addCards = new ArrayList<>();
         addCards.add(createCard(MagisterialDreadnought.class));
         addCards.add(createCard(MagisterialDreadnought.class));
-        info.thisPlayer().addDeck(addCards);
+        ownerPlayer().addDeck(addCards);
 
         // 创建主战者回合结束效果
         Leader.Effect effect = new Leader.Effect(this,EffectTiming.EndTurn, 1,

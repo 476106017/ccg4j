@@ -38,6 +38,6 @@ public class FairyWhisperer extends FollowCard {
             Fairy fairy = createCard(Fairy.class);
             fairies.add(fairy);
         }
-        info.thisPlayer().addHand(fairies);
+        ownerPlayer().addHand(fairies);
     }
 }
