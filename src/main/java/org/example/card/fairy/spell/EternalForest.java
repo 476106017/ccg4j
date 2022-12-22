@@ -2,8 +2,14 @@ package org.example.card.fairy.spell;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.card.nemesis.spell.CalamitysEnd;
+import org.example.game.GameObj;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
@@ -27,5 +33,26 @@ public class EternalForest extends SpellCard {
         return subMark.replaceAll("\\{count}",ownerPlayer().getCount(TRANSMIGRATION_NUM)+"");
     }
 
+    @Override
+    public boolean canInvocationBegin() {
+        return true;
+    }
 
+    @Override
+    public void play(List<GameObj> targets) {
+        super.play(targets);
+        ownerPlayer().addHpMax(10);
+
+        long count = ownerPlayer().getCount(TRANSMIGRATION_NUM);
+
+        if(count < 30){
+            List<Card> addCards = new ArrayList<>();
+            addCards.add(createCard(EternalForest.class));
+            info.thisPlayer().addDeck(addCards);
+        }else {
+            info.gameset(ownerPlayer());
+        }
+
+
+    }
 }
