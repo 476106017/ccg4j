@@ -25,6 +25,13 @@ public abstract class AreaCard  extends Card{
 
     // endregion
 
+    public void destroy(){
+        if(isCanBeDestroy()){
+            death();
+        }else {
+            info.msg(getNameWithOwner()+"无法被破坏！");
+        }
+    }
     public void death(){
         info.msg(getNameWithOwner()+"被送入墓地！");
 

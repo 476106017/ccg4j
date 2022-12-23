@@ -298,11 +298,11 @@ public class GameHandler {
         FollowCard myFollow = (FollowCard) myCard;
         FollowCard target = (FollowCard)enemy.getArea().get(indexII-1);
         info.msg(myFollow.getNameWithOwner()+"攻击了对手的"+target.getName()+"！");
-        target.damaged(myFollow.getAtk());
+        target.damaged(myFollow,myFollow.getAtk());
         myFollow.turnAttackOnce();
 
         info.msg(target.getNameWithOwner()+"反击！");
-        myFollow.damaged(target.getAtk());
+        myFollow.damaged(target,target.getAtk());
 
     }
 

@@ -50,7 +50,7 @@ public class DarkSnare extends SpellCard {
                 GameObj target = targets.get(0);
                 Integer darkSnareDamage = getCount("damage");
                 if(target instanceof FollowCard followCard){
-                    followCard.damaged(darkSnareDamage);
+                    followCard.damaged(this,darkSnareDamage);
                 } else if (target instanceof Leader leader) {
                     info.damageLeader(leader,darkSnareDamage);
                 }
@@ -65,7 +65,7 @@ public class DarkSnare extends SpellCard {
                 if(!follows.isEmpty()){
                     int randIndex = new Random().nextInt(follows.size());
                     FollowCard followCard = (FollowCard) follows.get(randIndex);
-                    if(followCard.damaged(getCount("damage"))){
+                    if(followCard.damaged(this,getCount("damage"))){
                         count("damage");
                     }
                 }

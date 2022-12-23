@@ -41,6 +41,7 @@ public abstract class Card extends GameObj {
     private List<Event.Transmigration> transmigrations = new ArrayList<>();
     private List<Event.Boost> boosts = new ArrayList<>();
     private List<Event.Charge> charges = new ArrayList<>();
+    private List<Event.WhenKill> whenKills = new ArrayList<>();
     // endregion 效果列表
 
 
@@ -62,6 +63,9 @@ public abstract class Card extends GameObj {
     public abstract String getMark();
     public abstract String getSubMark();
 
+    public boolean atArea(){
+        return ownerPlayer().getArea().contains(this);
+    }
 
     public Integer getCount(String key){
         return counter.get(key);
@@ -158,6 +162,7 @@ public abstract class Card extends GameObj {
         public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
         /** 注能(场上卡牌被破坏) */
         public record Charge(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
-
+        /** 击杀时效果 */
+        public record WhenKill(Consumer<FollowCard> effect){}
     }
 }
