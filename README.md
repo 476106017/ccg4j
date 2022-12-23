@@ -43,7 +43,7 @@
 ```
 
 ## 玩法
-`(SV：shadowverse HS：heartstone)`
+`(SV：shadowverse HS：heartstone STS：SlayTheSpire)`
 - [x] 匹配/准备
 - [x] 开局换牌
 - [x] 回合计时
@@ -54,7 +54,7 @@
 - [x] 入场时/离场时
 - [x] 战吼/亡语
 - [x] 瞬念召唤/揭示(SV)
-- [x] 腐蚀/注能（HS）
+- [x] 腐蚀/注能（HS）->增幅/注能
 - [x] 轮回(从墓地移到牌堆，重置属性)
 - [x] 比赛计数器
 - [x] 主战者效果（SV）

@@ -19,7 +19,7 @@ public class EternalGarden extends AmuletCard {
 
     public String name = "永恒庭园";
     public String job = "妖精";
-    public String race = "庭园";
+    private List<String> race = List.of("庭园");
     public String mark = """
         回合结束时：回复X点生命，并且轮回X：妖精随从卡（X是本回合使用卡牌张数）
         """;
@@ -29,13 +29,15 @@ public class EternalGarden extends AmuletCard {
         return subMark.replaceAll("\\{playNum}", ownerPlayer().getCount(PLAY_NUM)+"");
     }
 
-    @Override
-    public void effectEnd() {
-        info.msg(getName() + "发动回合结束效果！");
-        Integer x = ownerPlayer().getCount(PLAY_NUM);
-        ownerPlayer().heal(x);
 
-        ownerPlayer().transmigration(card ->
-            card instanceof FollowCard followCard && "妖精".equals(followCard.getJob()),x);
+    public EternalGarden() {
+        getEffectEnds().add(new Event.EffectEnd(()->{
+            Integer x = ownerPlayer().getCount(PLAY_NUM);
+            ownerPlayer().heal(x);
+
+            ownerPlayer().transmigration(card ->
+                card instanceof FollowCard followCard && "妖精".equals(followCard.getJob()),x);
+        }));
     }
+
 }

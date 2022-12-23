@@ -16,7 +16,7 @@ public class FairyWhisperer extends FollowCard {
     public Integer cost = 2;
     public String name = "妖之轻语者";
     public String job = "妖精";
-    public String race = "人类";
+    private List<String> race = List.of("人类");
     public String mark = """
         战吼：获得X张妖精（X是当前费用）
         """;
@@ -30,14 +30,15 @@ public class FairyWhisperer extends FollowCard {
     public int hp = 1;
     public int maxHp = 1;
 
-    @Override
-    public void fanfare(List<GameObj> targets) {
-        info.msg(getName() + "发动战吼！");
-        List<Card> fairies = new ArrayList<>();
-        for (int i = 0; i < getCost(); i++) {
-            Fairy fairy = createCard(Fairy.class);
-            fairies.add(fairy);
-        }
-        ownerPlayer().addHand(fairies);
+    public FairyWhisperer() {
+        getPlays().add(new Card.Event.Play(ArrayList::new,0, target->{
+            List<Card> fairies = new ArrayList<>();
+            for (int i = 0; i < getCost(); i++) {
+                Fairy fairy = createCard(Fairy.class);
+                fairies.add(fairy);
+            }
+            ownerPlayer().addHand(fairies);
+        }));
     }
+
 }

@@ -19,7 +19,7 @@ public class EternalForest extends SpellCard {
     public Integer cost = 0;
     public String name = "永恒森林";
     public String job = "妖精";
-    public String race = "终极灾厄";
+    private List<String> race = List.of("终极灾厄");
     public String mark = """
         揭示:回合开始时
         主战者增加10点血上限。
@@ -33,26 +33,26 @@ public class EternalForest extends SpellCard {
         return subMark.replaceAll("\\{count}",ownerPlayer().getCount(TRANSMIGRATION_NUM)+"");
     }
 
-    @Override
-    public boolean canInvocationBegin() {
-        return true;
-    }
+    public EternalForest() {
 
-    @Override
-    public void play(List<GameObj> targets) {
-        super.play(targets);
-        ownerPlayer().addHpMax(10);
+        getPlays().add(new Card.Event.Play(ArrayList::new,0,
+            gameObjs -> {
+                ownerPlayer().addHpMax(10);
 
-        long count = ownerPlayer().getCount(TRANSMIGRATION_NUM);
+                long count = ownerPlayer().getCount(TRANSMIGRATION_NUM);
+                if(count < 30){
+                    List<Card> addCards = new ArrayList<>();
+                    addCards.add(createCard(EternalForest.class));
+                    ownerPlayer().addDeck(addCards);
+                }else {
+                    info.gameset(ownerPlayer());
+                }
+            }
+        ));
 
-        if(count < 30){
-            List<Card> addCards = new ArrayList<>();
-            addCards.add(createCard(EternalForest.class));
-            ownerPlayer().addDeck(addCards);
-        }else {
-            info.gameset(ownerPlayer());
-        }
-
-
+        getInvocationBegins().add(new Card.Event.InvocationBegin(
+            ()->true,
+            ()->{}
+        ));
     }
 }

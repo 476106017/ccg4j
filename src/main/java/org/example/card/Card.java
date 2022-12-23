@@ -5,11 +5,14 @@ import lombok.EqualsAndHashCode;
 import org.example.game.GameInfo;
 import org.example.game.GameObj;
 import org.example.game.PlayerInfo;
+import org.example.system.function.FunctionN;
+import org.example.system.function.PredicateN;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.awt.geom.Area;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
@@ -26,6 +29,21 @@ public abstract class Card extends GameObj {
 
     public Map<String,Integer> counter = new HashMap<>();
 
+    // region 效果列表
+
+    private List<Event.Play> plays = new ArrayList<>();
+
+    public List<GameObj> getTargets(){
+        return getPlays().stream().map(play -> play.targets.get()).flatMap(Collection::stream).distinct().toList();
+    }
+    private List<Event.InvocationBegin> invocationBegins = new ArrayList<>();
+    private List<Event.InvocationEnd> invocationEnds = new ArrayList<>();
+    private List<Event.Transmigration> transmigrations = new ArrayList<>();
+    private List<Event.Boost> boosts = new ArrayList<>();
+    private List<Event.Charge> charges = new ArrayList<>();
+    // endregion 效果列表
+
+
     public PlayerInfo ownerPlayer(){
         return info.getPlayerInfos()[owner];
     }
@@ -40,7 +58,7 @@ public abstract class Card extends GameObj {
         return ownerPlayer().getName()+"的"+getName();
     };
     public abstract String getJob();
-    public abstract String getRace();
+    public abstract List<String> getRace();
     public abstract String getMark();
     public abstract String getSubMark();
 
@@ -55,32 +73,7 @@ public abstract class Card extends GameObj {
         counter.merge(key, time, Integer::sum);
     }
 
-    /**
-     * 回合开始的瞬召
-     */
-    public boolean canInvocationBegin() {
-        return false;
-    }
-
-    /**
-     * 回合结束的瞬召
-     */
-    public boolean canInvocationEnd() {
-        return false;
-    }
-
-    public void afterInvocationBegin(){}
-
-    public void afterInvocationEnd(){}
-
-
     public void initCounter(){}
-
-    public Integer targetNum(){
-        return 0;
-    }
-
-    public List<GameObj> targetable(){return new ArrayList<>();}
 
     public <T extends Card> T createCard(Class<T> clazz){
         try {
@@ -116,40 +109,55 @@ public abstract class Card extends GameObj {
         info.msg(ownerPlayer().getName() + "使用了" + getName());
         ownerPlayer().count(PLAY_NUM);
 
+        // region 消耗PP
         int ppNum = ownerPlayer().getPpNum() - getCost();
         ownerPlayer().setPpNum(ppNum);
-
         ownerPlayer().count(ALL_COST,getCost());
+        // endregion 消耗PP
 
-        ownerPlayer().getHand().stream().filter(card -> getCost() > card.canRust())
-            .forEach(Card::afterRust);
-    }
-
-    // 轮回
-    public void afterTransmigration(){
-    }
-
-
-    // 腐蚀
-    public Integer canRust() {
-        return 99;
-    }
-
-    public void afterRust(){}
-
-    // 注能
-    public void charge(){
-        if(getNeedCharge() > 0){
-            setNeedCharge(getNeedCharge() - 1);
-            info.msg(getNameWithOwner()+"积累了1点注能！");
-            if(getNeedCharge() == 0){
-                info.msg(getNameWithOwner()+"注能完成！");
-                afterCharge();
-            }
+        // region 驻场卡召唤到场上，法术卡丢到墓地
+        if(this instanceof AreaCard areaCard){
+            ownerPlayer().summon(areaCard);
+            ownerPlayer().getHand().remove(areaCard);
+        } else if (this instanceof SpellCard) {
+            ownerPlayer().getGraveyard().add(this);
+            ownerPlayer().countToGraveyard(1);
+            ownerPlayer().getHand().remove(this);
         }
+        // endregion
+
+        // region 发动卡牌效果
+        if (this instanceof AreaCard && !getPlays().isEmpty()) {
+            info.msg(getNameWithOwner() + "发动战吼");
+        }
+        getPlays().forEach(play -> {
+            // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
+            if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
+                play.effect.accept(targets);
+            }
+        });
+        // endregion 发动卡牌效果
+
+        // 触发手牌上全部增幅效果
+        ownerPlayer().getHand().stream().map(Card::getBoosts)
+            .flatMap(Collection::stream)
+            .filter(boost -> boost.canBeTriggered.test(this))
+            .forEach(boost->boost.effect.accept(this));
     }
 
-    public void afterCharge(){}
+    public static class Event {
+        /** 使用（到场上叫做战吼，法术牌释放效果） */
+        public record Play(Supplier<List<GameObj>> targets, int targetNum, Consumer<List<GameObj>> effect){}
+        /** 回合开始瞬召 */
+        public record InvocationBegin(PredicateN canBeTriggered, FunctionN effect){}
+        /** 回合结束瞬召 */
+        public record InvocationEnd(PredicateN canBeTriggered, FunctionN effect){}
+        /** 轮回(由墓地进入牌堆) */
+        public record Transmigration(FunctionN effect){}
+        /** 增幅(其他卡牌被使用) */
+        public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
+        /** 注能(场上卡牌被破坏) */
+        public record Charge(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
 
-
+    }
 }

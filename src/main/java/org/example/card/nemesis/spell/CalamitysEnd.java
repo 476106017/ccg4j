@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class CalamitysEnd extends SpellCard {
     public Integer cost = 0;
     public String name = "灾祸降临";
     public String job = "复仇者";
-    public String race = "终极灾厄";
+    private List<String> race = List.of("终极灾厄");
     public String mark = """
         揭示:回合开始时被破坏的5费以上随从大于20个
         破坏双方场上全部随从。
@@ -33,35 +32,32 @@ public class CalamitysEnd extends SpellCard {
         return subMark.replaceAll("\\{count}",count+"");
     }
 
+    public CalamitysEnd() {
 
-    @Override
-    public boolean canInvocationBegin() {
-        return ownerPlayer().getGraveyard().stream()
-            .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
-            .count() >= 20;
+        getPlays().add(new Card.Event.Play(ArrayList::new,0,
+            gameObjs -> {
+                info.destroy(oppositePlayer().getArea());
+                info.destroy(ownerPlayer().getArea());
+
+                long count = ownerPlayer().getGraveyard().stream()
+                    .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
+                    .count();
+                if(count < 30){
+                    List<Card> addCards = new ArrayList<>();
+                    addCards.add(createCard(CalamitysEnd.class));
+                    ownerPlayer().addDeck(addCards);
+                }else {
+                    info.gameset(ownerPlayer());
+                }
+            }
+        ));
+        getInvocationBegins().add(new Card.Event.InvocationBegin(
+            ()-> ownerPlayer().getGraveyard().stream()
+                .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
+                .count() >= 20,
+            ()->{}
+        ));
     }
 
 
-    @Override
-    public void play(List<GameObj> targets) {
-        super.play(targets);
-
-        info.destroy(oppositePlayer().getArea());
-        info.destroy(ownerPlayer().getArea());
-
-
-        long count = ownerPlayer().getGraveyard().stream()
-            .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
-            .count();
-
-        if(count < 30){
-            List<Card> addCards = new ArrayList<>();
-            addCards.add(createCard(CalamitysEnd.class));
-            ownerPlayer().addDeck(addCards);
-        }else {
-            info.gameset(ownerPlayer());
-        }
-
-
-    }
 }

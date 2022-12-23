@@ -19,7 +19,7 @@ public class EternalBloom extends FollowCard {
 
     public String name = "永恒之花";
     public String job = "妖精";
-    public String race = "植物";
+    private List<String> race = List.of("植物");
     public String mark = """
         瞬念召唤：回合开始时
         离场时：摧毁己方场上所有植物，每摧毁一张，便随机破坏一张对手随从卡，并且抽一张牌
@@ -34,33 +34,36 @@ public class EternalBloom extends FollowCard {
 
     private boolean isDash = true;
 
-    @Override
-    public boolean canInvocationBegin() {
-        return true;
+    public EternalBloom() {
+
+        getInvocationBegins().add(new Card.Event.InvocationBegin(
+            ()->true,
+            ()->{}
+        ));
+
+        getLeavings().add(new Event.Leaving(
+            ()->{
+                List<AreaCard> plants = new ArrayList<>();
+                ownerPlayer().getArea().stream()
+                    .filter(areaCard -> areaCard.getRace().contains("植物"))
+                    .forEach(plants::add);
+                plants.forEach(plantCard->{
+                    plantCard.death();
+                    List<AreaCard> oppositeArea = oppositePlayer().getArea();
+                    oppositeArea.get((int) (oppositeArea.size() * Math.random())).death();
+                    ownerPlayer().draw(1);
+                });
+            }
+        ));
+
+        getTransmigrations().add(new Card.Event.Transmigration(
+            ()->{
+                List<Card> addCards = new ArrayList<>();
+                addCards.add(createCard(EternalForest.class));
+                ownerPlayer().addDeck(addCards);
+            }
+        ));
+
     }
 
-    @Override
-    public void leaving() {
-        info.msg(getName() + "发动离场时效果！");
-
-        List<AreaCard> plants = new ArrayList<>();
-        ownerPlayer().getArea().stream()
-            .filter(areaCard -> "植物".equals(areaCard.getRace()))
-            .forEach(plants::add);
-        plants.forEach(plantCard->{
-            plantCard.death();
-            List<AreaCard> oppositeArea = oppositePlayer().getArea();
-            oppositeArea.get((int) (oppositeArea.size() * Math.random())).death();
-            ownerPlayer().draw(1);
-        });
-    }
-
-    @Override
-    public void afterTransmigration() {
-        info.msg(getName() + "发动轮回时效果！");
-
-        List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(EternalForest.class));
-        ownerPlayer().addDeck(addCards);
-    }
 }

@@ -13,11 +13,4 @@ public abstract class SpellCard extends Card{
         return TYPE.getName();
     }
 
-    @Override
-    public void play(List<GameObj> targets) {
-        super.play(targets);
-        ownerPlayer().getGraveyard().add(this);
-        ownerPlayer().countToGraveyard(1);
-        ownerPlayer().getHand().remove(this);
-    }
 }

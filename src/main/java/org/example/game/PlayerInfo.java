@@ -126,7 +126,10 @@ public class PlayerInfo {
             return;
         }
         getArea().add(areaCard);
-        areaCard.entering();// 发动入场时
+        if(!areaCard.getEnterings().isEmpty()){
+            info.msg(areaCard.getNameWithOwner() + "发动入场时效果！");
+        }
+        areaCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){
@@ -135,7 +138,10 @@ public class PlayerInfo {
         getGraveyard().stream().filter(predicate)
             .limit(num).forEach(card -> {
                 info.msgTo(getUuid(),card.getName()+"轮回到了牌堆中");
-                card.afterTransmigration();
+                if(!card.getTransmigrations().isEmpty()){
+                    info.msg(card.getNameWithOwner() + "发动轮回时效果！");
+                }
+                card.getTransmigrations().forEach(entering -> entering.effect().apply());// 发动轮回时
                 outGraveyardCards.add(card);
                 getDeck().add(card.copyCard());
             });

@@ -6,6 +6,7 @@ import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.fairy.amulet.EternalGarden;
+import org.example.card.fairy.spell.EternalForest;
 import org.example.card.nemesis.follow.RuinerOfEden;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class EternalSeedling extends FollowCard {
 
     public String name = "永恒树苗";
     public String job = "妖精";
-    public String race = "植物";
+    private List<String> race = List.of("植物");
     public String mark = """
         瞬念召唤：回合开始时
         离场时：增加1张永恒树苗到牌堆中；如果墓地中的永恒树苗数量大于3，且场上没有永恒庭园，则召唤一个永恒庭园到场上
@@ -38,35 +39,38 @@ public class EternalSeedling extends FollowCard {
 
         return subMark.replaceAll("\\{count}", count+"");
     }
-    @Override
-    public boolean canInvocationBegin() {
-        return true;
+
+    public EternalSeedling() {
+        getInvocationBegins().add(new Card.Event.InvocationBegin(
+            ()->true,
+            ()->{}
+        ));
+
+
+        getLeavings().add(new Event.Leaving(
+            ()->{
+                List<Card> addCards = new ArrayList<>();
+                addCards.add(createCard(EternalSeedling.class));
+                ownerPlayer().addDeck(addCards);
+
+                // 墓地中的永恒树苗数量大于3，且场上没有永恒庭园
+                long count = ownerPlayer().getGraveyard().stream()
+                    .filter(card -> card instanceof EternalSeedling)
+                    .count();
+                if(count >= 3 && ownerPlayer().getArea().stream()
+                    .filter(areaCard->areaCard instanceof EternalGarden).findAny().isEmpty()){
+                    ownerPlayer().summon(createCard(EternalGarden.class));
+                }
+            }
+        ));
+
+        getTransmigrations().add(new Card.Event.Transmigration(
+            ()->{
+                List<Card> addCards = new ArrayList<>();
+                addCards.add(createCard(EternalBloom.class));
+                ownerPlayer().addDeck(addCards);
+            }
+        ));
     }
 
-    @Override
-    public void leaving() {
-        info.msg(getName() + "发动离场时效果！");
-
-        List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(EternalSeedling.class));
-        ownerPlayer().addDeck(addCards);
-
-        // 墓地中的永恒树苗数量大于3，且场上没有永恒庭园
-        long count = ownerPlayer().getGraveyard().stream()
-            .filter(card -> card instanceof EternalSeedling)
-            .count();
-        if(count >= 3 && ownerPlayer().getArea().stream()
-            .filter(areaCard->areaCard instanceof EternalGarden).findAny().isEmpty()){
-            ownerPlayer().summon(createCard(EternalGarden.class));
-        }
-    }
-
-    @Override
-    public void afterTransmigration() {
-        info.msg(getName() + "发动轮回时效果！");
-
-        List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(EternalBloom.class));
-        ownerPlayer().addDeck(addCards);
-    }
 }

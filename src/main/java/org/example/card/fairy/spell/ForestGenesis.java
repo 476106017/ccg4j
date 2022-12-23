@@ -22,19 +22,21 @@ public class ForestGenesis extends SpellCard {
     public Integer cost = 1;
     public String name = "森林模式";
     public String job = "妖精";
-    public String race = "灾厄";
+    private List<String> race = List.of("灾厄");
     public String mark = """
         增加1张永恒树苗到牌堆中。
         """;
 
     public String subMark = "";
 
-    @Override
-    public void play(List<GameObj> targets) {
-        super.play(targets);
-
-        List<Card> addCards = new ArrayList<>();
-        addCards.add(createCard(EternalSeedling.class));
-        ownerPlayer().addDeck(addCards);
+    public ForestGenesis() {
+        getPlays().add(new Card.Event.Play(ArrayList::new,0,
+            gameObjs -> {
+                List<Card> addCards = new ArrayList<>();
+                addCards.add(createCard(EternalSeedling.class));
+                ownerPlayer().addDeck(addCards);
+            }
+        ));
     }
+
 }

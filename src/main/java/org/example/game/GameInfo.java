@@ -8,6 +8,7 @@ import org.example.constant.EffectTiming;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.ALL_COST;
@@ -173,7 +174,11 @@ public class GameInfo {
 
     public void endTurn(){
         msg(thisPlayer().getName()+"的回合结束");
-        afterTurn();
+        try {
+            afterTurn();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         turn += turnPlayer;// 如果是玩家1就加回合数
         turnPlayer = 1 ^ turnPlayer;
         msg("——————————————————————————————————");
@@ -215,7 +220,13 @@ public class GameInfo {
 
                 followCard.setTurnAttack(0);
             }
-            areaCard.effectBegin();
+
+            if(!areaCard.getEffectBegins().isEmpty()){
+                msg(areaCard.getNameWithOwner()+"发动回合开始效果");
+                areaCard.getEffectBegins().forEach(effectEnd -> {
+                    effectEnd.effect().apply();
+                });
+            }
             if(areaCard instanceof AmuletCard amuletCard){
                 int timer = amuletCard.getTimer();
                 if(timer > 0){
@@ -233,7 +244,9 @@ public class GameInfo {
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
         List<Card> canInvocation =
-            new ArrayList<>(nameCard.values().stream().filter(Card::canInvocationBegin).toList());
+            new ArrayList<>(nameCard.values().stream()
+                .filter(card -> !card.getInvocationBegins().isEmpty())
+                .toList());
 
         // 法术卡揭示到手牌
         while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
@@ -242,11 +255,20 @@ public class GameInfo {
 
             // region 从牌堆召唤到手牌
             SpellCard card = (SpellCard)first.get();
-            msg(thisPlayer().getName()+"揭示了"+card.getName());
-            thisPlayer().getHand().add(card);
-            thisPlayer().getDeck().remove(card);
-            canInvocation.remove(card);
-            card.afterInvocationBegin();
+            AtomicBoolean summon = new AtomicBoolean(false);
+            card.getInvocationBegins().stream()
+                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
+                .findFirst().ifPresent(invocationBegin -> {
+                    if(!summon.get()){
+                        // 触发第一个效果时，揭示
+                        msg(thisPlayer().getName()+"揭示了"+card.getName());
+                        thisPlayer().getHand().add(card);
+                        thisPlayer().getDeck().remove(card);
+                        canInvocation.remove(card);
+                        summon.set(true);
+                    }
+                    invocationBegin.effect().apply();
+                });
             // endregion
 
         }
@@ -258,11 +280,20 @@ public class GameInfo {
 
             // region 从牌堆召唤到场上
             AreaCard card = (AreaCard)first.get();
-            msg(thisPlayer().getName()+"发动瞬念召唤");
-            thisPlayer().summon(card);
-            thisPlayer().getDeck().remove(card);
-            canInvocation.remove(card);
-            card.afterInvocationBegin();
+            AtomicBoolean summon = new AtomicBoolean(false);
+            card.getInvocationBegins().stream()
+                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
+                .findFirst().ifPresent(invocationBegin -> {
+                    if(!summon.get()){
+                        // 触发第一个效果时，召唤
+                        msg(thisPlayer().getName()+"发动瞬念召唤");
+                        thisPlayer().summon(card);
+                        thisPlayer().getDeck().remove(card);
+                        canInvocation.remove(card);
+                        summon.set(true);
+                    }
+                    invocationBegin.effect().apply();
+                });
             // endregion
         }
 
@@ -287,23 +318,49 @@ public class GameInfo {
 
         // 发动回合结束效果
         List<AreaCard> areaCopy = new ArrayList<>(thisPlayer().getArea());
-        areaCopy.forEach(AreaCard::effectEnd);
+        areaCopy.forEach(areaCard -> {
+            if(!areaCard.getEffectEnds().isEmpty()){
+                msg(areaCard.getNameWithOwner()+"发动回合结束效果");
+                areaCard.getEffectEnds().forEach(effectEnd -> {
+                    effectEnd.effect().apply();
+                });
+            }
+        });
 
         // 查找牌堆是否有瞬召卡片
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
-        while(thisPlayer().getArea().size()<5){
-            Optional<Card> first = nameCard.values().stream()
-                .filter(card -> card instanceof AreaCard  areaCard && areaCard.canInvocationEnd()).findFirst();
-            if (first.isEmpty()) {
-                break;
-            }
+        List<Card> canInvocation =
+            new ArrayList<>(nameCard.values().stream()
+                .filter(card -> !card.getInvocationEnds().isEmpty())
+                .toList());
+
+        List<Card> areaCards = new ArrayList<>(
+            canInvocation.stream().filter(card -> card instanceof AreaCard).toList());
+
+        while(thisPlayer().getArea().size() < thisPlayer().getAreaMax()){
+            if (areaCards.isEmpty()) break;
+
             // region 从牌堆召唤到场上
-            AreaCard card = (AreaCard)first.get();
-            msg(thisPlayer().getName()+"发动瞬念召唤");
-            thisPlayer().summon(card);
-            thisPlayer().getDeck().remove(card);
-            card.afterInvocationEnd();// 发动瞬念效果
+            AreaCard card = (AreaCard)areaCards.get(0);
+            AtomicBoolean summon = new AtomicBoolean(false);
+            List<Card.Event.InvocationEnd> invocationEndsTriggered = card.getInvocationEnds().stream()
+                .filter(invocationEnds -> invocationEnds.canBeTriggered().test()).toList();
+            if(invocationEndsTriggered.isEmpty()){// 一个瞬召都没法触发
+                areaCards.remove(card);
+            }else {// 触发了
+                invocationEndsTriggered.forEach(invocationEnds->{
+                    if(!summon.get()){
+                        // 触发第一个效果时，召唤
+                        msg(thisPlayer().getName()+"发动瞬念召唤");
+                        thisPlayer().summon(card);
+                        thisPlayer().getDeck().remove(card);
+                        canInvocation.remove(card);
+                        summon.set(true);
+                    }
+                    invocationEnds.effect().apply();
+                });
+            }
             // endregion
         }
     }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.function.BinaryOperator;
 
 import static org.example.system.Database.*;
 
@@ -153,7 +154,7 @@ public class GameHandler {
             info.msgTo(me,"场上放不下卡牌了！");
             return;
         }
-        List<GameObj> targetable = card.targetable();
+        List<GameObj> targetable = card.getTargets();
         // 只有一个参数
         if(split.length == 1){
             if(targetable.isEmpty()){
@@ -207,9 +208,10 @@ public class GameHandler {
                         }
                     }catch (Exception e){}
                 }
-                // 指定目标数量错误
-                if (targets.size() != card.targetNum()) {
-                    info.msgTo(me,"指定目标数量错误，应为："+card.targetNum());
+                Integer targetNum = card.getPlays().stream().map(Card.Event.Play::targetNum).reduce(Math::max).get();
+                int shouldTargetNum = Math.min(targetable.size(), targetNum);
+                if(targets.size() != shouldTargetNum){
+                    info.msgTo(me,"指定目标数量错误！应为："+shouldTargetNum);
                     return;
                 }
                 card.play(targets);
