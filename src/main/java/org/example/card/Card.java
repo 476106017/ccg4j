@@ -2,13 +2,12 @@ package org.example.card;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.example.game.GameInfo;
 import org.example.game.GameObj;
+import org.example.game.GameInfo;
 import org.example.game.PlayerInfo;
 import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
 
-import java.awt.geom.Area;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -20,14 +19,22 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class Card extends GameObj {
-    public GameInfo info = null;
-    public int owner = 0;
+    protected GameInfo info = null;
+    private int owner = 0;
 
-    public int needCharge = 0;
+    private Card parentCard = null;
 
-    public Card parentCard = null;
+    private Map<String,Integer> counter = new HashMap<>();
 
-    public Map<String,Integer> counter = new HashMap<>();
+    private Set<String> keywords = new HashSet<>();
+
+    public void addKeyword(String k){
+        info.msg(getNameWithOwner()+"获得了【"+k+"】");
+        getKeywords().add(k);
+    }
+    public boolean hasKeyword(String k){
+        return getKeywords().contains(k);
+    }
 
     // region 效果列表
 
@@ -54,7 +61,6 @@ public abstract class Card extends GameObj {
 
     public abstract String getType();
     public abstract Integer getCost();
-    public abstract String getName();
     public String getNameWithOwner(){
         return ownerPlayer().getName()+"的"+getName();
     };
@@ -68,10 +74,13 @@ public abstract class Card extends GameObj {
     }
 
     public Integer getCount(String key){
-        return counter.get(key);
+        return Optional.ofNullable(counter.get(key)).orElse(0);
     }
     public void count(String key){
         count(key,1);
+    }
+    public void clearCount(String key){
+        counter.remove(key);
     }
     public void count(String key,int time){
         counter.merge(key, time, Integer::sum);
@@ -79,13 +88,20 @@ public abstract class Card extends GameObj {
 
     public void initCounter(){}
 
+    public <T extends Card> T createCard(Class<T> clazz,String... keywords){
+        T card = createCard(clazz);
+        for (String keyword : keywords) {
+            card.addKeyword(keyword);
+        }
+        return card;
+    }
     public <T extends Card> T createCard(Class<T> clazz){
         try {
             T card = clazz.getDeclaredConstructor().newInstance();
             info.msg(getNameWithOwner()+"创造了"+card.getName());
-            card.parentCard = this;
-            card.owner = this.owner;
-            card.info = this.info;
+            card.setParentCard(this); ;
+            card.setOwner(owner);
+            card.setInfo(info);
             card.initCounter();
             return card;
         } catch (Exception e) {

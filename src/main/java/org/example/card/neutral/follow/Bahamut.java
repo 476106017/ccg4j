@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.game.GameObj;
 import org.example.game.PlayerInfo;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class Bahamut extends FollowCard {
 
     public String getSubMark() {
         return subMark.replaceAll("\\{allCost}",
-            info.getPlayerInfos()[owner].getCount(ALL_COST)+"");
+            info.getPlayerInfos()[getOwner()].getCount(ALL_COST)+"");
     }
 
     public int atk = 13;

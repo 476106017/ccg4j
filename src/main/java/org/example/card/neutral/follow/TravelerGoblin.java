@@ -40,9 +40,15 @@ public class TravelerGoblin extends FollowCard {
                 } else if (turn >= 8) {
                     ownerPlayer().heal(8);
                     changeStatus(2,2);
-                    this.acquireDash();
+                    addKeyword("突进");
                 }else{
                     info.msg(getName() + "战吼后什么也没有发生！");
+                }
+            }));
+        getWhenBattles().add(
+            new Event.WhenBattle(damage -> {
+                if(damage.checkFollowAtArea()){
+                    ((FollowCard)damage.another(this)).destroyBy(this);
                 }
             }));
 

@@ -29,10 +29,10 @@ public class MagisterialDreadnought extends FollowCard {
     private int maxHp = 5;
 
     public MagisterialDreadnought() {
-        getEnterings().add(new Event.Entering(()->{
+        getEnterings().add(new AreaCard.Event.Entering(()->{
             ownerPlayer().summon(createCard(WorldEliminator.class));
         }));
-        getLeavings().add(new Event.Leaving(()->{
+        getLeavings().add(new AreaCard.Event.Leaving(()->{
             List<Card> addCards = new ArrayList<>();
             addCards.add(createCard(RuinerOfEden.class));
             addCards.add(createCard(RuinerOfEden.class));

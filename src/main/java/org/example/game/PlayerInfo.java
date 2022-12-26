@@ -159,11 +159,12 @@ public class PlayerInfo {
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t")
                 .append(card.getCost()).append("\t")
-                .append(card.getRace()).append("\n")
-                .append(card.getMark());
-            if(!card.getSubMark().isBlank()){
+                .append(card.getRace()).append("\n");
+            if(!card.getKeywords().isEmpty())
+                sb.append(card.getKeywords()).append("\n");
+            sb.append(card.getMark());
+            if(!card.getSubMark().isBlank())
                 sb.append(card.getSubMark()).append("\n");
-            }
             sb.append("\n");
         }
         return sb.toString();

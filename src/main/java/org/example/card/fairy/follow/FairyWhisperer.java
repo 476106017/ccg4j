@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.fairy.follow.Fairy;
-import org.example.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,6 +2,7 @@ package org.example.card.nemesis.follow;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ public class WorldEliminator extends FollowCard {
     private String job = "复仇者";
 
     private List<String> race = new ArrayList<>();
-    private boolean isDash = true;
     private String mark = """
         突进
         亡语：使自己主战者hp最大值+2，回复2hp
@@ -27,7 +27,8 @@ public class WorldEliminator extends FollowCard {
     private int maxHp = 3;
 
     public WorldEliminator() {
-        getDeathRattles().add(new Event.DeathRattle(()->{
+        getKeywords().add("突进");
+        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
             ownerPlayer().addHpMax(2);
             ownerPlayer().heal(2);
         }));

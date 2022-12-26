@@ -3,10 +3,8 @@ package org.example.card.fairy.amulet;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.AmuletCard;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;

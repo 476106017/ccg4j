@@ -2,14 +2,11 @@ package org.example.card.nemesis.spell;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.example.card.AreaCard;
+import org.example.card.nemesis.follow.MagisterialDreadnought;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card.fairy.follow.Fairy;
-import org.example.card.nemesis.follow.MagisterialDreadnought;
 import org.example.constant.EffectTiming;
-import org.example.game.GameObj;
 import org.example.game.Leader;
 
 import java.util.ArrayList;

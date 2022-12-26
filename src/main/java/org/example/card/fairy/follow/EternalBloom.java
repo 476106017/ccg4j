@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.fairy.amulet.EternalGarden;
 import org.example.card.fairy.spell.EternalForest;
 
 import java.util.ArrayList;
@@ -32,16 +31,15 @@ public class EternalBloom extends FollowCard {
     public int hp = 1;
     public int maxHp = 1;
 
-    private boolean isDash = true;
-
     public EternalBloom() {
+        getKeywords().add("突进");
 
         getInvocationBegins().add(new Card.Event.InvocationBegin(
             ()->true,
             ()->{}
         ));
 
-        getLeavings().add(new Event.Leaving(
+        getLeavings().add(new AreaCard.Event.Leaving(
             ()->{
                 List<AreaCard> plants = new ArrayList<>();
                 ownerPlayer().getArea().stream()

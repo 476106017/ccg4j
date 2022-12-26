@@ -14,9 +14,6 @@ public abstract class AreaCard  extends Card{
     public abstract String getType();
 
     // region 效果列表
-    private boolean canBeTargeted = true;// 能否被指定
-    private boolean canBeDestroy = true;// 能否被效果破坏
-
     private List<Event.EffectBegin> effectBegins = new ArrayList<>();
     private List<Event.EffectEnd> effectEnds = new ArrayList<>();
     private List<Event.Entering> enterings = new ArrayList<>();
@@ -25,13 +22,19 @@ public abstract class AreaCard  extends Card{
 
     // endregion
 
-    public void destroy(){
-        if(isCanBeDestroy()){
+    public boolean destroyBy(GameObj from){
+        if(!hasKeyword("无法破坏")){
             death();
-        }else {
-            info.msg(getNameWithOwner()+"无法被破坏！");
+            if(this instanceof FollowCard followCard && from instanceof Card card){
+                if(!card.getWhenKills().isEmpty())
+                    info.msg(card.getNameWithOwner() + "发动击杀时效果！");
+                card.getWhenKills().forEach(whenKill -> whenKill.effect().accept(followCard));
+            }
+            return true;
         }
+        return false;
     }
+
     public void death(){
         info.msg(getNameWithOwner()+"被送入墓地！");
 

@@ -2,9 +2,9 @@ package org.example.card.nemesis.follow;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +24,7 @@ public class AnalyzingArtifact  extends FollowCard {
     private int maxHp = 1;
 
     public AnalyzingArtifact() {
-        getDeathRattles().add(new Event.DeathRattle(()->{
+        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
             ownerPlayer().draw(1);
         }));
     }

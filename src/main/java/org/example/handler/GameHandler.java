@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.function.BinaryOperator;
 
 import static org.example.system.Database.*;
 
@@ -261,7 +260,9 @@ public class GameHandler {
             info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getName());
             return;
         } else if (myCard instanceof FollowCard followCard) {
-            if(followCard.getTurnAge() == 0 && !followCard.isDash()){
+            if(followCard.getTurnAge() == 0 &&
+                !followCard.hasKeyword("突进") &&
+                !followCard.hasKeyword("疾驰")){
                 info.msgToThisPlayer("无法让刚入场的随从攻击");
                 return;
             }
@@ -283,26 +284,21 @@ public class GameHandler {
         } else if (indexII == 0) {
             // TODO 可否直接攻击
             FollowCard myFollow = (FollowCard) myCard;
-            if(myFollow.getTurnAge() == 0 && myFollow.isDash()){
-                info.msgTo(me,"突进随从在入场回合，无法直接攻击对手的主战者");
+            if(myFollow.getTurnAge() == 0 && !myFollow.hasKeyword("疾驰")){
+                info.msgTo(me,"随从在入场回合无法攻击对方主战者");
+                return;
             }
             info.msg(myFollow.getNameWithOwner()+"直接攻击对手的主战者！");
-            myFollow.turnAttackOnce();
-            info.damageLeader(enemy.getLeader(),myFollow.getAtk());
+            myFollow.attack(enemy.getLeader());
             return;
         } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
             info.msgToThisPlayer("无法攻击护符卡:"+amuletCard.getName());
             return;
         }
-
         FollowCard myFollow = (FollowCard) myCard;
         FollowCard target = (FollowCard)enemy.getArea().get(indexII-1);
-        info.msg(myFollow.getNameWithOwner()+"攻击了对手的"+target.getName()+"！");
-        target.damaged(myFollow,myFollow.getAtk());
-        myFollow.turnAttackOnce();
+        myFollow.attack(target);
 
-        info.msg(target.getNameWithOwner()+"反击！");
-        myFollow.damaged(target,target.getAtk());
 
     }
 

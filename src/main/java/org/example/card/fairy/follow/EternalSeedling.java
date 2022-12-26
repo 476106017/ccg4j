@@ -3,11 +3,9 @@ package org.example.card.fairy.follow;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
+import org.example.card.fairy.amulet.EternalGarden;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.fairy.amulet.EternalGarden;
-import org.example.card.fairy.spell.EternalForest;
-import org.example.card.nemesis.follow.RuinerOfEden;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class EternalSeedling extends FollowCard {
         ));
 
 
-        getLeavings().add(new Event.Leaving(
+        getLeavings().add(new AreaCard.Event.Leaving(
             ()->{
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));

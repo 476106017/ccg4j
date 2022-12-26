@@ -6,6 +6,7 @@ import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.game.Damage;
 import org.example.game.GameObj;
 import org.example.game.Leader;
 
@@ -49,10 +50,11 @@ public class DarkSnare extends SpellCard {
             targets->{
                 GameObj target = targets.get(0);
                 Integer darkSnareDamage = getCount("damage");
+                Damage damage = new Damage(this, target, darkSnareDamage);
                 if(target instanceof FollowCard followCard){
-                    followCard.damaged(this,darkSnareDamage);
+                    followCard.damaged(damage);
                 } else if (target instanceof Leader leader) {
-                    info.damageLeader(leader,darkSnareDamage);
+                    leader.damaged(damage);
                 }
             }
         ));
@@ -65,7 +67,7 @@ public class DarkSnare extends SpellCard {
                 if(!follows.isEmpty()){
                     int randIndex = new Random().nextInt(follows.size());
                     FollowCard followCard = (FollowCard) follows.get(randIndex);
-                    if(followCard.damaged(this,getCount("damage"))){
+                    if(followCard.damaged(new Damage(this,followCard,getCount("damage")))){
                         count("damage");
                     }
                 }

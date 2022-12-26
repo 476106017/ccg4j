@@ -3,6 +3,7 @@ package org.example.game;
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Data;
 import org.example.card.*;
+import org.example.card.*;
 import org.example.constant.EffectTiming;
 
 import java.util.*;
@@ -11,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
 import static org.example.system.Database.*;
 import static org.example.system.Database.userDecks;
@@ -69,6 +69,8 @@ public class GameInfo {
         // 退出房间
         server.getClient(thisPlayer().getUuid()).leaveRoom(getRoom());
         server.getClient(oppositePlayer().getUuid()).leaveRoom(getRoom());
+
+        throw new RuntimeException("Game Set");
     }
 
     public PlayerInfo thisPlayer(){
@@ -97,25 +99,6 @@ public class GameInfo {
         cardsCopy.forEach(AreaCard::death);
     }
 
-
-    public void damageLeader(Leader leader,int damage){
-        if(thisPlayer().getLeader().equals(leader)){
-            int hp = thisPlayer().getHp();
-            thisPlayer().setHp(hp - damage);
-            msg(thisPlayer().getName()+"的主战者受到"+damage+"点伤害！（剩余"+thisPlayer().getHp()+"点生命值）");
-            if(hp < 0){
-                gameset(oppositePlayer());
-            }
-        }else {
-            int hp = oppositePlayer().getHp();
-            oppositePlayer().setHp(hp - damage);
-            msg(oppositePlayer().getName()+"的主战者受到"+damage+"点伤害！（剩余"+oppositePlayer().getHp()+"点生命值）");
-            if (hp < 0) {
-                gameset(thisPlayer());
-            }
-        }
-    }
-
     public void zeroTurn(UUID u1, UUID u2){
 
         PlayerInfo p0 = thisPlayer();
@@ -138,8 +121,8 @@ public class GameInfo {
 
     public void startTurn(){
         thisPlayer().clearCount(PLAY_NUM);
-        beforeTurn();
         try {
+            beforeTurn();
             if(thisPlayer().ppMax<10){
                 thisPlayer().ppMax++;
             }
@@ -394,12 +377,18 @@ public class GameInfo {
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t");
-             if("随从".equals(card.getType())){
+            if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
             }
-            sb.append("\n");
+            if("护符".equals(card.getType())){
+                AmuletCard amulet = (AmuletCard) card;
+                int count = amulet.getCount();
+                int timer = amulet.getTimer();
+                sb.append(count==-1?"-":count).append("/").append(timer==-1?"∞":timer).append("\t");
+            }
+            sb.append(card.getKeywords()).append("\n");
         }
         sb.append("我方战场：\n");
         for (int i = 0; i < player.area.size(); i++) {
@@ -409,16 +398,22 @@ public class GameInfo {
                 .append(card.getName()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
-                if(follow.getTurnAttack() < follow.getTurnAttackMax()){
-                    if(follow.getTurnAge()>0){
-                        sb.append("未攻击").append("\t");
-                    }else if(follow.isDash()){
-                        sb.append("突进").append("\t");
-                    }
+                if(follow.getTurnAttack() < follow.getTurnAttackMax() && (// 回合可攻击数没有打满
+                    follow.getTurnAge()>0 || follow.hasKeyword("突进") || follow.hasKeyword("疾驰"))){
+                    sb.append("未攻击").append("\t");
                 }
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
             }
+            if("护符".equals(card.getType())){
+                AmuletCard amulet = (AmuletCard) card;
+                int count = amulet.getCount();
+                int timer = amulet.getTimer();
+                sb.append(count==-1?"-":count).append("/").append(timer==-1?"∞":timer).append("\t");
+            }
+
+            if(!card.getKeywords().isEmpty())
+                sb.append(card.getKeywords()).append("\n");
             sb.append("\n");
         }
         sb.append("\n");
