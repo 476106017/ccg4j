@@ -22,7 +22,7 @@ public class CalamitysGenesis extends SpellCard {
     public String job = "复仇者";
     private List<String> race = List.of("灾厄");
     public String mark = """
-        增加2张正义暴君到牌堆中。回合结束时，随机将1张5费以上随从由牌堆加入手牌。
+        增加2张正义暴君到牌堆中。回合结束时，抽1张5费以上随从。
         """;
 
     public String subMark = "";
@@ -37,25 +37,9 @@ public class CalamitysGenesis extends SpellCard {
                 ownerPlayer().addDeck(addCards);
 
                 // 创建主战者回合结束效果
-                ownerPlayer().getLeader().addEffect(new Leader.Effect(this,EffectTiming.EndTurn, 1,
-                    player->{
-                        List<Card> deck = player.getDeck();
-                        Optional<Card> findCard = deck.stream()
-                            .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
-                            .findAny();
-                        if(findCard.isEmpty()){
-                            info.msg(this.getName()+"没有找到5费以上随从！");
-                        }else {
-                            FollowCard followCard = (FollowCard) findCard.get();
-                            info.msg(this.getName()+"将1张5费以上随从加入手牌！");
-                            List<Card> addList = new ArrayList<>();
-                            addList.add(followCard);
-                            player.addHand(addList);
-                            deck.removeAll(addList);
-                        }
-                    }
-                ));
-            }
-        ));
+                ownerPlayer().getLeader().addEffect(this,EffectTiming.EndTurn, 1,
+                    damage -> ownerPlayer().draw(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
+                );
+        }));
     }
 }

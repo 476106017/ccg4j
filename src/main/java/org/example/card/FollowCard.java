@@ -36,7 +36,12 @@ public abstract class FollowCard extends AreaCard{
         return TYPE.getName();
     }
 
-    public void changeStatus(int atk,int hp){
+    public FollowCard() {
+        // 实例化随从牌时，需要区分血量和血上限
+        setMaxHp(getHp());
+    }
+
+    public void changeStatus(int atk, int hp){
         // region 构造消息
         StringBuilder sb = new StringBuilder();
         sb.append(this.getNameWithOwner()).append("获得了");
@@ -107,6 +112,10 @@ public abstract class FollowCard extends AreaCard{
         }
     }
     public void damagedWithoutSettle(Damage damage){
+        if(!damage.isFromAtk() && hasKeyword("效果伤害免疫")){
+            damage.setDamage(0);
+            info.msg(getNameWithOwner() + "免疫了效果伤害！");
+        }
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害" +
             "（剩余"+getHp()+"点生命值）");
         setHp(getHp()- damage.getDamage());
@@ -120,12 +129,12 @@ public abstract class FollowCard extends AreaCard{
         }
         if(!damage.checkFollowAtArea()) return false;// 因受伤时效果自灭了，不算击杀
 
-        // 由剧毒随从攻击,自己没有无法破坏
+        // 由剧毒随从攻击
         if(damage.getFrom() instanceof FollowCard fromFollow && fromFollow.hasKeyword("剧毒") ){
-            destroyBy(fromFollow);
-            return true;
-        // 未被破坏，生存
-        }else if(getHp() > 0){
+            if(destroyBy(fromFollow)) return true;
+        }
+        // 未被效果破坏，计算生命值
+        if(getHp() > 0){
             return false;
         }else {
             death();

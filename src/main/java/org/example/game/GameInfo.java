@@ -3,7 +3,6 @@ package org.example.game;
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Data;
 import org.example.card.*;
-import org.example.card.*;
 import org.example.constant.EffectTiming;
 
 import java.util.*;
@@ -38,7 +37,7 @@ public class GameInfo {
         this.playerInfos[0] = new PlayerInfo(this);
         this.playerInfos[1] = new PlayerInfo(this);
 
-        msg("比赛开始，请选择三张手牌交换");
+        msg("比赛开始，请选择3张手牌交换");
 
     }
 
@@ -172,23 +171,10 @@ public class GameInfo {
 
     public void beforeTurn(){
         // 主战者技能重置、发动主战者效果
-        List<Leader.Effect> usedUpEffects = new ArrayList<>();
         Leader leader = thisPlayer().getLeader();
         leader.setCanUseSkill(true);
-        leader.getEffects().stream()
-            .filter(effect -> EffectTiming.BeginTurn.equals(effect.getTiming()))
-            .forEach(effect -> {
-                effect.getEffect().accept(thisPlayer());
-                int canUse = effect.getCanUse();
-                if(canUse == 1){
-                    // 用完了销毁
-                    usedUpEffects.add(effect);
-                    msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已用完");
-                }else if (canUse > 1){
-                    effect.setCanUse(canUse-1);
-                }
-            });
-        leader.getEffects().removeAll(usedUpEffects);
+        leader.useEffect(EffectTiming.BeginTurn);
+        leader.expireEffect();
 
         // 场上随从驻场回合+1、攻击次数清零
         // 发动回合开始效果
@@ -284,21 +270,9 @@ public class GameInfo {
     }
     public void afterTurn(){
         // 发动主战者效果
-        List<Leader.Effect> usedUpEffects = new ArrayList<>();
-        thisPlayer().getLeader().getEffects().stream()
-            .filter(effect -> EffectTiming.EndTurn.equals(effect.getTiming()))
-            .forEach(effect -> {
-                effect.getEffect().accept(thisPlayer());
-                int canUse = effect.getCanUse();
-                if(canUse == 1){
-                    // 用完了销毁
-                    usedUpEffects.add(effect);
-                    msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已用完");
-                }else if (canUse > 1){
-                    effect.setCanUse(canUse-1);
-                }
-            });
-        thisPlayer().getLeader().getEffects().removeAll(usedUpEffects);
+        Leader leader = thisPlayer().getLeader();
+        leader.useEffect(EffectTiming.EndTurn);
+        leader.expireEffect();
 
         // 发动回合结束效果
         List<AreaCard> areaCopy = new ArrayList<>(thisPlayer().getArea());

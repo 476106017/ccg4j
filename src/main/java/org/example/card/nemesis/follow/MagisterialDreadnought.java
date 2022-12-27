@@ -26,9 +26,9 @@ public class MagisterialDreadnought extends FollowCard {
 
     private int atk = 5;
     private int hp = 5;
-    private int maxHp = 5;
 
     public MagisterialDreadnought() {
+        super();
         getEnterings().add(new AreaCard.Event.Entering(()->{
             ownerPlayer().summon(createCard(WorldEliminator.class));
         }));

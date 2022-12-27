@@ -21,14 +21,13 @@ public class EternalSeedling extends FollowCard {
     private List<String> race = List.of("植物");
     public String mark = """
         瞬念召唤：回合开始时
-        离场时：增加1张永恒树苗到牌堆中；如果墓地中的永恒树苗数量大于3，且场上没有永恒庭园，则召唤一个永恒庭园到场上
+        离场时：增加1张永恒树苗到牌堆中；如果墓地中的永恒树苗数量大于3，且场上没有永恒庭园，则召唤1个永恒庭园到场上
         轮回时：增加1张永恒之花到牌堆中
         """;
     public String subMark = "墓地中的永恒树苗数量:{count}";
 
     public int atk = 0;
     public int hp = 1;
-    public int maxHp = 1;
 
     public String getSubMark() {
         long count = ownerPlayer().getGraveyard().stream()
@@ -39,6 +38,7 @@ public class EternalSeedling extends FollowCard {
     }
 
     public EternalSeedling() {
+        super();
         getInvocationBegins().add(new Card.Event.InvocationBegin(
             ()->true,
             ()->{}

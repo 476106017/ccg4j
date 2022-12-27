@@ -27,9 +27,9 @@ public class RuinerOfEden extends FollowCard {
 
     private int atk = 5;
     private int hp = 5;
-    private int maxHp = 5;
 
     public RuinerOfEden() {
+        super();
         getKeywords().add("守护");
         getKeywords().add("剧毒");
         getEnterings().add(new AreaCard.Event.Entering(()->{

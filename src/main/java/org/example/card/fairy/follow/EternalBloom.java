@@ -21,7 +21,7 @@ public class EternalBloom extends FollowCard {
     private List<String> race = List.of("植物");
     public String mark = """
         瞬念召唤：回合开始时
-        离场时：摧毁己方场上所有植物，每摧毁一张，便随机破坏一张对手随从卡，并且抽一张牌
+        离场时：摧毁己方场上所有植物，每摧毁1张，便随机破坏1张对手随从卡，并且抽1张牌
         轮回时：增加1张永恒森林到牌堆中
         突进
         """;
@@ -29,9 +29,9 @@ public class EternalBloom extends FollowCard {
 
     public int atk = 0;
     public int hp = 1;
-    public int maxHp = 1;
 
     public EternalBloom() {
+        super();
         getKeywords().add("突进");
 
         getInvocationBegins().add(new Card.Event.InvocationBegin(

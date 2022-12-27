@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.FollowCard;
 import org.example.card.nemesis.Yuwan;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -80,11 +82,31 @@ public class PlayerInfo {
         addHand(deck.subList(0,num));
         deck = deck.subList(num,deck.size());
     }
+    public void draw(Predicate<? super Card> condition){
+        Optional<Card> findCard = getDeck().stream()
+            .filter(condition)
+            .findAny();
+        if(findCard.isEmpty()){
+            info.msg("没有找到可以抽的卡牌！");
+            return;
+        }
+        Card card = findCard.get();
+        info.msg(getName()+"搜索并抽到卡牌！");
+        addHand(card);
+        getDeck().remove(card);
+    }
+    public void back(Card cards){
+        addDeck(cards);
+        hand.remove(cards);
+    }
     public void back(List<Card> cards){
         addDeck(cards);
         hand.removeAll(cards);
     }
 
+    public void addDeck(Card card){
+        addDeck(List.of(card));
+    }
     public void addDeck(List<Card> cards){
         int cardsSize = cards.size();
         int deckSize = getDeck().size();
@@ -97,15 +119,19 @@ public class PlayerInfo {
             getDeck().add(index,card);
         });
     }
+    public void addHand(Card card){
+        addHand(List.of(card));
+    }
     public void addHand(List<Card> cards){
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
         info.msgTo(getUuid(),cardNames + "加入了手牌");
+        info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手手牌");
         int cardsSize = cards.size();
         int handSize = hand.size();
         int handTotal = handSize + cardsSize;
         if(handTotal > handMax){
             hand.addAll(cards.subList(0,handMax-handSize));
-            info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌仅记入墓地数！");
+            info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌记入墓地数！");
 
             countToGraveyard(handTotal-handMax);
         }else{

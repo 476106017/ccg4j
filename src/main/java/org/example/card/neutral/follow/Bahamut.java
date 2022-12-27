@@ -20,7 +20,7 @@ public class Bahamut extends FollowCard {
     public String job = "中立";
     private List<String> race = List.of("龙");
     public String mark = """
-        瞬念召唤：回合结束时在卡牌上的总消耗pp>=50,破坏对手牌库直至5张
+        瞬念召唤：回合结束时在卡牌上的总消耗pp>=50,破坏对手牌堆直至5张
         战吼：破坏对手场上全部卡牌
         """;
     public String subMark = "总消耗pp等于{allCost}";
@@ -32,9 +32,9 @@ public class Bahamut extends FollowCard {
 
     public int atk = 13;
     public int hp = 13;
-    public int maxHp = 13;
 
     public Bahamut() {
+        super();
         getPlays().add(new Card.Event.Play(ArrayList::new,0,
             gameObjs -> {
                 List<AreaCard> area = oppositePlayer().getArea();

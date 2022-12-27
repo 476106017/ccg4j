@@ -1,0 +1,43 @@
+package org.example.card.nemesis.follow;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.example.card.AreaCard;
+import org.example.card.Card;
+import org.example.card.FollowCard;
+import org.example.card.nemesis.spell.MercurialMight;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ImmortalAegis extends FollowCard {
+    private Integer cost = 6;
+    private String name = "永恒之盾·席翁";
+    private String job = "复仇者";
+    private List<String> race = List.of();
+    private String mark = """
+        无法破坏 效果伤害免疫
+        战吼：增加1张消费为0的水银的断绝到手牌
+        """;
+    private String subMark = "";
+
+    private int atk = 4;
+    private int hp = 8;
+
+    public ImmortalAegis() {
+        super();
+        getKeywords().add("无法破坏");
+        getKeywords().add("魔法免疫");
+
+        getPlays().add(new Card.Event.Play(ArrayList::new,0,
+            gameObjs -> {
+                List<Card> addCards = new ArrayList<>();
+                MercurialMight mercurialMight = createCard(MercurialMight.class);
+                mercurialMight.setCost(0);
+                addCards.add(mercurialMight);
+                ownerPlayer().addHand(addCards);
+        }));
+    }
+}

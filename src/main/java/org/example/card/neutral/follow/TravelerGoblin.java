@@ -29,9 +29,9 @@ public class TravelerGoblin extends FollowCard {
 
     public int atk = 1;
     public int hp = 1;
-    public int maxHp = 1;
 
     public TravelerGoblin() {
+        super();
         getPlays().add(
             new Card.Event.Play(ArrayList::new,0, targets->{
                 int turn = info.getTurn();

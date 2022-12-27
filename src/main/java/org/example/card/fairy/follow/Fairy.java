@@ -22,9 +22,9 @@ public class Fairy extends FollowCard {
 
     public int atk = 1;
     public int hp = 1;
-    public int maxHp = 1;
 
     public Fairy() {
+        super();
         getInvocationEnds().add(new Card.Event.InvocationEnd(
             ()->ownerPlayer().getPpNum() == 1,
             ()->{}

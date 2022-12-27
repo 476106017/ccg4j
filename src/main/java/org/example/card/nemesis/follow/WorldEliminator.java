@@ -24,9 +24,9 @@ public class WorldEliminator extends FollowCard {
 
     private int atk = 3;
     private int hp = 3;
-    private int maxHp = 3;
 
     public WorldEliminator() {
+        super();
         getKeywords().add("突进");
         getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
             ownerPlayer().addHpMax(2);

@@ -23,16 +23,18 @@ public abstract class AreaCard  extends Card{
     // endregion
 
     public boolean destroyBy(GameObj from){
-        if(!hasKeyword("无法破坏")){
-            death();
-            if(this instanceof FollowCard followCard && from instanceof Card card){
-                if(!card.getWhenKills().isEmpty())
-                    info.msg(card.getNameWithOwner() + "发动击杀时效果！");
-                card.getWhenKills().forEach(whenKill -> whenKill.effect().accept(followCard));
-            }
-            return true;
+        if(hasKeyword("无法破坏")) {
+            info.msg(getNameWithOwner() + "无法破坏！");
+            return false;
         }
-        return false;
+        info.msg(getNameWithOwner() + "被破坏！");
+        death();
+        if(this instanceof FollowCard followCard && from instanceof Card card){
+            if(!card.getWhenKills().isEmpty())
+                info.msg(card.getNameWithOwner() + "发动击杀时效果！");
+            card.getWhenKills().forEach(whenKill -> whenKill.effect().accept(followCard));
+        }
+        return true;
     }
 
     public void death(){

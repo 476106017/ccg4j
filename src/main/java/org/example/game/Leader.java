@@ -3,16 +3,12 @@ package org.example.game;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.Card;
-import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
-import static org.example.constant.CounterKey.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -57,27 +53,7 @@ public abstract class Leader extends GameObj {
     public void damaged(Damage damage){
         GameInfo info = getPlayerInfo().getInfo();
 
-        // 护盾效果
-        Integer shield = getPlayerInfo().getCount(DAMAGE_SHIELD);
-        Integer atkShield = getPlayerInfo().getCount(ATK_SHIELD);
-        Integer effectShield = getPlayerInfo().getCount(EFFECT_SHIELD);
-        if(damage.isFromAtk()){
-            shield += atkShield;
-        }else {
-            shield += effectShield;
-        }
-        if(shield>0){
-            damage.setDamage(// 护盾减免伤害，但受伤不能小于0
-                Math.max(damage.getDamage()-shield, 0));
-            info.msg(getNameWithOwner() + "通过护盾减免了"+shield+"点伤害");
-        }
-
-
-        // TODO 主战者受伤效果
-//        if(!getWhenDamageds().isEmpty()){
-//            info.msg(getNameWithOwner() + "发动受伤时效果！");
-//        }
-//        getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
+        useEffectWithDamage(EffectTiming.LeaderDamaged,damage);
 
         getPlayerInfo().setHp(getPlayerInfo().getHp()- damage.getDamage());
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害！" +
@@ -87,23 +63,53 @@ public abstract class Leader extends GameObj {
         }
     }
 
-    public void addEffect(Effect effect){
-        effects.add(effect);
+    public void addEffect(Card source, EffectTiming timing,int canUseTurn, Consumer<Damage> effect){
+        effects.add(new Effect(source,timing,canUseTurn,effect));
+    }
+
+    public List<Effect> getEffectsWhen(EffectTiming timing){
+        return getEffects().stream()
+            .filter(effect -> timing.equals(effect.getTiming()))
+            .toList();
+
+    }
+    public void expireEffect(){
+        // 过期主战者效果
+        List<Leader.Effect> usedUpEffects = new ArrayList<>();
+        getEffects()
+            .forEach(effect -> {
+                int canUse = effect.getCanUseTurn();
+                if(canUse == 1){
+                    // 用完了销毁
+                    usedUpEffects.add(effect);
+                    getPlayerInfo().getInfo().msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已消失");
+                }else if (canUse > 1){
+                    effect.setCanUseTurn(canUse-1);
+                }
+            });
+        getEffects().removeAll(usedUpEffects);
+    }
+
+    public void useEffect(EffectTiming timing){
+        useEffectWithDamage(timing,null);
+    }
+    public void useEffectWithDamage(EffectTiming timing,Damage damage){
+        getEffectsWhen(timing).forEach(effect -> effect.getEffect().accept(damage));
     }
 
     @Data
     public static class Effect{
         private EffectTiming timing;
-        private int canUse;
+        private int canUseTurn;// 可使用回合（包含对方回合）
 
         private Card source;
 
-        private Consumer<PlayerInfo> effect;
+        private Consumer<Damage> effect;
 
-        public Effect(Card source, EffectTiming timing,int canUse, Consumer<PlayerInfo> effect) {
+        public Effect(Card source, EffectTiming timing,int canUseTurn, Consumer<Damage> effect) {
             this.source = source;
             this.timing = timing;
-            this.canUse = canUse;
+            this.canUseTurn = canUseTurn;
             this.effect = effect;
         }
 
