@@ -75,13 +75,16 @@ public abstract class FollowCard extends AreaCard{
         if(damage.getTo() instanceof Leader leader)
             leader.damaged(damage);
         if(damage.getTo() instanceof FollowCard toFollow){
-            if(!getWhenBattles().isEmpty()) info.msg(getNameWithOwner() + "发动交战时效果！");
+            if(!getWhenBattles().isEmpty())
+                info.msg(getNameWithOwner() + "发动交战时效果！");
             getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
 
-            if (!toFollow.getWhenBattles().isEmpty())info.msg(toFollow.getNameWithOwner() + "发动交战时效果！");
+            if (!toFollow.getWhenBattles().isEmpty())
+                info.msg(toFollow.getNameWithOwner() + "发动交战时效果！");
             toFollow.getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
 
-            toFollow.damageBoth(damage);
+            if(damage.checkFollowAtArea())
+                toFollow.damageBoth(damage);
         }
 
     }
@@ -109,12 +112,13 @@ public abstract class FollowCard extends AreaCard{
         setHp(getHp()- damage.getDamage());
     }
     public boolean damageSettlement(Damage damage){
-        if(!atArea()) return false;
+
+        if(!damage.checkFollowAtArea()) return false;
         if(!getWhenDamageds().isEmpty()){
             info.msg(getNameWithOwner() + "发动受伤时效果！");
+            getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
         }
-        getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
-        if(!atArea()) return false;// 因受伤时效果自灭了，不算击杀
+        if(!damage.checkFollowAtArea()) return false;// 因受伤时效果自灭了，不算击杀
 
         // 由剧毒随从攻击,自己没有无法破坏
         if(damage.getFrom() instanceof FollowCard fromFollow && fromFollow.hasKeyword("剧毒") ){

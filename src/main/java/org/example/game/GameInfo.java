@@ -164,7 +164,7 @@ public class GameInfo {
         }
         turn += turnPlayer;// 如果是玩家1就加回合数
         turnPlayer = 1 ^ turnPlayer;
-        msg("——————————————————————————————————");
+        msg("——————————");
 
         startTurn();
     }
@@ -247,11 +247,11 @@ public class GameInfo {
                         msg(thisPlayer().getName()+"揭示了"+card.getName());
                         thisPlayer().getHand().add(card);
                         thisPlayer().getDeck().remove(card);
-                        canInvocation.remove(card);
                         summon.set(true);
                     }
                     invocationBegin.effect().apply();
                 });
+            canInvocation.remove(card);
             // endregion
 
         }
@@ -272,11 +272,12 @@ public class GameInfo {
                         msg(thisPlayer().getName()+"发动瞬念召唤");
                         thisPlayer().summon(card);
                         thisPlayer().getDeck().remove(card);
-                        canInvocation.remove(card);
                         summon.set(true);
                     }
                     invocationBegin.effect().apply();
                 });
+
+            canInvocation.remove(card);
             // endregion
         }
 
@@ -318,58 +319,60 @@ public class GameInfo {
                 .filter(card -> !card.getInvocationEnds().isEmpty())
                 .toList());
 
-        List<Card> areaCards = new ArrayList<>(
-            canInvocation.stream().filter(card -> card instanceof AreaCard).toList());
+        // 法术卡揭示到手牌
+        while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
+            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof SpellCard).findFirst();
+            if(first.isEmpty()) break;
 
+            // region 从牌堆召唤到手牌
+            SpellCard card = (SpellCard)first.get();
+            AtomicBoolean summon = new AtomicBoolean(false);
+            card.getInvocationBegins().stream()
+                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
+                .findFirst().ifPresent(invocationBegin -> {
+                    if(!summon.get()){
+                        // 触发第一个效果时，揭示
+                        msg(thisPlayer().getName()+"揭示了"+card.getName());
+                        thisPlayer().getHand().add(card);
+                        thisPlayer().getDeck().remove(card);
+                        summon.set(true);
+                    }
+                    invocationBegin.effect().apply();
+                });
+            canInvocation.remove(card);
+            // endregion
+
+        }
+        // 瞬念召唤到场上
         while(thisPlayer().getArea().size() < thisPlayer().getAreaMax()){
-            if (areaCards.isEmpty()) break;
+            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof AreaCard).findFirst();
+            if(first.isEmpty()) break;
 
             // region 从牌堆召唤到场上
-            AreaCard card = (AreaCard)areaCards.get(0);
+            AreaCard card = (AreaCard)first.get();
             AtomicBoolean summon = new AtomicBoolean(false);
-            List<Card.Event.InvocationEnd> invocationEndsTriggered = card.getInvocationEnds().stream()
-                .filter(invocationEnds -> invocationEnds.canBeTriggered().test()).toList();
-            if(invocationEndsTriggered.isEmpty()){// 一个瞬召都没法触发
-                areaCards.remove(card);
-            }else {// 触发了
-                invocationEndsTriggered.forEach(invocationEnds->{
+            card.getInvocationBegins().stream()
+                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
+                .findFirst().ifPresent(invocationBegin -> {
                     if(!summon.get()){
                         // 触发第一个效果时，召唤
                         msg(thisPlayer().getName()+"发动瞬念召唤");
                         thisPlayer().summon(card);
                         thisPlayer().getDeck().remove(card);
-                        canInvocation.remove(card);
                         summon.set(true);
                     }
-                    invocationEnds.effect().apply();
+                    invocationBegin.effect().apply();
                 });
-            }
+
+            canInvocation.remove(card);
             // endregion
         }
     }
 
-    public String describeGame(UUID uuid){
+    public String describeArea(UUID uuid){
         StringBuilder sb = new StringBuilder();
         PlayerInfo player = playerByUuid(uuid);
         PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
-
-        sb.append("局面信息\n");
-        sb.append("剩余pp：").append(player.getPpNum()).append("\n");
-        sb.append("\n");
-        sb.append(oppositePlayer.name)
-            .append("\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
-            .append("\t牌：").append(oppositePlayer.deck.size())
-            .append("\t墓：").append(oppositePlayer.graveyardCount)
-            .append("\t手：").append(oppositePlayer.hand.size())
-            .append("\n");
-        sb.append(player.name)
-            .append("\t血：").append(player.getHp()).append("/").append(player.getHpMax())
-            .append("\t牌：").append(player.deck.size())
-            .append("\t墓：").append(player.graveyardCount)
-            .append("\t手：").append(player.hand.size())
-            .append("\n");
-
-        sb.append("\n");
 
         sb.append("敌方战场：\n");
         for (int i = 0; i < oppositePlayer.area.size(); i++) {
@@ -390,7 +393,7 @@ public class GameInfo {
             }
             sb.append(card.getKeywords()).append("\n");
         }
-        sb.append("我方战场：\n");
+        sb.append("\n我方战场：\n");
         for (int i = 0; i < player.area.size(); i++) {
             Card card = player.area.get(i);
             sb.append("【").append(i+1).append("】\t")
@@ -417,6 +420,35 @@ public class GameInfo {
             sb.append("\n");
         }
         sb.append("\n");
+
+        return sb.toString();
+    }
+
+
+    public String describeGame(UUID uuid){
+        StringBuilder sb = new StringBuilder();
+        PlayerInfo player = playerByUuid(uuid);
+        PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
+
+        sb.append("局面信息\n");
+        sb.append("剩余pp：").append(player.getPpNum()).append("\n");
+        sb.append("\n");
+        sb.append(oppositePlayer.name)
+            .append("\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
+            .append("\t牌：").append(oppositePlayer.deck.size())
+            .append("\t墓：").append(oppositePlayer.graveyardCount)
+            .append("\t手：").append(oppositePlayer.hand.size())
+            .append("\n");
+        sb.append(player.name)
+            .append("\t血：").append(player.getHp()).append("/").append(player.getHpMax())
+            .append("\t牌：").append(player.deck.size())
+            .append("\t墓：").append(player.graveyardCount)
+            .append("\t手：").append(player.hand.size())
+            .append("\n");
+
+        sb.append("\n");
+
+        sb.append(describeArea(uuid));
 
         sb.append("我的手牌：\n").append(player.describeHand());
 

@@ -47,9 +47,7 @@ public class TravelerGoblin extends FollowCard {
             }));
         getWhenBattles().add(
             new Event.WhenBattle(damage -> {
-                if(damage.checkFollowAtArea()){
-                    ((FollowCard)damage.another(this)).destroyBy(this);
-                }
+                ((FollowCard)damage.another(this)).destroyBy(this);
             }));
 
     }

@@ -381,6 +381,15 @@ public class GameHandler {
 
         info.msgTo(me, info.describeGame(me));
     }
+    @OnEvent(value = "area")
+    public void area(SocketIOClient client, String msg){
+
+        UUID me = client.getSessionId();
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+
+        info.msgTo(me, info.describeArea(me));
+    }
     @OnEvent(value = "ff")
     public void ff(SocketIOClient client, String msg){
 
