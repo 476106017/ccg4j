@@ -42,6 +42,7 @@ public abstract class AreaCard extends Card{
     public void death(){
         info.msg(getNameWithOwner()+"被送入墓地！");
 
+        ownerPlayer().getArea().remove(this);
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");
         }
@@ -63,7 +64,6 @@ public abstract class AreaCard extends Card{
 
         ownerPlayer().getGraveyard().add(this);
         ownerPlayer().countToGraveyard(1);
-        ownerPlayer().getArea().remove(this);
     }
 
     public static class Event {

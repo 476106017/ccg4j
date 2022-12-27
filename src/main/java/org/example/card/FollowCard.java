@@ -113,9 +113,9 @@ public abstract class FollowCard extends AreaCard{
             damage.setDamage(0);
             info.msg(getNameWithOwner() + "免疫了效果伤害！");
         }
+        setHp(getHp()- damage.getDamage());
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害" +
             "（剩余"+getHp()+"点生命值）");
-        setHp(getHp()- damage.getDamage());
     }
     public boolean damageSettlement(Damage damage){
 

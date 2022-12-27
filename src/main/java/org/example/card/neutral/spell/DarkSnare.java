@@ -45,7 +45,7 @@ public class DarkSnare extends SpellCard {
         getPlays().add(new Card.Event.Play(()->{
                 List<GameObj> targetable = new ArrayList<>();
                 targetable.add(info.oppositePlayer().getLeader());
-                targetable.addAll(info.oppositePlayer().getArea());
+                targetable.addAll(info.oppositePlayer().getAreaFollows());
                 return targetable;
             },
             1,

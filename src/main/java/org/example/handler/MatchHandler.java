@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
 import org.example.card.fairy.amulet.ForestSymphony;
+import org.example.card.fairy.follow.EternalBloom;
 import org.example.card.fairy.follow.FairyWhisperer;
 import org.example.card.fairy.spell.ForestGenesis;
 import org.example.card.nemesis.spell.CalamitysGenesis;
@@ -67,7 +68,7 @@ public class MatchHandler {
             activeDeck.add(TravelerGoblin.class);
             activeDeck.add(CalamitysGenesis.class);
             activeDeck.add(ForestGenesis.class);
-            activeDeck.add(ForestSymphony.class);
+            activeDeck.add(EternalBloom.class);
 
         }
         userDecks.put(uuid, playerDeck);
