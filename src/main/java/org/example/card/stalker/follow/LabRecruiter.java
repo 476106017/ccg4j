@@ -1,17 +1,17 @@
 package org.example.card.stalker.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.fairy.spell.EternalForest;
-import org.example.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class LabRecruiter extends FollowCard {
     private String name = "实验室招募员";
     private Integer cost = 2;
@@ -25,7 +25,7 @@ public class LabRecruiter extends FollowCard {
     private String subMark = "";
 
     public LabRecruiter() {
-        super();
+        setMaxHp(getHp());
         getPlays().add(new Card.Event.Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),1,
             gameObjs -> {

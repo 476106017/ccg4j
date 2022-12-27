@@ -1,7 +1,8 @@
 package org.example.card;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.constant.CardType;
 import org.example.game.Damage;
 import org.example.game.GameObj;
@@ -12,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public abstract class FollowCard extends AreaCard{
     public final CardType TYPE = CardType.FOLLOW;
     private int atk = 0;
@@ -34,11 +36,6 @@ public abstract class FollowCard extends AreaCard{
     @Override
     public String getType() {
         return TYPE.getName();
-    }
-
-    public FollowCard() {
-        // 实例化随从牌时，需要区分血量和血上限
-        setMaxHp(getHp());
     }
 
     public void addStatus(int atk, int hp){
@@ -80,14 +77,14 @@ public abstract class FollowCard extends AreaCard{
         if(damage.getTo() instanceof Leader leader)
             leader.damaged(damage);
         if(damage.getTo() instanceof FollowCard toFollow){
-            if(!getWhenBattles().isEmpty())
+            if(!getWhenBattles().isEmpty()){
                 info.msg(getNameWithOwner() + "发动交战时效果！");
-            getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-
-            if (!toFollow.getWhenBattles().isEmpty())
+                getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
+            }
+            if (toFollow.atArea() && !toFollow.getWhenBattles().isEmpty()){
                 info.msg(toFollow.getNameWithOwner() + "发动交战时效果！");
-            toFollow.getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-
+                toFollow.getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
+            }
             if(damage.checkFollowAtArea())
                 toFollow.damageBoth(damage);
         }
@@ -105,8 +102,8 @@ public abstract class FollowCard extends AreaCard{
             info.msg(fromFollow.getNameWithOwner()+"受到了来自"+ getName()+"的"+getAtk()+"点反击伤害" +
                 "（剩余"+fromFollow.getHp()+"点生命值）");
 
-            damageSettlement(new Damage(from,this));
-            damageSettlement(new Damage(this,from));
+            this.damageSettlement(new Damage(from,this));
+            fromFollow.damageSettlement(new Damage(this,from));
         }else {
             throw new RuntimeException("伤害来源非随从，无法生成反击！");
         }
@@ -122,8 +119,10 @@ public abstract class FollowCard extends AreaCard{
     }
     public boolean damageSettlement(Damage damage){
 
-        if(!damage.checkFollowAtArea()) return false;
+        if(!atArea()) return false;
         GameObj from = damage.getFrom();
+
+
         if(from instanceof Card card && card.hasKeyword("吸血")){
             info.msg(card.getNameWithOwner() + "发动吸血效果！");
             card.ownerPlayer().heal(damage.getDamage());
@@ -132,7 +131,8 @@ public abstract class FollowCard extends AreaCard{
             info.msg(getNameWithOwner() + "发动受伤时效果！");
             getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
         }
-        if(!damage.checkFollowAtArea()) return false;// 因受伤时效果自灭了，不算击杀
+
+        if(!atArea()) return false;// 因受伤时效果自灭了，不算击杀
 
         // 由剧毒随从攻击
         if(from instanceof FollowCard fromFollow && fromFollow.hasKeyword("剧毒") ){

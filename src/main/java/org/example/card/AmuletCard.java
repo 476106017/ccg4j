@@ -1,11 +1,13 @@
 package org.example.card;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.constant.CardType;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public abstract class AmuletCard extends AreaCard{
 
     public final CardType TYPE = CardType.AMULET;

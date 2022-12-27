@@ -1,17 +1,19 @@
 package org.example.card.fairy.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.fairy.amulet.EternalGarden;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.card.fairy.amulet.EternalGarden;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class EternalSeedling extends FollowCard {
 
     public Integer cost = 0;
@@ -38,7 +40,7 @@ public class EternalSeedling extends FollowCard {
     }
 
     public EternalSeedling() {
-        super();
+        setMaxHp(getHp());
         getInvocationBegins().add(new Card.Event.InvocationBegin(
             ()->true,
             ()->{}

@@ -1,15 +1,17 @@
 package org.example.card.nemesis.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class WorldEliminator extends FollowCard {
     private Integer cost = 5;
     private String name = "世界驱除者";
@@ -26,7 +28,7 @@ public class WorldEliminator extends FollowCard {
     private int hp = 3;
 
     public WorldEliminator() {
-        super();
+        setMaxHp(getHp());
         getKeywords().add("突进");
         getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
             ownerPlayer().addHpMax(2);

@@ -1,9 +1,11 @@
 package org.example.game;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.FollowCard;
 
-@Data
+@Getter
+@Setter
 public class Damage{
     GameObj from;
     GameObj to;

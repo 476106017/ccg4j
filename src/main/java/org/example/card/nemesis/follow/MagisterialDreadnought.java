@@ -1,7 +1,8 @@
 package org.example.card.nemesis.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
@@ -9,8 +10,9 @@ import org.example.card.FollowCard;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class MagisterialDreadnought extends FollowCard {
     private Integer cost = 5;
     private String name = "正义暴君";
@@ -28,7 +30,7 @@ public class MagisterialDreadnought extends FollowCard {
     private int hp = 5;
 
     public MagisterialDreadnought() {
-        super();
+        setMaxHp(getHp());
         getEnterings().add(new AreaCard.Event.Entering(()->{
             ownerPlayer().summon(createCard(WorldEliminator.class));
         }));

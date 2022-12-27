@@ -1,15 +1,17 @@
 package org.example.card.fairy.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class FairyWhisperer extends FollowCard {
     public Integer cost = 2;
     public String name = "妖之轻语者";
@@ -28,7 +30,7 @@ public class FairyWhisperer extends FollowCard {
     public int hp = 1;
 
     public FairyWhisperer() {
-        super();
+        setMaxHp(getHp());
         getPlays().add(new Card.Event.Play(ArrayList::new,0, target->{
             List<Card> fairies = new ArrayList<>();
             for (int i = 0; i < getCost(); i++) {

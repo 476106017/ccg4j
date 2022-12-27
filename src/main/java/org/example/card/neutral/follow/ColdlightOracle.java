@@ -1,15 +1,17 @@
 package org.example.card.neutral.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class ColdlightOracle extends FollowCard {
     private String name = "寒光智者";
     private Integer cost = 3;
@@ -23,7 +25,7 @@ public class ColdlightOracle extends FollowCard {
     private String subMark = "";
 
     public ColdlightOracle() {
-        super();
+        setMaxHp(getHp());
         getPlays().add(new Card.Event.Play(ArrayList::new,0,
             gameObjs -> {
                 ownerPlayer().draw(2);

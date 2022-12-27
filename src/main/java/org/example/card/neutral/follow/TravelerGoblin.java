@@ -1,15 +1,17 @@
 package org.example.card.neutral.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class TravelerGoblin extends FollowCard {
     public Integer cost = 1;
     public String name = "哥布林旅行家";
@@ -31,7 +33,7 @@ public class TravelerGoblin extends FollowCard {
     public int hp = 1;
 
     public TravelerGoblin() {
-        super();
+        setMaxHp(getHp());
         getPlays().add(
             new Card.Event.Play(ArrayList::new,0, targets->{
                 int turn = info.getTurn();

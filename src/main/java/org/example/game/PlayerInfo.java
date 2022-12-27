@@ -1,11 +1,10 @@
 package org.example.game;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.neutral.SVPlayer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
-@Data
+@Getter
+@Setter
 public class PlayerInfo {
-    @EqualsAndHashCode.Exclude
     GameInfo info;
 
     String name;
@@ -40,7 +39,7 @@ public class PlayerInfo {
         graveyardCount += count;
     }
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
-    Leader leader = new SVPlayer();
+    Leader leader;
 
     public PlayerInfo(GameInfo info,boolean initative) {
         this.info = info;

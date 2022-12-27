@@ -1,18 +1,17 @@
 package org.example.game;
 
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 
-@Data
+@Getter
+@Setter
 public abstract class GameObj {
 
     private static int id_iter=10000; //共用的静态变量
     public final int id;
 
-
-    @EqualsAndHashCode.Exclude
     protected GameInfo info = null;
 
     protected int owner = 0;
@@ -28,6 +27,8 @@ public abstract class GameObj {
     public String getNameWithOwner(){
         return ownerPlayer().getName()+"的"+getName();
     };
+
+    public void initCounter(){}
 
     public GameObj() {
         id_iter++;

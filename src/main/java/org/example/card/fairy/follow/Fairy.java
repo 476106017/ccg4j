@@ -1,14 +1,16 @@
 package org.example.card.fairy.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class Fairy extends FollowCard {
     public Integer cost = 1;
 
@@ -24,7 +26,7 @@ public class Fairy extends FollowCard {
     public int hp = 1;
 
     public Fairy() {
-        super();
+        setMaxHp(getHp());
         getInvocationEnds().add(new Card.Event.InvocationEnd(
             ()->ownerPlayer().getPpNum() == 1,
             ()->{}

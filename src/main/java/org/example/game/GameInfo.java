@@ -1,7 +1,8 @@
 package org.example.game;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 
@@ -13,9 +14,9 @@ import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
 import static org.example.system.Database.*;
-import static org.example.system.Database.userDecks;
 
-@Data
+@Getter
+@Setter
 public class GameInfo {
     SocketIOServer server;
     String room;
@@ -98,22 +99,26 @@ public class GameInfo {
         cardsCopy.forEach(AreaCard::death);
     }
 
-    public void zeroTurn(UUID u1, UUID u2){
+    public void zeroTurn(UUID u0, UUID u1){
 
         PlayerInfo p0 = thisPlayer();
-        p0.setDeck(userDecks.get(u1).getActiveDeckInstance(0, this));
-        p0.setUuid(u1);
-        p0.setName(userNames.get(u1));
+        PlayerDeck playerDeck0 = userDecks.get(u0);
+        p0.setLeader(playerDeck0.getLeader(0, this));
+        p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
+        p0.setUuid(u0);
+        p0.setName(userNames.get(u0));
         Collections.shuffle(p0.getDeck());
-        p0.draw(3);
-        msgToThisPlayer("你的手牌:\n"+p0.describeHand());
 
         PlayerInfo p1 = oppositePlayer();
-        p1.setDeck(userDecks.get(u2).getActiveDeckInstance(1, this));
-        p1.setUuid(u2);
-        p1.setName(userNames.get(u2));
+        p1.setLeader(playerDeck0.getLeader(1, this));
+        p1.setDeck(userDecks.get(u1).getActiveDeckInstance(1, this));
+        p1.setUuid(u1);
+        p1.setName(userNames.get(u1));
         Collections.shuffle(p1.getDeck());
+
+        p0.draw(3);
         p1.draw(3);
+        msgToThisPlayer("你的手牌:\n"+p0.describeHand());
         msgToOppositePlayer("你的手牌:\n"+p1.describeHand());
 
     }
@@ -365,7 +370,10 @@ public class GameInfo {
                 int timer = amulet.getTimer();
                 sb.append(count==-1?"-":count).append("/").append(timer==-1?"∞":timer).append("\t");
             }
-            sb.append(card.getKeywords()).append("\n");
+
+            if(!card.getKeywords().isEmpty())
+                sb.append(card.getKeywords());
+            sb.append("\n");
         }
         sb.append("\n我方战场：\n");
         for (int i = 0; i < player.area.size(); i++) {
@@ -390,7 +398,7 @@ public class GameInfo {
             }
 
             if(!card.getKeywords().isEmpty())
-                sb.append(card.getKeywords()).append("\n");
+                sb.append(card.getKeywords());
             sb.append("\n");
         }
         sb.append("\n");

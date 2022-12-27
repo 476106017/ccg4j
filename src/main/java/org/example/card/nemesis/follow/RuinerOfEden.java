@@ -1,17 +1,19 @@
 package org.example.card.nemesis.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.nemesis.spell.CalamitysEnd;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.card.nemesis.spell.CalamitysEnd;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class RuinerOfEden extends FollowCard {
     private Integer cost = 8;
     private String name = "幻境粉碎者";
@@ -29,7 +31,7 @@ public class RuinerOfEden extends FollowCard {
     private int hp = 5;
 
     public RuinerOfEden() {
-        super();
+        setMaxHp(getHp());
         getKeywords().add("守护");
         getKeywords().add("剧毒");
         getEnterings().add(new AreaCard.Event.Entering(()->{

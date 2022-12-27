@@ -1,7 +1,8 @@
 package org.example.card.neutral.spell;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class DarkSnare extends SpellCard {
     public Integer cost = 4;
     public String name = "暗黑陷阱";

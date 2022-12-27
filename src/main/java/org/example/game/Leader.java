@@ -1,7 +1,8 @@
 package org.example.game;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.constant.EffectTiming;
 
@@ -10,8 +11,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public abstract class Leader extends GameObj {
 
 
@@ -97,7 +99,8 @@ public abstract class Leader extends GameObj {
         getEffectsWhen(timing).forEach(effect -> effect.getEffect().accept(damage));
     }
 
-    @Data
+    @Getter
+@Setter
     public static class Effect{
         private EffectTiming timing;
         private int canUseTurn;// 可使用回合（包含对方回合）

@@ -1,7 +1,8 @@
 package org.example.card.neutral;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.game.GameObj;
 import org.example.game.Leader;
@@ -10,8 +11,9 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.EP_NUM;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class SVPlayer extends Leader {
 
     private String name = "玩家";
@@ -25,13 +27,15 @@ public class SVPlayer extends Leader {
         """;
     private int skillCost = 0;
 
-    public SVPlayer() {
+    @Override
+    public void initCounter() {
         if (ownerPlayer().isInitative()) {
             ownerPlayer().count(EP_NUM,2);
         }else {
             ownerPlayer().count(EP_NUM,3);
         }
     }
+
     @Override
     public List<GameObj> targetable() {
         if(ownerPlayer().getCount(EP_NUM) == 0

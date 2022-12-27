@@ -1,17 +1,18 @@
 package org.example.card.nemesis.spell;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
-import org.example.game.Leader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class MercurialMight  extends SpellCard {
     public Integer cost = 1;
     public String name = "水银的断绝";

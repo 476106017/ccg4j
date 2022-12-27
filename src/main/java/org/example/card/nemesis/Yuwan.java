@@ -1,18 +1,19 @@
 package org.example.card.nemesis;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.nemesis.follow.AnalyzingArtifact;
-import org.example.game.GameInfo;
 import org.example.game.GameObj;
 import org.example.game.Leader;
 import org.example.game.PlayerInfo;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class Yuwan extends Leader {
     private String name = "伊昂";
     private String job = "复仇者";

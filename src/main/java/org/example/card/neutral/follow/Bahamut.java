@@ -1,7 +1,8 @@
 package org.example.card.neutral.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
@@ -12,8 +13,9 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.ALL_COST;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class Bahamut extends FollowCard {
     public Integer cost = 9;
     public String name = "巴哈姆特";
@@ -34,7 +36,7 @@ public class Bahamut extends FollowCard {
     public int hp = 13;
 
     public Bahamut() {
-        super();
+        setMaxHp(getHp());
         getPlays().add(new Card.Event.Play(ArrayList::new,0,
             gameObjs -> {
                 List<AreaCard> area = enemyPlayer().getArea();

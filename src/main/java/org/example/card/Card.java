@@ -1,7 +1,7 @@
 package org.example.card;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.game.GameObj;
 import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
@@ -14,8 +14,8 @@ import java.util.function.Supplier;
 import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 public abstract class Card extends GameObj {
 
     private GameObj parent = null;
@@ -72,8 +72,6 @@ public abstract class Card extends GameObj {
     public void count(String key,int time){
         counter.merge(key, time, Integer::sum);
     }
-
-    public void initCounter(){}
 
     public Card copyCard(){
         try {

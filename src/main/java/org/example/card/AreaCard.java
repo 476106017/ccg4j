@@ -1,15 +1,17 @@
 package org.example.card;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.game.GameObj;
 import org.example.system.function.FunctionN;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public abstract class AreaCard extends Card{
     public abstract String getType();
 

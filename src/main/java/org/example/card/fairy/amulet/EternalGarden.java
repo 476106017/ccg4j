@@ -1,7 +1,8 @@
 package org.example.card.fairy.amulet;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
 
@@ -9,8 +10,9 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class EternalGarden extends AmuletCard {
 
     public Integer cost = 5;

@@ -1,8 +1,8 @@
 package org.example.card.nemesis.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.example.card.AreaCard;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.nemesis.spell.MercurialMight;
@@ -10,8 +10,9 @@ import org.example.card.nemesis.spell.MercurialMight;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class ImmortalAegis extends FollowCard {
     private Integer cost = 6;
     private String name = "永恒之盾·席翁";
@@ -27,7 +28,7 @@ public class ImmortalAegis extends FollowCard {
     private int hp = 8;
 
     public ImmortalAegis() {
-        super();
+        setMaxHp(getHp());
         getKeywords().add("无法破坏");
         getKeywords().add("魔法免疫");
 

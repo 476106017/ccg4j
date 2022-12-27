@@ -1,7 +1,8 @@
 package org.example.card.fairy.spell;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
 
@@ -10,8 +11,9 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class EternalForest extends SpellCard {
     public Integer cost = 0;
     public String name = "永恒森林";

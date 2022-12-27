@@ -1,15 +1,17 @@
 package org.example.card.neutral.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.GameObj;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class AmbitiousGoblinMage  extends FollowCard {
     private String name = "宏愿哥布林法师";
     private Integer cost = 1;
@@ -23,7 +25,7 @@ public class AmbitiousGoblinMage  extends FollowCard {
     private String subMark = "";
 
     public AmbitiousGoblinMage() {
-        super();
+        setMaxHp(getHp());
         getPlays().add(new Card.Event.Play(
             ()->ownerPlayer().getHand().stream()
                 .filter(card -> card instanceof FollowCard).map(card -> (GameObj)card).toList(),

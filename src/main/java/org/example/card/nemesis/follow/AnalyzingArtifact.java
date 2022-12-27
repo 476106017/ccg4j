@@ -1,14 +1,16 @@
 package org.example.card.nemesis.follow;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
+@Getter
+@Setter
 public class AnalyzingArtifact  extends FollowCard {
     private String name = "解析的造物";
     private Integer cost = 1;
@@ -23,7 +25,7 @@ public class AnalyzingArtifact  extends FollowCard {
 
 
     public AnalyzingArtifact() {
-        super();
+        setMaxHp(getHp());
         getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
             ownerPlayer().draw(1);
         }));

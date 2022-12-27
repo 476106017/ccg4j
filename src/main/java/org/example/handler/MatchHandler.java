@@ -13,6 +13,7 @@ import org.example.card.fairy.amulet.ForestSymphony;
 import org.example.card.fairy.follow.FairyWhisperer;
 import org.example.card.fairy.spell.ForestGenesis;
 import org.example.card.nemesis.spell.CalamitysGenesis;
+import org.example.card.neutral.SVPlayer;
 import org.example.card.neutral.follow.Bahamut;
 import org.example.card.neutral.follow.TravelerGoblin;
 import org.example.card.neutral.spell.DarkSnare;
@@ -57,6 +58,7 @@ public class MatchHandler {
         System.out.println("客户端" + uuid + "建立websocket连接成功,用户名："+name);
         // region TODO 先由临时玩家游玩，直接拥有全部卡牌
         PlayerDeck playerDeck = new PlayerDeck();
+        playerDeck.setLeaderClass(SVPlayer.class);
         List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
         for (int i = 0; i < 3; i++) {
             activeDeck.add(Bahamut.class);
