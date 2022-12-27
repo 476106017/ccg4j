@@ -19,6 +19,8 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class Card extends GameObj {
+
+    @EqualsAndHashCode.Exclude
     protected GameInfo info = null;
     private int owner = 0;
 

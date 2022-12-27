@@ -104,8 +104,20 @@ public class MatchHandler {
                 "匹配成功！ 【"+userNames.get(me)+"】vs【"+userNames.get(waitUser)+"】");
             socketIOServer.getClient(waitUser).sendEvent("receiveMsg",
                 "匹配成功！ 【"+userNames.get(waitUser)+"】vs【"+userNames.get(me)+"】");
+
+            // region 不需要准备直接开始
+            // 比赛开始
+            GameInfo info = new GameInfo(socketIOServer,waitRoom);
+
+            // 初始化游戏，先匹配的先手
+            info.zeroTurn(waitUser,me);
+
+            roomGame.put(waitRoom,info);
+            // endregion 不需要准备直接开始
+
             waitRoom = "";
             waitUser = null;
+
         }
     }
 

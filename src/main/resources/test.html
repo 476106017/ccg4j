@@ -19,7 +19,7 @@
     <b id="name"></b>
     <input type="button" onclick="initIm()" value="重连"/>
     <br/>
-    <input id="msgContent" name="msgContent" onkeydown="if(event.keyCode==13){sendMsg();}" placeholder="请输入消息">
+    <input id="msgContent" name="msgContent" onkeydown="keyDown(event)" placeholder="请输入消息">
     <select id="msgType" name="msgType">
         <option value="00">全部</option>
     </select>
@@ -27,15 +27,16 @@
     <input type="button" onclick="cleanMsg()" value="清空"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('jr')" value="匹配"/>
-    <input type="button" onclick="$('#msgContent').val('zb')" value="准备"/>
     <input type="button" onclick="$('#msgContent').val('chat')" value="聊天"/>
     <input type="button" onclick="$('#msgContent').val('swap')" value="换牌"/>
     <input type="button" onclick="$('#msgContent').val('info')" value="战场信息"/>
-    <input type="button" onclick="$('#msgContent').val('turn end')" value="结束回合"/>
+    <input type="button" onclick="$('#msgContent').val('end')" value="结束回合"/>
 </div>
 
 <script type="text/javascript" th:inline="javascript">
         var userName, socket;
+        var historyIndex = 0;
+        var historyStack=[];
         // Socket连接
         function initIm() {
             userName = prompt("请输入用户名进入聊天室");
@@ -63,7 +64,28 @@
 
         initIm();
 
-        
+        // 输入框键盘输入
+        function keyDown(event) {
+
+            if(event.keyCode==13){sendMsg();}
+            if(event.keyCode==38){// up arrow
+                historyIndex--;
+                historyContent = historyStack.slice(historyIndex)[0];
+                if(historyContent){
+                    $('#msgContent').val(historyContent);
+                }
+            }
+            if(event.keyCode==40){// dw arrow
+                historyIndex++;
+                historyContent = historyStack.slice(historyIndex)[0];
+                if(historyIndex<0 && historyContent){
+                    $('#msgContent').val(historyContent);
+                }
+            }
+
+        }
+
+
         // 发送消息
         function sendMsg() {
             let input = $("#msgContent").val()
@@ -72,6 +94,8 @@
             let msgEvent = input.substring(0,index);
             let msgContent = input.substring(index+1,input.length);
             socket.emit(msgEvent, msgContent);
+            historyStack.push(input);
+            historyIndex = 0;
             $("#msgContent").val('');
             $('#msgList').append("<li style=\"background-color: #ccc;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + input+  "</li>");
             scrollToEnd();
@@ -85,7 +109,7 @@
         }
         function scrollToEnd(){//滚动到底部
             var h = $(document).height()-$(window).height();
-            $(document).scrollTop(h); 
+            $(document).scrollTop(h);
         }
 	</script>
 

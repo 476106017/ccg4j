@@ -18,6 +18,7 @@ import static org.example.constant.CounterKey.*;
 @Data
 public abstract class Leader extends GameObj {
 
+    @EqualsAndHashCode.Exclude
     private PlayerInfo playerInfo;
 
     private boolean canUseSkill = true;

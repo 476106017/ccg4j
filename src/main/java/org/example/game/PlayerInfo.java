@@ -1,6 +1,7 @@
 package org.example.game;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.nemesis.Yuwan;
@@ -14,6 +15,7 @@ import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
 @Data
 public class PlayerInfo {
+    @EqualsAndHashCode.Exclude
     GameInfo info;
 
     String name;

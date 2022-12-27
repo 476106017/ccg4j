@@ -90,8 +90,8 @@ public class GameHandler {
     }
 
     /* 回合结束 */
-    @OnEvent(value = "turn")
-    public void turn(SocketIOClient client, String msg){
+    @OnEvent(value = "end")
+    public void turnEnd(SocketIOClient client, String msg){
 
         // region 获取游戏对象
         UUID me = client.getSessionId();
@@ -102,14 +102,16 @@ public class GameHandler {
         // endregion
 
         if(!me.equals(player.getUuid())){
-            info.msgTo(me,"当前不是你的回合！");
+            if("f".equals(msg)){
+                info.msgTo(me,"强制结束对手回合！");
+                info.endTurnOfCommand();
+            }else {
+                info.msgTo(me,"当前不是你的回合！");
+            }
             return;
         }
 
-
-        if("end".equals(msg)){
-            info.endTurnOfCommand();
-        }
+        info.endTurnOfCommand();
     }
 
     /* 出牌 */
@@ -153,6 +155,7 @@ public class GameHandler {
             info.msgTo(me,"场上放不下卡牌了！");
             return;
         }
+
         List<GameObj> targetable = card.getTargets();
         // 只有一个参数
         if(split.length == 1){
@@ -391,5 +394,45 @@ public class GameHandler {
         info.gameset(enemy);
 
 
+    }
+
+    // TODO 测试用，使对手顺序出牌
+    @OnEvent(value = "test")
+    public void test(SocketIOClient client, String msg){
+        UUID me = client.getSessionId();
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo enemy = info.anotherPlayerByUuid(me);
+
+        if(!me.equals(player.getUuid())){
+            info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
+
+
+        enemy.getHand().stream().filter(card -> card.getCost()<= enemy.getPpNum())
+            .findAny().ifPresent(card -> {
+            if(card instanceof AreaCard &&
+                enemy.getArea().size()==enemy.getAreaMax()){
+                info.msgTo(me,"对手场上放不下卡牌了！");
+                return;
+            }
+
+            if(card.getPlays().isEmpty()){
+                card.play(new ArrayList<>());
+                return;
+            }
+
+            Integer targetNum = card.getPlays().stream().map(Card.Event.Play::targetNum).reduce(Math::max).get();
+            int shouldTargetNum = Math.min(card.getTargets().size(), targetNum);
+            if(shouldTargetNum == 0){
+                card.play(new ArrayList<>());
+            }else {
+                List<GameObj> targets = card.getTargets().subList(0, shouldTargetNum);
+                card.play(targets);
+            }
+
+        });
     }
 }
