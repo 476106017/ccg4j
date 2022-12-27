@@ -22,7 +22,7 @@ public class EternalBloom extends FollowCard {
     public String mark = """
         瞬念召唤：回合开始时
         离场时：摧毁己方场上所有植物，每摧毁1张，便随机破坏1张对手随从卡，并且抽1张牌
-        轮回时：增加1张永恒森林到牌堆中
+        轮回时：将1张永恒森林洗入牌堆
         突进
         """;
     public String subMark = "";

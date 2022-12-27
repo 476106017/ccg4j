@@ -21,8 +21,8 @@ public class EternalSeedling extends FollowCard {
     private List<String> race = List.of("植物");
     public String mark = """
         瞬念召唤：回合开始时
-        离场时：增加1张永恒树苗到牌堆中；如果墓地中的永恒树苗数量大于3，且场上没有永恒庭园，则召唤1个永恒庭园到场上
-        轮回时：增加1张永恒之花到牌堆中
+        离场时：将1张永恒树苗洗入牌堆；如果墓地中的永恒树苗数量大于3，且场上没有永恒庭园，则召唤1个永恒庭园到场上
+        轮回时：将1张永恒之花洗入牌堆
         """;
     public String subMark = "墓地中的永恒树苗数量:{count}";
 

@@ -40,10 +40,7 @@ public class SVPlayer extends Leader {
             return List.of();
         }
 
-        return ownerPlayer().getArea().stream()
-            .filter(areaCard -> areaCard instanceof FollowCard)
-            .map(areaCard -> (GameObj)areaCard)
-            .toList();
+        return ownerPlayer().getAreaFollowsAsGameObj();
     }
 
     @Override

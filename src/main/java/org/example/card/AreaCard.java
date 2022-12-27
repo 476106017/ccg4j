@@ -51,7 +51,7 @@ public abstract class AreaCard extends Card{
         getDeathRattles().forEach(leaving -> leaving.effect().apply());
 
         // region 注能
-        ownerPlayer().getDeck()
+        ownerPlayer().getHand()
             .forEach(card -> {
                 card.getCharges().stream()
                     .filter(charge -> charge.canBeTriggered().test(this))

@@ -18,7 +18,7 @@ public class ForestGenesis extends SpellCard {
     public String job = "妖精";
     private List<String> race = List.of("灾厄");
     public String mark = """
-        增加1张永恒树苗到牌堆中。
+        将1张永恒树苗洗入牌堆。
         """;
 
     public String subMark = "";

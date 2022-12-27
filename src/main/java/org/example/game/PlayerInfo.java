@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.FollowCard;
 import org.example.card.neutral.SVPlayer;
 
 import java.util.*;
@@ -146,6 +147,18 @@ public class PlayerInfo {
         }
         area.addAll(cards);
     }
+    public List<FollowCard> getAreaFollows(){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard)
+            .map(areaCard -> (FollowCard)areaCard)
+            .toList();
+    }
+    public List<GameObj> getAreaFollowsAsGameObj(){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard)
+            .map(areaCard -> (GameObj)areaCard)
+            .toList();
+    }
 
     public void summon(AreaCard areaCard){
         info.msg(getName() + "召唤了" + areaCard.getName());
@@ -171,7 +184,7 @@ public class PlayerInfo {
                 }
                 card.getTransmigrations().forEach(entering -> entering.effect().apply());// 发动轮回时
                 outGraveyardCards.add(card);
-                getDeck().add(card.copyCard());
+                addDeck(card.copyCard());
             });
         info.msg(getName() + "的"+num+"张牌轮回了");
         count(TRANSMIGRATION_NUM,num);

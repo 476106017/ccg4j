@@ -20,7 +20,7 @@ public class EternalForest extends SpellCard {
     public String mark = """
         揭示:回合开始时
         主战者增加10点血上限。
-        如果轮回数小于30个，则增加1张永恒森林到牌堆中；
+        如果轮回数小于30个，则将1张永恒森林洗入牌堆；
         如果轮回数大于30个，则赢得胜利；
         """;
 

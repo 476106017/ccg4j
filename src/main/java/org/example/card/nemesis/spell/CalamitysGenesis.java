@@ -22,7 +22,7 @@ public class CalamitysGenesis extends SpellCard {
     public String job = "复仇者";
     private List<String> race = List.of("灾厄");
     public String mark = """
-        增加2张正义暴君到牌堆中。回合结束时，抽1张5费以上随从。
+        将2张正义暴君洗入牌堆。回合结束时，搜寻1张5费以上随从。
         """;
 
     public String subMark = "";

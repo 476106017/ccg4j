@@ -20,7 +20,7 @@ public class MagisterialDreadnought extends FollowCard {
     private String mark = """
         瞬念召唤：回合开始时被破坏的5费以上随从大于5个
         入场时：召唤1个世界驱除者
-        离场时：增加2张幻境粉碎者到牌堆中
+        离场时：将2张幻境粉碎者洗入牌堆
         """;
     private String subMark = "";
 
