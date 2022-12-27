@@ -39,7 +39,7 @@ public class TravelerGoblin extends FollowCard {
                     ownerPlayer().draw(1);
                 } else if (turn >= 8) {
                     ownerPlayer().heal(8);
-                    changeStatus(2,2);
+                    addStatus(2,2);
                     addKeyword("突进");
                 }else{
                     info.msg(getName() + "战吼后什么也没有发生！");

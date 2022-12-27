@@ -10,7 +10,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class AreaCard  extends Card{
+public abstract class AreaCard extends Card{
     public abstract String getType();
 
     // region 效果列表

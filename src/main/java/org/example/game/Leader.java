@@ -14,9 +14,8 @@ import java.util.function.Consumer;
 @Data
 public abstract class Leader extends GameObj {
 
-    @EqualsAndHashCode.Exclude
-    private PlayerInfo playerInfo;
 
+    private boolean needTarget = true;
     private boolean canUseSkill = true;
 
     public abstract String getJob();
@@ -24,7 +23,7 @@ public abstract class Leader extends GameObj {
     public abstract String getSkillMark();
     public abstract int getSkillCost();
     public String getNameWithOwner(){
-        return getPlayerInfo().getName()+"的主战者【"+getName()+"】";
+        return ownerPlayer().getName()+"的主战者【"+getName()+"】";
     };
 
     private List<Effect> effects = new ArrayList<>();
@@ -32,34 +31,35 @@ public abstract class Leader extends GameObj {
     public List<GameObj> targetable(){return new ArrayList<>();}
 
     public void skill(GameObj target){
-        GameInfo info = playerInfo.getInfo();
-        UUID me = playerInfo.getUuid();
+        GameInfo info = ownerPlayer().getInfo();
+        UUID me = ownerPlayer().getUuid();
 
         if(!isCanUseSkill()){
-            info.msgTo(me,"现在无法使用主战者技能！");
+            info.msgToThisPlayer("现在无法使用主战者技能！");
             throw new RuntimeException();
         }
-        if(getSkillCost() > getPlayerInfo().getPpNum()){
-            info.msgTo(me,"没有足够的pp以使用主战者技能！");
+        if(getSkillCost() > ownerPlayer().getPpNum()){
+            info.msgToThisPlayer("没有足够的pp以使用主战者技能！");
             throw new RuntimeException();
         }
         if(target!=null && !targetable().contains(target)){
-            info.msgTo(me,"无法指定该目标！");
+            info.msgToThisPlayer("无法指定该目标！");
             throw new RuntimeException();
         }
-        info.msg(getPlayerInfo().getName() + "使用了"+getName()+"的主战者技能："+getSkillName());
+        info.msg(ownerPlayer().getName() + "使用了"+getName()+"的主战者技能："+getSkillName());
+        setCanUseSkill(false);
     };
 
     public void damaged(Damage damage){
-        GameInfo info = getPlayerInfo().getInfo();
+        GameInfo info = ownerPlayer().getInfo();
 
         useEffectWithDamage(EffectTiming.LeaderDamaged,damage);
 
-        getPlayerInfo().setHp(getPlayerInfo().getHp()- damage.getDamage());
+        ownerPlayer().setHp(ownerPlayer().getHp()- damage.getDamage());
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害！" +
-            "（剩余"+getPlayerInfo().getHp()+"点生命值）");
-        if (getPlayerInfo().getHp() <= 0) {
-            info.gameset(getPlayerInfo().getEnemy());// 敌方获胜
+            "（剩余"+ownerPlayer().getHp()+"点生命值）");
+        if (ownerPlayer().getHp() <= 0) {
+            info.gameset(ownerPlayer().getEnemy());// 敌方获胜
         }
     }
 
@@ -82,7 +82,7 @@ public abstract class Leader extends GameObj {
                 if(canUse == 1){
                     // 用完了销毁
                     usedUpEffects.add(effect);
-                    getPlayerInfo().getInfo().msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已消失");
+                    ownerPlayer().getInfo().msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已消失");
                 }else if (canUse > 1){
                     effect.setCanUseTurn(canUse-1);
                 }

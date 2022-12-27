@@ -41,7 +41,7 @@ public abstract class FollowCard extends AreaCard{
         setMaxHp(getHp());
     }
 
-    public void changeStatus(int atk, int hp){
+    public void addStatus(int atk, int hp){
         // region 构造消息
         StringBuilder sb = new StringBuilder();
         sb.append(this.getNameWithOwner()).append("获得了");
@@ -123,6 +123,11 @@ public abstract class FollowCard extends AreaCard{
     public boolean damageSettlement(Damage damage){
 
         if(!damage.checkFollowAtArea()) return false;
+        GameObj from = damage.getFrom();
+        if(from instanceof Card card && card.hasKeyword("吸血")){
+            info.msg(card.getNameWithOwner() + "发动吸血效果！");
+            card.ownerPlayer().heal(damage.getDamage());
+        }
         if(!getWhenDamageds().isEmpty()){
             info.msg(getNameWithOwner() + "发动受伤时效果！");
             getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
@@ -130,7 +135,7 @@ public abstract class FollowCard extends AreaCard{
         if(!damage.checkFollowAtArea()) return false;// 因受伤时效果自灭了，不算击杀
 
         // 由剧毒随从攻击
-        if(damage.getFrom() instanceof FollowCard fromFollow && fromFollow.hasKeyword("剧毒") ){
+        if(from instanceof FollowCard fromFollow && fromFollow.hasKeyword("剧毒") ){
             if(destroyBy(fromFollow)) return true;
         }
         // 未被效果破坏，计算生命值
@@ -138,7 +143,7 @@ public abstract class FollowCard extends AreaCard{
             return false;
         }else {
             death();
-            if(damage.getFrom() instanceof FollowCard fromFollow
+            if(from instanceof FollowCard fromFollow
                 && fromFollow.atArea() // 受伤时效果发动后【攻击者】还在场
                 && !fromFollow.getWhenKills().isEmpty()){
                 info.msg(fromFollow.getNameWithOwner() + "发动击杀时效果！");

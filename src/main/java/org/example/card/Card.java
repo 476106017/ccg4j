@@ -3,8 +3,6 @@ package org.example.card;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.game.GameObj;
-import org.example.game.GameInfo;
-import org.example.game.PlayerInfo;
 import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
 
@@ -20,11 +18,7 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @Data
 public abstract class Card extends GameObj {
 
-    @EqualsAndHashCode.Exclude
-    protected GameInfo info = null;
-    private int owner = 0;
-
-    private Card parentCard = null;
+    private GameObj parent = null;
 
     private Map<String,Integer> counter = new HashMap<>();
 
@@ -54,18 +48,9 @@ public abstract class Card extends GameObj {
     // endregion 效果列表
 
 
-    public PlayerInfo ownerPlayer(){
-        return info.getPlayerInfos()[owner];
-    }
-    public PlayerInfo oppositePlayer(){
-        return info.getPlayerInfos()[1-owner];
-    }
 
     public abstract String getType();
     public abstract Integer getCost();
-    public String getNameWithOwner(){
-        return ownerPlayer().getName()+"的"+getName();
-    };
     public abstract String getJob();
     public abstract List<String> getRace();
     public abstract String getMark();
@@ -90,30 +75,10 @@ public abstract class Card extends GameObj {
 
     public void initCounter(){}
 
-    public <T extends Card> T createCard(Class<T> clazz,String... keywords){
-        T card = createCard(clazz);
-        for (String keyword : keywords) {
-            card.addKeyword(keyword);
-        }
-        return card;
-    }
-    public <T extends Card> T createCard(Class<T> clazz){
-        try {
-            T card = clazz.getDeclaredConstructor().newInstance();
-            info.msg(getNameWithOwner()+"创造了"+card.getName());
-            card.setParentCard(this); ;
-            card.setOwner(owner);
-            card.setInfo(info);
-            card.initCounter();
-            return card;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
     public Card copyCard(){
         try {
             Card card = this.getClass().getDeclaredConstructor().newInstance();
-            card.parentCard = this;
+            card.parent = this;
             card.owner = this.owner;
             card.info = this.info;
             card.initCounter();

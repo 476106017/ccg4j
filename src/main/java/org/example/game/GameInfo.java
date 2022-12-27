@@ -34,8 +34,8 @@ public class GameInfo {
         this.turnPlayer = 0;
         this.gameset = false;
         this.playerInfos = new PlayerInfo[2];
-        this.playerInfos[0] = new PlayerInfo(this);
-        this.playerInfos[1] = new PlayerInfo(this);
+        this.playerInfos[0] = new PlayerInfo(this,true);
+        this.playerInfos[1] = new PlayerInfo(this,false);
 
         msg("比赛开始，请选择3张手牌交换");
 

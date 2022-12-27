@@ -131,7 +131,7 @@ public class GameHandler {
         }
 
         if(msg.isBlank()){
-            info.msgTo(me,"打出卡牌：play <手牌序号> （<目标序号>）；");
+            info.msgToThisPlayer("打出卡牌：play <手牌序号> （<目标序号>）；");
             return;
         }
 
@@ -145,14 +145,14 @@ public class GameHandler {
             indexI = -1;
         }
         if(indexI <= 0 || indexI > player.getHand().size()){
-            info.msgTo(me,"输入手牌序号错误:"+split[0]);
+            info.msgToThisPlayer("输入手牌序号错误:"+split[0]);
             return;
         }
 
         Card card = player.getHand().get(indexI - 1);
         if(card instanceof AreaCard &&
             player.getArea().size()==player.getAreaMax()){
-            info.msgTo(me,"场上放不下卡牌了！");
+            info.msgToThisPlayer("场上放不下卡牌了！");
             return;
         }
 
@@ -186,13 +186,13 @@ public class GameHandler {
                     }
                     sb.append("\n");
                 }
-                info.msgTo(me, sb.toString());
+                info.msgToThisPlayer(sb.toString());
 
             }
         }else{
             // 输入多个参数
             if(targetable.size()==0) {
-                info.msgTo(me,"无法为该卡牌指定目标！");
+                info.msgToThisPlayer("无法为该卡牌指定目标！");
                 return;
             }else {
                 List<GameObj> targets = new ArrayList<>();
@@ -213,7 +213,7 @@ public class GameHandler {
                 Integer targetNum = card.getPlays().stream().map(Card.Event.Play::targetNum).reduce(Math::max).get();
                 int shouldTargetNum = Math.min(targetable.size(), targetNum);
                 if(targets.size() != shouldTargetNum){
-                    info.msgTo(me,"指定目标数量错误！应为："+shouldTargetNum);
+                    info.msgToThisPlayer("指定目标数量错误！应为："+shouldTargetNum);
                     return;
                 }
                 card.play(targets);
@@ -282,16 +282,20 @@ public class GameHandler {
             indexII = -1;
         }
         if(indexII < 0 || indexII > enemy.getArea().size()){
-            info.msgTo(me, "输入目标序号错误:"+split[1]);
+            info.msgToThisPlayer("输入目标序号错误:"+split[1]);
             return;
         } else if (indexII == 0) {
-            // TODO 可否直接攻击
             FollowCard myFollow = (FollowCard) myCard;
             if(myFollow.getTurnAge() == 0 && !myFollow.hasKeyword("疾驰")){
-                info.msgTo(me,"随从在入场回合无法攻击对方主战者");
+                info.msgToThisPlayer("随从在入场回合无法攻击对方主战者！");
                 return;
             }
-            info.msg(myFollow.getNameWithOwner()+"直接攻击对手的主战者！");
+            Optional<AreaCard> guard = enemy.getArea().stream().filter(areaCard -> areaCard.hasKeyword("守护")).findAny();
+            if(guard.isPresent() && !myFollow.hasKeyword("无视守护")){
+                info.msgToThisPlayer("你必须先攻击带有守护效果的随从！");
+                return;
+            }
+            info.msg(myFollow.getNameWithOwner()+"直接攻击对手的主战者");
             myFollow.attack(enemy.getLeader());
             return;
         } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
@@ -300,6 +304,12 @@ public class GameHandler {
         }
         FollowCard myFollow = (FollowCard) myCard;
         FollowCard target = (FollowCard)enemy.getArea().get(indexII-1);
+
+        Optional<AreaCard> guard = enemy.getArea().stream().filter(areaCard -> areaCard.hasKeyword("守护")).findAny();
+        if(!target.hasKeyword("守护") && guard.isPresent() && !myFollow.hasKeyword("无视守护")){
+            info.msgToThisPlayer("你必须先攻击带有守护效果的随从！");
+            return;
+        }
         myFollow.attack(target);
 
 
@@ -324,12 +334,13 @@ public class GameHandler {
         Leader leader = player.getLeader();
         List<GameObj> targetable = leader.targetable();
         if(msg.isBlank()){
-            if(targetable.isEmpty()){
+            if(!leader.isNeedTarget()){
                 leader.skill(null);
             }else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("你需要指定目标以使用" + leader.getSkillName() + "：skill <目标序号>\n")
                     .append("可指定的目标：\n");
+                if(targetable.isEmpty()) sb.append("没有可指定的目标！\n");
                 for (int i = 0; i < targetable.size(); i++) {
                     sb.append("【").append(i+1).append("】\t");
 
@@ -351,20 +362,20 @@ public class GameHandler {
                     }
                     sb.append("\n");
                 }
-                info.msgTo(me, sb.toString());
+                info.msgToThisPlayer(sb.toString());
             }
-        }else {
-            Integer indexI;
-            try {
-                indexI = Integer.valueOf(msg);
-            }catch (Exception e){
-                indexI = -1;
+        }else {// 输入了指定对象
+            if(!leader.isNeedTarget()){
+                info.msgToThisPlayer("不可指定目标！");
+                return;
             }
             GameObj target = null;
             try {
+                int indexI = Integer.parseInt(msg);
                 target = targetable.get(indexI-1);
             }catch (Exception e){
-                info.msgTo(me,"指定目标错误！");
+                info.msgToThisPlayer("指定目标错误！");
+                return;
             }
             leader.skill(target);
         }

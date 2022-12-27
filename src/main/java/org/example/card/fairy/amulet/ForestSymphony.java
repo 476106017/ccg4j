@@ -36,7 +36,7 @@ public class ForestSymphony extends AmuletCard {
                 info.msg("场上响起了森林的交响乐，随从们受到了激励！");
                 ownerPlayer().getArea().forEach(areaCard -> {
                     if(areaCard instanceof FollowCard followCard){
-                        followCard.changeStatus(2,2);
+                        followCard.addStatus(2,2);
                     }
                 });
                 death();

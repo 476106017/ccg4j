@@ -47,7 +47,7 @@ public class EternalBloom extends FollowCard {
                     .forEach(plants::add);
                 plants.forEach(plantCard->{
                     plantCard.death();
-                    List<AreaCard> oppositeArea = oppositePlayer().getArea();
+                    List<AreaCard> oppositeArea = enemyPlayer().getArea();
                     oppositeArea.get((int) (oppositeArea.size() * Math.random())).death();
                     ownerPlayer().draw(1);
                 });

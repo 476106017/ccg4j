@@ -4,12 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.card.AreaCard;
 import org.example.card.Card;
-import org.example.card.FollowCard;
-import org.example.card.nemesis.Yuwan;
+import org.example.card.neutral.SVPlayer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,6 +20,7 @@ public class PlayerInfo {
 
     String name;
     UUID uuid;
+    boolean initative;// 先攻
     boolean shortRope = false;
     int hp = 20;
     int hpMax = 20;
@@ -40,10 +39,11 @@ public class PlayerInfo {
         graveyardCount += count;
     }
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
-    Leader leader = new Yuwan(this);
+    Leader leader = new SVPlayer();
 
-    public PlayerInfo(GameInfo info) {
+    public PlayerInfo(GameInfo info,boolean initative) {
         this.info = info;
+        this.initative = initative;
     }
 
     public PlayerInfo getEnemy(){

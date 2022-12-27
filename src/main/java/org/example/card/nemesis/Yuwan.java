@@ -14,10 +14,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Yuwan extends Leader {
-    public Yuwan(PlayerInfo playerInfo) {
-        this.setPlayerInfo(playerInfo);
-    }
-
     private String name = "伊昂";
     private String job = "复仇者";
 
@@ -26,32 +22,24 @@ public class Yuwan extends Leader {
         将1张手牌加入牌堆，召唤1个解析的造物
         """;
     private int skillCost = 2;
-    private boolean canUseSkill = true;
 
     @Override
     public List<GameObj> targetable() {
         List<GameObj> targetable = super.targetable();
-        targetable.addAll(getPlayerInfo().getHand());
+        targetable.addAll(ownerPlayer().getHand());
         return targetable;
     }
 
     @Override
     public void skill(GameObj target) {
         super.skill(target);
-        PlayerInfo playerInfo = getPlayerInfo();
-        GameInfo info = playerInfo.getInfo();
+        PlayerInfo playerInfo = ownerPlayer();
 
         // 将1张手牌加入牌堆
-        Card card = (Card) target;
-        playerInfo.getDeck().add(card);
-        playerInfo.getHand().remove(card);
+        playerInfo.back((Card) target);
 
         // 召唤1个解析的造物
-        AnalyzingArtifact analyzingArtifact = new AnalyzingArtifact();
-        analyzingArtifact.setOwner(info.getTurnPlayer());
-        analyzingArtifact.setInfo(info);
-        playerInfo.summon(analyzingArtifact);
+        playerInfo.summon(createCard(AnalyzingArtifact.class));
 
-        setCanUseSkill(false);
     }
 }
