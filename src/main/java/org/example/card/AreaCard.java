@@ -1,6 +1,5 @@
 package org.example.card;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.game.GameObj;
@@ -45,13 +44,13 @@ public abstract class AreaCard extends Card{
         ownerPlayer().getArea().remove(this);
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");
+            getLeavings().forEach(leaving -> leaving.effect().apply());
         }
-        getLeavings().forEach(leaving -> leaving.effect().apply());
 
         if(!getDeathRattles().isEmpty()){
             info.msg(getNameWithOwner() + "发动亡语效果！");
+            getDeathRattles().forEach(leaving -> leaving.effect().apply());
         }
-        getDeathRattles().forEach(leaving -> leaving.effect().apply());
 
         // region 注能
         ownerPlayer().getHand()

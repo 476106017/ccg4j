@@ -1,6 +1,5 @@
 package org.example.card.nemesis.spell;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
@@ -8,6 +7,7 @@ import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.card.nemesis.follow.MagisterialDreadnought;
 import org.example.constant.EffectTiming;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class CalamitysGenesis extends SpellCard {
     public Integer cost = 1;
     public String name = "灾祸模式";
     public String job = "复仇者";
-    private List<String> race = List.of("灾厄");
+    private List<String> race = Lists.ofStr("灾厄");
     public String mark = """
         将2张正义暴君洗入牌堆。回合结束时，搜寻1张5费以上随从。
         """;

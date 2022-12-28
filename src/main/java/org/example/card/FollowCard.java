@@ -1,6 +1,5 @@
 package org.example.card;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.CardType;
@@ -24,6 +23,7 @@ public abstract class FollowCard extends AreaCard{
     private int turnAge = 0;
     private int turnAttackMax = 1;
     private int turnAttack = 0;
+    private EquipmentCard equipment;
 
     // region 效果列表
 
@@ -38,6 +38,62 @@ public abstract class FollowCard extends AreaCard{
         return TYPE.getName();
     }
 
+    public void equip(EquipmentCard equipment){
+        if(!atArea())return;
+        setEquipment(equipment);
+        addKeywords(equipment.getKeywords());
+        addStatus(equipment.getAddAtk(),equipment.getAddHp());
+        equipment.setTarget(this);
+        if(!equipment.getEnterings().isEmpty()){
+            info.msg(equipment.getNameWithOwner() + "发动入场时效果！");
+            equipment.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
+        }
+    }
+    public void expireEquip(){
+        int canUse = equipment.getCountdown();
+        if(canUse == 1){
+            // 用完了销毁
+            equipment.death();
+        }else if (canUse > 1){
+            equipment.setCountdown(canUse-1);
+        }
+    }
+
+    public void heal(int hp){
+        if(hasKeyword("无法回复")){
+            info.msg(this.getNameWithOwner()+"无法回复生命值！（剩余"+this.getHp()+"点生命值）");
+            return;
+        }
+        if(hp>0) {
+            setHp(Math.min(getMaxHp(), getHp() + hp));
+            info.msg(this.getNameWithOwner() + "回复" + hp + "点（剩余" + this.getHp() + "点生命值）");
+        }else {
+            info.msg(this.getNameWithOwner() + "没有回复生命值（剩余" + this.getHp() + "点生命值）");
+        }
+    }
+    public void purify(){
+        getKeywords().clear();
+
+        getPlays().clear();
+        getInvocationBegins().clear();
+        getInvocationEnds().clear();
+        getWhenKills().clear();
+        getBoosts().clear();
+        getCharges().clear();
+        getTransmigrations().clear();
+        getExiles().clear();
+
+        getWhenBattles().clear();
+        getWhenAttacks().clear();
+        getWhenDamageds().clear();
+        getWhenLeaderSkills().clear();
+
+        getEffectBegins().clear();
+        getEffectEnds().clear();
+        getEnterings().clear();
+        getLeavings().clear();
+        getDeathRattles().clear();
+    }
     public void addStatus(int atk, int hp){
         // region 构造消息
         StringBuilder sb = new StringBuilder();
@@ -122,10 +178,20 @@ public abstract class FollowCard extends AreaCard{
         if(!atArea()) return false;
         GameObj from = damage.getFrom();
 
-
-        if(from instanceof Card card && card.hasKeyword("吸血")){
-            info.msg(card.getNameWithOwner() + "发动吸血效果！");
-            card.ownerPlayer().heal(damage.getDamage());
+        // 攻击方是随从，计算攻击方的关键词
+        if (from instanceof FollowCard followCard) {
+            if(followCard.hasKeyword("重伤")){
+                info.msg(followCard.getNameWithOwner() + "发动重伤效果！");
+                addKeyword("无法回复");
+            }
+            if(followCard.hasKeyword("自愈")){
+                info.msg(followCard.getNameWithOwner() + "发动自愈效果！");
+                followCard.heal(damage.getDamage());
+            }
+            if(followCard.hasKeyword("吸血")){
+                info.msg(followCard.getNameWithOwner() + "发动吸血效果！");
+                followCard.ownerPlayer().heal(damage.getDamage());
+            }
         }
         if(!getWhenDamageds().isEmpty()){
             info.msg(getNameWithOwner() + "发动受伤时效果！");

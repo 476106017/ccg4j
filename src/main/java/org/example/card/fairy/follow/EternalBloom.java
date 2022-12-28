@@ -1,12 +1,12 @@
 package org.example.card.fairy.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.fairy.spell.EternalForest;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class EternalBloom extends FollowCard {
 
     public String name = "永恒之花";
     public String job = "妖精";
-    private List<String> race = List.of("植物");
+    private List<String> race = Lists.ofStr("植物");
     public String mark = """
         瞬念召唤：回合开始时
         离场时：摧毁己方场上所有植物，每摧毁1张，便随机破坏1张对手随从卡，并且抽1张牌

@@ -1,11 +1,11 @@
 package org.example.card.neutral.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.GameObj;
+import org.example.system.Lists;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class AmbitiousGoblinMage  extends FollowCard {
     private int atk = 2;
     private int hp = 1;
     private String job = "中立";
-    private List<String> race = List.of("人类");
+    private List<String> race = Lists.ofStr("人类");
     private String mark = """
         战吼：将手牌的1张随从牌放回牌堆，搜寻1张费用低于该牌的随从牌
         """;

@@ -1,12 +1,12 @@
 package org.example.card.neutral.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.PlayerInfo;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Bahamut extends FollowCard {
     public Integer cost = 9;
     public String name = "巴哈姆特";
     public String job = "中立";
-    private List<String> race = List.of("龙");
+    private List<String> race = Lists.ofStr("龙");
     public String mark = """
         瞬念召唤：回合结束时在卡牌上的总消耗pp>=50,破坏对手牌堆直至5张
         战吼：破坏对手场上全部卡牌

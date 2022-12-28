@@ -1,11 +1,11 @@
 package org.example.card.nemesis.spell;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class CalamitysEnd extends SpellCard {
     public Integer cost = 0;
     public String name = "灾祸降临";
     public String job = "复仇者";
-    private List<String> race = List.of("终极灾厄");
+    private List<String> race = Lists.ofStr("终极灾厄");
     public String mark = """
         揭示:回合开始时被破坏的5费以上随从大于20个
         破坏双方场上全部随从。

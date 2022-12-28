@@ -1,12 +1,12 @@
 package org.example.card.fairy.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.fairy.amulet.EternalGarden;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class EternalSeedling extends FollowCard {
 
     public String name = "永恒树苗";
     public String job = "妖精";
-    private List<String> race = List.of("植物");
+    private List<String> race = Lists.ofStr("植物");
     public String mark = """
         瞬念召唤：回合开始时
         离场时：将1张永恒树苗洗入牌堆；如果墓地中的永恒树苗数量大于3，且场上没有永恒庭园，则召唤1个永恒庭园到场上

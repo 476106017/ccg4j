@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,8 +67,17 @@ public class PlayerInfo {
     }
 
     public void heal(int hp){
-        setHp(Math.min(getHpMax(),getHp() + hp));
-        info.msg(this.getName()+"回复" + hp + "点（剩余"+this.getHp()+"点生命值）");
+        Damage heal = new Damage(null, this.getLeader(), hp);
+        getLeader().useEffectWithDamage(EffectTiming.LeaderHealing,heal);
+
+        if(heal.getDamage()>0){
+            setHp(Math.min(getHpMax(),getHp() + heal.getDamage()));
+            info.msg(this.getName()+"回复" + heal.getDamage() + "点（剩余"+this.getHp()+"点生命值）");
+            getLeader().useEffectWithDamage(EffectTiming.LeaderHealed,heal);
+        }else {
+            info.msg(this.getName()+"没有回复生命值（剩余"+this.getHp()+"点生命值）");
+        }
+
     }
     public void addHpMax(int hpMax){
         setHpMax(getHpMax() + hpMax);
@@ -131,9 +141,14 @@ public class PlayerInfo {
         int handTotal = handSize + cardsSize;
         if(handTotal > handMax){
             hand.addAll(cards.subList(0,handMax-handSize));
-            info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌记入墓地数！");
+            info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌从游戏中除外！");
 
-            countToGraveyard(handTotal-handMax);
+            cards.subList(handMax-handSize,cards.size()).forEach(card -> {
+                if(!card.getExiles().isEmpty()){
+                    info.msg(card.getNameWithOwner() + "发动除外时效果！");
+                    card.getExiles().forEach(exile -> exile.effect().apply());
+                }
+            });
         }else{
             hand.addAll(cards);
         }
@@ -162,14 +177,18 @@ public class PlayerInfo {
     public void summon(AreaCard areaCard){
         info.msg(getName() + "召唤了" + areaCard.getName());
         if(getArea().size() == getAreaMax()){
-            info.msg(areaCard.getNameWithOwner() + "掉出了战场！");
+            info.msg(areaCard.getNameWithOwner() + "掉出战场，从游戏中除外！");
+            if(!areaCard.getExiles().isEmpty()){
+                info.msg(areaCard.getNameWithOwner() + "发动除外时效果！");
+                areaCard.getExiles().forEach(exile -> exile.effect().apply());
+            }
             return;
         }
         getArea().add(areaCard);
         if(!areaCard.getEnterings().isEmpty()){
             info.msg(areaCard.getNameWithOwner() + "发动入场时效果！");
+            areaCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
         }
-        areaCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){

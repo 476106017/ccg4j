@@ -1,10 +1,10 @@
 package org.example.card.fairy.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class FairyWhisperer extends FollowCard {
     public Integer cost = 2;
     public String name = "妖之轻语者";
     public String job = "妖精";
-    private List<String> race = List.of("人类");
+    private List<String> race = Lists.ofStr("人类");
     public String mark = """
         战吼：获得X张妖精（X是当前费用）
         """;

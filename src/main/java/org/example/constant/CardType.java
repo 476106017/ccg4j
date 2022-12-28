@@ -4,6 +4,7 @@ public enum CardType {
     AMULET("护符"),
     FOLLOW("随从"),
     SPELL("法术"),
+    EQUIPMENT("装备"),
     ;
 
     private final String name;

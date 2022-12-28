@@ -1,10 +1,10 @@
 package org.example.card.fairy.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class Fairy extends FollowCard {
 
     public String name = "妖精";
     public String job = "妖精";
-    private List<String> race = List.of("妖精");
+    private List<String> race = Lists.ofStr("妖精");
     public String mark = """
         瞬念召唤：回合结束时剩余1pp（不多不少）
         """;

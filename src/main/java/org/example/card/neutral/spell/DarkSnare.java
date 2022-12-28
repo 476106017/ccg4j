@@ -1,6 +1,5 @@
 package org.example.card.neutral.spell;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
@@ -10,6 +9,7 @@ import org.example.card.SpellCard;
 import org.example.game.Damage;
 import org.example.game.GameObj;
 import org.example.game.Leader;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class DarkSnare extends SpellCard {
     public Integer cost = 4;
     public String name = "暗黑陷阱";
     public String job = "中立";
-    private List<String> race = List.of("陷阱");
+    private List<String> race = Lists.ofStr("陷阱");
     public String mark = """
         腐蚀：4 对随机1个敌方随从造成X点伤害,如果击杀：成长
         —————————————

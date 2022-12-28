@@ -4,5 +4,7 @@ public enum EffectTiming {
     BeginTurn,
     EndTurn,
     LeaderDamaged,
+    LeaderHealing,
+    LeaderHealed,
     ;
 }

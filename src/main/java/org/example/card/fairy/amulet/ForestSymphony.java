@@ -1,11 +1,11 @@
 package org.example.card.fairy.amulet;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.List;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class ForestSymphony extends AmuletCard {
 
     public String name = "森林交响乐";
     public String job = "妖精";
-    private List<String> race = List.of("乐谱");
+    private List<String> race = Lists.ofStr("乐谱");
     public String mark = """
         回合结束时：如果场上有4个名字不同的随从，则全部+2/+2
         只有10秒的回合无法打出

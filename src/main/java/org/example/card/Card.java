@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
@@ -17,19 +18,35 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @Getter
 @Setter
 public abstract class Card extends GameObj {
+    private int slot = 1;
+    private int apposition = 3;
 
     private GameObj parent = null;
 
     private Map<String,Integer> counter = new HashMap<>();
 
-    private Set<String> keywords = new HashSet<>();
+    private List<String> keywords = new ArrayList<>();
 
     public void addKeyword(String k){
         info.msg(getNameWithOwner()+"获得了【"+k+"】");
         getKeywords().add(k);
     }
+    public void addKeywords(List<String> ks){
+        info.msg(getNameWithOwner()+"获得了【"+ String.join("】【", ks) +"】");
+        getKeywords().addAll(ks);
+    }
     public boolean hasKeyword(String k){
         return getKeywords().contains(k);
+    }
+
+    public void removeKeywords(List<String> ks){
+        ks.forEach(this::removeKeyword);
+    }
+    public void removeKeyword(String k){
+        getKeywords().stream()
+            .filter(keyword -> keyword.equals(k))
+            .findFirst()
+            .ifPresent(s -> getKeywords().remove(s));
     }
 
     // region 效果列表
@@ -42,11 +59,11 @@ public abstract class Card extends GameObj {
     private List<Event.InvocationBegin> invocationBegins = new ArrayList<>();
     private List<Event.InvocationEnd> invocationEnds = new ArrayList<>();
     private List<Event.Transmigration> transmigrations = new ArrayList<>();
+    private List<Event.Exile> exiles = new ArrayList<>();
     private List<Event.Boost> boosts = new ArrayList<>();
     private List<Event.Charge> charges = new ArrayList<>();
     private List<Event.WhenKill> whenKills = new ArrayList<>();
     // endregion 效果列表
-
 
 
     public abstract String getType();
@@ -59,6 +76,13 @@ public abstract class Card extends GameObj {
     public boolean atArea(){
         return ownerPlayer().getArea().contains(this);
     }
+    public boolean atGraveyard(){
+        return ownerPlayer().getGraveyard().contains(this);
+    }
+    public boolean atHand(){
+        return ownerPlayer().getHand().contains(this);
+    }
+
 
     public Integer getCount(String key){
         return Optional.ofNullable(counter.get(key)).orElse(0);
@@ -76,7 +100,7 @@ public abstract class Card extends GameObj {
     public Card copyCard(){
         try {
             Card card = this.getClass().getDeclaredConstructor().newInstance();
-            card.parent = this;
+            card.parent = this.parent;
             card.owner = this.owner;
             card.info = this.info;
             card.initCounter();
@@ -100,27 +124,34 @@ public abstract class Card extends GameObj {
         ownerPlayer().count(ALL_COST,getCost());
         // endregion 消耗PP
 
-        // region 驻场卡召唤到场上，法术卡丢到墓地
+        // region 驻场卡召唤到场上(装备卡装备给随从)，法术卡丢到墓地
         if(this instanceof AreaCard areaCard){
-            ownerPlayer().summon(areaCard);
-            ownerPlayer().getHand().remove(areaCard);
+            if(this instanceof EquipmentCard equipmentCard){
+                if(targets.size()!=1 || !(targets.get(0) instanceof FollowCard target)){
+                    info.msgToThisPlayer("使用装备卡出错！");
+                    throw new RuntimeException();
+                }
+                target.equip(equipmentCard);
+            }else {
+                ownerPlayer().summon(areaCard);
+            }
         } else if (this instanceof SpellCard) {
             ownerPlayer().getGraveyard().add(this);
             ownerPlayer().countToGraveyard(1);
-            ownerPlayer().getHand().remove(this);
         }
+        ownerPlayer().getHand().remove(this);
         // endregion
 
         // region 发动卡牌效果
         if (this instanceof AreaCard && !getPlays().isEmpty()) {
             info.msg(getNameWithOwner() + "发动战吼");
+            getPlays().forEach(play -> {
+                // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
+                if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
+                    play.effect.accept(targets);
+                }
+            });
         }
-        getPlays().forEach(play -> {
-            // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
-            if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
-                play.effect.accept(targets);
-            }
-        });
         // endregion 发动卡牌效果
 
         // 触发手牌上全部增幅效果
@@ -139,6 +170,8 @@ public abstract class Card extends GameObj {
         public record InvocationEnd(PredicateN canBeTriggered, FunctionN effect){}
         /** 轮回(由墓地进入牌堆) */
         public record Transmigration(FunctionN effect){}
+        /** 除外(从游戏中除外) */
+        public record Exile(FunctionN effect){}
         /** 增幅(其他卡牌被使用) */
         public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
         /** 注能(场上卡牌被破坏) */

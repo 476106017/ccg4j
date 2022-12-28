@@ -1,10 +1,10 @@
 package org.example.card.stalker.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class LabRecruiter extends FollowCard {
     private int atk = 2;
     private int hp = 2;
     private String job = "潜行者";
-    private List<String> race = List.of();
+    private List<String> race = Lists.ofStr();
     private String mark = """
         战吼：将1名己方随从的3张复制洗入牌堆
         """;

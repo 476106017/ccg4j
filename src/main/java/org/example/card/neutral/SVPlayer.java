@@ -1,12 +1,13 @@
 package org.example.card.neutral;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.game.GameObj;
 import org.example.game.Leader;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.example.constant.CounterKey.EP_NUM;
@@ -41,7 +42,7 @@ public class SVPlayer extends Leader {
         if(ownerPlayer().getCount(EP_NUM) == 0
             || (ownerPlayer().isInitative() && getInfo().getTurn()<5)
             || (!ownerPlayer().isInitative() && getInfo().getTurn()<4)){
-            return List.of();
+            return new ArrayList<>();
         }
 
         return ownerPlayer().getAreaFollowsAsGameObj();

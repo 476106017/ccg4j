@@ -1,10 +1,10 @@
 package org.example.card.neutral.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class TravelerGoblin extends FollowCard {
     public Integer cost = 1;
     public String name = "哥布林旅行家";
     public String job = "中立";
-    private List<String> race = List.of("哥布林");
+    private List<String> race = Lists.ofStr("哥布林");
     public boolean isDash = false;
     public String mark = """
         战吼：如果是第1回合，则抽1张牌；

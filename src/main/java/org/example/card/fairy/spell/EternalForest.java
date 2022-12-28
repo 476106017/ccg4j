@@ -1,10 +1,10 @@
 package org.example.card.fairy.spell;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class EternalForest extends SpellCard {
     public Integer cost = 0;
     public String name = "永恒森林";
     public String job = "妖精";
-    private List<String> race = List.of("终极灾厄");
+    private List<String> race = Lists.ofStr("终极灾厄");
     public String mark = """
         揭示:回合开始时
         主战者增加10点血上限。

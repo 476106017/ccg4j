@@ -1,11 +1,11 @@
 package org.example.card.nemesis.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.nemesis.spell.MercurialMight;
+import org.example.system.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ImmortalAegis extends FollowCard {
     private Integer cost = 6;
     private String name = "永恒之盾·席翁";
     private String job = "复仇者";
-    private List<String> race = List.of();
+    private List<String> race = Lists.ofStr();
     private String mark = """
         无法破坏 效果伤害免疫
         战吼：增加1张消费为0的水银的断绝到手牌

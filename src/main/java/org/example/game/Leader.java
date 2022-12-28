@@ -1,6 +1,5 @@
 package org.example.game;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;

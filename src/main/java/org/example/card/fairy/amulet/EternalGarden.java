@@ -1,10 +1,10 @@
 package org.example.card.fairy.amulet;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class EternalGarden extends AmuletCard {
 
     public String name = "永恒庭园";
     public String job = "妖精";
-    private List<String> race = List.of("庭园");
+    private List<String> race = Lists.ofStr("庭园");
     public String mark = """
         回合结束时：回复X点生命，并且轮回X：妖精随从卡（X是本回合使用卡牌张数）
         """;

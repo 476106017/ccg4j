@@ -38,7 +38,7 @@ public class GameInfo {
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
 
-        msg("比赛开始，请选择3张手牌交换");
+        msg("游戏开始，请选择3张手牌交换");
 
     }
 
@@ -94,9 +94,37 @@ public class GameInfo {
         }
     }
 
+    public void destroy(AreaCard card){destroy(List.of(card));}
     public void destroy(List<AreaCard> cards){
         List<AreaCard> cardsCopy = new ArrayList<>(cards);
         cardsCopy.forEach(AreaCard::death);
+    }
+    public void exile(Card card){
+        exile(List.of(card));
+    }
+    public void exile(List<Card> cards){
+        List<Card> cardsCopy = new ArrayList<>(cards);
+        cardsCopy.forEach(card ->{
+            if (card.atArea()) {
+                card.ownerPlayer().getArea().remove(card);
+                // 场上随从除外时，有机会发动离场时效果
+                if(card instanceof AreaCard areaCard && !areaCard.getLeavings().isEmpty()){
+                    msg(areaCard.getNameWithOwner() + "发动离场时效果！");
+                    areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
+                }
+            }
+            if (card.atGraveyard()) {
+                card.ownerPlayer().getGraveyard().remove(card);
+            }
+            if (card.atHand()) {
+                card.ownerPlayer().getHand().remove(card);
+            }
+
+            if(!card.getExiles().isEmpty()){
+                msg(card.getNameWithOwner() + "发动除外时效果！");
+                card.getExiles().forEach(exile -> exile.effect().apply());
+            }
+        });
     }
 
     public void zeroTurn(UUID u0, UUID u1){
@@ -363,6 +391,9 @@ public class GameInfo {
                 FollowCard follow = (FollowCard) card;
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
+                if(follow.getEquipment()!=null){
+                    sb.append("装备中：").append(follow.getEquipment().getName()).append("\t");
+                }
             }
             if("护符".equals(card.getType())){
                 AmuletCard amulet = (AmuletCard) card;
@@ -389,6 +420,9 @@ public class GameInfo {
                 }
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
+                if(follow.getEquipment()!=null){
+                    sb.append("装备中：").append(follow.getEquipment().getName()).append("\t");
+                }
             }
             if("护符".equals(card.getType())){
                 AmuletCard amulet = (AmuletCard) card;

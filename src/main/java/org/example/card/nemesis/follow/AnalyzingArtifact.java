@@ -1,10 +1,10 @@
 package org.example.card.nemesis.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.FollowCard;
+import org.example.system.Lists;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class AnalyzingArtifact  extends FollowCard {
     private int atk = 2;
     private int hp = 1;
     private String job = "复仇者";
-    private List<String> race = List.of("创造物");
+    private List<String> race = Lists.ofStr("创造物");
     private String mark = """
         亡语：抽1张牌
         """;

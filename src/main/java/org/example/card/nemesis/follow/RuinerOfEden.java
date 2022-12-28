@@ -1,6 +1,5 @@
 package org.example.card.nemesis.follow;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
