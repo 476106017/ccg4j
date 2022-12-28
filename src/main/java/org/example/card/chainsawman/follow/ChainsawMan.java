@@ -22,7 +22,6 @@ public class ChainsawMan extends FollowCard {
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        恶魔转生
         战吼：增加1张链锯形态到手牌
         击杀时：如果对象是【恶魔】，则将其净化并除外；
         如果超杀，则当前装备中的链锯形态可使用次数+1

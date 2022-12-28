@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
+import org.example.system.Lists;
 
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
@@ -94,6 +95,9 @@ public class GameInfo {
         }
     }
 
+    // TODO 变身效果
+    public void transform(Card card, Class<? extends Card> cardClass){
+    }
     public void destroy(AreaCard card){destroy(List.of(card));}
     public void destroy(List<AreaCard> cards){
         List<AreaCard> cardsCopy = new ArrayList<>(cards);
@@ -124,6 +128,21 @@ public class GameInfo {
             if(!card.getExiles().isEmpty()){
                 msg(card.getNameWithOwner() + "发动除外时效果！");
                 card.getExiles().forEach(exile -> exile.effect().apply());
+            }
+            if(card.hasKeyword("恶魔转生")){
+                List<Card> totalCard = new ArrayList<>();
+
+                totalCard.addAll(thisPlayer().getHand().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(thisPlayer().getArea().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(thisPlayer().getGraveyard().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(thisPlayer().getDeck().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(oppositePlayer().getHand().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(oppositePlayer().getArea().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(oppositePlayer().getGraveyard().stream().filter(c -> c instanceof FollowCard).toList());
+                totalCard.addAll(oppositePlayer().getDeck().stream().filter(c -> c instanceof FollowCard).toList());
+                Card luckyCard = Lists.randOf(totalCard);
+
+                transform(luckyCard,card.getClass());
             }
         });
     }

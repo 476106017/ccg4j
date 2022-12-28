@@ -10,4 +10,11 @@ public class Lists {
         Collections.addAll(_result, ts);
         return _result;
     }
+
+    public static  <T> T randOf(List<T> list){
+        int size = list.size();
+        int index = (int) (size * Math.random());
+        return list.get(index);
+
+    }
 }
