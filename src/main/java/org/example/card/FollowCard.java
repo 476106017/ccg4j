@@ -173,13 +173,14 @@ public abstract class FollowCard extends AreaCard{
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害" +
             "（剩余"+getHp()+"点生命值）");
     }
-    public boolean damageSettlement(Damage damage){
+    public void damageSettlement(Damage damage){
 
-        if(!atArea()) return false;
+        if(!atArea()) return;
         GameObj from = damage.getFrom();
 
         // 攻击方是随从，计算攻击方的关键词
         if (from instanceof FollowCard followCard) {
+            followCard.expireEquip();
             if(followCard.hasKeyword("重伤")){
                 info.msg(followCard.getNameWithOwner() + "发动重伤效果！");
                 addKeyword("无法回复");
@@ -192,37 +193,29 @@ public abstract class FollowCard extends AreaCard{
                 info.msg(followCard.getNameWithOwner() + "发动吸血效果！");
                 followCard.ownerPlayer().heal(damage.getDamage());
             }
+            if(followCard.hasKeyword("剧毒")){
+                if(destroyBy(followCard)) return;
+            }
         }
-        if(!getWhenDamageds().isEmpty()){
-            info.msg(getNameWithOwner() + "发动受伤时效果！");
-            getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
-        }
-
-        if(!atArea()) return false;// 因受伤时效果自灭了，不算击杀
-
-        // 由剧毒随从攻击
-        if(from instanceof FollowCard fromFollow && fromFollow.hasKeyword("剧毒") ){
-            if(destroyBy(fromFollow)) return true;
-        }
-        // 未被效果破坏，计算生命值
-        if(getHp() > 0){
-            return false;
-        }else {
+        // 计算生命值
+        if(getHp() <= 0){
             death();
             if(from instanceof FollowCard fromFollow
-                && fromFollow.atArea() // 受伤时效果发动后【攻击者】还在场
                 && !fromFollow.getWhenKills().isEmpty()){
                 info.msg(fromFollow.getNameWithOwner() + "发动击杀时效果！");
                 fromFollow.getWhenKills().forEach(whenKill -> whenKill.effect().accept(this));
             }
-            return true;
+        }else {
+            if(!getWhenDamageds().isEmpty()){
+                info.msg(getNameWithOwner() + "发动受伤时效果！");
+                getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
+            }
         }
-
     }
 
-    public boolean damaged(Damage damage){
+    public void damaged(Damage damage){
         damagedWithoutSettle(damage);
-        return damageSettlement(damage);
+        damageSettlement(damage);
     }
 
     public static class Event {

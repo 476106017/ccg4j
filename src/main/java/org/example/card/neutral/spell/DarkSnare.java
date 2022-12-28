@@ -24,7 +24,8 @@ public class DarkSnare extends SpellCard {
     public String job = "中立";
     private List<String> race = Lists.ofStr("陷阱");
     public String mark = """
-        腐蚀：4 对随机1个敌方随从造成X点伤害,如果击杀：成长
+        腐蚀：4 对随机1个敌方随从造成X点伤害
+        击杀时：X+1
         —————————————
         对1个敌方随从或对方玩家造成X点伤害
         """;
@@ -69,12 +70,13 @@ public class DarkSnare extends SpellCard {
                 if(!follows.isEmpty()){
                     int randIndex = new Random().nextInt(follows.size());
                     FollowCard followCard = (FollowCard) follows.get(randIndex);
-                    if(followCard.damaged(new Damage(this,followCard,getCount("damage")))){
-                        count("damage");
-                    }
+                    followCard.damaged(new Damage(this,followCard,getCount("damage")));
                 }
             }
         ));
+        getWhenKills().add(new Event.WhenKill(followCard -> {
+            count("damage");
+        }));
     }
 
 }
