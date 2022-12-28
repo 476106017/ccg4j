@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.EquipmentCard;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
 
@@ -71,8 +72,9 @@ public class PlayerInfo {
         getLeader().useEffectWithDamage(EffectTiming.LeaderHealing,heal);
 
         if(heal.getDamage()>0){
+            int oldHp = getHp();
             setHp(Math.min(getHpMax(),getHp() + heal.getDamage()));
-            info.msg(this.getName()+"回复" + heal.getDamage() + "点（剩余"+this.getHp()+"点生命值）");
+            info.msg(this.getName()+"回复" + (getHp()-oldHp) + "点（剩余"+this.getHp()+"点生命值）");
             getLeader().useEffectWithDamage(EffectTiming.LeaderHealed,heal);
         }else {
             info.msg(this.getName()+"没有回复生命值（剩余"+this.getHp()+"点生命值）");
@@ -219,6 +221,9 @@ public class PlayerInfo {
                 .append(card.getName()).append("\t")
                 .append(card.getCost()).append("\t")
                 .append(card.getRace()).append("\n");
+            if(card instanceof EquipmentCard equipmentCard){
+                sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\n");
+            }
             if(!card.getKeywords().isEmpty())
                 sb.append(card.getKeywords()).append("\n");
             sb.append(card.getMark());

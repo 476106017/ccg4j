@@ -30,6 +30,7 @@ public abstract class EquipmentCard extends AreaCard{
 
     public void addCountdown(int i){
         if(getCountdown() == -1)return;
+        info.msg(getNameWithOwner()+"可使用次数+"+i+"（还剩"+getCountdown()+"次）");
         setCountdown(getCountdown() + i);
     }
     public void death(){
@@ -37,6 +38,7 @@ public abstract class EquipmentCard extends AreaCard{
         target.setEquipment(null);
         target.removeKeywords(getKeywords());
         target.addStatus(-getAddAtk(),-getAddHp());
+        setTarget(null);
 
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");

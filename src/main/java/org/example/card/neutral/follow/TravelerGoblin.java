@@ -47,10 +47,6 @@ public class TravelerGoblin extends FollowCard {
                     info.msg(getName() + "战吼后什么也没有发生！");
                 }
             }));
-        getWhenBattles().add(
-            new Event.WhenBattle(damage -> {
-                ((FollowCard)damage.another(this)).destroyBy(this);
-            }));
 
     }
 

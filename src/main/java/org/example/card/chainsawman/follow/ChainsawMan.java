@@ -34,13 +34,13 @@ public class ChainsawMan extends FollowCard {
         getKeywords().add("恶魔转生");
 
         getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs ->  ownerPlayer().addDeck(createCard(ChainsawMode.class))
+            gameObjs ->  ownerPlayer().addHand(createCard(ChainsawMode.class))
         ));
 
         getWhenKills().add(new Card.Event.WhenKill(
             followCard -> {
                 if(followCard.getHp() < 0){
-                    if ("链锯形态".equals(getEquipment().getName())) {
+                    if ("链锯模式".equals(getEquipment().getName())) {
                         getEquipment().addCountdown(1);
                     }
                 }

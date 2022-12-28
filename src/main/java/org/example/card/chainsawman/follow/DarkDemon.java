@@ -19,8 +19,11 @@ public class DarkDemon extends FollowCard {
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        恶魔转生
         亡语：主战者获得效果【己方回合开始时，如果暗之恶魔在己方墓地，则吸收对方墓地】
         """;
     private String subMark = "";
+    public DarkDemon() {
+        setMaxHp(getHp());
+        getKeywords().add("恶魔转生");
+    }
 }

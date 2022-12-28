@@ -43,6 +43,7 @@ public abstract class Card extends GameObj {
         ks.forEach(this::removeKeyword);
     }
     public void removeKeyword(String k){
+        info.msg(getNameWithOwner()+"失去了【"+ k +"】");
         getKeywords().stream()
             .filter(keyword -> keyword.equals(k))
             .findFirst()
@@ -143,14 +144,18 @@ public abstract class Card extends GameObj {
         // endregion
 
         // region 发动卡牌效果
-        if (this instanceof AreaCard && !getPlays().isEmpty()) {
-            info.msg(getNameWithOwner() + "发动战吼");
-            getPlays().forEach(play -> {
-                // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
-                if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
-                    play.effect.accept(targets);
-                }
-            });
+        if (this instanceof AreaCard areaCard && !getPlays().isEmpty()) {
+            if (areaCard instanceof EquipmentCard && getPlays().size() == 1) {
+                // 装备卡的Play事件是决定装备对象的
+            } else {
+                info.msg(getNameWithOwner() + "发动战吼");
+                getPlays().forEach(play -> {
+                    // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
+                    if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
+                        play.effect.accept(targets);
+                    }
+                });
+            }
         }
         // endregion 发动卡牌效果
 

@@ -103,6 +103,7 @@ public class GameInfo {
         exile(List.of(card));
     }
     public void exile(List<Card> cards){
+        msg(cards.stream().map(Card::getNameWithOwner).collect(Collectors.joining("、"))+ "从游戏中除外！");
         List<Card> cardsCopy = new ArrayList<>(cards);
         cardsCopy.forEach(card ->{
             if (card.atArea()) {
@@ -392,7 +393,8 @@ public class GameInfo {
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
                 if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getName()).append("\t");
+                    sb.append("装备中：").append(follow.getEquipment().getName())
+                        .append("（").append(follow.getEquipment().getCountdown()).append("）\t");
                 }
             }
             if("护符".equals(card.getType())){
@@ -421,7 +423,8 @@ public class GameInfo {
                 sb.append(follow.getAtk()).append("攻\t");
                 sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
                 if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getName()).append("\t");
+                    sb.append("装备中：").append(follow.getEquipment().getName())
+                        .append("（").append(follow.getEquipment().getCountdown()).append("）\t");
                 }
             }
             if("护符".equals(card.getType())){

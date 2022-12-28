@@ -19,9 +19,12 @@ public class Makima extends FollowCard {
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        恶魔转生
         入场时：获得场上所有牌的控制权
         离场时：失去场上所有牌的控制权
         """;
     private String subMark = "";
+    public Makima() {
+        setMaxHp(getHp());
+        getKeywords().add("恶魔转生");
+    }
 }

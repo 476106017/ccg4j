@@ -38,24 +38,39 @@ public abstract class FollowCard extends AreaCard{
         return TYPE.getName();
     }
 
-    public void equip(EquipmentCard equipment){
-        if(!atArea())return;
-        setEquipment(equipment);
-        addKeywords(equipment.getKeywords());
-        addStatus(equipment.getAddAtk(),equipment.getAddHp());
-        equipment.setTarget(this);
-        if(!equipment.getEnterings().isEmpty()){
-            info.msg(equipment.getNameWithOwner() + "发动入场时效果！");
-            equipment.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
+    public void equip(EquipmentCard equipmentCard){
+        if(!equipmentCard.getTargetName().isEmpty() && !getName().equals(equipmentCard.getTargetName())){
+            info.msgToThisPlayer(this.getName()+"无法装备"+equipmentCard.getName()+"！");
+            return;
+        };
+        info.msg(getNameWithOwner() + "装备了" + equipmentCard.getName());
+        setEquipment(equipmentCard);
+        addKeywords(equipmentCard.getKeywords());
+        addStatus(equipmentCard.getAddAtk(),equipmentCard.getAddHp());
+        equipmentCard.setTarget(this);
+        if(!equipmentCard.getEnterings().isEmpty()){
+            info.msg(equipmentCard.getNameWithOwner() + "发动入场时效果！");
+            equipmentCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
         }
     }
+    public boolean equipped(){
+        return getEquipment()!=null;
+    }
     public void expireEquip(){
-        int canUse = equipment.getCountdown();
-        if(canUse == 1){
+        int canUse = getEquipment().getCountdown();
+        if (canUse > 0){
+            getEquipment().setCountdown(canUse-1);
+        }
+    }
+    public void expireEquipSettlement(){
+        if(!atArea()){
+            info.msg(getEquipment().getNameWithOwner()+"随着装备者的离场而随之破坏了");
+            getEquipment().death();
+        }
+        int canUse = getEquipment().getCountdown();
+        if(canUse <= 0){
             // 用完了销毁
-            equipment.death();
-        }else if (canUse > 1){
-            equipment.setCountdown(canUse-1);
+            getEquipment().death();
         }
     }
 
@@ -65,13 +80,15 @@ public abstract class FollowCard extends AreaCard{
             return;
         }
         if(hp>0) {
+            int oldHp = getHp();
             setHp(Math.min(getMaxHp(), getHp() + hp));
-            info.msg(this.getNameWithOwner() + "回复" + hp + "点（剩余" + this.getHp() + "点生命值）");
+            info.msg(this.getNameWithOwner() + "回复" + (getHp()-oldHp) + "点（剩余" + this.getHp() + "点生命值）");
         }else {
             info.msg(this.getNameWithOwner() + "没有回复生命值（剩余" + this.getHp() + "点生命值）");
         }
     }
     public void purify(){
+        info.msg(this.getNameWithOwner()+"遭到了净化！");
         getKeywords().clear();
 
         getPlays().clear();
@@ -160,6 +177,11 @@ public abstract class FollowCard extends AreaCard{
 
             this.damageSettlement(new Damage(from,this));
             fromFollow.damageSettlement(new Damage(this,from));
+            // 先结算伤害，触发完所有事件后结算武器是否损毁
+            if(fromFollow.equipped())
+                fromFollow.expireEquipSettlement();
+            if(this.equipped())
+                this.expireEquipSettlement();
         }else {
             throw new RuntimeException("伤害来源非随从，无法生成反击！");
         }
@@ -180,7 +202,7 @@ public abstract class FollowCard extends AreaCard{
 
         // 攻击方是随从，计算攻击方的关键词
         if (from instanceof FollowCard followCard) {
-            followCard.expireEquip();
+            if(followCard.equipped()) followCard.expireEquip();
             if(followCard.hasKeyword("重伤")){
                 info.msg(followCard.getNameWithOwner() + "发动重伤效果！");
                 addKeyword("无法回复");

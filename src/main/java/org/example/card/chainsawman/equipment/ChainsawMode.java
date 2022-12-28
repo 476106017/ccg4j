@@ -2,6 +2,7 @@ package org.example.card.chainsawman.equipment;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.card.EquipmentCard;
 
 @Getter
@@ -25,5 +26,12 @@ public class ChainsawMode extends EquipmentCard {
         getKeywords().add("突进");
         getKeywords().add("自愈");
         getKeywords().add("重伤");
+
+        getPlays().add(new Card.Event.Play(
+            ()->ownerPlayer().getAreaFollowsAsGameObj().stream()
+                .filter(gameObj -> gameObj.getName().equals(getTargetName())).toList(),1,
+            gameObjs -> {}
+        ));
+
     }
 }

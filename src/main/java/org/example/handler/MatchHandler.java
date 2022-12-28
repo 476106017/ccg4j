@@ -9,6 +9,9 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
+import org.example.card.chainsawman.follow.ChainsawMan;
+import org.example.card.chainsawman.follow.DarkDemon;
+import org.example.card.chainsawman.follow.Makima;
 import org.example.card.fairy.follow.EternalBloom;
 import org.example.card.fairy.follow.FairyWhisperer;
 import org.example.card.fairy.spell.ForestGenesis;
@@ -61,13 +64,11 @@ public class MatchHandler {
         playerDeck.setLeaderClass(SVPlayer.class);
         List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
         for (int i = 0; i < 3; i++) {
-            activeDeck.add(Bahamut.class);
             activeDeck.add(FairyWhisperer.class);
-            activeDeck.add(DarkSnare.class);
             activeDeck.add(TravelerGoblin.class);
-            activeDeck.add(CalamitysGenesis.class);
-            activeDeck.add(ForestGenesis.class);
-            activeDeck.add(EternalBloom.class);
+            activeDeck.add(ChainsawMan.class);
+            activeDeck.add(Makima.class);
+            activeDeck.add(DarkDemon.class);
 
         }
         userDecks.put(uuid, playerDeck);
