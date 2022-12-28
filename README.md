@@ -5,6 +5,8 @@
 ## 开始
 git拉不下来？
 git config --global http.postBuffer 524288000
+git config --global http.proxy 127.0.0.1:33210(端口改下你懂的)
+
 
 1. 配置好jdk17、gradle
 2. 不需要数据库、不需要中间件，直接启动Ccg4jApplication.main()
@@ -59,7 +61,7 @@ git config --global http.postBuffer 524288000
 - [x] 交战时/攻击时/受伤时/击杀时
 - [x] 无法被破坏
 - [x] 疾驰/守护/必杀/吸血
-- [ ] 回复时/自愈/重伤/无法回复/恶魔转生（将比赛中任意一张卡变成该卡）
+- [x] 回复时/自愈/重伤/无法回复/恶魔转生（将比赛中任意一张卡变成该卡）
 - [ ] 主战者底牌（不同主战者底牌不同：死神、胜利、疲劳等）
 - [ ] 自定义牌组
 - [ ] ~~ep/进化（存在感太强了）~~
@@ -93,6 +95,11 @@ git config --global http.postBuffer 524288000
 
 ### 潜行者
 - 实验室招募员
+
+### 链锯人
+- 链锯恶魔
+- 支配恶魔
+- 暗之恶魔
 
 ## 游戏截图（早期版本）
 ![img.png](imgs/snapshot1.png)
