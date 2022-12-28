@@ -163,6 +163,11 @@ public class PlayerInfo {
         }
         area.addAll(cards);
     }
+    public List<Card> getAreaAsCard(){
+        return getArea().stream()
+            .map(areaCard -> (Card)areaCard)
+            .toList();
+    }
     public List<FollowCard> getAreaFollows(){
         return getArea().stream()
             .filter(areaCard -> areaCard instanceof FollowCard)
@@ -212,6 +217,23 @@ public class PlayerInfo {
         getGraveyard().removeAll(outGraveyardCards);
     }
 
+    public String describeGraveyard(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("墓地：\n");
+        for (int i = 0; i < graveyard.size(); i++) {
+            Card card = graveyard.get(i);
+            sb.append("【").append(i+1).append("】\t")
+                .append(card.getType()).append("\t")
+                .append(card.getName()).append("\t")
+                .append(card.getCost()).append("\t")
+                .append(card.getRace()).append("\t");
+            if(card instanceof EquipmentCard equipmentCard){
+                sb.append("可用次数：").append(equipmentCard.getCountdown());
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
     public String describeHand(){
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < hand.size(); i++) {

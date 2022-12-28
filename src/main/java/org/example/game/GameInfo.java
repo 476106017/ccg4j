@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
+import org.springframework.beans.BeanUtils;
 
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
@@ -95,8 +96,12 @@ public class GameInfo {
         }
     }
 
-    // TODO 变身效果
-    public void transform(Card card, Class<? extends Card> cardClass){
+    public <T extends Card> void transform(T fromCard, T toCard){
+        msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getName());
+        List<Card> where = fromCard.where();
+        int index = where.indexOf(fromCard);
+        where.remove(index);
+        where.add(index,toCard);
     }
     public void destroy(AreaCard card){destroy(List.of(card));}
     public void destroy(List<AreaCard> cards){
@@ -107,6 +112,7 @@ public class GameInfo {
         exile(List.of(card));
     }
     public void exile(List<Card> cards){
+        if(cards.isEmpty())return;
         msg(cards.stream().map(Card::getNameWithOwner).collect(Collectors.joining("、"))+ "从游戏中除外！");
         List<Card> cardsCopy = new ArrayList<>(cards);
         cardsCopy.forEach(card ->{
@@ -132,17 +138,42 @@ public class GameInfo {
             if(card.hasKeyword("恶魔转生")){
                 List<Card> totalCard = new ArrayList<>();
 
-                totalCard.addAll(thisPlayer().getHand().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(thisPlayer().getArea().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(thisPlayer().getGraveyard().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(thisPlayer().getDeck().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(oppositePlayer().getHand().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(oppositePlayer().getArea().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(oppositePlayer().getGraveyard().stream().filter(c -> c instanceof FollowCard).toList());
-                totalCard.addAll(oppositePlayer().getDeck().stream().filter(c -> c instanceof FollowCard).toList());
+
+                totalCard.addAll(thisPlayer().getHand().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(thisPlayer().getArea().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(thisPlayer().getGraveyard().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(thisPlayer().getDeck().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(oppositePlayer().getHand().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(oppositePlayer().getArea().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(oppositePlayer().getGraveyard().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+                totalCard.addAll(oppositePlayer().getDeck().stream()
+                    .filter(c -> c instanceof FollowCard f
+                        && !f.hasKeyword("恶魔转生")).toList());
+
+                if(totalCard.isEmpty()){
+                    msg("游戏中只剩下恶魔牌，"+card.getNameWithOwner()+"已经无法转生");
+                    return;
+                }
                 Card luckyCard = Lists.randOf(totalCard);
 
-                transform(luckyCard,card.getClass());
+
+
+                Card newCard = card.createCard(card.getClass());
+                transform(luckyCard,newCard);
             }
         });
     }
@@ -409,8 +440,8 @@ public class GameInfo {
                 .append(card.getName()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
-                sb.append(follow.getAtk()).append("攻\t");
-                sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
+                sb.append(follow.getAtk()).append("/").append(follow.getHp())
+                    .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
                     sb.append("装备中：").append(follow.getEquipment().getName())
                         .append("（").append(follow.getEquipment().getCountdown()).append("）\t");
@@ -439,8 +470,8 @@ public class GameInfo {
                     follow.getTurnAge()>0 || follow.hasKeyword("突进") || follow.hasKeyword("疾驰"))){
                     sb.append("未攻击").append("\t");
                 }
-                sb.append(follow.getAtk()).append("攻\t");
-                sb.append(follow.getHp()).append("/").append(follow.getMaxHp()).append("血\t");
+                sb.append(follow.getAtk()).append("/").append(follow.getHp())
+                    .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
                     sb.append("装备中：").append(follow.getEquipment().getName())
                         .append("（").append(follow.getEquipment().getCountdown()).append("）\t");

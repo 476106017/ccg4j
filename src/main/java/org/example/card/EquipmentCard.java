@@ -30,8 +30,8 @@ public abstract class EquipmentCard extends AreaCard{
 
     public void addCountdown(int i){
         if(getCountdown() == -1)return;
-        info.msg(getNameWithOwner()+"可使用次数+"+i+"（还剩"+getCountdown()+"次）");
         setCountdown(getCountdown() + i);
+        info.msg(getNameWithOwner()+"可使用次数+"+i+"（还剩"+getCountdown()+"次）");
     }
     public void death(){
         info.msg(target.getNameWithOwner()+"已经解除装备"+getName()+"！");

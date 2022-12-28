@@ -3,6 +3,9 @@
 可以看做影之诗（シャドバ）的fan made作品。以后可能会变成别的玩法。
 
 ## 开始
+git拉不下来？
+git config --global http.postBuffer 524288000
+
 1. 配置好jdk17、gradle
 2. 不需要数据库、不需要中间件，直接启动Ccg4jApplication.main()
 3. 在idea或者vscode里面选择用浏览器打开test.html。在localhost域名上跑起来。

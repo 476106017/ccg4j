@@ -2,7 +2,10 @@ package org.example.card.chainsawman.follow;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.AreaCard;
+import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -19,11 +22,25 @@ public class DarkDemon extends FollowCard {
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        亡语：主战者获得效果【己方回合开始时，如果暗之恶魔在己方墓地，则吸收对方墓地】
+        亡语：主战者获得效果【己方回合开始时，如果本卡在己方墓地，则除外对方墓地所有牌】
         """;
     private String subMark = "";
     public DarkDemon() {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
+        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
+            // 如果没有获得过该效果
+            if (ownerPlayer().getLeader().getEffectsWhen(EffectTiming.BeginTurn).stream()
+                .noneMatch(effect -> effect.getSource()==this)) {
+                ownerPlayer().getLeader().addEffect(this, EffectTiming.BeginTurn,-1,
+                    damage -> {
+                        if(this.atGraveyard()){
+                            List<Card> graveyard = enemyPlayer().getGraveyard();
+                            enemyPlayer().countToGraveyard(-graveyard.size());
+                            getInfo().exile(graveyard);
+                        }
+                    });
+            }
+        }));
     }
 }

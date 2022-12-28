@@ -5,10 +5,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.example.card.AmuletCard;
-import org.example.card.AreaCard;
-import org.example.card.Card;
-import org.example.card.FollowCard;
+import org.example.card.*;
 import org.example.game.GameInfo;
 import org.example.game.GameObj;
 import org.example.game.Leader;
@@ -150,7 +147,7 @@ public class GameHandler {
         }
 
         Card card = player.getHand().get(indexI - 1);
-        if(card instanceof AreaCard &&
+        if(card instanceof AreaCard && !(card instanceof EquipmentCard) &&
             player.getArea().size()==player.getAreaMax()){
             info.msgToThisPlayer("场上放不下卡牌了！");
             return;
@@ -401,6 +398,16 @@ public class GameHandler {
 
         info.msgTo(me, info.describeArea(me));
     }
+    @OnEvent(value = "grave")
+    public void grave(SocketIOClient client, String msg){
+
+        UUID me = client.getSessionId();
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.playerByUuid(me);
+
+        info.msgTo(me, player.describeGraveyard());
+    }
     @OnEvent(value = "ff")
     public void ff(SocketIOClient client, String msg){
 
@@ -416,26 +423,20 @@ public class GameHandler {
 
     }
 
-    // TODO 测试用，使对手顺序出牌
+    // TODO 测试用，顺序出牌
     @OnEvent(value = "test")
     public void test(SocketIOClient client, String msg){
         UUID me = client.getSessionId();
         String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
         GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
-        PlayerInfo enemy = info.anotherPlayerByUuid(me);
-
-        if(!me.equals(player.getUuid())){
-            info.msgTo(me,"当前不是你的回合！");
-            return;
-        }
+        PlayerInfo player = info.thisPlayer();
 
 
-        enemy.getHand().stream().filter(card -> card.getCost()<= enemy.getPpNum())
+        player.getHand().stream().filter(card -> card.getCost()<= player.getPpNum())
             .findAny().ifPresent(card -> {
             if(card instanceof AreaCard &&
-                enemy.getArea().size()==enemy.getAreaMax()){
-                info.msgTo(me,"对手场上放不下卡牌了！");
+                player.getArea().size()==player.getAreaMax()){
+                info.msgTo(me,"场上放不下卡牌了！");
                 return;
             }
 

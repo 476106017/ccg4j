@@ -18,8 +18,8 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @Getter
 @Setter
 public abstract class Card extends GameObj {
-    private int slot = 1;
-    private int apposition = 3;
+    public static final int SLOT = 1;
+    public static final int APPOSITION = 3;
 
     private GameObj parent = null;
 
@@ -27,6 +27,9 @@ public abstract class Card extends GameObj {
 
     private List<String> keywords = new ArrayList<>();
 
+    public boolean hasRace(String k){
+        return getRace().contains(k);
+    }
     public void addKeyword(String k){
         info.msg(getNameWithOwner()+"获得了【"+k+"】");
         getKeywords().add(k);
@@ -49,6 +52,17 @@ public abstract class Card extends GameObj {
             .findFirst()
             .ifPresent(s -> getKeywords().remove(s));
     }
+
+    public String getNameWithOwnerWithPlace(){
+        String place;
+        if(atArea()) place="战场上";
+        else if(atHand()) place="手牌中";
+        else if(atGraveyard()) place="墓地里";
+        else if(atDeck()) place="牌堆中";
+        else place="被除外";
+
+        return ownerPlayer().getName()+place+"的"+getName();
+    };
 
     // region 效果列表
 
@@ -74,6 +88,14 @@ public abstract class Card extends GameObj {
     public abstract String getMark();
     public abstract String getSubMark();
 
+    public List<Card> where(){
+        if(atArea())return ownerPlayer().getAreaAsCard();
+        if(atGraveyard())return ownerPlayer().getGraveyard();
+        if(atHand())return ownerPlayer().getHand();
+        if(atDeck())return ownerPlayer().getDeck();
+        return null;
+    }
+
     public boolean atArea(){
         return ownerPlayer().getArea().contains(this);
     }
@@ -82,6 +104,9 @@ public abstract class Card extends GameObj {
     }
     public boolean atHand(){
         return ownerPlayer().getHand().contains(this);
+    }
+    public boolean atDeck(){
+        return ownerPlayer().getDeck().contains(this);
     }
 
 

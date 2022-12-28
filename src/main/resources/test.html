@@ -107,10 +107,7 @@
         }
         // 清空消息
         function cleanMsg() {
-            var result = confirm("你确定清空消息吗");
-            if (result) {
-                $('#msgList').html('');
-            }
+            $('#msgList').html('');
         }
         function scrollToEnd(){//滚动到底部
             var h = $(document).height()-$(window).height();

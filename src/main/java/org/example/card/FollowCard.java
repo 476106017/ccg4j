@@ -221,12 +221,13 @@ public abstract class FollowCard extends AreaCard{
         }
         // 计算生命值
         if(getHp() <= 0){
-            death();
             if(from instanceof FollowCard fromFollow
                 && !fromFollow.getWhenKills().isEmpty()){
                 info.msg(fromFollow.getNameWithOwner() + "发动击杀时效果！");
                 fromFollow.getWhenKills().forEach(whenKill -> whenKill.effect().accept(this));
             }
+            // 没有被除外，正常死亡
+            if(where()!=null) death();
         }else {
             if(!getWhenDamageds().isEmpty()){
                 info.msg(getNameWithOwner() + "发动受伤时效果！");
