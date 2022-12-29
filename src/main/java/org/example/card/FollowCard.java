@@ -39,12 +39,24 @@ public abstract class FollowCard extends AreaCard{
     }
 
     public void equip(EquipmentCard equipmentCard){
-        if(!equipmentCard.getTargetName().isEmpty() && !getName().equals(equipmentCard.getTargetName())){
-            info.msgToThisPlayer(this.getName()+"无法装备"+equipmentCard.getName()+"！");
-            return;
-        };
-        info.msg(getNameWithOwner() + "装备了" + equipmentCard.getName());
+        // 解除之前的装备
+        if(equipped()){
+            getEquipment().death();
+            if(!atArea()){
+                info.msg(getNameWithOwner()+"没来得及装备"+equipmentCard.getName());
+                equipmentCard.death();
+                return;
+            }
+        }
+        info.msg(getNameWithOwner() + "成功装备了" + equipmentCard.getName());
         setEquipment(equipmentCard);
+        if(equipmentCard.isControl() && getOwner()!=equipmentCard.getOwner()){
+            info.msg(getNameWithOwner() + "被"+enemyPlayer().getName()+"控制！");
+            setOwner(equipmentCard.getOwner());
+            where().remove(this);
+            enemyPlayer().addArea(this);
+
+        }
         addKeywords(equipmentCard.getKeywords());
         addStatus(equipmentCard.getAddAtk(),equipmentCard.getAddHp());
         equipmentCard.setTarget(this);
@@ -144,47 +156,49 @@ public abstract class FollowCard extends AreaCard{
 
         Damage damage = new Damage(this,target);
 
-        if(!getWhenAttacks().isEmpty()) info.msg(getNameWithOwner() + "发动攻击时效果！");
-        getWhenAttacks().forEach(whenAttack -> whenAttack.effect().accept(damage));
+        if(!getWhenAttacks().isEmpty()){
+            info.msg(getNameWithOwner() + "发动攻击时效果！");
+            getWhenAttacks().forEach(whenAttack -> whenAttack.effect().accept(damage));
 
-        if(damage.getTo() instanceof Leader leader)
+        }
+
+        if(damage.getTo() instanceof Leader leader){
             leader.damaged(damage);
-        if(damage.getTo() instanceof FollowCard toFollow){
-            if(!getWhenBattles().isEmpty()){
+            return;
+        }
+
+        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard
+            && !getWhenBattles().isEmpty()){
                 info.msg(getNameWithOwner() + "发动交战时效果！");
                 getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-            }
-            if (toFollow.atArea() && !toFollow.getWhenBattles().isEmpty()){
+        }
+        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow
+            && !toFollow.getWhenBattles().isEmpty()){
                 info.msg(toFollow.getNameWithOwner() + "发动交战时效果！");
                 toFollow.getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-            }
-            if(damage.checkFollowAtArea())
-                toFollow.damageBoth(damage);
         }
+        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow)
+            toFollow.damageBoth(damage);
 
     }
 
     public void damageBoth(Damage damage){
         GameObj from = damage.getFrom();
-        if(from instanceof FollowCard fromFollow){
-            setHp(getHp() - fromFollow.getAtk());
-            info.msg(getNameWithOwner()+"受到了来自"+ fromFollow.getName()+"的"+fromFollow.getAtk()+"点伤害" +
-                "（剩余"+getHp()+"点生命值）");
-
-            fromFollow.setHp(fromFollow.getHp() - getAtk());
-            info.msg(fromFollow.getNameWithOwner()+"受到了来自"+ getName()+"的"+getAtk()+"点反击伤害" +
-                "（剩余"+fromFollow.getHp()+"点生命值）");
-
-            this.damageSettlement(new Damage(from,this));
-            fromFollow.damageSettlement(new Damage(this,from));
-            // 先结算伤害，触发完所有事件后结算武器是否损毁
-            if(fromFollow.equipped())
-                fromFollow.expireEquipSettlement();
-            if(this.equipped())
-                this.expireEquipSettlement();
-        }else {
+        if (!(from instanceof FollowCard fromFollow)) {
             throw new RuntimeException("伤害来源非随从，无法生成反击！");
         }
+        setHp(getHp() - damage.getDamage());
+        info.msg(getNameWithOwner()+"受到了来自"+ fromFollow.getName()+"的"+damage.getDamage()+"点伤害" +
+            "（剩余"+getHp()+"点生命值）");
+
+        fromFollow.setHp(fromFollow.getHp() - damage.getCountDamage());
+        info.msg(fromFollow.getNameWithOwner()+"受到了来自"+ getName()+"的"+damage.getCountDamage()+"点反击伤害" +
+            "（剩余"+fromFollow.getHp()+"点生命值）");
+
+        damageSettlement(damage);
+        // 先结算伤害，触发完所有事件后结算武器是否损毁
+        if(fromFollow.equipped())
+            fromFollow.expireEquipSettlement();
     }
     public void damagedWithoutSettle(Damage damage){
         if(!damage.isFromAtk() && hasKeyword("效果伤害免疫")){
@@ -199,25 +213,41 @@ public abstract class FollowCard extends AreaCard{
 
         if(!atArea()) return;
         GameObj from = damage.getFrom();
+        boolean fromAtk = damage.isFromAtk();
+        assert !fromAtk || from instanceof FollowCard;
 
-        // 攻击方是随从，计算攻击方的关键词
-        if (from instanceof FollowCard followCard) {
-            if(followCard.equipped()) followCard.expireEquip();
-            if(followCard.hasKeyword("重伤")){
-                info.msg(followCard.getNameWithOwner() + "发动重伤效果！");
+        // 攻击方是随从，计算关键词
+        if (from instanceof FollowCard fromFollow) {
+            // 普攻伤害消耗攻击方装备耐久
+            if(fromAtk && fromFollow.equipped())
+                fromFollow.expireEquip();
+            if(fromFollow.hasKeyword("重伤")){
+                info.msg(fromFollow.getNameWithOwner() + "发动重伤效果！");
                 addKeyword("无法回复");
             }
-            if(followCard.hasKeyword("自愈")){
-                info.msg(followCard.getNameWithOwner() + "发动自愈效果！");
-                followCard.heal(damage.getDamage());
+            if(hasKeyword("重伤")){
+                info.msg(getNameWithOwner() + "发动重伤效果！");
+                fromFollow.addKeyword("无法回复");
             }
-            if(followCard.hasKeyword("吸血")){
-                info.msg(followCard.getNameWithOwner() + "发动吸血效果！");
-                followCard.ownerPlayer().heal(damage.getDamage());
+            if(fromFollow.hasKeyword("自愈")){
+                info.msg(fromFollow.getNameWithOwner() + "发动自愈效果！");
+                fromFollow.heal(damage.getDamage());
             }
-            if(followCard.hasKeyword("剧毒")){
-                if(destroyBy(followCard)) return;
+            // 普攻伤害反击
+            if(fromAtk && hasKeyword("自愈")){
+                info.msg(getNameWithOwner() + "发动自愈效果！(反击)");
+                heal(damage.getCountDamage());
             }
+            if(fromFollow.hasKeyword("吸血")){
+                info.msg(fromFollow.getNameWithOwner() + "发动吸血效果！");
+                fromFollow.ownerPlayer().heal(damage.getDamage());
+            }
+            // 普攻伤害反击
+            if(fromAtk && hasKeyword("吸血")){
+                info.msg(getNameWithOwner() + "发动吸血效果！(反击)");
+                ownerPlayer().heal(damage.getCountDamage());
+            }
+
         }
         // 计算生命值
         if(getHp() <= 0){
@@ -232,6 +262,26 @@ public abstract class FollowCard extends AreaCard{
             if(!getWhenDamageds().isEmpty()){
                 info.msg(getNameWithOwner() + "发动受伤时效果！");
                 getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
+            }
+
+            // 计算剧毒效果（如果在场的话）
+            if (from instanceof Card fromCard) {
+                // region 先记录剧毒效果，再破坏（不要先后计算剧毒效果）
+                boolean destroyThis = false, destroyFrom = false;
+                if (atArea() && fromCard.hasKeyword("剧毒")) {
+                    info.msg(fromCard.getNameWithOwner() + "发动剧毒效果！");
+                    destroyThis = true;
+                }
+                // 普攻伤害反击
+                if (fromAtk && hasKeyword("剧毒")) {
+                    info.msg(getNameWithOwner() + "发动剧毒效果！(反击)");
+                    destroyFrom = true;
+                }
+                if (destroyThis)
+                    fromCard.destroy(this);
+                if (destroyFrom)
+                    destroy((FollowCard)fromCard);
+                // endregion
             }
         }
     }

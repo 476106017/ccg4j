@@ -40,8 +40,7 @@ public class Bahamut extends FollowCard {
         getPlays().add(new Card.Event.Play(ArrayList::new,0,
             gameObjs -> {
                 List<AreaCard> area = enemyPlayer().getArea();
-                info.destroy(area);
-                info.msg("随着巴哈姆特的一声怒吼，对面的战场被清理的一干二净");
+                destroy(area);
             }
         ));
         getInvocationEnds().add(new Card.Event.InvocationEnd(

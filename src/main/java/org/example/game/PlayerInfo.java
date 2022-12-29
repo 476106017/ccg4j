@@ -155,13 +155,19 @@ public class PlayerInfo {
             hand.addAll(cards);
         }
     }
-    public void addArea(List<AreaCard> cards){
-        int cardsSize = cards.size();
-        int areaSize = area.size();
-        if(areaSize + cardsSize > areaMax){
-            cards.subList(0,areaMax-areaSize);
+    public void addArea(AreaCard areaCard){
+        if(getArea().size() == getAreaMax()){
+            info.msg(areaCard.getNameWithOwner() + "掉出战场，从游戏中除外！");
+            if(!areaCard.getExiles().isEmpty()){
+                info.msg(areaCard.getNameWithOwner() + "发动除外时效果！");
+                areaCard.getExiles().forEach(exile -> exile.effect().apply());
+            }
+        }else {
+            getArea().add(areaCard);
         }
-        area.addAll(cards);
+    }
+    public void addArea(List<AreaCard> cards){
+        cards.forEach(this::addArea);
     }
     public List<Card> getAreaAsCard(){
         return getArea().stream()
@@ -183,15 +189,7 @@ public class PlayerInfo {
 
     public void summon(AreaCard areaCard){
         info.msg(getName() + "召唤了" + areaCard.getName());
-        if(getArea().size() == getAreaMax()){
-            info.msg(areaCard.getNameWithOwner() + "掉出战场，从游戏中除外！");
-            if(!areaCard.getExiles().isEmpty()){
-                info.msg(areaCard.getNameWithOwner() + "发动除外时效果！");
-                areaCard.getExiles().forEach(exile -> exile.effect().apply());
-            }
-            return;
-        }
-        getArea().add(areaCard);
+        addArea(areaCard);
         if(!areaCard.getEnterings().isEmpty()){
             info.msg(areaCard.getNameWithOwner() + "发动入场时效果！");
             areaCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时

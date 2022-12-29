@@ -3,7 +3,13 @@ package org.example.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.AreaCard;
 import org.example.card.Card;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.example.system.Database.prototypes;
 
 @Getter
 @Setter
@@ -55,5 +61,11 @@ public abstract class GameObj {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void destroy(AreaCard card){destroy(List.of(card));}
+    public void destroy(List<AreaCard> cards){
+        List<AreaCard> cardsCopy = new ArrayList<>(cards);
+        cardsCopy.forEach(card->card.destroyedBy(this));
     }
 }

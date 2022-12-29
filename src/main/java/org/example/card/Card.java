@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
+import static org.example.system.Database.prototypes;
 
 @Getter
 @Setter
@@ -126,10 +127,23 @@ public abstract class Card extends GameObj {
     public Card copyCard(){
         try {
             Card card = this.getClass().getDeclaredConstructor().newInstance();
-            card.parent = this.parent;
+            card.parent = this;
             card.owner = this.owner;
             card.info = this.info;
             card.initCounter();
+            return card;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Card prototype(){
+        try {
+            Class<? extends Card> clazz = this.getClass();
+            Card prototype = prototypes.get(clazz);
+            if(prototype!=null) return prototype;
+            Card card = clazz.getDeclaredConstructor().newInstance();
+            prototypes.put(clazz,card);
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -154,7 +168,7 @@ public abstract class Card extends GameObj {
         if(this instanceof AreaCard areaCard){
             if(this instanceof EquipmentCard equipmentCard){
                 if(targets.size()!=1 || !(targets.get(0) instanceof FollowCard target)){
-                    info.msgToThisPlayer("使用装备卡出错！");
+                    info.msgToThisPlayer("无法使用装备卡！");
                     throw new RuntimeException();
                 }
                 target.equip(equipmentCard);
@@ -170,7 +184,7 @@ public abstract class Card extends GameObj {
 
         // region 发动卡牌效果
         if (this instanceof AreaCard areaCard && !getPlays().isEmpty()) {
-            if (areaCard instanceof EquipmentCard && getPlays().size() == 1) {
+            if (areaCard instanceof EquipmentCard) {
                 // 装备卡的Play事件是决定装备对象的
             } else {
                 info.msg(getNameWithOwner() + "发动战吼");

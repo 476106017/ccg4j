@@ -103,11 +103,6 @@ public class GameInfo {
         where.remove(index);
         where.add(index,toCard);
     }
-    public void destroy(AreaCard card){destroy(List.of(card));}
-    public void destroy(List<AreaCard> cards){
-        List<AreaCard> cardsCopy = new ArrayList<>(cards);
-        cardsCopy.forEach(AreaCard::death);
-    }
     public void exile(Card card){
         exile(List.of(card));
     }
@@ -116,20 +111,12 @@ public class GameInfo {
         msg(cards.stream().map(Card::getNameWithOwner).collect(Collectors.joining("、"))+ "从游戏中除外！");
         List<Card> cardsCopy = new ArrayList<>(cards);
         cardsCopy.forEach(card ->{
-            if (card.atArea()) {
-                card.ownerPlayer().getArea().remove(card);
-                // 场上随从除外时，有机会发动离场时效果
-                if(card instanceof AreaCard areaCard && !areaCard.getLeavings().isEmpty()){
-                    msg(areaCard.getNameWithOwner() + "发动离场时效果！");
-                    areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
-                }
+            // 场上卡除外时，有机会发动离场时效果
+            if (card.atArea() && card instanceof AreaCard areaCard && !areaCard.getLeavings().isEmpty()) {
+                msg(areaCard.getNameWithOwner() + "发动离场时效果！");
+                areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
             }
-            if (card.atGraveyard()) {
-                card.ownerPlayer().getGraveyard().remove(card);
-            }
-            if (card.atHand()) {
-                card.ownerPlayer().getHand().remove(card);
-            }
+            card.where().remove(card);
 
             if(!card.getExiles().isEmpty()){
                 msg(card.getNameWithOwner() + "发动除外时效果！");
@@ -137,7 +124,6 @@ public class GameInfo {
             }
             if(card.hasKeyword("恶魔转生")){
                 List<Card> totalCard = new ArrayList<>();
-
 
                 totalCard.addAll(thisPlayer().getHand().stream()
                     .filter(c -> c instanceof FollowCard f

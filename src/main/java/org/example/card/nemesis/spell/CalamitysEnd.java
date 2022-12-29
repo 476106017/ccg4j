@@ -38,8 +38,8 @@ public class CalamitysEnd extends SpellCard {
 
         getPlays().add(new Card.Event.Play(ArrayList::new,0,
             gameObjs -> {
-                info.destroy(enemyPlayer().getArea());
-                info.destroy(ownerPlayer().getArea());
+                destroy(enemyPlayer().getArea());
+                destroy(ownerPlayer().getArea());
 
                 long count = ownerPlayer().getGraveyard().stream()
                     .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)

@@ -23,14 +23,16 @@ public abstract class AreaCard extends Card{
 
     // endregion
 
-    public boolean destroyBy(GameObj from){
+    public boolean destroyedBy(GameObj from){
+        if(!atArea())return false;
+
         if(hasKeyword("无法破坏")) {
             info.msg(getNameWithOwner() + "无法破坏！");
             return false;
         }
         info.msg(getNameWithOwner() + "被破坏！");
         death();
-        if(this instanceof FollowCard followCard && from instanceof Card card){
+        if(this instanceof FollowCard followCard && from instanceof Card card && card.where() != null){
             if(!card.getWhenKills().isEmpty())
                 info.msg(card.getNameWithOwner() + "发动击杀时效果！");
             card.getWhenKills().forEach(whenKill -> whenKill.effect().accept(followCard));
@@ -39,6 +41,7 @@ public abstract class AreaCard extends Card{
     }
 
     public void death(){
+        if(!atArea())return;
         info.msg(getNameWithOwner()+"被送入墓地！");
 
         ownerPlayer().getArea().remove(this);
@@ -50,6 +53,11 @@ public abstract class AreaCard extends Card{
         if(!getDeathRattles().isEmpty()){
             info.msg(getNameWithOwner() + "发动亡语效果！");
             getDeathRattles().forEach(leaving -> leaving.effect().apply());
+        }
+
+        if(this instanceof FollowCard followCard && followCard.equipped()){
+            info.msg(followCard.getEquipment().getName()+"随着装备者的死亡而随之破坏了");
+            followCard.getEquipment().death();
         }
 
         // region 注能

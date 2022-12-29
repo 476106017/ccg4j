@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.EquipmentCard;
+import org.example.card.FollowCard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +18,7 @@ public class ChainsawMode extends EquipmentCard {
     private int countdown = 1;
     public int addAtk = 2;
     public int addHp = 2;
-    public String targetName = "链锯恶魔";
+
     public String job = "链锯人";
     public String mark = """
         使场上的一个链锯恶魔获得+2/+2、突进、自愈、重伤
@@ -29,9 +33,10 @@ public class ChainsawMode extends EquipmentCard {
 
         getPlays().add(new Card.Event.Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj().stream()
-                .filter(gameObj -> gameObj.getName().equals(getTargetName())).toList(),1,
+                .filter(gameObj -> gameObj.getName().equals("链锯恶魔")).toList(),1,
             gameObjs -> {}
         ));
 
     }
+
 }

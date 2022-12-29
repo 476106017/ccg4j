@@ -3,6 +3,7 @@ package org.example.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.CardType;
+import org.example.game.PlayerInfo;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -18,15 +19,15 @@ public abstract class EquipmentCard extends AreaCard{
 
     private List<String> race = Lists.ofStr("装备");
 
-    private String targetName;
-
     private FollowCard target;
+
+    private boolean control = false;
 
     private int addAtk = 0;
 
     private int addHp = 0;
 
-    private int countdown = -1;// 可使用次数
+    private int countdown = -1;// 耐久
 
     public void addCountdown(int i){
         if(getCountdown() == -1)return;
@@ -34,11 +35,13 @@ public abstract class EquipmentCard extends AreaCard{
         info.msg(getNameWithOwner()+"可使用次数+"+i+"（还剩"+getCountdown()+"次）");
     }
     public void death(){
-        info.msg(target.getNameWithOwner()+"已经解除装备"+getName()+"！");
-        target.setEquipment(null);
-        target.removeKeywords(getKeywords());
-        target.addStatus(-getAddAtk(),-getAddHp());
-        setTarget(null);
+        if(target==null)
+            info.msg(getNameWithOwner()+"在没有装备任何随从的状态下被破坏了！");
+        else{
+            info.msg(target.getNameWithOwner()+"已经解除装备"+getName()+"！");
+            target.setEquipment(null);
+            setTarget(null);
+        }
 
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");
@@ -49,9 +52,18 @@ public abstract class EquipmentCard extends AreaCard{
             info.msg(getNameWithOwner() + "发动亡语效果！");
             getDeathRattles().forEach(leaving -> leaving.effect().apply());
         }
-
         ownerPlayer().getGraveyard().add(this);
         ownerPlayer().countToGraveyard(1);
+
+        // 装备解除后，解除装备效果
+        if(control){
+            info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
+            target.setOwner(1-target.getOwner());
+            target.where().remove(target);
+            target.enemyPlayer().addArea(target);
+        }
+        target.removeKeywords(getKeywords());
+        target.addStatus(-getAddAtk(),-getAddHp());
     }
 
 }

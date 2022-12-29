@@ -156,8 +156,8 @@ public class GameHandler {
         List<GameObj> targetable = card.getTargets();
         // 只有一个参数
         if(split.length == 1){
-            if(targetable.isEmpty()){
-                card.play(targetable);
+            if(targetable.isEmpty() && !(card instanceof EquipmentCard)){
+                card.play(targetable);// 不指定目标（装备卡不能不指定）
             }else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("你需要指定目标以使用该卡牌：play <手牌序号> <目标序号>\n")
@@ -213,7 +213,7 @@ public class GameHandler {
                     info.msgToThisPlayer("指定目标数量错误！应为："+shouldTargetNum);
                     return;
                 }
-                card.play(targets);
+                card.play(targets);// 指定目标（装备卡只有1个目标）
             }
 
         }
@@ -448,6 +448,7 @@ public class GameHandler {
             Integer targetNum = card.getPlays().stream().map(Card.Event.Play::targetNum).reduce(Math::max).get();
             int shouldTargetNum = Math.min(card.getTargets().size(), targetNum);
             if(shouldTargetNum == 0){
+                if(card instanceof EquipmentCard) return;
                 card.play(new ArrayList<>());
             }else {
                 List<GameObj> targets = card.getTargets().subList(0, shouldTargetNum);

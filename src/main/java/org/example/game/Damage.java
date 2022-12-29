@@ -10,6 +10,7 @@ public class Damage{
     GameObj from;
     GameObj to;
     int damage;
+    int countDamage = 0;
     boolean isFromAtk;
 
     public Damage(GameObj from, GameObj to, int damage) {
@@ -23,6 +24,9 @@ public class Damage{
         this.from = from;
         this.to = to;
         this.damage = ((FollowCard) from).getAtk();
+        if (to instanceof FollowCard toFollow){
+            this.countDamage = toFollow.getAtk();
+        }
         this.isFromAtk = true;
     }
 
@@ -34,7 +38,4 @@ public class Damage{
         return true;
     }
 
-    public GameObj another(GameObj obj){
-        return from==obj ? to:from;
-    }
 }
