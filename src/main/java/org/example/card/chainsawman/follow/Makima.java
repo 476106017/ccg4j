@@ -3,6 +3,7 @@ package org.example.card.chainsawman.follow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.chainsawman.equipment.DominatePipe;
 import org.example.system.Lists;
@@ -22,7 +23,7 @@ public class Makima extends FollowCard {
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        入场时、回合开始时：为场上随机一名实名随从装备支配之线
+        战吼、回合开始时：找到场上随机一名未装备支配之线的实名随从，装备支配之线
         
         亡语：破坏一个装备支配之线的己方随从，将此卡召还到场上
         """;
@@ -30,12 +31,14 @@ public class Makima extends FollowCard {
     public Makima() {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
-        getEnterings().add(new AreaCard.Event.Entering(()->{
+        getPlays().add(new Card.Event.Play(ArrayList::new,0,gameObjs -> {
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.getName().equals(followCard.prototype().getName())).toList()));
+                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .toList()));
             canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.getName().equals(followCard.prototype().getName())).toList()));
+                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .toList()));
 
             if(canTarget.isEmpty())return;
 
@@ -45,10 +48,11 @@ public class Makima extends FollowCard {
         getEffectBegins().add(new AreaCard.Event.EffectBegin(()->{
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.getName().equals(followCard.prototype().getName())).toList()));
+                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .toList()));
             canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.getName().equals(followCard.prototype().getName())).toList()));
-
+                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .toList()));
             if(canTarget.isEmpty())return;
 
             Lists.randOf(canTarget)
@@ -56,6 +60,14 @@ public class Makima extends FollowCard {
         }));
         getDeathRattles().add(new AreaCard.Event.DeathRattle(() -> {
 
+            ownerPlayer().getArea().stream()
+                .filter(areaCard -> areaCard instanceof FollowCard follow
+                    && follow.equipmentNamed("支配之线"))
+                .findAny().ifPresent(areaCard -> {
+                    areaCard.destroyedBy(this);
+                    areaCard.where().remove(areaCard);
+                    ownerPlayer().summon(this);// TODO 召还
+                });
 
         }));
     }

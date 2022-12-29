@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
@@ -149,6 +148,10 @@ public abstract class Card extends GameObj {
             throw new RuntimeException(e);
         }
     }
+    public boolean isRealName(){
+        return getName().equals(prototype().getName());
+    }
+
 
     public void play(List<GameObj> targets){
         if(ownerPlayer().getPpNum() < getCost()){

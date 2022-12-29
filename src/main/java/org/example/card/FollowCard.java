@@ -68,6 +68,11 @@ public abstract class FollowCard extends AreaCard{
     public boolean equipped(){
         return getEquipment()!=null;
     }
+
+    public boolean equipmentNamed(String s){
+        return equipped() && getEquipment().getName().equals(s);
+    }
+
     public void expireEquip(){
         int canUse = getEquipment().getCountdown();
         if (canUse > 0){
