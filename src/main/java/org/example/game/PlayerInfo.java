@@ -187,6 +187,16 @@ public class PlayerInfo {
             .toList();
     }
 
+    public void recall(FollowCard followCard){
+        info.msg(getName() + "召还了" + followCard.getName());
+        followCard.remove();
+        followCard.setHp(getHpMax());
+        addArea(followCard);
+        if(!followCard.getEnterings().isEmpty()){
+            info.msg(followCard.getNameWithOwner() + "发动入场时效果！");
+            followCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
+        }
+    }
     public void summon(AreaCard areaCard){
         info.msg(getName() + "召唤了" + areaCard.getName());
         addArea(areaCard);

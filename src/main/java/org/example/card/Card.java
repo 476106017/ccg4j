@@ -35,6 +35,7 @@ public abstract class Card extends GameObj {
         getKeywords().add(k);
     }
     public void addKeywords(List<String> ks){
+        if(ks.isEmpty())return;
         info.msg(getNameWithOwner()+"获得了【"+ String.join("】【", ks) +"】");
         getKeywords().addAll(ks);
     }
@@ -94,6 +95,14 @@ public abstract class Card extends GameObj {
         if(atHand())return ownerPlayer().getHand();
         if(atDeck())return ownerPlayer().getDeck();
         return null;
+    }
+    public void remove(){
+        if(where()==null)return;
+
+        if(atArea())
+            ownerPlayer().getArea().remove(this);
+        else
+            where().remove(this);
     }
 
     public boolean atArea(){

@@ -34,10 +34,14 @@ public class Makima extends FollowCard {
         getPlays().add(new Card.Event.Play(ArrayList::new,0,gameObjs -> {
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .filter(followCard -> followCard.isRealName()
+                    && !(followCard.getName().equals("支配恶魔"))
+                    && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
             canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .filter(followCard -> followCard.isRealName()
+                    && !(followCard.getName().equals("支配恶魔"))
+                    && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
 
             if(canTarget.isEmpty())return;
@@ -48,13 +52,18 @@ public class Makima extends FollowCard {
         getEffectBegins().add(new AreaCard.Event.EffectBegin(()->{
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .filter(followCard -> followCard.isRealName()
+                    && !(followCard.getName().equals("支配恶魔"))
+                    && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
             canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollows().stream()
-                .filter(followCard -> followCard.isRealName() && !(followCard.equipmentNamed("支配之线")))
+                .filter(followCard -> followCard.isRealName()
+                    && !(followCard.getName().equals("支配恶魔"))
+                    && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
             if(canTarget.isEmpty())return;
 
+            // TODO 回合开始时效果不能移动场上牌！先放入队列！（ConcurrentModificationException）
             Lists.randOf(canTarget)
                 .equip(createCard(DominatePipe.class));
         }));
@@ -65,8 +74,7 @@ public class Makima extends FollowCard {
                     && follow.equipmentNamed("支配之线"))
                 .findAny().ifPresent(areaCard -> {
                     areaCard.destroyedBy(this);
-                    areaCard.where().remove(areaCard);
-                    ownerPlayer().summon(this);// TODO 召还
+                    ownerPlayer().recall(this);
                 });
 
         }));

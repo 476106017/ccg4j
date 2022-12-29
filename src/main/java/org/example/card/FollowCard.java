@@ -52,9 +52,10 @@ public abstract class FollowCard extends AreaCard{
         setEquipment(equipmentCard);
         if(equipmentCard.isControl() && getOwner()!=equipmentCard.getOwner()){
             info.msg(getNameWithOwner() + "被"+enemyPlayer().getName()+"控制！");
+            remove();
             setOwner(equipmentCard.getOwner());
-            where().remove(this);
-            enemyPlayer().addArea(this);
+            addKeyword("被控制");
+            ownerPlayer().addArea(this);
 
         }
         addKeywords(equipmentCard.getKeywords());
@@ -129,6 +130,7 @@ public abstract class FollowCard extends AreaCard{
         getDeathRattles().clear();
     }
     public void addStatus(int atk, int hp){
+        if(atk==0 && hp==0)return;
         // region 构造消息
         StringBuilder sb = new StringBuilder();
         sb.append(this.getNameWithOwner()).append("获得了");
@@ -219,7 +221,7 @@ public abstract class FollowCard extends AreaCard{
         if(!atArea()) return;
         GameObj from = damage.getFrom();
         boolean fromAtk = damage.isFromAtk();
-        assert !fromAtk || from instanceof FollowCard;
+        assert !fromAtk || from instanceof FollowCard; // 非a或b，即非(a且非b)，a出现时一定不是“非b”
 
         // 攻击方是随从，计算关键词
         if (from instanceof FollowCard fromFollow) {
@@ -254,7 +256,7 @@ public abstract class FollowCard extends AreaCard{
             }
 
         }
-        // 计算生命值
+        // 结算本随从
         if(getHp() <= 0){
             if(from instanceof FollowCard fromFollow
                 && !fromFollow.getWhenKills().isEmpty()){
@@ -269,25 +271,35 @@ public abstract class FollowCard extends AreaCard{
                 getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
             }
 
-            // 计算剧毒效果（如果在场的话）
-            if (from instanceof Card fromCard) {
-                // region 先记录剧毒效果，再破坏（不要先后计算剧毒效果）
-                boolean destroyThis = false, destroyFrom = false;
-                if (atArea() && fromCard.hasKeyword("剧毒")) {
-                    info.msg(fromCard.getNameWithOwner() + "发动剧毒效果！");
-                    destroyThis = true;
+        }
+        // 结算反击随从
+        if(from instanceof FollowCard fromFollow && fromFollow.atArea()){
+            if(fromFollow.getHp() <= 0){
+                fromFollow.death();
+            }else {
+                if(!fromFollow.getWhenDamageds().isEmpty()){
+                    info.msg(fromFollow.getNameWithOwner() + "发动受伤时效果！");
+                    fromFollow.getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
                 }
-                // 普攻伤害反击
-                if (fromAtk && hasKeyword("剧毒")) {
-                    info.msg(getNameWithOwner() + "发动剧毒效果！(反击)");
-                    destroyFrom = true;
-                }
-                if (destroyThis)
-                    fromCard.destroy(this);
-                if (destroyFrom)
-                    destroy((FollowCard)fromCard);
-                // endregion
             }
+
+            // 计算剧毒效果
+            // region 先记录剧毒效果，再破坏（不要先后计算剧毒效果）
+            boolean destroyThis = false, destroyFrom = false;
+            if (atArea() && fromFollow.hasKeyword("剧毒")) {
+                info.msg(fromFollow.getNameWithOwner() + "发动剧毒效果！");
+                destroyThis = true;
+            }
+            // 普攻伤害才反击
+            if (fromAtk && fromFollow.atArea() && hasKeyword("剧毒")) {
+                info.msg(getNameWithOwner() + "发动剧毒效果！(反击)");
+                destroyFrom = true;
+            }
+            if (destroyThis)
+                fromFollow.destroy(this);
+            if (destroyFrom)
+                destroy(fromFollow);
+            // endregion
         }
     }
 

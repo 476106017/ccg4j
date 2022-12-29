@@ -38,7 +38,18 @@ public abstract class EquipmentCard extends AreaCard{
         if(target==null)
             info.msg(getNameWithOwner()+"在没有装备任何随从的状态下被破坏了！");
         else{
-            info.msg(target.getNameWithOwner()+"已经解除装备"+getName()+"！");
+            // 装备解除前，解除随从身上的装备效果
+            if(control){
+                info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
+                target.setOwner(1-target.getOwner());
+                target.remove();
+                target.removeKeyword("被控制");
+                target.enemyPlayer().addArea(target);
+            }
+            target.removeKeywords(getKeywords());
+            target.addStatus(-getAddAtk(),-getAddHp());
+
+            info.msg(target.getNameWithOwner()+"的装备"+getName()+"被破坏了！");
             target.setEquipment(null);
             setTarget(null);
         }
@@ -55,15 +66,6 @@ public abstract class EquipmentCard extends AreaCard{
         ownerPlayer().getGraveyard().add(this);
         ownerPlayer().countToGraveyard(1);
 
-        // 装备解除后，解除装备效果
-        if(control){
-            info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
-            target.setOwner(1-target.getOwner());
-            target.where().remove(target);
-            target.enemyPlayer().addArea(target);
-        }
-        target.removeKeywords(getKeywords());
-        target.addStatus(-getAddAtk(),-getAddHp());
     }
 
 }

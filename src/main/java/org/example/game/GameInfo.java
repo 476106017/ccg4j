@@ -96,12 +96,24 @@ public class GameInfo {
         }
     }
 
-    public <T extends Card> void transform(T fromCard, T toCard){
+    public void transform(Card fromCard, Card toCard){
         msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getName());
-        List<Card> where = fromCard.where();
-        int index = where.indexOf(fromCard);
-        where.remove(index);
-        where.add(index,toCard);
+        if(fromCard.atArea()){
+            List<AreaCard> area = fromCard.ownerPlayer().getArea();
+            int index = area.indexOf(fromCard);
+            area.remove(index);
+            if (toCard instanceof AreaCard areaCard) {
+                area.add(index, areaCard);
+            } else {
+                msg(toCard.getNameWithOwner()+ "无法留在战场而被除外！");
+                exile(toCard);
+            }
+        }else {
+            List<Card> where = fromCard.where();
+            int index = where.indexOf(fromCard);
+            where.remove(index);
+            where.add(index,toCard);
+        }
     }
     public void exile(Card card){
         exile(List.of(card));
@@ -112,11 +124,14 @@ public class GameInfo {
         List<Card> cardsCopy = new ArrayList<>(cards);
         cardsCopy.forEach(card ->{
             // 场上卡除外时，有机会发动离场时效果
-            if (card.atArea() && card instanceof AreaCard areaCard && !areaCard.getLeavings().isEmpty()) {
-                msg(areaCard.getNameWithOwner() + "发动离场时效果！");
-                areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
+            if (card.atArea() && card instanceof AreaCard areaCard){
+                if(!areaCard.getLeavings().isEmpty()) {
+                    msg(areaCard.getNameWithOwner() + "发动离场时效果！");
+                    areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
+                }
             }
-            card.where().remove(card);
+
+            card.remove();
 
             if(!card.getExiles().isEmpty()){
                 msg(card.getNameWithOwner() + "发动除外时效果！");
@@ -419,8 +434,8 @@ public class GameInfo {
         PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
 
         sb.append("敌方战场：\n");
-        for (int i = 0; i < oppositePlayer.area.size(); i++) {
-            Card card = oppositePlayer.area.get(i);
+        for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
+            Card card = oppositePlayer.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t");
@@ -429,8 +444,10 @@ public class GameInfo {
                 sb.append(follow.getAtk()).append("/").append(follow.getHp())
                     .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getName())
-                        .append("（").append(follow.getEquipment().getCountdown()).append("）\t");
+                    sb.append("装备中：").append(follow.getEquipment().getName());
+                    if(follow.getEquipment().getCountdown()!=-1)
+                        sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
+                    sb.append("\t");
                 }
             }
             if("护符".equals(card.getType())){
@@ -445,8 +462,8 @@ public class GameInfo {
             sb.append("\n");
         }
         sb.append("\n我方战场：\n");
-        for (int i = 0; i < player.area.size(); i++) {
-            Card card = player.area.get(i);
+        for (int i = 0; i < player.getArea().size(); i++) {
+            Card card = player.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t");
@@ -459,8 +476,10 @@ public class GameInfo {
                 sb.append(follow.getAtk()).append("/").append(follow.getHp())
                     .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getName())
-                        .append("（").append(follow.getEquipment().getCountdown()).append("）\t");
+                    sb.append("装备中：").append(follow.getEquipment().getName());
+                    if(follow.getEquipment().getCountdown()!=-1)
+                        sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
+                    sb.append("\t");
                 }
             }
             if("护符".equals(card.getType())){

@@ -56,7 +56,6 @@ public abstract class AreaCard extends Card{
         }
 
         if(this instanceof FollowCard followCard && followCard.equipped()){
-            info.msg(followCard.getEquipment().getName()+"随着装备者的死亡而随之破坏了");
             followCard.getEquipment().death();
         }
 
