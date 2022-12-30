@@ -128,7 +128,7 @@ public class GameHandler {
         }
 
         if(msg.isBlank()){
-            info.msgToThisPlayer("打出卡牌：play <手牌序号> （<目标序号>）；");
+            info.msgToThisPlayer("打出卡牌：play <手牌序号> <目标序号> s<抉择序号>；");
             return;
         }
 
@@ -226,7 +226,7 @@ public class GameHandler {
                 // 需要指定抉择时
                 if (choiceNum > 0)
                     if (choice > choiceNum || choice <= 0) {
-                        info.msgToThisPlayer("指定抉择序号错误！应为：1-" + choiceNum);
+                        info.msgToThisPlayer("指定抉择序号错误！应为：s1-s" + choiceNum);
                         return;
                     }else
                         info.msg(player.getName()+"进行了抉择");
@@ -414,6 +414,16 @@ public class GameHandler {
         GameInfo info = roomGame.get(room);
 
         info.msgTo(me, info.describeArea(me));
+    }
+    @OnEvent(value = "hand")
+    public void hand(SocketIOClient client, String msg){
+
+        UUID me = client.getSessionId();
+        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.playerByUuid(me);
+
+        info.msgTo(me, player.describeHand());
     }
     @OnEvent(value = "grave")
     public void grave(SocketIOClient client, String msg){

@@ -272,6 +272,7 @@ public class PlayerInfo {
     }
     public String describeHand(){
         StringBuilder sb = new StringBuilder();
+        sb.append("战场信息\n");
         for (int i = 0; i < hand.size(); i++) {
             Card card = hand.get(i);
             sb.append("<p>");

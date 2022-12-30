@@ -33,9 +33,6 @@
     <input type="button" onclick="initIm()" value="重连"/>
     <br/>
     <input id="msgContent" name="msgContent" onkeydown="keyDown(event)" placeholder="请输入消息">
-    <select id="msgType" name="msgType">
-        <option value="00">全部</option>
-    </select>
     <input type="button" onclick="sendMsg()" value="发送"/>
     <input type="button" onclick="cleanMsg()" value="清空"/>
     <br/>
@@ -47,7 +44,9 @@
     <input type="button" onclick="$('#msgContent').val('attack')" value="攻击"/>
     <input type="button" onclick="$('#msgContent').val('skill')" value="主战者技能"/>
     <br/>
-    <input type="button" onclick="$('#msgContent').val('info')" value="战场信息"/>
+    <input type="button" onclick="$('#msgContent').val('info')" value="综合信息"/>
+    <input type="button" onclick="$('#msgContent').val('hand')" value="手牌信息"/>
+    <input type="button" onclick="$('#msgContent').val('grave')" value="墓地信息"/>
     <input type="button" onclick="$('#msgContent').val('end')" value="结束回合"/>
 </div>
 

@@ -17,7 +17,7 @@ import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 @Getter
 @Setter
 public class NaturesGuidance extends SpellCard {
-    public Integer cost = 0;
+    public Integer cost = 1;
     public String name = "大自然的导引";
     public String job = "妖精";
     private List<String> race = Lists.ofStr("自然");

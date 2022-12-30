@@ -227,6 +227,9 @@ public abstract class Card extends GameObj {
             .flatMap(Collection::stream)
             .filter(boost -> boost.canBeTriggered.test(this))
             .forEach(boost->boost.effect.accept(this));
+
+        info.msgTo(ownerPlayer().getUuid(), info.describeArea(ownerPlayer().getUuid()));
+        info.msgTo(enemyPlayer().getUuid(), info.describeArea(enemyPlayer().getUuid()));
     }
 
     public static class Event {
