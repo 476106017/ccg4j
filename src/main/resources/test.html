@@ -5,10 +5,23 @@
 
     <meta charset="utf-8">
 
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.20.1/moment.min.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.20.1/locale/zh-cn.js"></script>
+    <style>
+        .popover {
+            word-break: break-all;
+        }
+    </style>
 
 </head>
 
@@ -60,6 +73,7 @@
                 // 监听receiveMsg接收消息事件
                 socket.on('receiveMsg', function (data) {
                     $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
+                    $(function () { $("[data-toggle='popover']").popover(); });
                     scrollToEnd();
                 });
             } else {
@@ -113,6 +127,9 @@
             var h = $(document).height()-$(window).height();
             $(document).scrollTop(h);
         }
+        $(document).click(function () {
+            $("[data-toggle='popover']").popover("hide");
+        });
 	</script>
 
 </body>

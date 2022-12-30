@@ -274,20 +274,35 @@ public class PlayerInfo {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < hand.size(); i++) {
             Card card = hand.get(i);
+            sb.append("<p>");
             sb.append("【").append(i+1).append("】\t")
+                .append(card.getCost()).append("\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t")
-                .append(card.getCost()).append("\t")
-                .append(card.getRace()).append("\n");
+                .append(String.join("/", card.getRace())).append("\t");
             if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
-                sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\n");
+                sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\t");
             }
+            // region 显示详情
+            StringBuilder detail = new StringBuilder();
+            if(card instanceof FollowCard followCard)
+                detail.append(followCard.getAtk()).append("➹")
+                    .append(followCard.getHp()).append("♥\n");
             if(!card.getKeywords().isEmpty())
-                sb.append(card.getKeywords()).append("\n");
-            sb.append(card.getMark());
+                detail.append(String.join(" ", card.getKeywords()))
+                    .append("\n");
+            detail.append(card.getMark());
             if(!card.getSubMark().isBlank())
-                sb.append(card.getSubMark()).append("\n");
-            sb.append("\n");
+                detail.append("\n").append(card.getSubMark());
+
+            sb.append("""
+            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                    title="%s" data-content="%s"
+                    data-container="body" data-toggle="popover"
+                      data-trigger="hover" data-html="true"/>
+            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
+            // endregion
+            sb.append("</p>");
         }
         return sb.toString();
     }
