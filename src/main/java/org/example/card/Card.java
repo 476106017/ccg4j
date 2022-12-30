@@ -211,7 +211,7 @@ public abstract class Card extends GameObj {
         // endregion 发动卡牌效果
 
         // 触发手牌上全部增幅效果
-        ownerPlayer().getHand().stream().map(Card::getBoosts)
+        ownerPlayer().getHandCopy().stream().map(Card::getBoosts)
             .flatMap(Collection::stream)
             .filter(boost -> boost.canBeTriggered.test(this))
             .forEach(boost->boost.effect.accept(this));

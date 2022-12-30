@@ -121,8 +121,9 @@ public class GameInfo {
     public void exile(List<Card> cards){
         if(cards.isEmpty())return;
         msg(cards.stream().map(Card::getNameWithOwner).collect(Collectors.joining("、"))+ "从游戏中除外！");
-        List<Card> cardsCopy = new ArrayList<>(cards);
-        cardsCopy.forEach(card ->{
+        cards.forEach(card ->{
+            if(card.where()==null)return;
+
             // 场上卡除外时，有机会发动离场时效果
             if (card.atArea() && card instanceof AreaCard areaCard){
                 if(!areaCard.getLeavings().isEmpty()) {
@@ -264,7 +265,7 @@ public class GameInfo {
         // 场上随从驻场回合+1、攻击次数清零
         // 发动回合开始效果
         // 场上护符倒数-1
-        thisPlayer().getArea().forEach(areaCard -> {
+        thisPlayer().getAreaCopy().forEach(areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 int turnAgePlus = followCard.getTurnAge() + 1;
                 if(turnAgePlus>0){// 可能有随从会需要准备多个回合，还是判断下
@@ -360,8 +361,7 @@ public class GameInfo {
         leader.expireEffect();
 
         // 发动回合结束效果
-        List<AreaCard> areaCopy = new ArrayList<>(thisPlayer().getArea());
-        areaCopy.forEach(areaCard -> {
+        thisPlayer().getAreaCopy().forEach(areaCard -> {
             if(!areaCard.getEffectEnds().isEmpty()){
                 msg(areaCard.getNameWithOwner()+"发动回合结束效果");
                 areaCard.getEffectEnds().forEach(effectEnd -> {

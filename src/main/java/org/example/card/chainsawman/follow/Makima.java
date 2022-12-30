@@ -63,13 +63,12 @@ public class Makima extends FollowCard {
                 .toList()));
             if(canTarget.isEmpty())return;
 
-            // TODO 回合开始时效果不能移动场上牌！先放入队列！（ConcurrentModificationException）
             Lists.randOf(canTarget)
                 .equip(createCard(DominatePipe.class));
         }));
         getDeathRattles().add(new AreaCard.Event.DeathRattle(() -> {
 
-            ownerPlayer().getArea().stream()
+            ownerPlayer().getAreaCopy().stream()
                 .filter(areaCard -> areaCard instanceof FollowCard follow
                     && follow.equipmentNamed("支配之线"))
                 .findAny().ifPresent(areaCard -> {

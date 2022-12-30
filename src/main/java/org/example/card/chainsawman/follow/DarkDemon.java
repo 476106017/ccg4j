@@ -35,7 +35,7 @@ public class DarkDemon extends FollowCard {
                 ownerPlayer().getLeader().addEffect(this, EffectTiming.BeginTurn,-1,
                     damage -> {
                         if(this.atGraveyard()){
-                            List<Card> graveyard = enemyPlayer().getGraveyard();
+                            List<Card> graveyard = enemyPlayer().getGraveyardCopy();
                             enemyPlayer().countToGraveyard(-graveyard.size());
                             getInfo().exile(graveyard);
                         }

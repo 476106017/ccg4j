@@ -125,7 +125,7 @@ public class PlayerInfo {
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
-        info.msg(getName() + "的" + cards.size() + "张卡加入到了牌堆中");
+        info.msg(getName() + "的" + cards.size() + "张卡洗入牌堆中");
         cards.forEach(card -> {
             int index = (int)(Math.random() * getDeck().size());
             getDeck().add(index,card);
@@ -169,6 +169,20 @@ public class PlayerInfo {
     public void addArea(List<AreaCard> cards){
         cards.forEach(this::addArea);
     }
+
+    // 卡牌的快照。用来循环（原本卡牌List可以随便删）
+    public List<AreaCard> getAreaCopy(){
+        return new ArrayList<>(getArea());
+    }
+    public List<Card> getHandCopy(){
+        return new ArrayList<>(getHand());
+    }
+    public List<Card> getDeckCopy(){
+        return new ArrayList<>(getDeck());
+    }
+    public List<Card> getGraveyardCopy(){
+        return new ArrayList<>(getGraveyard());
+    }
     public List<Card> getAreaAsCard(){
         return getArea().stream()
             .map(areaCard -> (Card)areaCard)
@@ -190,7 +204,7 @@ public class PlayerInfo {
     public void recall(FollowCard followCard){
         info.msg(getName() + "召还了" + followCard.getName());
         followCard.remove();
-        followCard.setHp(getHpMax());
+        followCard.setHp(followCard.getMaxHp());
         addArea(followCard);
         if(!followCard.getEnterings().isEmpty()){
             info.msg(followCard.getNameWithOwner() + "发动入场时效果！");
@@ -209,7 +223,7 @@ public class PlayerInfo {
     public void transmigration(Predicate<? super Card> predicate,int num){
         shuffleGraveyard();
         List<Card> outGraveyardCards = new ArrayList<>();
-        getGraveyard().stream().filter(predicate)
+        getGraveyardCopy().stream().filter(predicate)
             .limit(num).forEach(card -> {
                 info.msgTo(getUuid(),card.getName()+"轮回到了牌堆中");
                 if(!card.getTransmigrations().isEmpty()){
