@@ -36,8 +36,7 @@ public class CalamitysEnd extends SpellCard {
 
     public CalamitysEnd() {
 
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 destroy(enemyPlayer().getArea());
                 destroy(ownerPlayer().getArea());
 

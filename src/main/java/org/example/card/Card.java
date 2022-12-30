@@ -7,12 +7,12 @@ import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static org.example.constant.CounterKey.ALL_COST;
-import static org.example.constant.CounterKey.PLAY_NUM;
+import static org.example.constant.CounterKey.*;
 import static org.example.system.Database.prototypes;
 
 @Getter
@@ -119,6 +119,16 @@ public abstract class Card extends GameObj {
     }
 
 
+
+    public void count(){
+        count(DEFAULT,1);
+    }
+    public void count(int time){
+        count(DEFAULT,time);
+    }
+    public Integer getCount(){
+        return Optional.ofNullable(counter.get(DEFAULT)).orElse(0);
+    }
     public Integer getCount(String key){
         return Optional.ofNullable(counter.get(key)).orElse(0);
     }
@@ -160,9 +170,15 @@ public abstract class Card extends GameObj {
     public boolean isRealName(){
         return getName().equals(prototype().getName());
     }
+    public void exposeRealName(){
+        if(!isRealName()){
+            info.msg(getNameWithOwner() + "改名为" + prototype().getName());
+            setName(prototype().getName());
+        }
+    }
 
 
-    public void play(List<GameObj> targets){
+    public void play(List<GameObj> targets,int choice){
         if(ownerPlayer().getPpNum() < getCost()){
             info.msgToThisPlayer("你没有足够的PP来使用该卡牌！");
             throw new RuntimeException();
@@ -195,19 +211,15 @@ public abstract class Card extends GameObj {
         // endregion
 
         // region 发动卡牌效果
-        if (this instanceof AreaCard areaCard && !getPlays().isEmpty()) {
-            if (areaCard instanceof EquipmentCard) {
-                // 装备卡的Play事件是决定装备对象的
-            } else {
-                info.msg(getNameWithOwner() + "发动战吼");
-                getPlays().forEach(play -> {
-                    // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
-                    if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
-                        play.effect.accept(targets);
-                    }
-                });
-            }
+        if (this instanceof AreaCard && !getPlays().isEmpty()) {
+            info.msg(getNameWithOwner() + "发动战吼");
         }
+        getPlays().forEach(play -> {
+            // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
+            if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
+                play.effect.accept(choice,targets);
+            }
+        });
         // endregion 发动卡牌效果
 
         // 触发手牌上全部增幅效果
@@ -219,7 +231,26 @@ public abstract class Card extends GameObj {
 
     public static class Event {
         /** 使用（到场上叫做战吼，法术牌释放效果） */
-        public record Play(Supplier<List<GameObj>> targets, int targetNum, Consumer<List<GameObj>> effect){}
+        public record Play(Supplier<List<GameObj>> targets, int targetNum,int choiceNum, BiConsumer<Integer,List<GameObj>> effect){
+            /**
+             * 仅抉择
+             */
+            public Play(int choiceNum,Consumer<Integer> effect) {
+                this(ArrayList::new,0,choiceNum,((integer, gameObjs) -> effect.accept(integer)));
+            }
+            /**
+             * 仅选择目标
+             */
+            public Play(Supplier<List<GameObj>> targets, int targetNum,Consumer<List<GameObj>> effect) {
+                this(targets,targetNum,0,((integer, gameObjs) -> effect.accept(gameObjs)));
+            }
+            /**
+             * 不需要抉择/选择目标
+             */
+            public Play(FunctionN effect) {
+                this(ArrayList::new,0,0,((integer, gameObjs) -> effect.apply()));
+            }
+        }
         /** 回合开始瞬召 */
         public record InvocationBegin(PredicateN canBeTriggered, FunctionN effect){}
         /** 回合结束瞬召 */

@@ -157,10 +157,10 @@ public class GameHandler {
         // 只有一个参数
         if(split.length == 1){
             if(targetable.isEmpty() && !(card instanceof EquipmentCard)){
-                card.play(targetable);// 不指定目标（装备卡不能不指定）
+                card.play(targetable,0);// 不指定目标（装备卡不能不指定）
             }else {
                 StringBuilder sb = new StringBuilder();
-                sb.append("你需要指定目标以使用该卡牌：play <手牌序号> <目标序号>\n")
+                sb.append("你需要指定目标以使用该卡牌：play <手牌序号> <目标序号> s<抉择序号>\n")
                     .append("可指定的目标：\n");
                 for (int i = 0; i < targetable.size(); i++) {
                     sb.append("【").append(i+1).append("】\t");
@@ -178,7 +178,7 @@ public class GameHandler {
                                 .append(followCard.getAtk()).append("/").append(followCard.getHp());
                         }else if(gameObj instanceof AmuletCard amuletCard){
                             sb.append("护符\t")
-                                .append(amuletCard.getCount()).append("/").append(amuletCard.getTimer());
+                                .append("倒数：").append(amuletCard.getTimer());
                         }
                     }
                     sb.append("\n");
@@ -193,7 +193,16 @@ public class GameHandler {
                 return;
             }else {
                 List<GameObj> targets = new ArrayList<>();
+                int choice = 0;
                 for (String targetS : split) {
+                    if(targetS.startsWith("s")){
+                        try {
+                            choice = Integer.parseInt(targetS.substring(1,2));
+                        }catch (Exception e){
+                            choice = 0;
+                        }
+                        continue;
+                    }
                     Integer targetI;
                     try {
                         targetI = Integer.valueOf(targetS);
@@ -213,7 +222,15 @@ public class GameHandler {
                     info.msgToThisPlayer("指定目标数量错误！应为："+shouldTargetNum);
                     return;
                 }
-                card.play(targets);// 指定目标（装备卡只有1个目标）
+                Integer choiceNum = card.getPlays().stream().map(Card.Event.Play::choiceNum).reduce(Math::min).get();
+                // 需要指定抉择时
+                if (choiceNum > 0)
+                    if (choice > choiceNum || choice <= 0) {
+                        info.msgToThisPlayer("指定抉择序号错误！应为：1-" + choiceNum);
+                        return;
+                    }else
+                        info.msg(player.getName()+"进行了抉择");
+                card.play(targets,choice);// 指定目标（装备卡只有1个目标）
             }
 
         }
@@ -353,8 +370,8 @@ public class GameHandler {
                             sb.append("随从\t")
                                 .append(followCard.getAtk()).append("/").append(followCard.getHp());
                         }else if(gameObj instanceof AmuletCard amuletCard){
-                            sb.append("护符\t")
-                                .append(amuletCard.getCount()).append("/").append(amuletCard.getTimer());
+                            sb.append("护符\t");
+                            sb.append("倒数：").append(amuletCard.getTimer()).append("\t");
                         }
                     }
                     sb.append("\n");
@@ -441,7 +458,7 @@ public class GameHandler {
             }
 
             if(card.getPlays().isEmpty()){
-                card.play(new ArrayList<>());
+                card.play(new ArrayList<>(),1);
                 return;
             }
 
@@ -449,10 +466,10 @@ public class GameHandler {
             int shouldTargetNum = Math.min(card.getTargets().size(), targetNum);
             if(shouldTargetNum == 0){
                 if(card instanceof EquipmentCard) return;
-                card.play(new ArrayList<>());
+                card.play(new ArrayList<>(),1);
             }else {
                 List<GameObj> targets = card.getTargets().subList(0, shouldTargetNum);
-                card.play(targets);
+                card.play(targets,1);
             }
 
         });

@@ -23,6 +23,33 @@ public abstract class AreaCard extends Card{
 
     // endregion
 
+    public void backToHand(){
+        if(!atArea())return;
+
+        info.msg(getNameWithOwner() + "回到手牌！");
+
+
+        ownerPlayer().getArea().remove(this);
+        if(!getLeavings().isEmpty()){
+            info.msg(getNameWithOwner() + "发动离场时效果！");
+            getLeavings().forEach(leaving -> leaving.effect().apply());
+        }
+
+        if (this instanceof FollowCard followCard){
+            // 随从回去，装备破坏
+            if (followCard.equipped()) {
+                info.msg(getNameWithOwner() + "的装备被留在了战场！");
+                followCard.getEquipment().death();
+            }
+            followCard.setHp(followCard.getMaxHp());// 回复到满血
+        }else if (this instanceof AmuletCard amuletCard){
+            amuletCard.setTimer(((AmuletCard)(amuletCard.prototype())).getTimer());
+        }
+
+        ownerPlayer().addHand(this);
+
+    }
+
     public boolean destroyedBy(GameObj from){
         if(!atArea())return false;
 
@@ -43,6 +70,12 @@ public abstract class AreaCard extends Card{
     public void death(){
         if(!atArea())return;
         info.msg(getNameWithOwner()+"被送入墓地！");
+
+        if(hasKeyword("游魂")){
+            info.msg("墓地拒绝了【游魂】！");
+            info.exile(this);
+            return;
+        }
 
         ownerPlayer().getArea().remove(this);
         if(!getLeavings().isEmpty()){

@@ -9,8 +9,6 @@ import org.example.card.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.system.Database.prototypes;
-
 @Getter
 @Setter
 public abstract class GameObj {
@@ -28,6 +26,7 @@ public abstract class GameObj {
         return info.getPlayerInfos()[1-owner];
     }
 
+    public abstract void setName(String name);
     public abstract String getName();
 
     public String getNameWithOwner(){
@@ -64,8 +63,8 @@ public abstract class GameObj {
     }
 
     public void destroy(AreaCard card){destroy(List.of(card));}
-    public void destroy(List<AreaCard> cards){
+    public int destroy(List<AreaCard> cards){
         List<AreaCard> cardsCopy = new ArrayList<>(cards);
-        cardsCopy.forEach(card->card.destroyedBy(this));
+        return (int) cardsCopy.stream().filter(card->card.destroyedBy(this)).count();
     }
 }

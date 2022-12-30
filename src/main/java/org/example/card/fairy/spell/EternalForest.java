@@ -34,8 +34,7 @@ public class EternalForest extends SpellCard {
 
     public EternalForest() {
 
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 ownerPlayer().addHpMax(10);
 
                 long count = ownerPlayer().getCount(TRANSMIGRATION_NUM);

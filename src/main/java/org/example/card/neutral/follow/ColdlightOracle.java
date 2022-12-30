@@ -26,8 +26,7 @@ public class ColdlightOracle extends FollowCard {
 
     public ColdlightOracle() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 ownerPlayer().draw(2);
                 enemyPlayer().draw(2);
             }));

@@ -29,15 +29,14 @@ public class CalamitysGenesis extends SpellCard {
 
     public CalamitysGenesis() {
 
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(MagisterialDreadnought.class));
                 addCards.add(createCard(MagisterialDreadnought.class));
                 ownerPlayer().addDeck(addCards);
 
                 // 创建主战者回合结束效果
-                ownerPlayer().getLeader().addEffect(this,EffectTiming.EndTurn, 1,
+                ownerPlayer().getLeader().addEffect(this,EffectTiming.EndTurn, 1,false,
                     damage -> ownerPlayer().draw(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                 );
         }));

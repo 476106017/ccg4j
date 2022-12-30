@@ -39,12 +39,16 @@ public abstract class EquipmentCard extends AreaCard{
             info.msg(getNameWithOwner()+"在没有装备任何随从的状态下被破坏了！");
         else{
             // 装备解除前，解除随从身上的装备效果
-            if(control){
-                info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
-                target.setOwner(1-target.getOwner());
-                target.remove();
+            if(isControl()){
+                if(target.atArea()){
+                    info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
+                    target.setOwner(1-target.getOwner());
+                    target.remove();
+                    target.enemyPlayer().addArea(target);
+                }else {
+                    info.msg(target.getNameWithOwner() + "已经被彻底控制了......");
+                }
                 target.removeKeyword("被控制");
-                target.enemyPlayer().addArea(target);
             }
             target.removeKeywords(getKeywords());
             target.addStatus(-getAddAtk(),-getAddHp());

@@ -23,7 +23,7 @@ public class ChainsawMan extends FollowCard {
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
         战吼：增加1张链锯形态到手牌
-        击杀时：如果对象是【恶魔】，则将其净化并除外；
+        击杀时：如果对象是【恶魔】，则将其沉默并除外；
         如果超杀，则当前装备中的链锯形态可使用次数+1
         """;
     private String subMark = "";
@@ -32,8 +32,7 @@ public class ChainsawMan extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
 
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs ->  ownerPlayer().addHand(createCard(ChainsawMode.class))
+        getPlays().add(new Card.Event.Play(() ->  ownerPlayer().addHand(createCard(ChainsawMode.class))
         ));
 
         getWhenKills().add(new Card.Event.WhenKill(

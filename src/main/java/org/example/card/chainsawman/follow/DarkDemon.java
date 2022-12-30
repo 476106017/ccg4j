@@ -30,17 +30,13 @@ public class DarkDemon extends FollowCard {
         getKeywords().add("恶魔转生");
         getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
             // 如果没有获得过该效果
-            if (ownerPlayer().getLeader().getEffectsWhen(EffectTiming.BeginTurn).stream()
-                .noneMatch(effect -> effect.getSource()==this)) {
-                ownerPlayer().getLeader().addEffect(this, EffectTiming.BeginTurn,-1,
-                    damage -> {
-                        if(this.atGraveyard()){
-                            List<Card> graveyard = enemyPlayer().getGraveyardCopy();
-                            enemyPlayer().countToGraveyard(-graveyard.size());
-                            getInfo().exile(graveyard);
-                        }
-                    });
-            }
+            ownerPlayer().getLeader().addEffect(this, EffectTiming.BeginTurn,() -> {
+                if(this.atGraveyard()){
+                    List<Card> graveyard = enemyPlayer().getGraveyardCopy();
+                    enemyPlayer().countToGraveyard(-graveyard.size());
+                    getInfo().exile(graveyard);
+                }
+            });
         }));
     }
 }

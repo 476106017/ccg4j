@@ -10,7 +10,6 @@ import org.example.constant.CardType;
 public abstract class AmuletCard extends AreaCard{
 
     public final CardType TYPE = CardType.AMULET;
-    public int count = -1;
     public int timer = -1;
 
     @Override

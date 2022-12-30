@@ -26,8 +26,7 @@ public class ForestGenesis extends SpellCard {
     public String subMark = "";
 
     public ForestGenesis() {
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));
                 ownerPlayer().addDeck(addCards);

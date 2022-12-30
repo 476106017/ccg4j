@@ -32,8 +32,7 @@ public class ImmortalAegis extends FollowCard {
         getKeywords().add("无法破坏");
         getKeywords().add("魔法免疫");
 
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 MercurialMight mercurialMight = createCard(MercurialMight.class);
                 mercurialMight.setCost(0);

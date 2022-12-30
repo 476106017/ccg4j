@@ -8,18 +8,9 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.example.Ccg4jApplication;
 import org.example.card.Card;
-import org.example.card.chainsawman.follow.ChainsawMan;
-import org.example.card.chainsawman.follow.DarkDemon;
-import org.example.card.chainsawman.follow.Makima;
-import org.example.card.fairy.follow.EternalBloom;
-import org.example.card.fairy.follow.FairyWhisperer;
-import org.example.card.fairy.spell.ForestGenesis;
-import org.example.card.nemesis.spell.CalamitysGenesis;
 import org.example.card.neutral.SVPlayer;
-import org.example.card.neutral.follow.Bahamut;
-import org.example.card.neutral.follow.TravelerGoblin;
-import org.example.card.neutral.spell.DarkSnare;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,14 +54,7 @@ public class MatchHandler {
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(SVPlayer.class);
         List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
-        for (int i = 0; i < 3; i++) {
-            activeDeck.add(FairyWhisperer.class);
-            activeDeck.add(TravelerGoblin.class);
-            activeDeck.add(ChainsawMan.class);
-            activeDeck.add(Makima.class);
-            activeDeck.add(DarkDemon.class);
-
-        }
+        Ccg4jApplication.editCards(activeDeck);
         userDecks.put(uuid, playerDeck);
         // endregion TODO 先由临时玩家游玩，直接拥有全部卡牌
         userNames.put(uuid,name);

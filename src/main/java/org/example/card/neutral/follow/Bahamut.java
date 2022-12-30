@@ -37,8 +37,7 @@ public class Bahamut extends FollowCard {
 
     public Bahamut() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
                 List<AreaCard> area = enemyPlayer().getArea();
                 destroy(area);
             }

@@ -183,15 +183,29 @@ public class PlayerInfo {
     public List<Card> getGraveyardCopy(){
         return new ArrayList<>(getGraveyard());
     }
+
+    public List<AreaCard> getAreaBy(Predicate<AreaCard> p){
+        return getArea().stream().filter(p).toList();
+    }
     public List<Card> getAreaAsCard(){
         return getArea().stream()
             .map(areaCard -> (Card)areaCard)
             .toList();
     }
-    public List<FollowCard> getAreaFollows(){
+    public List<FollowCard> getAreaFollowsAsFollow(){
         return getArea().stream()
             .filter(areaCard -> areaCard instanceof FollowCard)
             .map(areaCard -> (FollowCard)areaCard)
+            .toList();
+    }
+    public List<AreaCard> getAreaFollows(){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard)
+            .toList();
+    }
+    public List<AreaCard> getAreaFollowsBy(Predicate<FollowCard> p){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard followCard && p.test(followCard))
             .toList();
     }
     public List<GameObj> getAreaFollowsAsGameObj(){
@@ -249,7 +263,7 @@ public class PlayerInfo {
                 .append(card.getName()).append("\t")
                 .append(card.getCost()).append("\t")
                 .append(card.getRace()).append("\t");
-            if(card instanceof EquipmentCard equipmentCard){
+            if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
                 sb.append("可用次数：").append(equipmentCard.getCountdown());
             }
             sb.append("\n");
@@ -265,7 +279,7 @@ public class PlayerInfo {
                 .append(card.getName()).append("\t")
                 .append(card.getCost()).append("\t")
                 .append(card.getRace()).append("\n");
-            if(card instanceof EquipmentCard equipmentCard){
+            if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
                 sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\n");
             }
             if(!card.getKeywords().isEmpty())

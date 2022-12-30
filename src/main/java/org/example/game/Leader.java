@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.constant.EffectTiming;
+import org.example.system.function.FunctionN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,10 @@ public abstract class Leader extends GameObj {
         setCanUseSkill(false);
     };
 
+
+    public void damaged(GameObj from,int damage){
+        damaged(new Damage(from,this,damage));
+    }
     public void damaged(Damage damage){
         GameInfo info = ownerPlayer().getInfo();
 
@@ -64,8 +69,16 @@ public abstract class Leader extends GameObj {
         }
     }
 
-    public void addEffect(Card source, EffectTiming timing,int canUseTurn, Consumer<Damage> effect){
-        effects.add(new Effect(source,timing,canUseTurn,effect));
+    public void addEffect(Card source, EffectTiming timing, FunctionN effect){
+        addEffect(source,timing,damage -> effect.apply());
+    }
+
+    public void addEffect(Card source, EffectTiming timing, Consumer<Damage> effect){
+        addEffect(source,timing,-1,true,effect);
+    }
+
+    public void addEffect(Card source, EffectTiming timing,int canUseTurn,boolean only, Consumer<Damage> effect){
+        effects.add(new Effect(source,timing,canUseTurn,only,effect));
     }
 
     public List<Effect> getEffectsWhen(EffectTiming timing){
@@ -106,12 +119,15 @@ public abstract class Leader extends GameObj {
 
         private Card source;
 
+        private boolean only;
+
         private Consumer<Damage> effect;
 
-        public Effect(Card source, EffectTiming timing,int canUseTurn, Consumer<Damage> effect) {
+        public Effect(Card source, EffectTiming timing,int canUseTurn,boolean only, Consumer<Damage> effect) {
             this.source = source;
             this.timing = timing;
             this.canUseTurn = canUseTurn;
+            this.only = only;
             this.effect = effect;
         }
 

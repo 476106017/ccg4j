@@ -35,7 +35,7 @@ public class TravelerGoblin extends FollowCard {
     public TravelerGoblin() {
         setMaxHp(getHp());
         getPlays().add(
-            new Card.Event.Play(ArrayList::new,0, targets->{
+            new Card.Event.Play(()->{
                 int turn = info.getTurn();
                 if(turn ==1){
                     ownerPlayer().draw(1);

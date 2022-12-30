@@ -29,8 +29,7 @@ public class TestFollow extends FollowCard {
     public TestFollow() {
         setMaxHp(getHp());
         getKeywords().add("剧毒");
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,
-            gameObjs -> getInfo().msg(getNameWithOwner() + "战吼")));
+        getPlays().add(new Card.Event.Play(() -> getInfo().msg(getNameWithOwner() + "战吼")));
         getEnterings().add(new AreaCard.Event.Entering(()->
             getInfo().msg(getNameWithOwner() + "入场时")));
         getLeavings().add(new AreaCard.Event.Leaving(()->

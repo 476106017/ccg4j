@@ -106,7 +106,7 @@ public abstract class FollowCard extends AreaCard{
         }
     }
     public void purify(){
-        info.msg(this.getNameWithOwner()+"遭到了净化！");
+        info.msg(this.getNameWithOwner()+"被沉默！");
         getKeywords().clear();
 
         getPlays().clear();

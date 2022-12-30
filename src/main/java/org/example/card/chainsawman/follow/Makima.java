@@ -31,14 +31,14 @@ public class Makima extends FollowCard {
     public Makima() {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
-        getPlays().add(new Card.Event.Play(ArrayList::new,0,gameObjs -> {
+        getPlays().add(new Card.Event.Play(() -> {
             List<FollowCard> canTarget = new ArrayList<>();
-            canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollows().stream()
+            canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollowsAsFollow().stream()
                 .filter(followCard -> followCard.isRealName()
                     && !(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
-            canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollows().stream()
+            canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollowsAsFollow().stream()
                 .filter(followCard -> followCard.isRealName()
                     && !(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
@@ -51,12 +51,12 @@ public class Makima extends FollowCard {
         }));
         getEffectBegins().add(new AreaCard.Event.EffectBegin(()->{
             List<FollowCard> canTarget = new ArrayList<>();
-            canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollows().stream()
+            canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollowsAsFollow().stream()
                 .filter(followCard -> followCard.isRealName()
                     && !(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
-            canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollows().stream()
+            canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollowsAsFollow().stream()
                 .filter(followCard -> followCard.isRealName()
                     && !(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))

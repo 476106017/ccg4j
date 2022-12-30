@@ -31,7 +31,7 @@ public class FairyWhisperer extends FollowCard {
 
     public FairyWhisperer() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(ArrayList::new,0, target->{
+        getPlays().add(new Card.Event.Play(()->{
             List<Card> fairies = new ArrayList<>();
             for (int i = 0; i < getCost(); i++) {
                 Fairy fairy = createCard(Fairy.class);

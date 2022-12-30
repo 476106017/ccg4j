@@ -131,6 +131,10 @@ public class GameInfo {
                     areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
                 }
             }
+            // 随从除外时，装备也除外
+            if(card instanceof FollowCard followCard && followCard.equipped()){
+                exile(followCard.getEquipment());
+            }
 
             card.remove();
 
@@ -266,6 +270,27 @@ public class GameInfo {
         // 发动回合开始效果
         // 场上护符倒数-1
         thisPlayer().getAreaCopy().forEach(areaCard -> {
+            if(!areaCard.atArea())return;
+
+            if(!areaCard.getEffectBegins().isEmpty()){
+                msg(areaCard.getNameWithOwner()+"发动回合开始效果");
+                areaCard.getEffectBegins().forEach(effectEnd -> {
+                    effectEnd.effect().apply();
+                });
+            }
+            if(!areaCard.atArea())return;
+
+
+            if(areaCard instanceof FollowCard followCard && followCard.equipped()){
+                EquipmentCard equipment = followCard.getEquipment();
+                List<AreaCard.Event.EffectBegin> effectBegins = equipment.getEffectBegins();
+                if(!effectBegins.isEmpty()){
+                    msg(areaCard.getNameWithOwner() + "发动其装备"+equipment.getName()+"的回合开始效果");
+                    effectBegins.forEach(effectEnd -> effectEnd.effect().apply());
+                }
+            }
+            if(!areaCard.atArea())return;
+
             if(areaCard instanceof FollowCard followCard){
                 int turnAgePlus = followCard.getTurnAge() + 1;
                 if(turnAgePlus>0){// 可能有随从会需要准备多个回合，还是判断下
@@ -276,12 +301,6 @@ public class GameInfo {
                 followCard.setTurnAttack(0);
             }
 
-            if(!areaCard.getEffectBegins().isEmpty()){
-                msg(areaCard.getNameWithOwner()+"发动回合开始效果");
-                areaCard.getEffectBegins().forEach(effectEnd -> {
-                    effectEnd.effect().apply();
-                });
-            }
             if(areaCard instanceof AmuletCard amuletCard){
                 int timer = amuletCard.getTimer();
                 if(timer > 0){
@@ -362,11 +381,21 @@ public class GameInfo {
 
         // 发动回合结束效果
         thisPlayer().getAreaCopy().forEach(areaCard -> {
-            if(!areaCard.getEffectEnds().isEmpty()){
-                msg(areaCard.getNameWithOwner()+"发动回合结束效果");
-                areaCard.getEffectEnds().forEach(effectEnd -> {
-                    effectEnd.effect().apply();
-                });
+            if (areaCard.atArea())
+                if (!areaCard.getEffectEnds().isEmpty()) {
+                    msg(areaCard.getNameWithOwner() + "发动回合结束效果");
+                    areaCard.getEffectEnds().forEach(effectEnd -> {
+                        effectEnd.effect().apply();
+                    });
+                }
+            if(!areaCard.atArea())return;
+            if(areaCard instanceof FollowCard followCard && followCard.equipped()){
+                EquipmentCard equipment = followCard.getEquipment();
+                List<AreaCard.Event.EffectEnd> effectEnds = equipment.getEffectEnds();
+                if(!effectEnds.isEmpty()){
+                    msg(areaCard.getNameWithOwner() + "发动其装备"+equipment.getName()+"的回合结束效果");
+                    effectEnds.forEach(effectEnd -> effectEnd.effect().apply());
+                }
             }
         });
 
@@ -452,9 +481,9 @@ public class GameInfo {
             }
             if("护符".equals(card.getType())){
                 AmuletCard amulet = (AmuletCard) card;
-                int count = amulet.getCount();
-                int timer = amulet.getTimer();
-                sb.append(count==-1?"-":count).append("/").append(timer==-1?"∞":timer).append("\t");
+                if(amulet.getTimer()>0){
+                    sb.append("倒数：").append(amulet.getTimer()).append("\t");
+                }
             }
 
             if(!card.getKeywords().isEmpty())
@@ -484,9 +513,9 @@ public class GameInfo {
             }
             if("护符".equals(card.getType())){
                 AmuletCard amulet = (AmuletCard) card;
-                int count = amulet.getCount();
-                int timer = amulet.getTimer();
-                sb.append(count==-1?"-":count).append("/").append(timer==-1?"∞":timer).append("\t");
+                if(amulet.getTimer()>0){
+                    sb.append("倒数：").append(amulet.getTimer()).append("\t");
+                }
             }
 
             if(!card.getKeywords().isEmpty())
