@@ -34,38 +34,45 @@ public class Makima extends FollowCard {
         getPlays().add(new Card.Event.Play(() -> {
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollowsAsFollow().stream()
-                .filter(followCard -> followCard.isRealName()
-                    && !(followCard.getName().equals("支配恶魔"))
+                .filter(followCard ->!(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
             canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollowsAsFollow().stream()
-                .filter(followCard -> followCard.isRealName()
-                    && !(followCard.getName().equals("支配恶魔"))
+                .filter(followCard ->!(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
 
             if(canTarget.isEmpty())return;
 
-            Lists.randOf(canTarget)
-                .equip(createCard(DominatePipe.class));
+            FollowCard target = Lists.randOf(canTarget);
+            if(target.isRealName()){
+                equip(createCard(DominatePipe.class));
+            }else {
+                info.msg(getNameWithOwner()+"发现自己无法支配"+target.getName());
+            }
+
         }));
         getEffectBegins().add(new AreaCard.Event.EffectBegin(()->{
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollowsAsFollow().stream()
-                .filter(followCard -> followCard.isRealName()
-                    && !(followCard.getName().equals("支配恶魔"))
+                .filter(followCard -> !(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
             canTarget.addAll(new ArrayList<>(ownerPlayer().getAreaFollowsAsFollow().stream()
-                .filter(followCard -> followCard.isRealName()
-                    && !(followCard.getName().equals("支配恶魔"))
+                .filter(followCard -> !(followCard.getName().equals("支配恶魔"))
                     && !(followCard.equipmentNamed("支配之线")))
                 .toList()));
             if(canTarget.isEmpty())return;
 
-            Lists.randOf(canTarget)
-                .equip(createCard(DominatePipe.class));
+            FollowCard target = Lists.randOf(canTarget);
+            if(target.isRealName()){
+                equip(createCard(DominatePipe.class));
+            }else {
+                info.msg(getNameWithOwner()+"发现自己无法支配"+target.getName());
+            }
         }));
+
+
         getDeathRattles().add(new AreaCard.Event.DeathRattle(() -> {
 
             ownerPlayer().getAreaCopy().stream()

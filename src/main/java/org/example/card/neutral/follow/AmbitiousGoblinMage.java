@@ -27,8 +27,8 @@ public class AmbitiousGoblinMage  extends FollowCard {
     public AmbitiousGoblinMage() {
         setMaxHp(getHp());
         getPlays().add(new Card.Event.Play(
-            ()->ownerPlayer().getHand().stream()
-                .filter(card -> card instanceof FollowCard).map(card -> (GameObj)card).toList(),
+            ()->ownerPlayer().getHandAsGameObjBy(card ->
+                card instanceof FollowCard followCard && followCard!=this ),
             1,
             target->{
                 ownerPlayer().back((FollowCard)target.get(0));

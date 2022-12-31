@@ -154,10 +154,16 @@ public class GameHandler {
         }
 
         List<GameObj> targetable = card.getTargets();
+
+        Integer targetNum = card.getPlays().stream()
+            .map(Card.Event.Play::targetNum).reduce(Math::max).orElse(0);
         // 只有一个参数
         if(split.length == 1){
-            if(targetable.isEmpty() && !(card instanceof EquipmentCard)){
-                card.play(targetable,0);// 不指定目标（装备卡不能不指定）
+            if(targetable.isEmpty()
+                && !(card instanceof SpellCard && targetNum>0)// 指定法术卡必须指定
+                && !(card instanceof EquipmentCard)){// 装备卡必须指定
+                // 如果是站场卡，则不指定也能召唤
+                card.play(targetable,0);// 不指定目标
             }else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("你需要指定目标以使用该卡牌：play <手牌序号> <目标序号> s<抉择序号>\n")
@@ -216,13 +222,12 @@ public class GameHandler {
                         }
                     }catch (Exception e){}
                 }
-                Integer targetNum = card.getPlays().stream().map(Card.Event.Play::targetNum).reduce(Math::max).get();
                 int shouldTargetNum = Math.min(targetable.size(), targetNum);
                 if(targets.size() != shouldTargetNum){
                     info.msgToThisPlayer("指定目标数量错误！应为："+shouldTargetNum);
                     return;
                 }
-                Integer choiceNum = card.getPlays().stream().map(Card.Event.Play::choiceNum).reduce(Math::min).get();
+                Integer choiceNum = card.getPlays().stream().map(Card.Event.Play::choiceNum).reduce(Math::min).orElse(0);
                 // 需要指定抉择时
                 if (choiceNum > 0)
                     if (choice > choiceNum || choice <= 0) {

@@ -184,6 +184,9 @@ public class PlayerInfo {
         return new ArrayList<>(getGraveyard());
     }
 
+    public List<GameObj> getHandAsGameObjBy(Predicate<Card> p){
+        return getHand().stream().filter(p).map(i->(GameObj)i).toList();
+    }
     public List<AreaCard> getAreaBy(Predicate<AreaCard> p){
         return getArea().stream().filter(p).toList();
     }
@@ -253,6 +256,10 @@ public class PlayerInfo {
         getGraveyard().removeAll(outGraveyardCards);
     }
 
+    public String describePPNum(){
+        return "\n剩余pp：【"+getPpNum()+"】\n";
+    }
+
     public String describeGraveyard(){
         StringBuilder sb = new StringBuilder();
         sb.append("【墓地】\n");
@@ -305,6 +312,7 @@ public class PlayerInfo {
             // endregion
             sb.append("</p>");
         }
+        sb.append(describePPNum());
         return sb.toString();
     }
 

@@ -31,9 +31,20 @@ public class LabRecruiter extends FollowCard {
             gameObjs -> {
                 FollowCard followCard = (FollowCard) gameObjs.get(0);
                 List<Card> addCards = new ArrayList<>();
-                addCards.add(createCard(followCard.getClass()));
-                addCards.add(createCard(followCard.getClass()));
-                addCards.add(createCard(followCard.getClass()));
+                FollowCard card;
+
+                card = createCard(followCard.getClass());
+                card.addToName("-1");
+                addCards.add(card);
+
+                card = createCard(followCard.getClass());
+                card.addToName("-2");
+                addCards.add(card);
+
+                card = createCard(followCard.getClass());
+                card.addToName("-3");
+                addCards.add(card);
+
                 ownerPlayer().addDeck(addCards);
             }));
     }

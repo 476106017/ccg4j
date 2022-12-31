@@ -167,6 +167,9 @@ public abstract class Card extends GameObj {
             throw new RuntimeException(e);
         }
     }
+    public void addToName(String add){
+        setName(getName() + add);
+    }
     public boolean isRealName(){
         return getName().equals(prototype().getName());
     }
@@ -228,8 +231,10 @@ public abstract class Card extends GameObj {
             .filter(boost -> boost.canBeTriggered.test(this))
             .forEach(boost->boost.effect.accept(this));
 
-        info.msgTo(ownerPlayer().getUuid(), info.describeArea(ownerPlayer().getUuid()));
-        info.msgTo(enemyPlayer().getUuid(), info.describeArea(enemyPlayer().getUuid()));
+        info.msgTo(ownerPlayer().getUuid(),
+            info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
+        info.msgTo(enemyPlayer().getUuid(),
+            info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
     }
 
     public static class Event {

@@ -218,11 +218,11 @@ public class GameInfo {
             msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
 
             if(thisPlayer().isShortRope()){
-                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 10, TimeUnit.SECONDS);
-                msg("倒计时10秒！");
+                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
+                msg("倒计时30秒！");
             }else{
-                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 600, TimeUnit.SECONDS);
-                msg("倒计时60秒！");
+                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
+                msg("倒计时300秒！");
             }
             msgToThisPlayer(describeGame(thisPlayer().getUuid()));
             msgToThisPlayer("请出牌！");
@@ -533,7 +533,7 @@ public class GameInfo {
         PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
 
         sb.append("局面信息\n");
-        sb.append("剩余pp：").append(player.getPpNum()).append("\n");
+        sb.append(player.describePPNum());
         sb.append("\n");
         sb.append(oppositePlayer.name)
             .append("\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
