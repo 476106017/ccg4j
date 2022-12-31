@@ -460,6 +460,7 @@ public class GameInfo {
         PlayerInfo player = playerByUuid(uuid);
         PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
 
+        sb.append("【战场信息】\n");
         sb.append("敌方战场：\n");
         for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
             Card card = oppositePlayer.getArea().get(i);

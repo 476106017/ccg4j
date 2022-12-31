@@ -255,7 +255,7 @@ public class PlayerInfo {
 
     public String describeGraveyard(){
         StringBuilder sb = new StringBuilder();
-        sb.append("墓地：\n");
+        sb.append("【墓地】\n");
         for (int i = 0; i < graveyard.size(); i++) {
             Card card = graveyard.get(i);
             sb.append("【").append(i+1).append("】\t")
@@ -272,7 +272,7 @@ public class PlayerInfo {
     }
     public String describeHand(){
         StringBuilder sb = new StringBuilder();
-        sb.append("战场信息\n");
+        sb.append("【手牌信息】\n");
         for (int i = 0; i < hand.size(); i++) {
             Card card = hand.get(i);
             sb.append("<p>");
