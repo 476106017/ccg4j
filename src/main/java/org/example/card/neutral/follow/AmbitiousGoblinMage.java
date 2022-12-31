@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class AmbitiousGoblinMage  extends FollowCard {
     private String name = "宏愿哥布林法师";
-    private Integer cost = 1;
+    private Integer cost = 2;
     private int atk = 2;
     private int hp = 1;
     private String job = "中立";

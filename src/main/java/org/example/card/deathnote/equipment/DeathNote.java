@@ -24,7 +24,7 @@ public class DeathNote extends EquipmentCard {
     public int addHp = 0;
     public String job = "死亡笔记";
     public String mark = """
-        战吼：持有者获得【游魂】并且抉择：
+        战吼：抉择：
         1. 什么都不做
         2. 支付己方主战者一半生命，曝光对手场上全部随从的真实名字
         回合结束时：如果装备对象未攻击，则破坏对方所有实名随从，并使战场上的夜神月返回手牌

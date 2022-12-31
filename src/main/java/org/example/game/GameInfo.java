@@ -40,8 +40,6 @@ public class GameInfo {
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
 
-        msg("游戏开始，请选择3张手牌交换");
-
     }
 
     public void msg(String msg){
@@ -205,7 +203,7 @@ public class GameInfo {
         p1.draw(3);
         msgToThisPlayer("你的手牌:\n"+p0.describeHand());
         msgToOppositePlayer("你的手牌:\n"+p1.describeHand());
-
+        msg("游戏开始，请选择3张手牌交换");
     }
 
     public void startTurn(){

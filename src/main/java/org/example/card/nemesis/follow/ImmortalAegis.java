@@ -19,7 +19,6 @@ public class ImmortalAegis extends FollowCard {
     private String job = "复仇者";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        无法破坏 效果伤害免疫
         战吼：增加1张消费为0的水银的断绝到手牌
         """;
     private String subMark = "";

@@ -7,10 +7,10 @@
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    
+
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -37,17 +37,21 @@
     <input type="button" onclick="cleanMsg()" value="清空"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('jr')" value="匹配"/>
-    <input type="button" onclick="$('#msgContent').val('chat')" value="聊天"/>
+    <input type="button" onclick="$('#msgContent').val('leave')" value="退出房间"/>
     <input type="button" onclick="$('#msgContent').val('swap')" value="换牌"/>
+    <input type="button" onclick="$('#msgContent').val('chat')" value="聊天"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('play')" value="出牌"/>
     <input type="button" onclick="$('#msgContent').val('attack')" value="攻击"/>
     <input type="button" onclick="$('#msgContent').val('skill')" value="主战者技能"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('info')" value="综合信息"/>
+    <input type="button" onclick="$('#msgContent').val('area')" value="战场信息"/>
     <input type="button" onclick="$('#msgContent').val('hand')" value="手牌信息"/>
     <input type="button" onclick="$('#msgContent').val('grave')" value="墓地信息"/>
+    <br/>
     <input type="button" onclick="$('#msgContent').val('end')" value="结束回合"/>
+    <input type="button" onclick="$('#msgContent').val('ff')" value="投降"/>
 </div>
 
 <script type="text/javascript" th:inline="javascript">

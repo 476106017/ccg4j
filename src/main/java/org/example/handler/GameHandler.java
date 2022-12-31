@@ -449,6 +449,35 @@ public class GameHandler {
 
 
     }
+    @OnEvent(value = "leave")
+    public void leave(SocketIOClient client, String msg){
+
+        UUID me = client.getSessionId();
+        Optional<String> roomOpt = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny();
+        if(roomOpt.isEmpty()){
+            client.sendEvent("receiveMsg","你不在任何房间中");
+        }
+        String room = roomOpt.get();
+        GameInfo info = roomGame.get(room);
+        if(info!=null){
+            PlayerInfo player = info.playerByUuid(me);
+            PlayerInfo enemy = info.anotherPlayerByUuid(me);
+            info.msg(player.getName() + "离开了游戏！");
+            info.gameset(enemy);
+            return;
+        }
+        client.leaveRoom(room);
+        client.sendEvent("receiveMsg","离开房间成功");
+        // 释放资源
+        roomReadyMatch.remove(room);
+        roomGame.remove(room);
+        if(me.equals(waitUser) || room.equals(waitRoom) ){
+            waitRoom = "";
+            waitUser = null;
+        }
+        // 退出房间
+
+    }
 
     // TODO 测试用，顺序出牌
     @OnEvent(value = "test")

@@ -27,8 +27,8 @@ public class PlayerInfo {
     int hp = 20;
     int hpMax = 20;
     int step = -1; // 0换牌完成 1使用
-    int ppNum = 4;
-    int ppMax = 4;
+    int ppNum = 0;
+    int ppMax = 0;
     int deckMax = 60;
     int handMax = 9;
     int areaMax = 5;
