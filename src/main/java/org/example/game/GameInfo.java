@@ -311,7 +311,7 @@ public class GameInfo {
             }
         });
 
-        // 查找牌堆是否有瞬召卡片，同名字卡牌各取一张
+        // 查找牌堆是否有瞬召卡牌，同名字卡牌各取一张
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
@@ -397,7 +397,7 @@ public class GameInfo {
             }
         });
 
-        // 查找牌堆是否有瞬召卡片
+        // 查找牌堆是否有瞬召卡牌
         Map<String, Card> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
         List<Card> canInvocation =

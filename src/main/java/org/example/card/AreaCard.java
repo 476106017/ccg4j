@@ -7,6 +7,7 @@ import org.example.system.function.FunctionN;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @Getter
@@ -20,6 +21,10 @@ public abstract class AreaCard extends Card{
     private List<Event.Entering> enterings = new ArrayList<>();
     private List<Event.Leaving> leavings = new ArrayList<>();
     private List<Event.DeathRattle> deathRattles = new ArrayList<>();
+    private List<Event.WhenSummon> whenSummons = new ArrayList<>();
+    private List<Event.WhenEnemySummon> whenEnemySummons = new ArrayList<>();
+    private List<Event.WhenDraw> whenDraws = new ArrayList<>();
+    private List<Event.WhenEnemyDraw> whenEnemyDraws = new ArrayList<>();
 
     // endregion
 
@@ -116,6 +121,21 @@ public abstract class AreaCard extends Card{
         public record Leaving(FunctionN effect){}
         /** 亡语 */
         public record DeathRattle(FunctionN effect){}
-
+        /** 召唤卡牌时 */
+        public record WhenSummon(Consumer<AreaCard> effect){}
+        /** 对手召唤卡牌时 */
+        public record WhenEnemySummon(Consumer<AreaCard> effect){}
+        /** 抽牌时 List<Card>是抽的牌，但是并不一定会留着手上（爆牌） */
+        public record WhenDraw(Consumer<List<Card>> effect){
+            public WhenDraw(FunctionN effect) {
+                this(cards -> effect.apply());
+            }
+        }
+        /** 对手抽牌时 */
+        public record WhenEnemyDraw(Consumer<List<Card>> effect){
+            public WhenEnemyDraw(FunctionN effect) {
+                this(cards -> effect.apply());
+            }
+        }
     }
 }

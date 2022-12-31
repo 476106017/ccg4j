@@ -91,19 +91,33 @@ public class PlayerInfo {
     }
     public void draw(int num){
         info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
-        addHand(deck.subList(0,num));
+        List<Card> cards = deck.subList(0, num);
         deck = deck.subList(num,deck.size());
+        addHand(cards);
+
+        getAreaCopy().forEach(areaCard -> {
+            if (areaCard.atArea() && !areaCard.getWhenDraws().isEmpty()) {
+                info.msg(areaCard.getNameWithOwner() + "发动抽牌时效果！");
+                areaCard.getWhenDraws().forEach(whenDraw -> whenDraw.effect().accept(cards));
+            }
+        });
+        getEnemy().getAreaCopy().forEach(areaCard -> {
+            if (areaCard.atArea() && !areaCard.getWhenEnemyDraws().isEmpty()) {
+                info.msg(areaCard.getNameWithOwner() + "发动对手抽牌时效果！");
+                areaCard.getWhenEnemyDraws().forEach(whenDraw -> whenDraw.effect().accept(cards));
+            }
+        });
     }
     public void draw(Predicate<? super Card> condition){
         Optional<Card> findCard = getDeck().stream()
             .filter(condition)
             .findAny();
         if(findCard.isEmpty()){
-            info.msg("没有找到可以抽的卡牌！");
+            info.msg(getName()+"搜索失败！");
             return;
         }
         Card card = findCard.get();
-        info.msg(getName()+"搜索并抽到卡牌！");
+        info.msg(getName()+"搜索成功！");
         addHand(card);
         getDeck().remove(card);
     }
@@ -135,6 +149,8 @@ public class PlayerInfo {
         addHand(List.of(card));
     }
     public void addHand(List<Card> cards){
+
+
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
         info.msgTo(getUuid(),cardNames + "加入了手牌");
         info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手手牌");
@@ -219,22 +235,30 @@ public class PlayerInfo {
     }
 
     public void recall(FollowCard followCard){
-        info.msg(getName() + "召还了" + followCard.getName());
+        info.msg(getName() + "发动亡灵召还！");
         followCard.remove();
         followCard.setHp(followCard.getMaxHp());
-        addArea(followCard);
-        if(!followCard.getEnterings().isEmpty()){
-            info.msg(followCard.getNameWithOwner() + "发动入场时效果！");
-            followCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
-        }
+        summon(followCard);
     }
-    public void summon(AreaCard areaCard){
-        info.msg(getName() + "召唤了" + areaCard.getName());
-        addArea(areaCard);
-        if(!areaCard.getEnterings().isEmpty()){
-            info.msg(areaCard.getNameWithOwner() + "发动入场时效果！");
-            areaCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
+    public void summon(AreaCard summonedCard){
+        info.msg(getName() + "召唤了" + summonedCard.getName());
+        addArea(summonedCard);
+        if(!summonedCard.getEnterings().isEmpty()){
+            info.msg(summonedCard.getNameWithOwner() + "发动入场时效果！");
+            summonedCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
         }
+        getAreaBy(areaCard -> areaCard!=summonedCard).forEach(areaCard -> {
+            if (areaCard.atArea() && !areaCard.getWhenSummons().isEmpty()) {
+                info.msg(areaCard.getNameWithOwner() + "发动召唤时效果！");
+                areaCard.getWhenSummons().forEach(whenSummon -> whenSummon.effect().accept(summonedCard));
+            }
+        });
+        getEnemy().getAreaCopy().forEach(areaCard -> {
+            if (areaCard.atArea() && !areaCard.getWhenEnemySummons().isEmpty()) {
+                info.msg(areaCard.getNameWithOwner() + "发动对手召唤时效果！");
+                areaCard.getWhenEnemySummons().forEach(whenSummon -> whenSummon.effect().accept(summonedCard));
+            }
+        });
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){

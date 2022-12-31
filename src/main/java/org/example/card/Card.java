@@ -79,6 +79,7 @@ public abstract class Card extends GameObj {
     private List<Event.Boost> boosts = new ArrayList<>();
     private List<Event.Charge> charges = new ArrayList<>();
     private List<Event.WhenKill> whenKills = new ArrayList<>();
+    private List<Event.WhenDrawn> whenDrawns = new ArrayList<>();
     // endregion 效果列表
 
 
@@ -271,7 +272,9 @@ public abstract class Card extends GameObj {
         public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
         /** 注能(场上卡牌被破坏) */
         public record Charge(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
-        /** 击杀时效果 */
+        /** 击杀时 */
         public record WhenKill(Consumer<FollowCard> effect){}
+        /** 被抽到时 */
+        public record WhenDrawn(FunctionN effect){}
     }
 }
