@@ -34,12 +34,12 @@ public class DarkSnare extends SpellCard {
     public int target = 1;
 
     public String getSubMark() {
-        return subMark.replaceAll("\\{damage}",getCount("damage")+"");
+        return subMark.replaceAll("\\{damage}",getCount()+"");
     }
 
     @Override
     public void initCounter() {
-        this.count("damage");
+        this.count();
     }
 
     public DarkSnare() {
@@ -52,7 +52,7 @@ public class DarkSnare extends SpellCard {
             1,
             targets->{
                 GameObj target = targets.get(0);
-                Integer darkSnareDamage = getCount("damage");
+                Integer darkSnareDamage = getCount();
                 Damage damage = new Damage(this, target, darkSnareDamage);
                 if(target instanceof FollowCard followCard){
                     followCard.damaged(damage);
@@ -70,13 +70,11 @@ public class DarkSnare extends SpellCard {
                 if(!follows.isEmpty()){
                     int randIndex = new Random().nextInt(follows.size());
                     FollowCard followCard = (FollowCard) follows.get(randIndex);
-                    followCard.damaged(new Damage(this,followCard,getCount("damage")));
+                    followCard.damaged(new Damage(this,followCard,getCount()));
                 }
             }
         ));
-        getWhenKills().add(new Event.WhenKill(followCard -> {
-            count("damage");
-        }));
+        getWhenKills().add(new Event.WhenKill(followCard -> count()));
     }
 
 }

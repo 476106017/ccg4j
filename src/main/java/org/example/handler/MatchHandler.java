@@ -13,11 +13,13 @@ import org.example.card.Card;
 import org.example.card.neutral.SVPlayer;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
+import org.example.game.PlayerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,6 +39,7 @@ public class MatchHandler {
     @OnConnect
     public void onConnect(SocketIOClient client) {
         String name = client.getHandshakeData().getSingleUrlParam("name");
+        String ip = client.getHandshakeData().getHttpHeaders().get("X-Forwarded-For");
         UUID uuid = client.getSessionId();
 
         String oldName = userNames.get(uuid);
@@ -59,11 +62,42 @@ public class MatchHandler {
         // endregion TODO 先由临时玩家游玩，直接拥有全部卡牌
         userNames.put(uuid,name);
         socketIOServer.getClient(uuid).sendEvent("receiveMsg", name+"（"+uuid+"）登录成功！");
+
+        socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
+            "【系统广播】"+name+"（"+ip+"）登录了游戏！");
     }
 
 
     @OnDisconnect
     public void onDisConnect(SocketIOClient client) {
+        UUID me = client.getSessionId();
+        String ip = client.getHandshakeData().getHttpHeaders().get("X-Forwarded-For");
+        String name = userNames.get(me);
+        Optional<String> roomOpt = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny();
+        socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
+            "【系统广播】"+name+"（"+ip+"）退出了游戏！");
+        if(roomOpt.isEmpty()){
+            System.out.println("客户端" + client.getSessionId() + "断开websocket连接成功");
+            return;
+        }
+        String room = roomOpt.get();
+        GameInfo info = roomGame.get(room);
+        if(info!=null){
+            PlayerInfo player = info.playerByUuid(me);
+            PlayerInfo enemy = info.anotherPlayerByUuid(me);
+            info.msg(player.getName() + "已断开连接！");
+            info.gameset(enemy);
+            return;
+        }
+        client.leaveRoom(room);
+        // 释放资源
+        roomReadyMatch.remove(room);
+        roomGame.remove(room);
+        if(me.equals(waitUser) || room.equals(waitRoom) ){
+            waitRoom = "";
+            waitUser = null;
+        }
+        // 退出房间
         System.out.println("客户端" + client.getSessionId() + "断开websocket连接成功");
     }
 

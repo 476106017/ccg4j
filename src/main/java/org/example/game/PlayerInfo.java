@@ -320,6 +320,9 @@ public class PlayerInfo {
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
                     .append(followCard.getHp()).append("♥\n");
+            detail.append(String.join("/",card.getRace()))
+                .append("<div style=\"text-align:right;\">")
+                .append(card.getJob()).append("</div>\n");
             if(!card.getKeywords().isEmpty())
                 detail.append(String.join(" ", card.getKeywords()))
                     .append("\n");

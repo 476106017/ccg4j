@@ -303,6 +303,9 @@ public abstract class FollowCard extends AreaCard{
         }
     }
 
+    public void damaged(Card from,int damage){
+        damaged(new Damage(from,this,damage));
+    }
     public void damaged(Damage damage){
         damagedWithoutSettle(damage);
         damageSettlement(damage);

@@ -19,6 +19,7 @@ import org.example.card.neutral.follow.Bahamut;
 import org.example.card.neutral.follow.ColdlightOracle;
 import org.example.card.neutral.follow.TravelerGoblin;
 import org.example.card.neutral.spell.DarkSnare;
+import org.example.card.rule.amulet.MahjongTable;
 import org.example.card.stalker.follow.LabRecruiter;
 import org.example.system.Lists;
 import org.springframework.boot.SpringApplication;
@@ -61,6 +62,8 @@ public class Ccg4jApplication  {
             addCards.add(Lawliet.class);
 
             addCards.add(LabRecruiter.class);
+
+            addCards.add(MahjongTable.class);
         }
         activeDeck.addAll(addCards);
     }

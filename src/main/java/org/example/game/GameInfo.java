@@ -463,6 +463,7 @@ public class GameInfo {
         sb.append("【战场信息】\n");
         sb.append("敌方战场：\n");
         for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
+            sb.append("<p>");
             Card card = oppositePlayer.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
@@ -487,10 +488,35 @@ public class GameInfo {
 
             if(!card.getKeywords().isEmpty())
                 sb.append(card.getKeywords());
-            sb.append("\n");
+
+
+            // region 显示详情
+            StringBuilder detail = new StringBuilder();
+            if(card instanceof FollowCard followCard)
+                detail.append(followCard.getAtk()).append("➹")
+                    .append(followCard.getHp()).append("♥\n");
+            detail.append(String.join("/",card.getRace()))
+                .append("<div style=\"text-align:right;\">")
+                .append(card.getJob()).append("</div>\n");
+            if(!card.getKeywords().isEmpty())
+                detail.append(String.join(" ", card.getKeywords()))
+                    .append("\n");
+            detail.append(card.getMark());
+            if(!card.getSubMark().isBlank())
+                detail.append("\n").append(card.getSubMark());
+
+            sb.append("""
+            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                    title="%s" data-content="%s"
+                    data-container="body" data-toggle="popover"
+                      data-trigger="hover" data-html="true"/>
+            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
+            // endregion
+            sb.append("</p>");
         }
         sb.append("\n我方战场：\n");
         for (int i = 0; i < player.getArea().size(); i++) {
+            sb.append("<p>");
             Card card = player.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
@@ -519,7 +545,29 @@ public class GameInfo {
 
             if(!card.getKeywords().isEmpty())
                 sb.append(card.getKeywords());
-            sb.append("\n");
+            // region 显示详情
+            StringBuilder detail = new StringBuilder();
+            if(card instanceof FollowCard followCard)
+                detail.append(followCard.getAtk()).append("➹")
+                    .append(followCard.getHp()).append("♥\n");
+            detail.append(String.join("/",card.getRace()))
+                .append("<div style=\"text-align:right;\">")
+                .append(card.getJob()).append("</div>\n");
+            if(!card.getKeywords().isEmpty())
+                detail.append(String.join(" ", card.getKeywords()))
+                    .append("\n");
+            detail.append(card.getMark());
+            if(!card.getSubMark().isBlank())
+                detail.append("\n").append(card.getSubMark());
+
+            sb.append("""
+            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                    title="%s" data-content="%s"
+                    data-container="body" data-toggle="popover"
+                      data-trigger="hover" data-html="true"/>
+            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
+            // endregion
+            sb.append("</p>");
         }
         sb.append("\n");
 
