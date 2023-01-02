@@ -25,11 +25,10 @@ public class Bahamut extends FollowCard {
         瞬念召唤：回合结束时在卡牌上的总消耗pp>=50,破坏对手牌堆直至5张
         战吼：破坏对手场上全部卡牌
         """;
-    public String subMark = "总消耗pp等于{allCost}";
+    public String subMark = "总消耗pp等于{}";
 
     public String getSubMark() {
-        return subMark.replaceAll("\\{allCost}",
-            info.getPlayerInfos()[getOwner()].getCount(ALL_COST)+"");
+        return subMark.replaceAll("\\{}",ownerPlayer().getCount(ALL_COST)+"");
     }
 
     public int atk = 13;

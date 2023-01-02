@@ -21,12 +21,12 @@ public class EternalGarden extends AmuletCard {
     public String job = "妖精";
     private List<String> race = Lists.ofStr("庭园");
     public String mark = """
-        回合结束时：回复X点生命，并且轮回X：妖精随从卡（X是本回合使用卡牌张数）
+        回合结束时：回复主战者X点生命，并且轮回X：妖精随从卡（X是本回合使用的卡牌数）
         """;
-    public String subMark = "X等于{playNum}";
+    public String subMark = "X等于{}";
 
     public String getSubMark() {
-        return subMark.replaceAll("\\{playNum}", ownerPlayer().getCount(PLAY_NUM)+"");
+        return subMark.replaceAll("\\{}", ownerPlayer().getCount(PLAY_NUM)+"");
     }
 
 

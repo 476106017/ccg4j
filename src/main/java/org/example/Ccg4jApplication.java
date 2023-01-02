@@ -33,38 +33,4 @@ public class Ccg4jApplication  {
     public static void main(String[] args) {
         SpringApplication.run(Ccg4jApplication.class, args);
     }
-
-    // 测试牌组
-    public static void editCards(List<Class<? extends Card>> activeDeck){
-        List<Class<? extends Card>> addCards = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            addCards.add(Bahamut.class);
-            addCards.add(DarkSnare.class);
-            addCards.add(TravelerGoblin.class);
-            addCards.add(ColdlightOracle.class);
-            addCards.add(AmbitiousGoblinMage.class);
-
-            addCards.add(ForestSymphony.class);
-            addCards.add(ForestGenesis.class);
-            addCards.add(FairyWhisperer.class);
-            addCards.add(NaturesGuidance.class);
-
-            addCards.add(CalamitysGenesis.class);
-            addCards.add(AnalyzingArtifact.class);
-            addCards.add(ImmortalAegis.class);
-
-            addCards.add(ChainsawMan.class);
-            addCards.add(DarkDemon.class);
-            addCards.add(Makima.class);
-
-            addCards.add(DeathNote.class);
-            addCards.add(YagamiLight.class);
-            addCards.add(Lawliet.class);
-
-            addCards.add(LabRecruiter.class);
-
-            addCards.add(MahjongTable.class);
-        }
-        activeDeck.addAll(addCards);
-    }
 }

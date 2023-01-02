@@ -20,6 +20,13 @@ public abstract class Leader extends GameObj {
     private boolean needTarget = true;
     private boolean canUseSkill = true;
 
+
+    private String overDrawMark = """
+        输掉游戏
+        """;
+    // 默认超抽效果（输掉游戏）
+    private Consumer<Integer> overDraw = integer -> info.gameset(enemyPlayer());
+
     public abstract String getJob();
     public abstract String getSkillName();
     public abstract String getSkillMark();
@@ -78,7 +85,13 @@ public abstract class Leader extends GameObj {
     }
 
     public void addEffect(Card source, EffectTiming timing,int canUseTurn,boolean only, Consumer<Damage> effect){
-        effects.add(new Effect(source,timing,canUseTurn,only,effect));
+        if(only && effects.stream()
+            .anyMatch(e -> e.getSource().getClass().equals(source.getClass()))){
+            info.msg("该主战者效果不能叠加！");
+            return;
+        }
+        info.msg(source.getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了主战者效果！");
+        effects.add(new Effect(source,timing,canUseTurn,effect));
     }
 
     public List<Effect> getEffectsWhen(EffectTiming timing){
@@ -112,22 +125,19 @@ public abstract class Leader extends GameObj {
     }
 
     @Getter
-@Setter
+    @Setter
     public static class Effect{
         private EffectTiming timing;
-        private int canUseTurn;// 可使用回合（包含对方回合）
+        private int canUseTurn;// 可使用回合（包含敌方回合）
 
         private Card source;
 
-        private boolean only;
-
         private Consumer<Damage> effect;
 
-        public Effect(Card source, EffectTiming timing,int canUseTurn,boolean only, Consumer<Damage> effect) {
+        public Effect(Card source, EffectTiming timing,int canUseTurn,Consumer<Damage> effect) {
             this.source = source;
             this.timing = timing;
             this.canUseTurn = canUseTurn;
-            this.only = only;
             this.effect = effect;
         }
 

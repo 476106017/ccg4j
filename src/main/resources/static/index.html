@@ -30,11 +30,13 @@
 <div id="app" style="margin-left: 100px;">
     <ul id="msgList" style="margin-left: -50px;"></ul>
     <b id="name"></b>
-    <input type="button" onclick="initIm()" value="重连"/>
     <br/>
     <input id="msgContent" name="msgContent" onkeydown="keyDown(event)" placeholder="请输入消息">
     <input type="button" onclick="sendMsg()" value="发送"/>
     <input type="button" onclick="cleanMsg()" value="清空"/>
+    <br/>
+    <input type="button" onclick="$('#msgContent').val('deck')" value="使用中的牌组"/>
+    <input type="button" onclick="$('#msgContent').val('usedeck')" value="选择牌组"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('jr')" value="匹配"/>
     <input type="button" onclick="$('#msgContent').val('leave')" value="退出房间"/>

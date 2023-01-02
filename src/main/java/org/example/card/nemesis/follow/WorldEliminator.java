@@ -18,7 +18,7 @@ public class WorldEliminator extends FollowCard {
 
     private List<String> race = new ArrayList<>();
     private String mark = """
-        亡语：使自己主战者hp最大值+2，回复2hp
+        亡语：使自己主战者生命最大值+2，回复2点生命
         """;
     private String subMark = "";
 

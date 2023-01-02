@@ -68,7 +68,7 @@ public class GameHandler {
                 back.add(hand.get(index));
             }
             player.draw(back.size());
-            player.back(back);
+            player.backToDeck(back);
             info.msg(name +"交换了"+back.size()+"张卡牌");
         }
         // endregion
@@ -83,6 +83,8 @@ public class GameHandler {
 
             roomSchedule.put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
             info.startTurn();
+        }else {
+            info.msgTo(me,"请等待对方换牌");
         }
     }
 
@@ -184,7 +186,7 @@ public class GameHandler {
                                 .append(followCard.getAtk()).append("/").append(followCard.getHp());
                         }else if(gameObj instanceof AmuletCard amuletCard){
                             sb.append("护符\t")
-                                .append("倒数：").append(amuletCard.getTimer());
+                                .append("倒数：").append(amuletCard.getCountDown());
                         }
                     }
                     sb.append("\n");
@@ -262,7 +264,7 @@ public class GameHandler {
         String[] split = msg.split("\\s+");
 
         if(msg.isBlank() || split.length!=2){
-            info.msgToThisPlayer("攻击：attack <随从序号> <目标随从序号(对方主战者序号是0)>");
+            info.msgToThisPlayer("攻击：attack <随从序号> <目标随从序号(敌方主战者序号是0)>");
             return;
         }
 
@@ -306,7 +308,7 @@ public class GameHandler {
         } else if (indexII == 0) {
             FollowCard myFollow = (FollowCard) myCard;
             if(myFollow.getTurnAge() == 0 && !myFollow.hasKeyword("疾驰")){
-                info.msgToThisPlayer("随从在入场回合无法攻击对方主战者！");
+                info.msgToThisPlayer("随从在入场回合无法攻击敌方主战者！");
                 return;
             }
             Optional<AreaCard> guard = enemy.getArea().stream().filter(areaCard -> areaCard.hasKeyword("守护")).findAny();
@@ -376,7 +378,7 @@ public class GameHandler {
                                 .append(followCard.getAtk()).append("/").append(followCard.getHp());
                         }else if(gameObj instanceof AmuletCard amuletCard){
                             sb.append("护符\t");
-                            sb.append("倒数：").append(amuletCard.getTimer()).append("\t");
+                            sb.append("倒数：").append(amuletCard.getCountDown()).append("\t");
                         }
                     }
                     sb.append("\n");

@@ -17,13 +17,13 @@ public class Makima extends FollowCard {
     private int slot = 7;
     private int apposition = 1;
     private String name = "支配恶魔";
-    private Integer cost = 0;
+    private Integer cost = 5;
     private int atk = 1;
     private int hp = 1;
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        战吼、回合开始时：找到场上随机一名未装备支配之线的实名随从，装备支配之线
+        战吼/回合开始时：找到场上随机一名未装备支配之线的实名随从，装备支配之线
         
         亡语：破坏一个装备支配之线的己方随从，将此卡召还到场上
         """;

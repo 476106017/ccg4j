@@ -20,6 +20,9 @@ public abstract class AreaCard extends Card{
     private List<Event.EffectEnd> effectEnds = new ArrayList<>();
     private List<Event.Entering> enterings = new ArrayList<>();
     private List<Event.Leaving> leavings = new ArrayList<>();
+    private List<Event.WhenBackToHand> whenBackToHands = new ArrayList<>();
+    private List<Event.WhenAtArea> whenAtAreas = new ArrayList<>();
+    private List<Event.WhenNoLongerAtArea> whenNoLongerAtAreas = new ArrayList<>();
     private List<Event.DeathRattle> deathRattles = new ArrayList<>();
     private List<Event.WhenSummon> whenSummons = new ArrayList<>();
     private List<Event.WhenEnemySummon> whenEnemySummons = new ArrayList<>();
@@ -31,14 +34,15 @@ public abstract class AreaCard extends Card{
     public void backToHand(){
         if(!atArea())return;
 
-        info.msg(getNameWithOwner() + "回到手牌！");
+        info.msg(getNameWithOwner() + "返回手牌！");
 
 
-        ownerPlayer().getArea().remove(this);
+        removeWhenAtArea();
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");
             getLeavings().forEach(leaving -> leaving.effect().apply());
         }
+
 
         if (this instanceof FollowCard followCard){
             // 随从回去，装备破坏
@@ -48,11 +52,15 @@ public abstract class AreaCard extends Card{
             }
             followCard.setHp(followCard.getMaxHp());// 回复到满血
         }else if (this instanceof AmuletCard amuletCard){
-            amuletCard.setTimer(((AmuletCard)(amuletCard.prototype())).getTimer());
+            amuletCard.setCountDown(((AmuletCard)(amuletCard.prototype())).getCountDown());
         }
 
         ownerPlayer().addHand(this);
 
+        if(!getWhenBackToHands().isEmpty()){
+            info.msg(getNameWithOwner() + "发动返回手牌时效果！");
+            getWhenBackToHands().forEach(backToHand -> backToHand.effect().apply());
+        }
     }
 
     public boolean destroyedBy(GameObj from){
@@ -82,7 +90,7 @@ public abstract class AreaCard extends Card{
             return;
         }
 
-        ownerPlayer().getArea().remove(this);
+        removeWhenAtArea();
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");
             getLeavings().forEach(leaving -> leaving.effect().apply());
@@ -99,11 +107,9 @@ public abstract class AreaCard extends Card{
 
         // region 注能
         ownerPlayer().getHand()
-            .forEach(card -> {
-                card.getCharges().stream()
-                    .filter(charge -> charge.canBeTriggered().test(this))
-                    .forEach(charge -> charge.effect().accept(this));
-            });
+            .forEach(card -> card.getCharges().stream()
+                .filter(charge -> charge.canBeTriggered().test(this))
+                .forEach(charge -> charge.effect().accept(this)));
         // endregion 注能
 
         ownerPlayer().getGraveyard().add(this);
@@ -115,10 +121,16 @@ public abstract class AreaCard extends Card{
         public record EffectBegin(FunctionN effect){}
         /** 回合结束效果 */
         public record EffectEnd(FunctionN effect){}
-        /** 入场时 */
+        /** 入场时（不含变身/控制） */
         public record Entering(FunctionN effect){}
-        /** 离场时 */
+        /** 离场时（不含变身/控制） */
         public record Leaving(FunctionN effect){}
+        /** 离场时（不含变身/控制） */
+        public record WhenBackToHand(FunctionN effect){}
+        /** 当卡牌在场 */
+        public record WhenAtArea(FunctionN effect){}
+        /** 当卡牌不在场 */
+        public record WhenNoLongerAtArea(FunctionN effect){}
         /** 亡语 */
         public record DeathRattle(FunctionN effect){}
         /** 召唤卡牌时 */

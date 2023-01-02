@@ -24,10 +24,10 @@ public class DarkSnare extends SpellCard {
     public String job = "中立";
     private List<String> race = Lists.ofStr("陷阱");
     public String mark = """
-        腐蚀：4 对随机1个敌方随从造成X点伤害
+        腐蚀：对随机1个敌方随从造成X点伤害
         击杀时：X+1
         —————————————
-        对1个敌方随从或对方玩家造成X点伤害
+        对1个敌方随从或敌方玩家造成X点伤害
         """;
 
     public String subMark = "X等于{damage}";

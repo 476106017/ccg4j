@@ -3,9 +3,11 @@ package org.example.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.game.GameObj;
+import org.example.game.Leader;
 import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
 
+import java.awt.geom.Area;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -13,6 +15,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static org.example.constant.CounterKey.*;
+import static org.example.system.Database.getPrototype;
 import static org.example.system.Database.prototypes;
 
 @Getter
@@ -84,6 +87,7 @@ public abstract class Card extends GameObj {
 
 
     public abstract String getType();
+    public abstract void setCost(Integer cost);
     public abstract Integer getCost();
     public abstract String getJob();
     public abstract List<String> getRace();
@@ -97,13 +101,18 @@ public abstract class Card extends GameObj {
         if(atDeck())return ownerPlayer().getDeck();
         return null;
     }
-    public void remove(){
-        if(where()==null)return;
-
-        if(atArea())
+    public void removeWhenNotAtArea(){
+        if(where()==null || atArea())return;
+        where().remove(this);
+    }
+    public void removeWhenAtArea(){
+        if(atArea() && this instanceof AreaCard areaCard) {
             ownerPlayer().getArea().remove(this);
-        else
-            where().remove(this);
+            if(!areaCard.getWhenNoLongerAtAreas().isEmpty()) {
+                info.msg(getNameWithOwner() + "在场时效果消失！");
+                areaCard.getWhenNoLongerAtAreas().forEach(noLongerAtArea -> noLongerAtArea.effect().apply());
+            }
+        }
     }
 
     public boolean atArea(){
@@ -158,12 +167,7 @@ public abstract class Card extends GameObj {
 
     public Card prototype(){
         try {
-            Class<? extends Card> clazz = this.getClass();
-            Card prototype = prototypes.get(clazz);
-            if(prototype!=null) return prototype;
-            Card card = clazz.getDeclaredConstructor().newInstance();
-            prototypes.put(clazz,card);
-            return card;
+            return getPrototype(getClass());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -188,7 +192,6 @@ public abstract class Card extends GameObj {
             throw new RuntimeException();
         }
         info.msg(ownerPlayer().getName() + "使用了" + getName());
-        ownerPlayer().count(PLAY_NUM);
 
         // region 消耗PP
         int ppNum = ownerPlayer().getPpNum() - getCost();
@@ -232,6 +235,8 @@ public abstract class Card extends GameObj {
             .filter(boost -> boost.canBeTriggered.test(this))
             .forEach(boost->boost.effect.accept(this));
 
+        ownerPlayer().count(PLAY_NUM);
+
         info.msgTo(ownerPlayer().getUuid(),
             info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
         info.msgTo(enemyPlayer().getUuid(),
@@ -269,7 +274,11 @@ public abstract class Card extends GameObj {
         /** 除外(从游戏中除外) */
         public record Exile(FunctionN effect){}
         /** 增幅(其他卡牌被使用) */
-        public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
+        public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){
+            public Boost(Predicate<Card> canBeTriggered,FunctionN effect){
+                this(canBeTriggered,card -> effect.apply());
+            }
+        }
         /** 注能(场上卡牌被破坏) */
         public record Charge(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
         /** 击杀时 */

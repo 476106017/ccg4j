@@ -4,6 +4,7 @@ import org.example.card.Card;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,5 +22,16 @@ public class Database {
     public static  Map<String,ScheduledExecutorService> roomSchedule = new ConcurrentHashMap<>();
 
     public static Map<Class<? extends Card>, Card> prototypes = new ConcurrentHashMap<>();
-
+    // 单例模式访问卡牌初始属性
+    public static <T extends Card> T getPrototype(Class<T> clazz) {
+        Card prototype = prototypes.get(clazz);
+        if(prototype!=null) return (T)prototype;
+        try {
+            Card card = clazz.getDeclaredConstructor().newInstance();
+            prototypes.put(clazz,card);
+            return (T)card;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

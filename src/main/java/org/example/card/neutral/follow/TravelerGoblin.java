@@ -20,7 +20,7 @@ public class TravelerGoblin extends FollowCard {
     public boolean isDash = false;
     public String mark = """
         战吼：如果是第1回合，则抽1张牌；
-        如果回合数大于8，则回复8点，并获得+2/+2、突进
+        如果回合数大于8，则回复主战者8点生命，并获得+2/+2、突进
         """;
     public String subMark = "回合数等于{turn}";
 

@@ -9,6 +9,7 @@ import org.example.game.Leader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.example.constant.CounterKey.EP_NUM;
 
@@ -27,6 +28,16 @@ public class SVPlayer extends Leader {
         后手第4回合可用，可用次数3）
         """;
     private int skillCost = 0;
+
+    private String overDrawMark =  """
+        对自己造成疲劳伤害，每抽1张，疲劳伤害+1
+        """;
+
+    private int weary = 1;
+
+    private Consumer<Integer> overDraw = integer -> {
+        damaged(new Weary(),weary++);
+    };
 
     @Override
     public void initCounter() {
@@ -59,5 +70,12 @@ public class SVPlayer extends Leader {
         ownerPlayer().count(EP_NUM,-1);
         getInfo().msgToThisPlayer("你还剩下"+ownerPlayer().getCount(EP_NUM)+"个进化点");
 
+    }
+
+
+    @Getter
+    @Setter
+    public static class Weary extends GameObj{
+        private String name = "疲劳";
     }
 }

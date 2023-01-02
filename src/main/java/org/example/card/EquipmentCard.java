@@ -42,9 +42,11 @@ public abstract class EquipmentCard extends AreaCard{
             if(isControl()){
                 if(target.atArea()){
                     info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
+                    target.removeWhenAtArea();
+                    // region 转移控制器
                     target.setOwner(1-target.getOwner());
-                    target.remove();
                     target.enemyPlayer().addArea(target);
+                    // endregion
                 }else {
                     info.msg(target.getNameWithOwner() + "已经被彻底控制了......");
                 }
@@ -58,11 +60,14 @@ public abstract class EquipmentCard extends AreaCard{
             setTarget(null);
         }
 
+        if(!getWhenNoLongerAtAreas().isEmpty()) {
+            info.msg(getNameWithOwner() + "在场时效果消失！");
+            getWhenNoLongerAtAreas().forEach(noLongerAtArea -> noLongerAtArea.effect().apply());
+        }
         if(!getLeavings().isEmpty()){
             info.msg(getNameWithOwner() + "发动离场时效果！");
             getLeavings().forEach(leaving -> leaving.effect().apply());
         }
-
         if(!getDeathRattles().isEmpty()){
             info.msg(getNameWithOwner() + "发动亡语效果！");
             getDeathRattles().forEach(leaving -> leaving.effect().apply());

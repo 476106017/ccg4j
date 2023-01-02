@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.game.GameObj;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class AmbitiousGoblinMage  extends FollowCard {
                 card instanceof FollowCard followCard && followCard!=this ),
             1,
             target->{
-                ownerPlayer().back((FollowCard)target.get(0));
+                ownerPlayer().backToDeck((FollowCard)target.get(0));
                 ownerPlayer().draw(card -> card instanceof FollowCard followCard && followCard.getCost() < getCost());
             }));
 

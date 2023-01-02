@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.example.Ccg4jApplication;
 import org.example.card.Card;
 import org.example.card.neutral.SVPlayer;
+import org.example.constant.DeckPreset;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.game.PlayerInfo;
@@ -53,13 +54,12 @@ public class MatchHandler {
             return;
         }
         System.out.println("客户端" + uuid + "建立websocket连接成功,用户名："+name);
-        // region TODO 先由临时玩家游玩，直接拥有全部卡牌
+        // region TODO 先用默认牌组
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(SVPlayer.class);
-        List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
-        Ccg4jApplication.editCards(activeDeck);
+        playerDeck.getActiveDeck().addAll(DeckPreset.decks.get("默认"));
         userDecks.put(uuid, playerDeck);
-        // endregion TODO 先由临时玩家游玩，直接拥有全部卡牌
+        // endregion TODO 先用默认牌组
         userNames.put(uuid,name);
         socketIOServer.getClient(uuid).sendEvent("receiveMsg", name+"（"+uuid+"）登录成功！");
 
@@ -142,34 +142,34 @@ public class MatchHandler {
         }
     }
 
-    /**
-     * 准备比赛
-     * */
-    @OnEvent(value = "zb")
-    public void ready(SocketIOClient client,  String data) {
+    @OnEvent(value = "leave")
+    public void leave(SocketIOClient client, String msg){
+
         UUID me = client.getSessionId();
-        String name = userNames.get(me);
-        String room = client.getAllRooms().stream().filter(s->!s.isEmpty()).findFirst().get();
-        if(roomGame.get(room)!=null){
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "比赛已经开始了！");
+        Optional<String> roomOpt = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny();
+        if(roomOpt.isEmpty()){
+            client.sendEvent("receiveMsg","你不在任何房间中");
+        }
+        String room = roomOpt.get();
+        GameInfo info = roomGame.get(room);
+        if(info!=null){
+            PlayerInfo player = info.playerByUuid(me);
+            PlayerInfo enemy = info.anotherPlayerByUuid(me);
+            info.msg(player.getName() + "离开了游戏！");
+            info.gameset(enemy);
             return;
         }
-
-        UUID readyMatch = roomReadyMatch.get(room);
-        if(readyMatch == null){
-            roomReadyMatch.put(room, me);
-            socketIOServer.getRoomOperations(room).sendEvent("receiveMsg", name + "已经就绪!");
-        }else if(readyMatch == me) {
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "你已经就绪了！");
-        }else{
-            // 比赛开始
-            GameInfo info = new GameInfo(socketIOServer,room);
-
-            // 初始化游戏
-            info.zeroTurn(readyMatch,me);
-
-            roomGame.put(room,info);
+        client.leaveRoom(room);
+        client.sendEvent("receiveMsg","离开房间成功");
+        // 释放资源
+        roomReadyMatch.remove(room);
+        roomGame.remove(room);
+        if(me.equals(waitUser) || room.equals(waitRoom) ){
+            waitRoom = "";
+            waitUser = null;
         }
+        // 退出房间
+
     }
 
 

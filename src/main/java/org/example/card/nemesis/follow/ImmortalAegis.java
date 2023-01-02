@@ -19,7 +19,7 @@ public class ImmortalAegis extends FollowCard {
     private String job = "复仇者";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        战吼：增加1张消费为0的水银的断绝到手牌
+        战吼：增加1张费用为0的水银的断绝到手牌
         """;
     private String subMark = "";
 
@@ -29,7 +29,7 @@ public class ImmortalAegis extends FollowCard {
     public ImmortalAegis() {
         setMaxHp(getHp());
         getKeywords().add("无法破坏");
-        getKeywords().add("魔法免疫");
+        getKeywords().add("效果伤害免疫");
 
         getPlays().add(new Card.Event.Play(() -> {
                 List<Card> addCards = new ArrayList<>();

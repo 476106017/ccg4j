@@ -30,6 +30,12 @@ public class Damage{
         this.isFromAtk = true;
     }
 
+    public GameObj another(GameObj obj){
+        if(getFrom() == obj)
+            return getTo();
+        return getFrom();
+    }
+
     public boolean checkFollowAtArea(){
         if(getFrom() instanceof FollowCard fromFollow && !fromFollow.atArea())
             return false;

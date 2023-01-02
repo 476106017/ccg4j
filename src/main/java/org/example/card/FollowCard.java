@@ -52,7 +52,7 @@ public abstract class FollowCard extends AreaCard{
         setEquipment(equipmentCard);
         if(equipmentCard.isControl() && getOwner()!=equipmentCard.getOwner()){
             info.msg(getNameWithOwner() + "被"+enemyPlayer().getName()+"控制！");
-            remove();
+            removeWhenAtArea();
             setOwner(equipmentCard.getOwner());
             addKeyword("被控制");
             ownerPlayer().addArea(this);
@@ -81,18 +81,17 @@ public abstract class FollowCard extends AreaCard{
         }
     }
     public void expireEquipSettlement(){
-        if(!atArea()){
-            info.msg(getEquipment().getNameWithOwner()+"随着装备者的离场而随之破坏了");
-            getEquipment().death();
-        }
-        int canUse = getEquipment().getCountdown();
-        if(canUse <= 0){
-            // 用完了销毁
-            getEquipment().death();
+        if(atArea()){
+            int canUse = getEquipment().getCountdown();
+            if(canUse <= 0){
+                // 用完了销毁
+                getEquipment().death();
+            }
         }
     }
 
     public void heal(int hp){
+        if(!atArea())return;
         if(hasKeyword("无法回复")){
             info.msg(this.getNameWithOwner()+"无法回复生命值！（剩余"+this.getHp()+"点生命值）");
             return;
@@ -106,6 +105,7 @@ public abstract class FollowCard extends AreaCard{
         }
     }
     public void purify(){
+        if(!atArea())return;
         info.msg(this.getNameWithOwner()+"被沉默！");
         getKeywords().clear();
 
@@ -131,6 +131,7 @@ public abstract class FollowCard extends AreaCard{
     }
     public void addStatus(int atk, int hp){
         if(atk==0 && hp==0)return;
+        if(!atArea())return;
         // region 构造消息
         StringBuilder sb = new StringBuilder();
         sb.append(this.getNameWithOwner()).append("获得了");
@@ -186,6 +187,11 @@ public abstract class FollowCard extends AreaCard{
         }
         if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow)
             toFollow.damageBoth(damage);
+
+        info.msgTo(ownerPlayer().getUuid(),
+            info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
+        info.msgTo(enemyPlayer().getUuid(),
+            info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
 
     }
 
@@ -258,13 +264,12 @@ public abstract class FollowCard extends AreaCard{
         }
         // 结算本随从
         if(getHp() <= 0){
-            if(from instanceof FollowCard fromFollow
-                && !fromFollow.getWhenKills().isEmpty()){
-                info.msg(fromFollow.getNameWithOwner() + "发动击杀时效果！");
-                fromFollow.getWhenKills().forEach(whenKill -> whenKill.effect().accept(this));
+            if(from instanceof Card fromCard
+                && !fromCard.getWhenKills().isEmpty()){
+                info.msg(fromCard.getNameWithOwner() + "发动击杀时效果！");
+                fromCard.getWhenKills().forEach(whenKill -> whenKill.effect().accept(this));
             }
-            // 没有被除外，正常死亡
-            if(where()!=null) death();
+            death();
         }else {
             if(!getWhenDamageds().isEmpty()){
                 info.msg(getNameWithOwner() + "发动受伤时效果！");

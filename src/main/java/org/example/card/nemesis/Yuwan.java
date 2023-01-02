@@ -36,7 +36,7 @@ public class Yuwan extends Leader {
         PlayerInfo playerInfo = ownerPlayer();
 
         // 将1张手牌加入牌堆
-        playerInfo.back((Card) target);
+        playerInfo.backToDeck((Card) target);
 
         // 召唤1个解析的造物
         playerInfo.summon(createCard(AnalyzingArtifact.class));

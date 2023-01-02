@@ -22,7 +22,7 @@ public class DarkDemon extends FollowCard {
     private String job = "链锯人";
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
-        亡语：主战者获得效果【己方回合开始时，如果本卡在己方墓地，则除外对方墓地所有牌】
+        亡语：主战者获得唯一效果【己方回合开始时，如果本卡在己方墓地，则除外敌方墓地所有牌】
         """;
     private String subMark = "";
     public DarkDemon() {

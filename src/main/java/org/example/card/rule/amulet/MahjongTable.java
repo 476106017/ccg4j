@@ -23,7 +23,7 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @Setter
 public class MahjongTable extends AmuletCard {
 
-    public Integer cost = 4;
+    public Integer cost = 7;
 
     public String name = "自动麻将桌";
     public String job = "棋牌规则";
@@ -46,25 +46,28 @@ public class MahjongTable extends AmuletCard {
     }
 
     private void checkSummon(PlayerInfo player, AreaCard areaCard){
-        if(player.getArea().size() == player.getAreaMax()){
-            return;
-        }
+        if(info.thisPlayer()==player) return;// 是本回合的玩家不需要检查
+        if(player.getArea().size() == player.getAreaMax()) return;
         Integer theCost = areaCard.getCost();
         Map<Integer, List<AreaCard>> costGroup = player.getHand().stream()
             .filter(card -> card instanceof AreaCard)
             .map(card -> (AreaCard)card)
             .collect(Collectors.groupingBy(Card::getCost));
 
-        // region 检查相同消费的卡牌
+        // region 检查相同费用的卡牌
         List<AreaCard> sameCostCards = costGroup.get(theCost);
         if(sameCostCards!=null && sameCostCards.size() >= 2){
             // 多余3张就只取3张
-            if(sameCostCards.size() > 3)
+            if(sameCostCards.size() > 3){
+                info.msg(player.getName()+"：杠！");
                 sameCostCards = sameCostCards.subList(0,3);
+            }else {
+                info.msg(player.getName()+"：碰!");
+            }
 
             sameCostCards.forEach(card -> {
                 if(card.atHand()){
-                    card.remove();
+                    card.removeWhenNotAtArea();
                     player.summon(card);
                 }
             });
@@ -72,32 +75,35 @@ public class MahjongTable extends AmuletCard {
         }
         // endregion
 
-        // region 检查消费能成数列的卡牌
+        // region 检查费用能成数列的卡牌
         if(costGroup.get(theCost-2)!=null && costGroup.get(theCost-1)!=null){
             AreaCard card1 = costGroup.get(theCost - 2).get(0);
-            card1.remove();
+            card1.removeWhenNotAtArea();
             player.summon(card1);
             AreaCard card2 = costGroup.get(theCost - 1).get(0);
-            card2.remove();
+            card2.removeWhenNotAtArea();
             player.summon(card2);
+            info.msg(player.getName()+"：吃!");
             return;
         }
         if(costGroup.get(theCost-1)!=null && costGroup.get(theCost+1)!=null){
             AreaCard card1 = costGroup.get(theCost - 1).get(0);
-            card1.remove();
+            card1.removeWhenNotAtArea();
             player.summon(card1);
             AreaCard card2 = costGroup.get(theCost + 1).get(0);
-            card2.remove();
+            card2.removeWhenNotAtArea();
             player.summon(card2);
+            info.msg(player.getName()+"：吃!");
             return;
         }
         if(costGroup.get(theCost+1)!=null && costGroup.get(theCost+2)!=null){
             AreaCard card1 = costGroup.get(theCost + 1).get(0);
-            card1.remove();
+            card1.removeWhenNotAtArea();
             player.summon(card1);
             AreaCard card2 = costGroup.get(theCost + 2).get(0);
-            card2.remove();
+            card2.removeWhenNotAtArea();
             player.summon(card2);
+            info.msg(player.getName()+"：吃!");
             return;
         }
         // endregion

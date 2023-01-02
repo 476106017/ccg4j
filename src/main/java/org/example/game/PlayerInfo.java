@@ -91,8 +91,15 @@ public class PlayerInfo {
     }
     public void draw(int num){
         info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
-        List<Card> cards = deck.subList(0, num);
-        deck = deck.subList(num,deck.size());
+        int overDraw = num - deck.size();
+        int finalNum = num;// 真正抽到的牌数
+        if(overDraw>0){
+            info.msg(this.name+"从牌堆超抽了"+overDraw+"张卡牌");
+            getLeader().getOverDraw().accept(overDraw);
+            finalNum = deck.size();
+        }
+        List<Card> cards = deck.subList(0, finalNum);
+        deck = deck.subList(finalNum,deck.size());
         addHand(cards);
 
         getAreaCopy().forEach(areaCard -> {
@@ -121,11 +128,11 @@ public class PlayerInfo {
         addHand(card);
         getDeck().remove(card);
     }
-    public void back(Card cards){
+    public void backToDeck(Card cards){
         addDeck(cards);
         hand.remove(cards);
     }
-    public void back(List<Card> cards){
+    public void backToDeck(List<Card> cards){
         addDeck(cards);
         hand.removeAll(cards);
     }
@@ -180,6 +187,10 @@ public class PlayerInfo {
             }
         }else {
             getArea().add(areaCard);
+            if(!areaCard.getWhenAtAreas().isEmpty()){
+                info.msg(areaCard.getNameWithOwner() + "发动在场上时效果！");
+                areaCard.getWhenAtAreas().forEach(exile -> exile.effect().apply());
+            }
         }
     }
     public void addArea(List<AreaCard> cards){
@@ -233,13 +244,20 @@ public class PlayerInfo {
             .map(areaCard -> (GameObj)areaCard)
             .toList();
     }
+    public List<GameObj> getAreaFollowsAsGameObjBy(Predicate<FollowCard> p){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard followCard && p.test(followCard))
+            .map(areaCard -> (GameObj)areaCard)
+            .toList();
+    }
 
     public void recall(FollowCard followCard){
         info.msg(getName() + "发动亡灵召还！");
-        followCard.remove();
+        followCard.removeWhenNotAtArea();
         followCard.setHp(followCard.getMaxHp());
         summon(followCard);
     }
+
     public void summon(AreaCard summonedCard){
         info.msg(getName() + "召唤了" + summonedCard.getName());
         addArea(summonedCard);
@@ -319,16 +337,17 @@ public class PlayerInfo {
             StringBuilder detail = new StringBuilder();
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
-                    .append(followCard.getHp()).append("♥\n");
-            detail.append(String.join("/",card.getRace()))
-                .append("<div style=\"text-align:right;\">")
-                .append(card.getJob()).append("</div>\n");
+                    .append(followCard.getHp()).append("♥");
+            detail.append("<div style='text-align:right;float:right;'>")
+                .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
-                detail.append(String.join(" ", card.getKeywords()))
-                    .append("\n");
-            detail.append(card.getMark());
+                detail.append("<b>")
+                    .append(String.join(" ", card.getKeywords()))
+                    .append("</b>\n");
+            detail.append(card.getMark()).append("\n");
             if(!card.getSubMark().isBlank())
                 detail.append("\n").append(card.getSubMark());
+            detail.append("\n\n职业：").append(card.getJob());
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"

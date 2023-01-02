@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
-import org.springframework.beans.BeanUtils;
 
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
@@ -67,9 +66,10 @@ public class GameInfo {
         roomSchedule.get(getRoom()).shutdown();
         roomSchedule.remove(getRoom());
         // 退出房间
-        server.getClient(thisPlayer().getUuid()).leaveRoom(getRoom());
-        server.getClient(oppositePlayer().getUuid()).leaveRoom(getRoom());
-
+        try {
+            server.getClient(thisPlayer().getUuid()).leaveRoom(getRoom());
+            server.getClient(oppositePlayer().getUuid()).leaveRoom(getRoom());
+        }catch (Exception e){}
         throw new RuntimeException("Game Set");
     }
 
@@ -100,12 +100,22 @@ public class GameInfo {
             List<AreaCard> area = fromCard.ownerPlayer().getArea();
             int index = area.indexOf(fromCard);
             area.remove(index);
+            if (fromCard instanceof AreaCard fromAreaCard && !fromAreaCard.getWhenAtAreas().isEmpty()) {
+                msg(fromAreaCard.getNameWithOwner() + "的在场时效果消失！");
+                fromAreaCard.getWhenAtAreas().forEach(exile -> exile.effect().apply());
+            }
+            // 要变成随从
             if (toCard instanceof AreaCard areaCard) {
                 area.add(index, areaCard);
+                if(!areaCard.getWhenAtAreas().isEmpty()){
+                    msg(areaCard.getNameWithOwner() + "发动在场时效果！");
+                    areaCard.getWhenAtAreas().forEach(exile -> exile.effect().apply());
+                }
             } else {
                 msg(toCard.getNameWithOwner()+ "无法留在战场而被除外！");
                 exile(toCard);
             }
+
         }else {
             List<Card> where = fromCard.where();
             int index = where.indexOf(fromCard);
@@ -122,19 +132,20 @@ public class GameInfo {
         cards.forEach(card ->{
             if(card.where()==null)return;
 
+
             // 场上卡除外时，有机会发动离场时效果
             if (card.atArea() && card instanceof AreaCard areaCard){
+                card.removeWhenAtArea();
                 if(!areaCard.getLeavings().isEmpty()) {
                     msg(areaCard.getNameWithOwner() + "发动离场时效果！");
                     areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
                 }
-            }
-            // 随从除外时，装备也除外
-            if(card instanceof FollowCard followCard && followCard.equipped()){
-                exile(followCard.getEquipment());
-            }
+                // 场上随从除外时，装备也除外
+                if(card instanceof FollowCard followCard && followCard.equipped())
+                    exile(followCard.getEquipment());
+            }else
+                card.removeWhenNotAtArea();
 
-            card.remove();
 
             if(!card.getExiles().isEmpty()){
                 msg(card.getNameWithOwner() + "发动除外时效果！");
@@ -173,8 +184,6 @@ public class GameInfo {
                     return;
                 }
                 Card luckyCard = Lists.randOf(totalCard);
-
-
 
                 Card newCard = card.createCard(card.getClass());
                 transform(luckyCard,newCard);
@@ -300,11 +309,11 @@ public class GameInfo {
             }
 
             if(areaCard instanceof AmuletCard amuletCard){
-                int timer = amuletCard.getTimer();
-                if(timer > 0){
-                    amuletCard.setTimer(timer - 1);
+                int countDown = amuletCard.getCountDown();
+                if(countDown > 0){
+                    amuletCard.setCountDown(countDown - 1);
                     msg(amuletCard.getNameWithOwner() + "的倒数-1");
-                    if(amuletCard.getTimer() == 0){
+                    if(amuletCard.getCountDown() == 0){
                         amuletCard.death();
                     }
                 }
@@ -481,8 +490,8 @@ public class GameInfo {
             }
             if("护符".equals(card.getType())){
                 AmuletCard amulet = (AmuletCard) card;
-                if(amulet.getTimer()>0){
-                    sb.append("倒数：").append(amulet.getTimer()).append("\t");
+                if(amulet.getCountDown()>0){
+                    sb.append("倒数：").append(amulet.getCountDown()).append("\t");
                 }
             }
 
@@ -494,16 +503,17 @@ public class GameInfo {
             StringBuilder detail = new StringBuilder();
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
-                    .append(followCard.getHp()).append("♥\n");
-            detail.append(String.join("/",card.getRace()))
-                .append("<div style=\"text-align:right;\">")
-                .append(card.getJob()).append("</div>\n");
+                    .append(followCard.getHp()).append("♥");
+            detail.append("<div style='text-align:right;float:right;'>")
+                .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
-                detail.append(String.join(" ", card.getKeywords()))
-                    .append("\n");
-            detail.append(card.getMark());
+                detail.append("<b>")
+                    .append(String.join(" ", card.getKeywords()))
+                    .append("</b>\n");
+            detail.append(card.getMark()).append("\n");
             if(!card.getSubMark().isBlank())
                 detail.append("\n").append(card.getSubMark());
+            detail.append("\n\n职业：").append(card.getJob());
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
@@ -538,8 +548,8 @@ public class GameInfo {
             }
             if("护符".equals(card.getType())){
                 AmuletCard amulet = (AmuletCard) card;
-                if(amulet.getTimer()>0){
-                    sb.append("倒数：").append(amulet.getTimer()).append("\t");
+                if(amulet.getCountDown()>0){
+                    sb.append("倒数：").append(amulet.getCountDown()).append("\t");
                 }
             }
 
@@ -549,16 +559,17 @@ public class GameInfo {
             StringBuilder detail = new StringBuilder();
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
-                    .append(followCard.getHp()).append("♥\n");
-            detail.append(String.join("/",card.getRace()))
-                .append("<div style=\"text-align:right;\">")
-                .append(card.getJob()).append("</div>\n");
+                    .append(followCard.getHp()).append("♥");
+            detail.append("<div style='text-align:right;float:right;'>")
+                .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
-                detail.append(String.join(" ", card.getKeywords()))
-                    .append("\n");
-            detail.append(card.getMark());
+                detail.append("<b>")
+                    .append(String.join(" ", card.getKeywords()))
+                    .append("</b>\n");
+            detail.append(card.getMark()).append("\n");
             if(!card.getSubMark().isBlank())
                 detail.append("\n").append(card.getSubMark());
+            detail.append("\n\n职业：").append(card.getJob());
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"

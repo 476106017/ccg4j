@@ -32,7 +32,8 @@ public class ChainsawMan extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
 
-        getPlays().add(new Card.Event.Play(() ->  ownerPlayer().addHand(createCard(ChainsawMode.class))
+        getPlays().add(new Card.Event.Play(() ->
+            ownerPlayer().addHand(createCard(ChainsawMode.class))
         ));
 
         getWhenKills().add(new Card.Event.WhenKill(
