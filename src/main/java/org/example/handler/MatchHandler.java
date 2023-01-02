@@ -53,7 +53,7 @@ public class MatchHandler {
             client.disconnect();
             return;
         }
-        System.out.println("客户端" + uuid + "建立websocket连接成功,用户名："+name);
+        log.info("客户端" + uuid + "建立websocket连接成功,用户名："+name);
         // region TODO 先用默认牌组
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(SVPlayer.class);
@@ -77,7 +77,7 @@ public class MatchHandler {
         socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
             "【系统广播】"+name+"（"+ip+"）退出了游戏！");
         if(roomOpt.isEmpty()){
-            System.out.println("客户端" + client.getSessionId() + "断开websocket连接成功");
+            log.info("客户端" + client.getSessionId() + "断开websocket连接成功");
             return;
         }
         String room = roomOpt.get();
@@ -98,7 +98,7 @@ public class MatchHandler {
             waitUser = null;
         }
         // 退出房间
-        System.out.println("客户端" + client.getSessionId() + "断开websocket连接成功");
+        log.info("客户端" + client.getSessionId() + "断开websocket连接成功");
     }
 
     /**

@@ -191,21 +191,4 @@ public class MahjongTable extends AmuletCard {
 
         return false;
     }
-    public static void main(String[] args) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start("new HashMap");
-        Map<Integer, Long> costCount = new HashMap<>();
-        costCount.put(1, 4L);
-        costCount.put(2, 1L);
-        costCount.put(3, 2L);
-        costCount.put(4, 1L);
-        costCount.put(5, 3L);
-        List<Integer> costs = costCount.keySet().stream().sorted().toList();
-        stopWatch.stop();
-        stopWatch.start("checkWinLoop");
-        System.out.println(checkWinLoop(costCount,costs,false));
-        stopWatch.stop();
-        System.out.println(stopWatch.prettyPrint());
-    }
-
 }
