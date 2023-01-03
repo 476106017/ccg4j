@@ -28,7 +28,7 @@ public class GameInfo {
     boolean gameset;
     ScheduledFuture<?> rope;
 
-    LinkedBlockingQueue<Effect.EffectInstance> effectQueue = new LinkedBlockingQueue<>();
+    List<Effect.EffectInstance> effectQueue = new LinkedList<>();
 
     PlayerInfo[] playerInfos;
 
@@ -98,17 +98,20 @@ public class GameInfo {
     }
 
     public void addEffect(Effect.EffectInstance instance){
-        effectQueue.offer(instance);
+        effectQueue.add(instance);
     }
     public void consumeEffectQueue(int deep){
         if(deep==0){
             msg("停止循环！不再触发任何效果");
         }
-        while (!effectQueue.isEmpty()){
-            Effect.EffectInstance instance = effectQueue.poll();
-            instance.effect().getEffect().accept(instance.damage());
-        }
-        deep--;
+        msg("结算效果");
+
+        List<Effect.EffectInstance> copy = new LinkedList<>(effectQueue);
+        copy.forEach(Effect.EffectInstance::consume);
+        effectQueue.removeAll(copy);
+
+        if(!effectQueue.isEmpty())
+            consumeEffectQueue(deep - 1);
     }
 
     public void transform(Card fromCard, Card toCard){

@@ -27,5 +27,9 @@ public class Effect{
         EffectInstance(Effect effect){
             this(effect,null);
         }
+
+        public void consume(){
+            effect().getEffect().accept(damage);
+        }
     }
 }
