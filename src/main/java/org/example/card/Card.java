@@ -3,20 +3,16 @@ package org.example.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.game.GameObj;
-import org.example.game.Leader;
+import org.example.game.Play;
 import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
 
-import java.awt.geom.Area;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static org.example.constant.CounterKey.*;
 import static org.example.system.Database.getPrototype;
-import static org.example.system.Database.prototypes;
 
 @Getter
 @Setter
@@ -45,6 +41,9 @@ public abstract class Card extends GameObj {
     public boolean hasKeyword(String k){
         return getKeywords().contains(k);
     }
+    public int countKeyword(String k){
+        return (int) getKeywords().stream().filter(p->p.equals(k)).count();
+    }
 
     public void removeKeywords(List<String> ks){
         ks.forEach(this::removeKeyword);
@@ -70,11 +69,7 @@ public abstract class Card extends GameObj {
 
     // region 效果列表
 
-    private List<Event.Play> plays = new ArrayList<>();
-
-    public List<GameObj> getTargets(){
-        return getPlays().stream().map(play -> play.targets.get()).flatMap(Collection::stream).distinct().toList();
-    }
+    private Play play = null;
     private List<Event.InvocationBegin> invocationBegins = new ArrayList<>();
     private List<Event.InvocationEnd> invocationEnds = new ArrayList<>();
     private List<Event.Transmigration> transmigrations = new ArrayList<>();
@@ -218,15 +213,12 @@ public abstract class Card extends GameObj {
         // endregion
 
         // region 发动卡牌效果
-        if (this instanceof AreaCard && !getPlays().isEmpty()) {
-            info.msg(getNameWithOwner() + "发动战吼");
-        }
-        getPlays().forEach(play -> {
-            // 如果指定目标全是该效果可选目标，目标数量也相等，则发动（多种指定效果可能冲突）
-            if(play.targets.get().containsAll(targets) && play.targetNum == targets.size()){
-                play.effect.accept(choice,targets);
+        if(getPlay() != null){
+            if (this instanceof AreaCard) {
+                info.msg(getNameWithOwner() + "发动战吼");
             }
-        });
+            getPlay().effect().accept(choice,targets);
+        }
         // endregion 发动卡牌效果
 
         // 触发手牌上全部增幅效果
@@ -244,27 +236,6 @@ public abstract class Card extends GameObj {
     }
 
     public static class Event {
-        /** 使用（到场上叫做战吼，法术牌释放效果） */
-        public record Play(Supplier<List<GameObj>> targets, int targetNum,int choiceNum, BiConsumer<Integer,List<GameObj>> effect){
-            /**
-             * 仅抉择
-             */
-            public Play(int choiceNum,Consumer<Integer> effect) {
-                this(ArrayList::new,0,choiceNum,((integer, gameObjs) -> effect.accept(integer)));
-            }
-            /**
-             * 仅选择目标
-             */
-            public Play(Supplier<List<GameObj>> targets, int targetNum,Consumer<List<GameObj>> effect) {
-                this(targets,targetNum,0,((integer, gameObjs) -> effect.accept(gameObjs)));
-            }
-            /**
-             * 不需要抉择/选择目标
-             */
-            public Play(FunctionN effect) {
-                this(ArrayList::new,0,0,((integer, gameObjs) -> effect.apply()));
-            }
-        }
         /** 回合开始瞬召 */
         public record InvocationBegin(PredicateN canBeTriggered, FunctionN effect){}
         /** 回合结束瞬召 */

@@ -5,10 +5,10 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.game.PlayerInfo;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.ALL_COST;
@@ -36,7 +36,7 @@ public class Bahamut extends FollowCard {
 
     public Bahamut() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 List<AreaCard> area = enemyPlayer().getArea();
                 destroy(area);
             }

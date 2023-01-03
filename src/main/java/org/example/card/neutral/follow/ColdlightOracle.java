@@ -2,11 +2,10 @@ package org.example.card.neutral.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +25,7 @@ public class ColdlightOracle extends FollowCard {
 
     public ColdlightOracle() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 ownerPlayer().draw(2);
                 enemyPlayer().draw(2);
             }));

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
 import org.example.card.fairy.follow.EternalSeedling;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class ForestGenesis extends SpellCard {
     public String subMark = "";
 
     public ForestGenesis() {
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));
                 ownerPlayer().addDeck(addCards);

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class EternalForest extends SpellCard {
 
     public EternalForest() {
 
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 ownerPlayer().addHpMax(10);
 
                 long count = ownerPlayer().getCount(TRANSMIGRATION_NUM);

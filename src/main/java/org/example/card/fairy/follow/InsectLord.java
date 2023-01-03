@@ -2,8 +2,8 @@ package org.example.card.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class InsectLord extends FollowCard {
 
     public InsectLord() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(
+        setPlay(new Play(
             ()->enemyPlayer().getAreaFollowsAsGameObj(), 1,
             targets->{
                 FollowCard followCard = (FollowCard) targets.get(0);

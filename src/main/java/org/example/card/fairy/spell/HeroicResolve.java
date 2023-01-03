@@ -2,11 +2,8 @@ package org.example.card.fairy.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
-import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
-import org.example.game.GameObj;
 import org.example.system.Lists;
 
 import java.util.List;

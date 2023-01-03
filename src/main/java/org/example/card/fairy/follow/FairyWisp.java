@@ -2,11 +2,10 @@ package org.example.card.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
@@ -33,7 +32,7 @@ public class FairyWisp extends FollowCard {
 
     public FairyWisp() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(()->{
+        setPlay(new Play(()->{
             if(ownerPlayer().getCount(PLAY_NUM)>=2) this.removeWhenAtArea();
         }));
     }

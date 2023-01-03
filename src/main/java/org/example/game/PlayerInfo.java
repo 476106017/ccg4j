@@ -41,6 +41,7 @@ public class PlayerInfo {
         graveyardCount += count;
     }
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
+    Map<Integer,List<Card>> playedCard = new HashMap<>();// 使用卡牌计数器
     Leader leader;
 
     public PlayerInfo(GameInfo info,boolean initative) {

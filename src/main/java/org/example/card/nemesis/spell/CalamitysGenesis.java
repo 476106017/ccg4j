@@ -7,6 +7,7 @@ import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.card.nemesis.follow.MagisterialDreadnought;
 import org.example.constant.EffectTiming;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class CalamitysGenesis extends SpellCard {
 
     public CalamitysGenesis() {
 
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(MagisterialDreadnought.class));
                 addCards.add(createCard(MagisterialDreadnought.class));

@@ -2,9 +2,7 @@ package org.example.card.stalker.spell.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.SpellCard;
-import org.example.game.Leader;
 import org.example.system.Lists;
 
 import java.util.HashMap;

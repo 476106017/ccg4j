@@ -6,10 +6,7 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.example.card.*;
-import org.example.game.GameInfo;
-import org.example.game.GameObj;
-import org.example.game.Leader;
-import org.example.game.PlayerInfo;
+import org.example.game.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
@@ -154,90 +151,76 @@ public class GameHandler {
             info.msgToThisPlayer("场上放不下卡牌了！");
             return;
         }
+        // 已选好要出的card
+        Play play = card.getPlay();
 
-        List<GameObj> targetable = card.getTargets();
+        if(play==null){
+            card.play(new ArrayList<>(),0);// 没有任何使用效果，直接召唤
+            return;
+        }
 
-        Integer targetNum = card.getPlays().stream()
-            .map(Card.Event.Play::targetNum).reduce(Math::max).orElse(0);
-        // 只有一个参数
-        if(split.length == 1){
-            if(targetable.isEmpty()
-                && !(card instanceof SpellCard && targetNum>0)// 指定法术卡必须指定
-                && !(card instanceof EquipmentCard)){// 装备卡必须指定
-                // 如果是站场卡，则不指定也能召唤
-                card.play(targetable,0);// 不指定目标
-            }else {
-                StringBuilder sb = new StringBuilder();
-                sb.append("你需要指定目标以使用该卡牌：play <手牌序号> <目标序号> s<抉择序号>\n")
-                    .append("可指定的目标：\n");
-                for (int i = 0; i < targetable.size(); i++) {
-                    sb.append("【").append(i+1).append("】\t");
-
-                    GameObj gameObj = targetable.get(i);
-                    if(gameObj instanceof Leader leader){
-                        sb.append(player.getLeader()==leader?"我方主战者":"敌方主战者");
-                    }else if (gameObj instanceof Card targetCard){
-                        // 卡牌属于哪方
-                        PlayerInfo ownerPlayer = targetCard.ownerPlayer();
-                        sb.append(ownerPlayer == player ? "我方\t":"敌方\t")
-                            .append(targetCard.getName()).append("\t");
-                        if(gameObj instanceof FollowCard followCard){
-                            sb.append("随从\t")
-                                .append(followCard.getAtk()).append("/").append(followCard.getHp());
-                        }else if(gameObj instanceof AmuletCard amuletCard){
-                            sb.append("护符\t")
-                                .append("倒数：").append(amuletCard.getCountDown());
-                        }
-                    }
-                    sb.append("\n");
-                }
-                info.msgToThisPlayer(sb.toString());
-
-            }
-        }else{
-            // 输入多个参数
-            if(targetable.size()==0) {
-                info.msgToThisPlayer("无法为该卡牌指定目标！");
-                return;
-            }else {
-                List<GameObj> targets = new ArrayList<>();
-                int choice = 0;
-                for (String targetS : split) {
-                    if(targetS.startsWith("s")){
-                        try {
-                            choice = Integer.parseInt(targetS.substring(1,2));
-                        }catch (Exception e){
-                            choice = 0;
-                        }
-                        continue;
-                    }
-                    Integer targetI;
-                    try {
-                        targetI = Integer.valueOf(targetS);
-                    }catch (Exception e){
-                        targetI = 0;
-                    }
-                    try {
-                        GameObj target = targetable.get(targetI - 1);
-                        if(target!=null){
-                            targets.add(target);
-                        }
-                    }catch (Exception e){}
-                }
-                int shouldTargetNum = Math.min(targetable.size(), targetNum);
-                if(targets.size() != shouldTargetNum){
-                    info.msgToThisPlayer("指定目标数量错误！应为："+shouldTargetNum);
+        // region 获取选择目标
+        int choice = 0;
+        List<GameObj> targets = new ArrayList<>();
+        for (int i = 0; i < split.length; i++) {
+            String targetS = split[i];
+            if (targetS.startsWith("s")) {
+                if(play.choiceNum()==0){
+                    info.msgToThisPlayer("此卡不需要抉择！");
                     return;
                 }
-                Integer choiceNum = card.getPlays().stream().map(Card.Event.Play::choiceNum).reduce(Math::min).orElse(0);
-                // 需要指定抉择时
-                if (choiceNum > 0)
-                    if (choice > choiceNum || choice <= 0) {
-                        info.msgToThisPlayer("指定抉择序号错误！应为：s1-s" + choiceNum);
+                if(choice!=0){
+                    info.msgToThisPlayer("输入了多个抉择序号:"+choice);
+                    return;
+                }
+                try {
+                    choice = Integer.parseInt(targetS.substring(1, 2));
+                    if(choice<=0 || choice > play.choiceNum()){
+                        info.msgToThisPlayer("指定抉择序号错误！应为：s1-s"+play.choiceNum());
                         return;
-                    }else
-                        info.msg(player.getName()+"进行了抉择");
-                card.play(targets,choice);// 指定目标（装备卡只有1个目标）
+                    }
+                } catch (Exception e) {
+                }
+                continue;
+            }
+
+            Integer targetI;
+            try {
+                targetI = Integer.valueOf(targetS);
+                // 获取选择对象
+                GameObj target = play.canTargets().get()
+                    .get(i).get(targetI - 1);
+                if(target!=null){
+                    if(targets.contains(target)){
+                        info.msgToThisPlayer("输入了重复的对象:"+target.getName());
+                        return;
+                    }
+                    targets.add(target);
+                }
+            }catch (Exception e){
+                info.msgToThisPlayer("序号出错:"+targetS);
+                return;
+            }
+        }
+        // endregion 获取选择目标
+
+        // 不指定目标
+        if(targets.size() == 0){
+            if(play.targetNum()==0 || ( play.targetNum()>0 && !play.mustTarget()))
+                card.play(new ArrayList<>(),choice);// 不指定目标
+            else
+                info.msgToThisPlayer("请指定目标：play <手牌序号> <目标序号> s<抉择序号>\n"+play.describeCanTargets());
+        }else{
+            // 指定目标
+            if(play.targetNum()==0) {
+                info.msgToThisPlayer("无法为该卡牌指定目标！");
+            }else {
+                // 必须指定目标
+                if(play.mustTarget() && targets.size() != play.targetNum()){
+                    info.msgToThisPlayer("指定目标数量错误！应为："+ play.targetNum());
+                    return;
+                }
+                card.play(targets,choice);// 指定目标
             }
 
         }
@@ -495,29 +478,29 @@ public class GameHandler {
         PlayerInfo player = info.thisPlayer();
 
 
-        player.getHand().stream().filter(card -> card.getCost()<= player.getPpNum())
+        player.getHand().stream().filter(card -> {
+                if(card.getCost() > player.getPpNum())return false;
+                Play play = card.getPlay();
+                if(play !=null && play.mustTarget()){// 如果是必须指定目标，每个可指定列表都不能为空
+                    return play.canTargets().get().stream().noneMatch(List::isEmpty);
+                }
+                return true;
+            })
             .findAny().ifPresent(card -> {
             if(card instanceof AreaCard &&
                 player.getArea().size()==player.getAreaMax()){
                 info.msgTo(me,"场上放不下卡牌了！");
                 return;
             }
+            Play play = card.getPlay();
 
-            if(card.getPlays().isEmpty()){
-                card.play(new ArrayList<>(),1);
+            if(play==null){
+                card.play(new ArrayList<>(),0);// 没有任何使用效果，直接召唤
                 return;
             }
-
-            Integer targetNum = card.getPlays().stream().map(Card.Event.Play::targetNum).reduce(Math::max).get();
-            int shouldTargetNum = Math.min(card.getTargets().size(), targetNum);
-            if(shouldTargetNum == 0){
-                if(card instanceof EquipmentCard) return;
-                card.play(new ArrayList<>(),1);
-            }else {
-                List<GameObj> targets = card.getTargets().subList(0, shouldTargetNum);
-                card.play(targets,1);
-            }
-
+            // 所有效果都指定第一个
+            List<GameObj> targets = play.canTargets().get().stream().map(gameObjs -> gameObjs.get(0)).toList();
+            card.play(targets,1);
         });
     }
 }

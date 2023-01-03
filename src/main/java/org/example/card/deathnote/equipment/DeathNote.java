@@ -5,13 +5,8 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.EquipmentCard;
-import org.example.card.FollowCard;
-import org.example.constant.EffectTiming;
-import org.example.game.Damage;
-import org.example.game.GameObj;
-import org.example.game.Leader;
+import org.example.game.Play;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,7 +29,7 @@ public class DeathNote extends EquipmentCard {
 
     public DeathNote() {
         getKeywords().add("游魂");
-        getPlays().add(new Card.Event.Play(
+        setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),1,2,
             (choice,gameObjs) -> {
                 if(choice==2){

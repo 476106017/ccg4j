@@ -2,12 +2,8 @@ package org.example.card.chainsawman.equipment;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.EquipmentCard;
-import org.example.card.FollowCard;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.example.game.Play;
 
 @Getter
 @Setter
@@ -31,9 +27,9 @@ public class ChainsawMode extends EquipmentCard {
         getKeywords().add("自愈");
         getKeywords().add("重伤");
 
-        getPlays().add(new Card.Event.Play(
+        setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj().stream()
-                .filter(gameObj -> gameObj.getName().equals("链锯恶魔")).toList(),1,
+                .filter(gameObj -> gameObj.getName().equals("链锯恶魔")).toList(),true,
             gameObjs -> {}
         ));
 

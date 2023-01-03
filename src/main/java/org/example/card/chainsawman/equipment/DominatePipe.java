@@ -2,8 +2,8 @@ package org.example.card.chainsawman.equipment;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.EquipmentCard;
+import org.example.game.Play;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public class DominatePipe extends EquipmentCard {
     public String subMark = "";
 
     public DominatePipe() {
-        getPlays().add(new Card.Event.Play(ArrayList::new
+        setPlay(new Play(ArrayList::new
             , 0,gameObjs -> {}
         ));
 

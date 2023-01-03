@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class FairyWhisperer extends FollowCard {
 
     public FairyWhisperer() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(()->{
+        setPlay(new Play(()->{
             List<Card> fairies = new ArrayList<>();
             for (int i = 0; i < getCost(); i++) {
                 Fairy fairy = createCard(Fairy.class);

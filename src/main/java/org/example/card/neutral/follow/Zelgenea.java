@@ -2,20 +2,15 @@ package org.example.card.neutral.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
-import org.example.game.GameInfo;
-import org.example.game.PlayerInfo;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static org.example.constant.CounterKey.ALL_COST;
 
 
 @Getter
@@ -41,7 +36,7 @@ public class Zelgenea extends FollowCard {
 
     public Zelgenea() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
             int oldHp = ownerPlayer().getHp();
             ownerPlayer().heal(5);
             if(oldHp<15){

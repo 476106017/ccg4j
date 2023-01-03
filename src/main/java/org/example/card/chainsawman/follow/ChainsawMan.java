@@ -5,9 +5,9 @@ import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.chainsawman.equipment.ChainsawMode;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,7 +32,7 @@ public class ChainsawMan extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
 
-        getPlays().add(new Card.Event.Play(() ->
+        setPlay(new Play(() ->
             ownerPlayer().addHand(createCard(ChainsawMode.class))
         ));
 

@@ -2,8 +2,8 @@ package org.example.card.neutral.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class AmbitiousGoblinMage  extends FollowCard {
 
     public AmbitiousGoblinMage() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(
+        setPlay(new Play(
             ()->ownerPlayer().getHandAsGameObjBy(card ->
                 card instanceof FollowCard followCard && followCard!=this ),
             1,

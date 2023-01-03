@@ -2,12 +2,10 @@ package org.example.card.deathnote.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,6 +25,6 @@ public class Lawliet  extends FollowCard {
 
     public Lawliet() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(()->setName("L")));
+        setPlay(new Play(()->setName("L")));
     }
 }

@@ -6,7 +6,6 @@ import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

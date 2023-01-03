@@ -2,14 +2,11 @@ package org.example.card.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.game.GameObj;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
-
-import static org.example.constant.CounterKey.PLAY_NUM;
 
 
 @Getter
@@ -29,7 +26,7 @@ public class PhantombloomPredator extends FollowCard {
 
     public PhantombloomPredator() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(
+        setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObjBy(followCard -> followCard.getCost()==1),
             1,
             targets->{

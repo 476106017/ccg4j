@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class LabRecruiter extends FollowCard {
 
     public LabRecruiter() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(
+        setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),1,
             gameObjs -> {
                 FollowCard followCard = (FollowCard) gameObjs.get(0);

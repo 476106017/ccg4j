@@ -5,19 +5,14 @@ import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.AreaCard;
 import org.example.card.Card;
-import org.example.card.FollowCard;
 import org.example.game.PlayerInfo;
 import org.example.system.Lists;
-import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import static org.example.constant.CounterKey.PLAY_NUM;
 
 @Getter
 @Setter

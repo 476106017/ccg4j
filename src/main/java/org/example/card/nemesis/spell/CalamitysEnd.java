@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class CalamitysEnd extends SpellCard {
 
     public CalamitysEnd() {
 
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 destroy(enemyPlayer().getArea());
                 destroy(ownerPlayer().getArea());
 

@@ -20,7 +20,6 @@ public abstract class Leader extends GameObj {
     private boolean needTarget = true;
     private boolean canUseSkill = true;
 
-
     private String overDrawMark = """
         输掉游戏
         """;
@@ -66,7 +65,7 @@ public abstract class Leader extends GameObj {
     public void damaged(Damage damage){
         GameInfo info = ownerPlayer().getInfo();
 
-        useEffectWithDamage(EffectTiming.LeaderDamaged,damage);
+        useEffectWithDamage(EffectTiming.LeaderAfterDamaged,damage);
 
         ownerPlayer().setHp(ownerPlayer().getHp()- damage.getDamage());
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害！" +
@@ -91,7 +90,7 @@ public abstract class Leader extends GameObj {
             return;
         }
         info.msg(source.getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了主战者效果！");
-        effects.add(new Effect(source,timing,canUseTurn,effect));
+        effects.add(new Effect(source,this,timing,canUseTurn,effect));
     }
 
     public List<Effect> getEffectsWhen(EffectTiming timing){
@@ -102,7 +101,7 @@ public abstract class Leader extends GameObj {
     }
     public void expireEffect(){
         // 过期主战者效果
-        List<Leader.Effect> usedUpEffects = new ArrayList<>();
+        List<Effect> usedUpEffects = new ArrayList<>();
         getEffects()
             .forEach(effect -> {
                 int canUse = effect.getCanUseTurn();
@@ -123,24 +122,4 @@ public abstract class Leader extends GameObj {
     public void useEffectWithDamage(EffectTiming timing,Damage damage){
         getEffectsWhen(timing).forEach(effect -> effect.getEffect().accept(damage));
     }
-
-    @Getter
-    @Setter
-    public static class Effect{
-        private EffectTiming timing;
-        private int canUseTurn;// 可使用回合（包含敌方回合）
-
-        private Card source;
-
-        private Consumer<Damage> effect;
-
-        public Effect(Card source, EffectTiming timing,int canUseTurn,Consumer<Damage> effect) {
-            this.source = source;
-            this.timing = timing;
-            this.canUseTurn = canUseTurn;
-            this.effect = effect;
-        }
-
-    }
-
 }

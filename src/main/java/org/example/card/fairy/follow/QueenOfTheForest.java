@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.Comparator;
@@ -29,7 +30,7 @@ public class QueenOfTheForest extends FollowCard {
 
     public QueenOfTheForest() {
         setMaxHp(getHp());
-        getPlays().add(new Card.Event.Play(()->
+        setPlay(new Play(()->
             ownerPlayer().draw(card -> card instanceof FollowCard followCard
             && followCard.getCost().equals(
                 ownerPlayer().getDeck().stream().filter(deckCard -> deckCard instanceof FollowCard)

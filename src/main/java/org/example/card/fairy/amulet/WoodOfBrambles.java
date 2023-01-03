@@ -3,10 +3,9 @@ package org.example.card.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.fairy.follow.Fairy;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.HashMap;
@@ -34,7 +33,7 @@ public class WoodOfBrambles extends AmuletCard {
     private Map<FollowCard, FollowCard.Event.WhenBattle> effectFollows = new HashMap<>();
 
     public WoodOfBrambles() {
-        getPlays().add(new Card.Event.Play(()->{
+        setPlay(new Play(()->{
             ownerPlayer().addHand(createCard(Fairy.class));
             ownerPlayer().addHand(createCard(Fairy.class));
         }));

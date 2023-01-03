@@ -3,7 +3,6 @@ package org.example.card.neutral.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.SpellCard;
 import org.example.system.Lists;
 

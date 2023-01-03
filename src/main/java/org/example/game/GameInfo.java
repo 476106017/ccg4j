@@ -8,6 +8,7 @@ import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +27,8 @@ public class GameInfo {
     int turnPlayer;
     boolean gameset;
     ScheduledFuture<?> rope;
+
+    LinkedBlockingQueue<Effect.EffectInstance> effectQueue = new LinkedBlockingQueue<>();
 
     PlayerInfo[] playerInfos;
 
@@ -92,6 +95,20 @@ public class GameInfo {
         }else {
             return playerInfos[0];
         }
+    }
+
+    public void addEffect(Effect.EffectInstance instance){
+        effectQueue.offer(instance);
+    }
+    public void consumeEffectQueue(int deep){
+        if(deep==0){
+            msg("停止循环！不再触发任何效果");
+        }
+        while (!effectQueue.isEmpty()){
+            Effect.EffectInstance instance = effectQueue.poll();
+            instance.effect().getEffect().accept(instance.damage());
+        }
+        deep--;
     }
 
     public void transform(Card fromCard, Card toCard){

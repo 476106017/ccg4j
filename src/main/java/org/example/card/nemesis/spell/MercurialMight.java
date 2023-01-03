@@ -2,9 +2,9 @@ package org.example.card.nemesis.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ public class MercurialMight  extends SpellCard {
 
     public MercurialMight() {
 
-        getPlays().add(new Card.Event.Play(ArrayList::new, 0,
-            gameObjs -> {// 使用效果
+        setPlay(new Play(ArrayList::new, 0,
+            gameObjs -> {// 使用效
                 // 增加主战者效果
-                ownerPlayer().getLeader().addEffect(this, EffectTiming.LeaderDamaged, 2,true,
+                ownerPlayer().getLeader().addEffect(this, EffectTiming.LeaderBeforeDamaged, 2,true,
                     damage-> {if(!damage.isFromAtk()) damage.setDamage(0);});
             }
         ));

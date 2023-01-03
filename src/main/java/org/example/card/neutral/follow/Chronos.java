@@ -2,9 +2,9 @@ package org.example.card.neutral.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.Comparator;
@@ -28,7 +28,7 @@ public class Chronos extends FollowCard {
     public Chronos() {
         setMaxHp(getHp());
         getKeywords().add("突进");
-        getPlays().add(new Card.Event.Play(()->{
+        setPlay(new Play(()->{
             ownerPlayer().getLeader().addEffect(this, EffectTiming.EndTurn, ()->
                 ownerPlayer().getAreaFollowsAsFollow().stream()
                     .max(Comparator.comparing(FollowCard::getAtk))

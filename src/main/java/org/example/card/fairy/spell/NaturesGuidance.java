@@ -3,15 +3,11 @@ package org.example.card.fairy.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.SpellCard;
 import org.example.game.GameObj;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
 
 @Getter

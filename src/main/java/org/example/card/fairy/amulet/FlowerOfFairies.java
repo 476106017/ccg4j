@@ -3,14 +3,11 @@ package org.example.card.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.Card;
-import org.example.card.FollowCard;
 import org.example.card.fairy.follow.Fairy;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Getter
@@ -31,7 +28,7 @@ public class FlowerOfFairies extends AmuletCard {
     public String subMark = "";
 
     public FlowerOfFairies() {
-        getPlays().add(new Card.Event.Play(()->{
+        setPlay(new Play(()->{
             ownerPlayer().draw(1);
         }));
         getDeathRattles().add(new Event.DeathRattle(()->

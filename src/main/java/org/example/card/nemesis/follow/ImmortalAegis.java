@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.nemesis.spell.MercurialMight;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class ImmortalAegis extends FollowCard {
         getKeywords().add("无法破坏");
         getKeywords().add("效果伤害免疫");
 
-        getPlays().add(new Card.Event.Play(() -> {
+        setPlay(new Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 MercurialMight mercurialMight = createCard(MercurialMight.class);
                 mercurialMight.setCost(0);

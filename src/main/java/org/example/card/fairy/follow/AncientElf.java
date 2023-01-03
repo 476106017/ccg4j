@@ -3,8 +3,8 @@ package org.example.card.fairy.follow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class AncientElf extends FollowCard {
     public AncientElf() {
         setMaxHp(getHp());
         getKeywords().add("守护");
-        getPlays().add(new Card.Event.Play(()->{
+        setPlay(new Play(()->{
             List<AreaCard> areaFollows = ownerPlayer().getAreaFollows();
             AtomicInteger size = new AtomicInteger();
             areaFollows.forEach(areaCard ->{

@@ -5,9 +5,7 @@ import lombok.Setter;
 import org.example.card.SpellCard;
 import org.example.system.Lists;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Getter

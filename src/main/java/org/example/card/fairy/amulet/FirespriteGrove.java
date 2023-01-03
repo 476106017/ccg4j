@@ -3,15 +3,10 @@ package org.example.card.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.Card;
-import org.example.card.FollowCard;
-import org.example.card.chainsawman.equipment.ChainsawMode;
 import org.example.card.fairy.follow.Fairy;
 import org.example.system.Lists;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Getter

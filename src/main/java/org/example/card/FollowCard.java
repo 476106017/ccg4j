@@ -5,12 +5,6 @@ import lombok.Setter;
 import org.example.constant.CardType;
 import org.example.game.Damage;
 import org.example.game.GameObj;
-import org.example.game.Leader;
-import org.example.system.function.FunctionN;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 
 @Getter
@@ -20,18 +14,11 @@ public abstract class FollowCard extends AreaCard{
     private int atk = 0;
     private int hp = 0;
     private int maxHp = 0;
+    private boolean needSettle = false; // 是否需要结算
     private int turnAge = 0;
     private int turnAttackMax = 1;
     private int turnAttack = 0;
     private EquipmentCard equipment;
-
-    // region 效果列表
-
-    private List<Event.WhenAttack> whenAttacks = new ArrayList<>();
-    private List<Event.WhenBattle> whenBattles = new ArrayList<>();
-    private List<Event.WhenDamaged> whenDamageds = new ArrayList<>();
-    private List<Event.WhenLeaderSkill> whenLeaderSkills = new ArrayList<>();
-    // endregion 效果列表
 
     @Override
     public String getType() {
@@ -120,7 +107,7 @@ public abstract class FollowCard extends AreaCard{
 
         getWhenBattles().clear();
         getWhenAttacks().clear();
-        getWhenDamageds().clear();
+        getAfterDamageds().clear();
         getWhenLeaderSkills().clear();
 
         getEffectBegins().clear();
@@ -167,26 +154,22 @@ public abstract class FollowCard extends AreaCard{
         if(!getWhenAttacks().isEmpty()){
             info.msg(getNameWithOwner() + "发动攻击时效果！");
             getWhenAttacks().forEach(whenAttack -> whenAttack.effect().accept(damage));
-
         }
 
-        if(damage.getTo() instanceof Leader leader){
-            leader.damaged(damage);
-            return;
-        }
-
-        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard
-            && !getWhenBattles().isEmpty()){
+        if(damage.getTo() instanceof FollowCard followCard){
+            if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard
+                && !getWhenBattles().isEmpty()){
                 info.msg(getNameWithOwner() + "发动交战时效果！");
                 getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-        }
-        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow
-            && !toFollow.getWhenBattles().isEmpty()){
+            }
+            if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow
+                && !toFollow.getWhenBattles().isEmpty()){
                 info.msg(toFollow.getNameWithOwner() + "发动交战时效果！");
                 toFollow.getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
+            }
         }
-        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow)
-            toFollow.damageBoth(damage);
+
+        damage.applyWithoutSettle();
 
         info.msgTo(ownerPlayer().getUuid(),
             info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
@@ -271,9 +254,9 @@ public abstract class FollowCard extends AreaCard{
             }
             death();
         }else {
-            if(!getWhenDamageds().isEmpty()){
+            if(!getAfterDamageds().isEmpty()){
                 info.msg(getNameWithOwner() + "发动受伤时效果！");
-                getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
+                getAfterDamageds().forEach(afterDamaged -> afterDamaged.effect().accept(damage));
             }
 
         }
@@ -282,9 +265,9 @@ public abstract class FollowCard extends AreaCard{
             if(fromFollow.getHp() <= 0){
                 fromFollow.death();
             }else {
-                if(!fromFollow.getWhenDamageds().isEmpty()){
+                if(!fromFollow.getAfterDamageds().isEmpty()){
                     info.msg(fromFollow.getNameWithOwner() + "发动受伤时效果！");
-                    fromFollow.getWhenDamageds().forEach(whenDamaged -> whenDamaged.effect().accept(damage));
+                    fromFollow.getAfterDamageds().forEach(afterDamaged -> afterDamaged.effect().accept(damage));
                 }
             }
 
@@ -314,21 +297,5 @@ public abstract class FollowCard extends AreaCard{
     public void damaged(Damage damage){
         damagedWithoutSettle(damage);
         damageSettlement(damage);
-    }
-
-    public static class Event {
-        /** 攻击时效果 */
-        public record WhenAttack(Consumer<Damage> effect){}
-
-        /** 交战时效果 */
-        /* 交战时请勿修改双方交战对象 */
-        public record WhenBattle(Consumer<Damage> effect){}
-
-        /** 受伤时效果 */
-        public record WhenDamaged(Consumer<Damage> effect){}
-
-        /** 激励效果 */
-        public record WhenLeaderSkill(FunctionN effect){}
-
     }
 }

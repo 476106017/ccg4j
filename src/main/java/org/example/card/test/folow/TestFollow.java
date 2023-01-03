@@ -5,10 +5,9 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.chainsawman.equipment.ChainsawMode;
+import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,7 +28,7 @@ public class TestFollow extends FollowCard {
     public TestFollow() {
         setMaxHp(getHp());
         getKeywords().add("剧毒");
-        getPlays().add(new Card.Event.Play(() -> getInfo().msg(getNameWithOwner() + "战吼")));
+        setPlay(new Play(() -> getInfo().msg(getNameWithOwner() + "战吼")));
         getEnterings().add(new AreaCard.Event.Entering(()->
             getInfo().msg(getNameWithOwner() + "入场时")));
         getLeavings().add(new AreaCard.Event.Leaving(()->
@@ -44,7 +43,7 @@ public class TestFollow extends FollowCard {
             getInfo().msg(getNameWithOwner() + "攻击时")));
         getWhenBattles().add(new Event.WhenBattle(damage->
             getInfo().msg(getNameWithOwner() + "交战时")));
-        getWhenDamageds().add(new Event.WhenDamaged(damage->
+        getAfterDamageds().add(new Event.AfterDamaged(damage->
             getInfo().msg(getNameWithOwner() + "受伤时")));
         getWhenKills().add(new Card.Event.WhenKill(damage->
             getInfo().msg(getNameWithOwner() + "击杀时")));
