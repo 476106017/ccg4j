@@ -49,6 +49,24 @@ public class DamageMulti {
         // 受伤时
         damages.forEach(damage -> {
             if(damage.getTo() instanceof FollowCard toFollow){
+                // 攻击方是随从，计算关键词
+                if (damage.getFrom() instanceof FollowCard fromFollow) {
+                    // 普攻伤害消耗攻击方装备耐久
+                    if(damage.isFromAtk() && fromFollow.equipped())
+                        fromFollow.expireEquip();
+                    if(fromFollow.hasKeyword("重伤")){
+                        info.msg(fromFollow.getNameWithOwner() + "发动重伤效果！");
+                        toFollow.addKeyword("无法回复");
+                    }
+                    if(fromFollow.hasKeyword("自愈")){
+                        info.msg(fromFollow.getNameWithOwner() + "发动自愈效果！");
+                        fromFollow.heal(damage.getDamage());
+                    }
+                    if(fromFollow.hasKeyword("吸血")){
+                        info.msg(fromFollow.getNameWithOwner() + "发动吸血效果！");
+                        fromFollow.ownerPlayer().heal(damage.getDamage());
+                    }
+                }
                 toFollow.tempEffects(EffectTiming.AfterDamaged,damage);
             }
             else if (damage.getTo() instanceof Leader leader){

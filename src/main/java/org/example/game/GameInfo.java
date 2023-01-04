@@ -350,13 +350,10 @@ public class GameInfo {
         });
 
         // 查找牌堆是否有瞬召卡牌，同名字卡牌各取一张
-        Map<String, Card> nameCard =
+        Map<String, GameObj> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
-        List<Card> canInvocation =
-            new ArrayList<>(nameCard.values().stream()
-                .filter(card -> !card.getInvocationBegins().isEmpty())
-                .toList());
+        tempEffectBatch(nameCard.values(),EffectTiming.InvocationBegin);
 
         // 法术卡揭示到手牌
         while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
