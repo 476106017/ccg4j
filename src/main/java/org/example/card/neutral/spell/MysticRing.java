@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -30,10 +31,11 @@ public class MysticRing extends SpellCard {
     }
 
     public MysticRing() {
-        getPlays().add(new Event.Play(()->ownerPlayer().getHandAsGameObjBy(card -> card!=this),
-            1,
-            targets->{
-                Card target = (Card)targets.get(0);
+        setPlay(new Play(()->
+            ownerPlayer().getHandAsGameObjBy(card -> card!=this),
+            true,
+            obj->{
+                Card target = (Card)obj;
                 ownerPlayer().backToDeck(target);
                 ownerPlayer().draw(1);
             }

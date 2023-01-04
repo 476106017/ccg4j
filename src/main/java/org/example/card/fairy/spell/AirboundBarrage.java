@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
 import org.example.game.GameObj;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -18,18 +19,17 @@ public class AirboundBarrage extends SpellCard {
     public String job = "妖精";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        返回1张己方随从或己方护符，随机对敌方场上1名随从造成3点伤害
+        返回1张我方随从或我方护符，随机对敌方场上1名随从造成3点伤害
         """;
 
     public String subMark = "";
 
     public AirboundBarrage() {
-        getPlays().add(new Event.Play(
+        setPlay(new Play(
             () -> ownerPlayer().getAreaBy(areaCard -> true).stream()
-                .map(areaCard -> (GameObj)areaCard).toList(),1,
+                .map(areaCard -> (GameObj)areaCard).toList(),true,
             gameObjs -> {
-                GameObj areaCard = gameObjs.get(0);
-                ((AreaCard) areaCard).backToHand();
+                ((AreaCard) gameObjs).backToHand();
                 Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()).damaged(this,3);
             }
         ));

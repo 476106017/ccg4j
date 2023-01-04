@@ -27,7 +27,7 @@ public class Fairy extends FollowCard {
 
     public Fairy() {
         setMaxHp(getHp());
-        getInvocationEnds().add(new Card.Event.InvocationEnd(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationEnd,
             ()->ownerPlayer().getPpNum() == 1,
             ()->{}
         ));

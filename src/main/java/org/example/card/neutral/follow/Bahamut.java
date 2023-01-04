@@ -41,7 +41,7 @@ public class Bahamut extends FollowCard {
                 destroy(area);
             }
         ));
-        getInvocationEnds().add(new Card.Event.InvocationEnd(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationEnd,
             ()-> ownerPlayer().getCount(ALL_COST) >= 50,
             ()->{
                 PlayerInfo oppositePlayer = info.oppositePlayer();

@@ -28,7 +28,7 @@ public class ForestSymphony extends AmuletCard {
     public String subMark = "";
 
     public ForestSymphony() {
-        getEffectEnds().add(new Event.EffectEnd(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->{
             if(ownerPlayer().isShortRope()) return;
 
             Set<String> nameSet = ownerPlayer().getArea().stream()

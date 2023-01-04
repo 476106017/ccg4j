@@ -25,7 +25,7 @@ public class Makima extends FollowCard {
     private String mark = """
         战吼/回合开始时：找到场上随机一名未装备支配之线的实名随从，装备支配之线
         
-        亡语：破坏一个装备支配之线的己方随从，将此卡召还到场上
+        亡语：破坏一个装备支配之线的我方随从，将此卡召还到场上
         """;
     private String subMark = "";
     public Makima() {
@@ -52,7 +52,7 @@ public class Makima extends FollowCard {
             }
 
         }));
-        getEffectBegins().add(new AreaCard.Event.EffectBegin(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.EffectBegin,)->{
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollowsAsFollow().stream()
                 .filter(followCard -> !(followCard.getName().equals("支配恶魔"))
@@ -73,7 +73,7 @@ public class Makima extends FollowCard {
         }));
 
 
-        getDeathRattles().add(new AreaCard.Event.DeathRattle(() -> {
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,) -> {
 
             ownerPlayer().getAreaCopy().stream()
                 .filter(areaCard -> areaCard instanceof FollowCard follow

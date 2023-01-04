@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -22,8 +24,8 @@ public class CalamitysEnd extends SpellCard {
     public String mark = """
         揭示:回合开始时被破坏的5费以上随从大于20个
         破坏双方场上全部随从。
-        如果被破坏的5费以上己方随从小于30个，则将1张灾祸降临洗入牌堆；
-        如果被破坏的5费以上己方随从大于30个，则赢得胜利
+        如果被破坏的5费以上我方随从小于30个，则将1张灾祸降临洗入牌堆；
+        如果被破坏的5费以上我方随从大于30个，则赢得胜利
         """;
 
     public String subMark = "被破坏的5费以上随从：{count}个";
@@ -53,7 +55,7 @@ public class CalamitysEnd extends SpellCard {
                 }
             }
         ));
-        getInvocationBegins().add(new Card.Event.InvocationBegin(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> ownerPlayer().getGraveyard().stream()
                 .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                 .count() >= 20,

@@ -22,7 +22,7 @@ public class Vanish extends SpellCard {
     public String subMark = "";
 
     public Vanish() {
-        getPlays().add(new Event.Play(
+        setPlay(new Play(
             () -> {
                 // TODO 要同时触发离场时
             }

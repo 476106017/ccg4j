@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class HeroicResolve extends SpellCard {
     public String job = "妖精";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        回合结束时，抽X张卡牌，己方随从全体+X/+X。（X是本回合使用的卡牌数/4）
+        回合结束时，抽X张卡牌，我方随从全体+X/+X。（X是本回合使用的卡牌数/4）
         """;
 
     public String subMark = "X等于{}";
@@ -29,7 +30,7 @@ public class HeroicResolve extends SpellCard {
 
 
     public HeroicResolve() {
-        getPlays().add(new Event.Play(()->
+        setPlay(new Play(()->
             // 创建主战者回合结束效果
             ownerPlayer().getLeader()
                 .addEffect(this, EffectTiming.EndTurn, 1,false, damage ->{

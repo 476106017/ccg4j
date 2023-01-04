@@ -29,7 +29,7 @@ public class MercurialMight  extends SpellCard {
         setPlay(new Play(ArrayList::new, 0,
             gameObjs -> {// 使用效
                 // 增加主战者效果
-                ownerPlayer().getLeader().addEffect(this, EffectTiming.LeaderBeforeDamaged, 2,true,
+                ownerPlayer().getLeader().addEffect(this, EffectTiming.BeforeLeaderDamaged, 2,true,
                     damage-> {if(!damage.isFromAtk()) damage.setDamage(0);});
             }
         ));

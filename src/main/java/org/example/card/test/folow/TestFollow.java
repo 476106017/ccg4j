@@ -29,29 +29,29 @@ public class TestFollow extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("剧毒");
         setPlay(new Play(() -> getInfo().msg(getNameWithOwner() + "战吼")));
-        getEnterings().add(new AreaCard.Event.Entering(()->
+        getEffects().add(new Effect(this,this, EffectTiming.Entering,)->
             getInfo().msg(getNameWithOwner() + "入场时")));
-        getLeavings().add(new AreaCard.Event.Leaving(()->
+        getEffects().add(new Effect(this,this, EffectTiming.Leaving,)->
             getInfo().msg(getNameWithOwner() + "离场时")));
-        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->
             getInfo().msg(getNameWithOwner() + "亡语")));
-        getEffectBegins().add(new AreaCard.Event.EffectBegin(()->
+        getEffects().add(new Effect(this,this, EffectTiming.EffectBegin,)->
             getInfo().msg(getNameWithOwner() + "回合开始时")));
-        getEffectEnds().add(new AreaCard.Event.EffectEnd(()->
+        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->
             getInfo().msg(getNameWithOwner() + "回合结束时")));
-        getWhenAttacks().add(new Event.WhenAttack(damage->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenAttack,damage->
             getInfo().msg(getNameWithOwner() + "攻击时")));
-        getWhenBattles().add(new Event.WhenBattle(damage->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenBattle,damage->
             getInfo().msg(getNameWithOwner() + "交战时")));
-        getAfterDamageds().add(new Event.AfterDamaged(damage->
+        getEffects().add(new Effect(this,this, EffectTiming.AfterDamaged,damage->
             getInfo().msg(getNameWithOwner() + "受伤时")));
-        getWhenKills().add(new Card.Event.WhenKill(damage->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenKill,damage->
             getInfo().msg(getNameWithOwner() + "击杀时")));
-        getExiles().add(new Card.Event.Exile(()->
+        getEffects().add(new Effect(this,this, EffectTiming.Exile,)->
             getInfo().msg(getNameWithOwner() + "除外时")));
-        getTransmigrations().add(new Card.Event.Transmigration(()->
+        getEffects().add(new Effect(this,this, EffectTiming.Transmigration,)->
             getInfo().msg(getNameWithOwner() + "轮回时")));
-        getWhenLeaderSkills().add(new Event.WhenLeaderSkill(()->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenLeaderSkill,)->
             getInfo().msg(getNameWithOwner() + "激励")));
 
     }

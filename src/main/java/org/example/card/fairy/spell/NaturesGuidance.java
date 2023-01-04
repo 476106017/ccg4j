@@ -18,13 +18,13 @@ public class NaturesGuidance extends SpellCard {
     public String job = "妖精";
     private List<String> race = Lists.ofStr("自然");
     public String mark = """
-        返回1张己方随从或己方护符，抽一张牌
+        返回1张我方随从或我方护符，抽一张牌
         """;
 
     public String subMark = "";
 
     public NaturesGuidance() {
-        getPlays().add(new Event.Play(
+        setPlay(new Play(
             () -> ownerPlayer().getAreaBy(areaCard -> true).stream()
                 .map(areaCard -> (GameObj)areaCard).toList(),1,
             gameObjs -> {

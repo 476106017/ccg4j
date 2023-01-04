@@ -5,10 +5,8 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.game.Damage;
-import org.example.game.GameObj;
-import org.example.game.Leader;
-import org.example.game.Play;
+import org.example.constant.EffectTiming;
+import org.example.game.*;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -61,7 +59,7 @@ public class DarkSnare extends SpellCard {
                 }
             }
         ));
-        getBoosts().add(new Event.Boost(
+        getEffects().add(new Effect(this,this, EffectTiming.Boost,
             card-> card.getCost()>=5,
             card->{
                 List<AreaCard> follows = info.oppositePlayer().getArea()
@@ -74,7 +72,7 @@ public class DarkSnare extends SpellCard {
                 }
             }
         ));
-        getWhenKills().add(new Event.WhenKill(followCard -> count()));
+        getEffects().add(new Effect(this,this, EffectTiming.WhenKill, followCard -> count()));
     }
 
 }

@@ -22,7 +22,7 @@ public class SVPlayer extends Leader {
 
     private String skillName = "进化";
     private String skillMark =  """
-        使一个己方随从获得+2/+2、突进
+        使一个我方随从获得+2/+2、突进
         （先手第5回合可用，可用次数2；
         后手第4回合可用，可用次数3）
         """;

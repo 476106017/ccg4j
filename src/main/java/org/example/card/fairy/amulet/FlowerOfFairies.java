@@ -31,10 +31,10 @@ public class FlowerOfFairies extends AmuletCard {
         setPlay(new Play(()->{
             ownerPlayer().draw(1);
         }));
-        getDeathRattles().add(new Event.DeathRattle(()->
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->
             ownerPlayer().addHand(createCard(Fairy.class))
         ));
-        getWhenBackToHands().add(new Event.WhenBackToHand(()->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenBackToHand,)->
             ownerPlayer().addHand(createCard(Fairy.class))
         ));
     }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.constant.EffectTiming;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,32 @@ public abstract class GameObj {
     };
 
     public void initCounter(){}
+
+
+    // region 效果操作
+    private List<Effect> effects = new ArrayList<>();
+
+    public List<Effect> getEffects(EffectTiming timing){
+        return getEffects().stream().filter(effect -> effect.getTiming().equals(timing)).toList();
+    }
+    public void useEffects(EffectTiming timing){
+        useEffects(timing,null);
+    }
+    public void useEffects(EffectTiming timing,Object param){
+        tempEffects(timing,param);
+        info.startEffect();
+    }
+    public void tempEffects(EffectTiming timing){
+        getEffects(timing).forEach(effect -> {
+            info.tempEffect(new Effect.EffectInstance(effect));
+        });
+    }
+    public void tempEffects(EffectTiming timing,Object param){
+        getEffects(timing).forEach(effect -> {
+            info.tempEffect(new Effect.EffectInstance(effect,param));
+        });
+    }
+    // endregion 效果操作
 
     public GameObj() {
         id_iter++;

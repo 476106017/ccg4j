@@ -17,13 +17,13 @@ public class Shadowstep extends SpellCard {
     public String job = "潜行者";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        返回1张己方随从，使其费用-2
+        返回1张我方随从，使其费用-2
         """;
 
     public String subMark = "";
 
     public Shadowstep() {
-        getPlays().add(new Event.Play(
+        setPlay(new Play(
             () -> ownerPlayer().getAreaFollowsAsGameObj(),1,
             gameObjs -> {
                 AreaCard areaCard = (AreaCard)gameObjs.get(0);

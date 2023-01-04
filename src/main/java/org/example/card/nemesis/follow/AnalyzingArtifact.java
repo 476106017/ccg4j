@@ -26,7 +26,7 @@ public class AnalyzingArtifact  extends FollowCard {
 
     public AnalyzingArtifact() {
         setMaxHp(getHp());
-        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
             ownerPlayer().draw(1);
         }));
     }

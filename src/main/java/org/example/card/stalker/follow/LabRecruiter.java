@@ -21,7 +21,7 @@ public class LabRecruiter extends FollowCard {
     private String job = "潜行者";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        战吼：将1名己方随从的3张复制洗入牌堆
+        战吼：将1名我方随从的3张复制洗入牌堆
         """;
     private String subMark = "";
 

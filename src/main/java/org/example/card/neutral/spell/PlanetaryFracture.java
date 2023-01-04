@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class PlanetaryFracture extends SpellCard {
     }
 
     public PlanetaryFracture() {
-        getPlays().add(new Event.Play(()->{
+        setPlay(new Play(()->
             List<AreaCard> toDestroy = new ArrayList<>();
             toDestroy.addAll(ownerPlayer().getAreaFollowsBy(followCard -> followCard.getCost()>5));
             toDestroy.addAll(enemyPlayer().getAreaFollowsBy(followCard -> followCard.getCost()>5));

@@ -29,7 +29,7 @@ public class TestOfStrength extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
     public TestOfStrength() {
-        getWhenAtAreas().add(new Event.WhenAtArea(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.WhenAtArea,)->{
             ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
@@ -39,19 +39,19 @@ public class TestOfStrength extends AmuletCard {
                 effectFollows.add(followCard);
             });
         }));
-        getWhenSummons().add(new Event.WhenSummon(areaCard -> {
+        getEffects().add(new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
             }
         }));
-        getWhenEnemySummons().add(new Event.WhenEnemySummon(areaCard -> {
+        getEffects().add(new Effect(this,this, EffectTiming.WhenEnemySummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
             }
         }));
-        getWhenNoLongerAtAreas().add(new Event.WhenNoLongerAtArea(()->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenNoLongerAtArea,)->
             effectFollows.forEach(((followCard) -> followCard.removeKeyword("守护")))
         ));
     }

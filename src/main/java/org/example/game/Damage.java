@@ -42,64 +42,35 @@ public class Damage{
         return true;
     }
 
-    public void applyWithoutSettle(){
-        GameInfo info = to.getInfo();
-        // region 伤害随从
-        if(to instanceof FollowCard toFollow){
-            // region 伤害减免
-            if(!isFromAtk && toFollow.hasKeyword("效果伤害免疫")){
+    public void reduce(){
+        if(to instanceof FollowCard toFollow && toFollow.atArea()) {
+            if (!isFromAtk && toFollow.hasKeyword("效果伤害免疫")) {
                 setDamage(0);
-                info.msg(toFollow.getNameWithOwner() + "免疫了效果伤害！");
-            }else {
+                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "免疫了效果伤害！");
+            } else {
                 int reduce = 0;
                 reduce += toFollow.countKeyword("伤害减免");
-                if(isFromAtk())
+                if (isFromAtk())
                     reduce += toFollow.countKeyword("护甲");
                 else
                     reduce += toFollow.countKeyword("魔抗");
 
-                if(reduce>0){
-                    int finalReduce = Math.min(getDamage() , reduce);
-                    info.msg(toFollow.getNameWithOwner()+"减少了"+finalReduce+"点伤害");
+                if (reduce > 0) {
+                    int finalReduce = Math.min(getDamage(), reduce);
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "减少了" + finalReduce + "点伤害");
                     setDamage(getDamage() - finalReduce);
                 }
-                // endregion 伤害减免
-
-                // region 创建反击伤害
-                if(!isCounter && isFromAtk && from instanceof FollowCard){
-                    info.msg(from.getNameWithOwner()+"受到了来自"+ to.getName()+"的反击");
-                    Damage countDamage = new Damage(to, from);
-                    countDamage.setCounter(true);
-                    countDamage.applyWithoutSettle();
-                }
-                // endregion 创建反击伤害
-            }
-            toFollow.setHp(toFollow.getHp()- getDamage());
-            info.msg(toFollow.getNameWithOwner()+"受到了来自"+getFrom().getName()+"的"+getDamage()+"点伤害" +
-                "（剩余"+toFollow.getHp()+"点生命值）");
-        }
-        // endregion 伤害随从
-
-        // region 伤害主战者
-        if(to instanceof Leader leader){
-            leader.useEffectWithDamage(EffectTiming.LeaderBeforeDamaged,this);
-
-            leader.ownerPlayer().setHp(leader.ownerPlayer().getHp()- getDamage());
-            info.msg(leader.getNameWithOwner()+"受到了来自"+getFrom().getName()+"的"+getDamage()+"点伤害！" +
-                "（剩余"+leader.ownerPlayer().getHp()+"点生命值）");
-            if (leader.ownerPlayer().getHp() <= 0) {
-                info.gameset(leader.ownerPlayer().getEnemy());// 敌方获胜
             }
         }
-        // endregion 伤害主战者
     }
+
     public void settlement(){
         GameInfo info = to.getInfo();
         if(to instanceof Leader toLeader){
 
             PlayerInfo toPlayer = toLeader.ownerPlayer();
 
-            toLeader.useEffectWithDamage(EffectTiming.LeaderAfterDamaged,this);
+            toLeader.useEffectWithDamage(EffectTiming.AfterLeaderDamaged,this);
 
         }
 

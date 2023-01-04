@@ -21,7 +21,7 @@ public class DeathNote extends EquipmentCard {
     public String mark = """
         战吼：抉择：
         1. 什么都不做
-        2. 支付己方主战者一半生命，曝光对手场上全部随从的真实名字
+        2. 支付我方主战者一半生命，曝光对手场上全部随从的真实名字
         回合结束时：如果装备对象未攻击，则破坏敌方所有实名随从，并使战场上的夜神月返回手牌
         """;
 
@@ -38,7 +38,7 @@ public class DeathNote extends EquipmentCard {
                 }
             }
         ));
-        getEffectEnds().add(new Event.EffectEnd(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->{
             if(getTarget().getTurnAttack() < getTarget().getTurnAttackMax()){
                 List<AreaCard> areaFollows = enemyPlayer().getAreaFollowsBy(Card::isRealName);
                 int killNum = destroy(areaFollows);

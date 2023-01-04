@@ -34,10 +34,10 @@ public class MahjongTable extends AmuletCard {
 
 
     public MahjongTable() {
-        getWhenSummons().add(new Event.WhenSummon(areaCard -> checkSummon(enemyPlayer(),areaCard)));
-        getWhenEnemySummons().add(new Event.WhenEnemySummon(areaCard -> checkSummon(ownerPlayer(),areaCard)));
-        getWhenDraws().add(new Event.WhenDraw(() -> checkWin(ownerPlayer())));
-        getWhenEnemyDraws().add(new Event.WhenEnemyDraw(() -> checkWin(ownerPlayer())));
+        getEffects().add(new Effect(this,this, EffectTiming.WhenSummon,areaCard -> checkSummon(enemyPlayer(),areaCard)));
+        getEffects().add(new Effect(this,this, EffectTiming.WhenEnemySummon,areaCard -> checkSummon(ownerPlayer(),areaCard)));
+        getEffects().add(new Effect(this,this, EffectTiming.WhenDraw,) -> checkWin(ownerPlayer())));
+        getEffects().add(new Effect(this,this, EffectTiming.WhenEnemyDraw,) -> checkWin(ownerPlayer())));
     }
 
     private void checkSummon(PlayerInfo player, AreaCard areaCard){

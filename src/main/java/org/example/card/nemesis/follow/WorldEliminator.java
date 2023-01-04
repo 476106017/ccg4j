@@ -28,7 +28,7 @@ public class WorldEliminator extends FollowCard {
     public WorldEliminator() {
         setMaxHp(getHp());
         getKeywords().add("突进");
-        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
             ownerPlayer().addHpMax(2);
             ownerPlayer().heal(2);
         }));

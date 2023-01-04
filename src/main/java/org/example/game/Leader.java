@@ -2,9 +2,7 @@ package org.example.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.constant.EffectTiming;
-import org.example.system.function.FunctionN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,32 +63,26 @@ public abstract class Leader extends GameObj {
     public void damaged(Damage damage){
         GameInfo info = ownerPlayer().getInfo();
 
-        useEffectWithDamage(EffectTiming.LeaderAfterDamaged,damage);
+        damage.apply();
 
-        ownerPlayer().setHp(ownerPlayer().getHp()- damage.getDamage());
         info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害！" +
             "（剩余"+ownerPlayer().getHp()+"点生命值）");
-        if (ownerPlayer().getHp() <= 0) {
-            info.gameset(ownerPlayer().getEnemy());// 敌方获胜
-        }
     }
 
-    public void addEffect(Card source, EffectTiming timing, FunctionN effect){
-        addEffect(source,timing,damage -> effect.apply());
-    }
 
-    public void addEffect(Card source, EffectTiming timing, Consumer<Damage> effect){
-        addEffect(source,timing,-1,true,effect);
-    }
-
-    public void addEffect(Card source, EffectTiming timing,int canUseTurn,boolean only, Consumer<Damage> effect){
+    public void addEffect(Effect newEffect,boolean only){
+        newEffect.setOwnerObj(this);
         if(only && effects.stream()
-            .anyMatch(e -> e.getSource().getClass().equals(source.getClass()))){
+            .anyMatch(e ->
+                // 相同创建者、和相同效果时机，不能叠加
+                e.getParent().getClass().equals(newEffect.getParent().getClass())
+                    && e.getTiming().equals(newEffect.getTiming())
+            )){
             info.msg("该主战者效果不能叠加！");
             return;
         }
-        info.msg(source.getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了主战者效果！");
-        effects.add(new Effect(source,this,timing,canUseTurn,effect));
+        info.msg(newEffect.getParent().getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了主战者效果！");
+        effects.add(newEffect);
     }
 
     public List<Effect> getEffectsWhen(EffectTiming timing){
@@ -108,18 +100,11 @@ public abstract class Leader extends GameObj {
                 if(canUse == 1){
                     // 用完了销毁
                     usedUpEffects.add(effect);
-                    ownerPlayer().getInfo().msg(effect.getSource().getNameWithOwner() + "提供的主战者效果已消失");
+                    ownerPlayer().getInfo().msg(effect.getParent().getNameWithOwner() + "提供的主战者效果已消失");
                 }else if (canUse > 1){
                     effect.setCanUseTurn(canUse-1);
                 }
             });
         getEffects().removeAll(usedUpEffects);
-    }
-
-    public void useEffect(EffectTiming timing){
-        useEffectWithDamage(timing,null);
-    }
-    public void useEffectWithDamage(EffectTiming timing,Damage damage){
-        getEffectsWhen(timing).forEach(effect -> effect.getEffect().accept(damage));
     }
 }

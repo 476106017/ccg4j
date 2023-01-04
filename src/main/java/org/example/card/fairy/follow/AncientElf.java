@@ -19,7 +19,7 @@ public class AncientElf extends FollowCard {
     public String job = "妖精";
     private List<String> race = Lists.ofStr("妖精");
     public String mark = """
-        战吼：返回全部己方随从，并获得+X/+X（X是因此效果返回的张数）
+        战吼：返回全部我方随从，并获得+X/+X（X是因此效果返回的张数）
         """;
     public String subMark = "";
 

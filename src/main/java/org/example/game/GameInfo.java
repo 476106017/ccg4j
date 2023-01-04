@@ -8,7 +8,6 @@ import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,12 +22,14 @@ public class GameInfo {
     SocketIOServer server;
     String room;
 
+    // 最大连锁次数
+    int chainDeep = 10;
     int turn;
     int turnPlayer;
     boolean gameset;
     ScheduledFuture<?> rope;
 
-    List<Effect.EffectInstance> effectQueue = new LinkedList<>();
+    List<Effect.EffectInstance> effectInstances = new LinkedList<>();
 
     PlayerInfo[] playerInfos;
 
@@ -57,6 +58,13 @@ public class GameInfo {
     }
     public void msgToOppositePlayer(String msg){
         server.getClient(oppositePlayer().getUuid()).sendEvent("receiveMsg", msg);
+    }
+
+    public void measureDeath(){
+        if(thisPlayer().getHp()<=0)
+            gameset(oppositePlayer());
+        if(oppositePlayer().getHp()<=0)
+            gameset(thisPlayer());
     }
 
     public void gameset(PlayerInfo winner){
@@ -97,40 +105,49 @@ public class GameInfo {
         }
     }
 
-    public void addEffect(Effect.EffectInstance instance){
-        effectQueue.add(instance);
+    public void tempEffectBatch(List<GameObj> objs, EffectTiming timing){
+        objs.forEach(obj -> obj.tempEffects(timing));
     }
-    public void consumeEffectQueue(int deep){
+    public void tempEffect(Effect.EffectInstance instance){
+        effectInstances.add(instance);
+    }
+
+    // 结算效果
+    public void startEffect(){
+        consumeEffectChain(chainDeep);
+    }
+    public void consumeEffectChain(int deep){
         if(deep==0){
-            msg("停止循环！不再触发任何效果");
+            msg("停止连锁！不再触发任何效果");
         }
-        msg("结算效果");
+        msg("——————开始效果连锁——————");
 
-        List<Effect.EffectInstance> copy = new LinkedList<>(effectQueue);
+        consumeEffectOnce();
+        // 计算主战者死亡状况
+        measureDeath();
+
+        if(!effectInstances.isEmpty())
+            consumeEffectChain(deep - 1);
+    }
+    public void consumeEffectOnce(){
+        List<Effect.EffectInstance> copy = new LinkedList<>(effectInstances);
         copy.forEach(Effect.EffectInstance::consume);
-        effectQueue.removeAll(copy);
-
-        if(!effectQueue.isEmpty())
-            consumeEffectQueue(deep - 1);
+        effectInstances.removeAll(copy);
     }
 
-    public void transform(Card fromCard, Card toCard){
+
+
+        public void transform(Card fromCard, Card toCard){
         msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getName());
         if(fromCard.atArea()){
             List<AreaCard> area = fromCard.ownerPlayer().getArea();
             int index = area.indexOf(fromCard);
             area.remove(index);
-            if (fromCard instanceof AreaCard fromAreaCard && !fromAreaCard.getWhenAtAreas().isEmpty()) {
-                msg(fromAreaCard.getNameWithOwner() + "的在场时效果消失！");
-                fromAreaCard.getWhenAtAreas().forEach(exile -> exile.effect().apply());
-            }
+            fromCard.useEffects(EffectTiming.WhenNoLongerAtArea);
             // 要变成随从
             if (toCard instanceof AreaCard areaCard) {
                 area.add(index, areaCard);
-                if(!areaCard.getWhenAtAreas().isEmpty()){
-                    msg(areaCard.getNameWithOwner() + "发动在场时效果！");
-                    areaCard.getWhenAtAreas().forEach(exile -> exile.effect().apply());
-                }
+                areaCard.useEffects(EffectTiming.WhenAtArea);
             } else {
                 msg(toCard.getNameWithOwner()+ "无法留在战场而被除外！");
                 exile(toCard);
@@ -154,12 +171,9 @@ public class GameInfo {
 
 
             // 场上卡除外时，有机会发动离场时效果
-            if (card.atArea() && card instanceof AreaCard areaCard){
+            if (card.atArea() && card instanceof AreaCard){
                 card.removeWhenAtArea();
-                if(!areaCard.getLeavings().isEmpty()) {
-                    msg(areaCard.getNameWithOwner() + "发动离场时效果！");
-                    areaCard.getLeavings().forEach(leaving -> leaving.effect().apply());
-                }
+                card.tempEffects(EffectTiming.Leaving);
                 // 场上随从除外时，装备也除外
                 if(card instanceof FollowCard followCard && followCard.equipped())
                     exile(followCard.getEquipment());
@@ -167,13 +181,9 @@ public class GameInfo {
                 card.removeWhenNotAtArea();
 
 
-            if(!card.getExiles().isEmpty()){
-                msg(card.getNameWithOwner() + "发动除外时效果！");
-                card.getExiles().forEach(exile -> exile.effect().apply());
-            }
+            card.tempEffects(EffectTiming.Exile);
             if(card.hasKeyword("恶魔转生")){
                 List<Card> totalCard = new ArrayList<>();
-
                 totalCard.addAll(thisPlayer().getHand().stream()
                     .filter(c -> c instanceof FollowCard f
                         && !f.hasKeyword("恶魔转生")).toList());
@@ -209,6 +219,14 @@ public class GameInfo {
                 transform(luckyCard,newCard);
             }
         });
+        startEffect();
+    }
+
+    public List<AreaCard> getAreaCardsCopy(){
+        List<AreaCard> _result = new ArrayList<>();
+        _result.addAll(thisPlayer().getArea());
+        _result.addAll(oppositePlayer().getArea());
+        return _result;
     }
 
     public void zeroTurn(UUID u0, UUID u1){
@@ -290,7 +308,7 @@ public class GameInfo {
         // 主战者技能重置、发动主战者效果
         Leader leader = thisPlayer().getLeader();
         leader.setCanUseSkill(true);
-        leader.useEffect(EffectTiming.BeginTurn);
+        leader.useEffects(EffectTiming.BeginTurn);
         leader.expireEffect();
 
         // 场上随从驻场回合+1、攻击次数清零
@@ -299,22 +317,13 @@ public class GameInfo {
         thisPlayer().getAreaCopy().forEach(areaCard -> {
             if(!areaCard.atArea())return;
 
-            if(!areaCard.getEffectBegins().isEmpty()){
-                msg(areaCard.getNameWithOwner()+"发动回合开始效果");
-                areaCard.getEffectBegins().forEach(effectEnd -> {
-                    effectEnd.effect().apply();
-                });
-            }
+            areaCard.useEffects(EffectTiming.BeginTurn);
             if(!areaCard.atArea())return;
 
 
             if(areaCard instanceof FollowCard followCard && followCard.equipped()){
                 EquipmentCard equipment = followCard.getEquipment();
-                List<AreaCard.Event.EffectBegin> effectBegins = equipment.getEffectBegins();
-                if(!effectBegins.isEmpty()){
-                    msg(areaCard.getNameWithOwner() + "发动其装备"+equipment.getName()+"的回合开始效果");
-                    effectBegins.forEach(effectEnd -> effectEnd.effect().apply());
-                }
+                equipment.useEffects(EffectTiming.BeginTurn);
             }
             if(!areaCard.atArea())return;
 

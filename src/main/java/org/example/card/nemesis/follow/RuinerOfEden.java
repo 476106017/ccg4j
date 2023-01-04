@@ -33,17 +33,17 @@ public class RuinerOfEden extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("守护");
         getKeywords().add("剧毒");
-        getEnterings().add(new AreaCard.Event.Entering(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.Entering,)->{
             ownerPlayer().summon(createCard(WorldEliminator.class,"剧毒"));
             ownerPlayer().summon(createCard(WorldEliminator.class,"剧毒"));
             ownerPlayer().summon(createCard(WorldEliminator.class,"剧毒"));
         }));
-        getLeavings().add(new AreaCard.Event.Leaving(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.Leaving,)->{
             List<Card> addCards = new ArrayList<>();
             addCards.add(createCard(CalamitysEnd.class));
             ownerPlayer().addDeck(addCards);
         }));
-        getInvocationBegins().add(new Card.Event.InvocationBegin(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> ownerPlayer().getGraveyard().stream()
                 .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                 .count() >= 10,

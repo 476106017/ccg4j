@@ -30,7 +30,7 @@ public class YagamiLight  extends FollowCard {
 
     public YagamiLight() {
         setMaxHp(getHp());
-        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
             enemyPlayer().getLeader().damaged(this,getCount());
         }));
     }

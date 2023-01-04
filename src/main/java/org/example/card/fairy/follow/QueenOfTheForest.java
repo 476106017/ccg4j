@@ -35,7 +35,7 @@ public class QueenOfTheForest extends FollowCard {
             && followCard.getCost().equals(
                 ownerPlayer().getDeck().stream().filter(deckCard -> deckCard instanceof FollowCard)
                 .map(Card::getCost).min(Comparator.naturalOrder()).orElse(-1)))));
-        getDeathRattles().add(new AreaCard.Event.DeathRattle(()->
+        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->
             ownerPlayer().draw(card -> card instanceof FollowCard followCard
                 && followCard.getCost().equals(
                 ownerPlayer().getDeck().stream().filter(deckCard -> deckCard instanceof FollowCard)

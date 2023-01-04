@@ -18,13 +18,13 @@ public class PixieMischief extends SpellCard {
     public String job = "妖精";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        返回1张己方随从或己方护符，随机返回敌方场上1名随从
+        返回1张我方随从或我方护符，随机返回敌方场上1名随从
         """;
 
     public String subMark = "";
 
     public PixieMischief() {
-        getPlays().add(new Event.Play(
+        setPlay(new Play(
             () -> ownerPlayer().getAreaBy(areaCard -> true).stream()
                 .map(areaCard -> (GameObj)areaCard).toList(),1,
             gameObjs -> {

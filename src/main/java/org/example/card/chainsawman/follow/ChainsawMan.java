@@ -36,7 +36,7 @@ public class ChainsawMan extends FollowCard {
             ownerPlayer().addHand(createCard(ChainsawMode.class))
         ));
 
-        getWhenKills().add(new Card.Event.WhenKill(
+        getEffects().add(new Effect(this,this, EffectTiming.WhenKill,
             followCard -> {
                 if(followCard.getHp() < 0){
                     if ("链锯模式".equals(getEquipment().getName())) {

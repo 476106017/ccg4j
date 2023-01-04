@@ -31,7 +31,7 @@ public class EternalGarden extends AmuletCard {
 
 
     public EternalGarden() {
-        getEffectEnds().add(new Event.EffectEnd(()->{
+        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->{
             Integer x = ownerPlayer().getCount(PLAY_NUM);
             ownerPlayer().heal(x);
 

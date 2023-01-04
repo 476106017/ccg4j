@@ -7,6 +7,7 @@ import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.card.nemesis.follow.MagisterialDreadnought;
 import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -37,9 +38,10 @@ public class CalamitysGenesis extends SpellCard {
                 ownerPlayer().addDeck(addCards);
 
                 // 创建主战者回合结束效果
-                ownerPlayer().getLeader().addEffect(this,EffectTiming.EndTurn, 1,false,
-                    damage -> ownerPlayer().draw(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
-                );
+                ownerPlayer().getLeader().addEffect(
+                    new Effect(this,null,EffectTiming.EndTurn, 1,
+                        obj -> ownerPlayer().draw(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
+                    ), true);
         }));
     }
 }

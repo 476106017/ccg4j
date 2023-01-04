@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.SpellCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -49,7 +51,7 @@ public class EternalForest extends SpellCard {
             }
         ));
 
-        getInvocationBegins().add(new Card.Event.InvocationBegin(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,
             ()->{}
         ));

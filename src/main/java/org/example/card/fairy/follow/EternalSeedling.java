@@ -41,13 +41,13 @@ public class EternalSeedling extends FollowCard {
 
     public EternalSeedling() {
         setMaxHp(getHp());
-        getInvocationBegins().add(new Card.Event.InvocationBegin(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,
             ()->{}
         ));
 
 
-        getLeavings().add(new AreaCard.Event.Leaving(
+        getEffects().add(new Effect(this,this, EffectTiming.Leaving,
             ()->{
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));
@@ -64,7 +64,7 @@ public class EternalSeedling extends FollowCard {
             }
         ));
 
-        getTransmigrations().add(new Card.Event.Transmigration(
+        getEffects().add(new Effect(this,this, EffectTiming.Transmigration,
             ()->{
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalBloom.class));

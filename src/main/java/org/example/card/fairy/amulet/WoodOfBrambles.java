@@ -26,7 +26,7 @@ public class WoodOfBrambles extends AmuletCard {
 
     public String mark = """
         战吼：增加2张妖精到手牌
-        若此卡在场上，己方全部随从拥有【交战时：对交战对象造成1点伤害】效果
+        若此卡在场上，我方全部随从拥有【交战时：对交战对象造成1点伤害】效果
         """;
     public String subMark = "";
 
@@ -37,7 +37,7 @@ public class WoodOfBrambles extends AmuletCard {
             ownerPlayer().addHand(createCard(Fairy.class));
             ownerPlayer().addHand(createCard(Fairy.class));
         }));
-        getWhenAtAreas().add(new Event.WhenAtArea(()->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenAtArea,)->
             ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
                 FollowCard.Event.WhenBattle whenBattle = new FollowCard.Event.WhenBattle(damage -> {
                     FollowCard another = (FollowCard) damage.another(followCard);
@@ -47,7 +47,7 @@ public class WoodOfBrambles extends AmuletCard {
                 effectFollows.put(followCard,whenBattle);
             })
         ));
-        getWhenSummons().add(new Event.WhenSummon(areaCard -> {
+        getEffects().add(new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 FollowCard.Event.WhenBattle whenBattle = new FollowCard.Event.WhenBattle(damage -> {
                     FollowCard another = (FollowCard) damage.another(followCard);
@@ -57,7 +57,7 @@ public class WoodOfBrambles extends AmuletCard {
                 effectFollows.put(followCard,whenBattle);
             }
         }));
-        getWhenNoLongerAtAreas().add(new Event.WhenNoLongerAtArea(()->
+        getEffects().add(new Effect(this,this, EffectTiming.WhenNoLongerAtArea,)->
             effectFollows.forEach(((followCard, whenBattle) -> followCard.getWhenBattles().remove(whenBattle)))
         ));
     }

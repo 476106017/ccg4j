@@ -3,8 +3,13 @@ package org.example.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.CardType;
+import org.example.constant.EffectTiming;
 import org.example.game.Damage;
+import org.example.game.Effect;
 import org.example.game.GameObj;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -48,10 +53,7 @@ public abstract class FollowCard extends AreaCard{
         addKeywords(equipmentCard.getKeywords());
         addStatus(equipmentCard.getAddAtk(),equipmentCard.getAddHp());
         equipmentCard.setTarget(this);
-        if(!equipmentCard.getEnterings().isEmpty()){
-            info.msg(equipmentCard.getNameWithOwner() + "发动入场时效果！");
-            equipmentCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
-        }
+        equipmentCard.tempEffects(EffectTiming.Entering);
     }
     public boolean equipped(){
         return getEquipment()!=null;
@@ -95,26 +97,9 @@ public abstract class FollowCard extends AreaCard{
         if(!atArea())return;
         info.msg(this.getNameWithOwner()+"被沉默！");
         getKeywords().clear();
-
-        getPlays().clear();
-        getInvocationBegins().clear();
-        getInvocationEnds().clear();
-        getWhenKills().clear();
-        getBoosts().clear();
-        getCharges().clear();
-        getTransmigrations().clear();
-        getExiles().clear();
-
-        getWhenBattles().clear();
-        getWhenAttacks().clear();
-        getAfterDamageds().clear();
-        getWhenLeaderSkills().clear();
-
-        getEffectBegins().clear();
-        getEffectEnds().clear();
-        getEnterings().clear();
-        getLeavings().clear();
-        getDeathRattles().clear();
+        List<Effect> noLongerAtArea = new ArrayList<>(getEffects(EffectTiming.WhenNoLongerAtArea));
+        getEffects().clear();
+        noLongerAtArea.forEach(effect -> effect.getEffect().test(null));
     }
     public void addStatus(int atk, int hp){
         if(atk==0 && hp==0)return;
@@ -151,25 +136,18 @@ public abstract class FollowCard extends AreaCard{
 
         Damage damage = new Damage(this,target);
 
-        if(!getWhenAttacks().isEmpty()){
-            info.msg(getNameWithOwner() + "发动攻击时效果！");
-            getWhenAttacks().forEach(whenAttack -> whenAttack.effect().accept(damage));
-        }
+        useEffects(EffectTiming.WhenAttack);
 
-        if(damage.getTo() instanceof FollowCard followCard){
-            if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard
-                && !getWhenBattles().isEmpty()){
-                info.msg(getNameWithOwner() + "发动交战时效果！");
-                getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-            }
-            if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow
-                && !toFollow.getWhenBattles().isEmpty()){
-                info.msg(toFollow.getNameWithOwner() + "发动交战时效果！");
-                toFollow.getWhenBattles().forEach(whenBattle -> whenBattle.effect().accept(damage));
-            }
-        }
+        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard)
+            useEffects(EffectTiming.WhenBattle);
+
+        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow)
+            toFollow.useEffects(EffectTiming.WhenBattle);
 
         damage.applyWithoutSettle();
+
+
+        if(equipped())expireEquipSettlement();
 
         info.msgTo(ownerPlayer().getUuid(),
             info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -33,8 +34,7 @@ public class TravelerGoblin extends FollowCard {
 
     public TravelerGoblin() {
         setMaxHp(getHp());
-        getPlays().add(
-            new Card.Event.Play(()->{
+        setPlay(new Play(()->{
                 int turn = info.getTurn();
                 if(turn ==1){
                     ownerPlayer().draw(1);

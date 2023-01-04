@@ -3,6 +3,7 @@ package org.example.card.stalker.spell.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class Preparation extends SpellCard {
     public Map<SpellCard, Event.Play> clearEffects = new HashMap<>();
 
     public Preparation() {
-        getPlays().add(new Event.Play(
+        setPlay(new Play(
             () -> {
                 ownerPlayer().getHand().forEach(card -> {
                     if(card instanceof SpellCard spellCard){

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -34,16 +35,17 @@ public class ErosiveAnnihilation extends SpellCard {
     }
 
     public ErosiveAnnihilation() {
-        getPlays().add(new Event.Play(() ->
+        setPlay(new Play(()->
             // 创建主战者回合结束效果
             ownerPlayer().getLeader()
-                .addEffect(this, EffectTiming.EndTurn, getCount(),false,damage ->{
+                .addEffect(this, EffectTiming.EndTurn, getCount(),false,obj ->{
                     List<FollowCard> enemyFollows =
                         enemyPlayer().getAreaFollowsAsFollow();
                     enemyFollows.forEach(followCard -> followCard.addStatus(-1,-1));
+                    return true;
                 })));
 
-        getBoosts().add(new Event.Boost(
+        getEffects().add(new Effect(this,this, EffectTiming.Boost,
             card-> card.getCost()>=2,
             ()->count()
         ));

@@ -23,7 +23,7 @@ public class EternalBloom extends FollowCard {
     private List<String> race = Lists.ofStr("植物");
     public String mark = """
         瞬念召唤：回合开始时
-        离场时：摧毁己方场上所有植物，每摧毁1张，便随机破坏1张对手随从卡，并且抽1张牌
+        离场时：摧毁我方场上所有植物，每摧毁1张，便随机破坏1张对手随从卡，并且抽1张牌
         轮回时：将1张永恒森林洗入牌堆
         突进
         """;
@@ -36,12 +36,12 @@ public class EternalBloom extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("突进");
 
-        getInvocationBegins().add(new Card.Event.InvocationBegin(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,
             ()->{}
         ));
 
-        getLeavings().add(new AreaCard.Event.Leaving(
+        getEffects().add(new Effect(this,this, EffectTiming.Leaving,
             ()->{
                 List<AreaCard> plants = new ArrayList<>();
                 ownerPlayer().getArea().stream()
@@ -58,7 +58,7 @@ public class EternalBloom extends FollowCard {
             }
         ));
 
-        getTransmigrations().add(new Card.Event.Transmigration(
+        getEffects().add(new Effect(this,this, EffectTiming.Transmigration,
             ()->{
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalForest.class));

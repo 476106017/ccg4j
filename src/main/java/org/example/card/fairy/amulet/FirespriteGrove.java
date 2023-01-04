@@ -27,11 +27,11 @@ public class FirespriteGrove extends AmuletCard {
     public String subMark = "";
 
     public FirespriteGrove() {
-        getEffectEnds().add(new Event.EffectEnd(()->
+        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->
             ownerPlayer().addHand(createCard(Fairy.class))
         ));
 
-        getLeavings().add(new Event.Leaving(()->
+        getEffects().add(new Effect(this,this, EffectTiming.Leaving,)->
             Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()).damaged(this,1)
         ));
     }

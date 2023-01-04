@@ -46,12 +46,12 @@ public class Zelgenea extends FollowCard {
                     .ifPresent(followCard -> followCard.destroyedBy(this));
             }
         }));
-        getInvocationBegins().add(new Card.Event.InvocationBegin(
+        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> info.getTurn() == 10,
             ()->{
                 addStatus(5,5);
                 addKeyword("突进");
-                getWhenAttacks().add(new Event.WhenAttack(damage -> {
+                getEffects().add(new Effect(this,this, EffectTiming.WhenAttack,damage -> {
                     ownerPlayer().getLeader().addEffect(this, EffectTiming.EndTurn,()->{
                         // 主战者扣血
                         ownerPlayer().getLeader().damaged(this,4);
@@ -62,7 +62,7 @@ public class Zelgenea extends FollowCard {
                                 Damage dmg = new Damage(this, followCard, 4);
                                 followCard.damagedWithoutSettle(dmg);
                             });
-                        // 己方随从扣血
+                        // 我方随从扣血
                         ownerPlayer().getAreaFollowsAsFollow()
                             .forEach(followCard -> {
                                 Damage dmg = new Damage(this, followCard, 4);
@@ -74,7 +74,7 @@ public class Zelgenea extends FollowCard {
                                 Damage dmg = new Damage(this, followCard, 4);
                                 followCard.damageSettlement(dmg);
                             });
-                        // 己方随从结算
+                        // 我方随从结算
                         ownerPlayer().getAreaFollowsAsFollow()
                             .forEach(followCard -> {
                                 Damage dmg = new Damage(this, followCard, 4);

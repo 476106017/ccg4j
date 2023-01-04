@@ -2,14 +2,12 @@ package org.example.card;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 import org.example.game.Play;
-import org.example.system.function.FunctionN;
-import org.example.system.function.PredicateN;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.*;
 import static org.example.system.Database.getPrototype;
@@ -67,18 +65,7 @@ public abstract class Card extends GameObj {
         return ownerPlayer().getName()+place+"的"+getName();
     };
 
-    // region 效果列表
-
     private Play play = null;
-    private List<Event.InvocationBegin> invocationBegins = new ArrayList<>();
-    private List<Event.InvocationEnd> invocationEnds = new ArrayList<>();
-    private List<Event.Transmigration> transmigrations = new ArrayList<>();
-    private List<Event.Exile> exiles = new ArrayList<>();
-    private List<Event.Boost> boosts = new ArrayList<>();
-    private List<Event.Charge> charges = new ArrayList<>();
-    private List<Event.WhenKill> whenKills = new ArrayList<>();
-    private List<Event.WhenDrawn> whenDrawns = new ArrayList<>();
-    // endregion 效果列表
 
 
     public abstract String getType();
@@ -222,10 +209,13 @@ public abstract class Card extends GameObj {
         // endregion 发动卡牌效果
 
         // 触发手牌上全部增幅效果
-        ownerPlayer().getHandCopy().stream().map(Card::getBoosts)
+        String boostCards = ownerPlayer().getHandCopy().stream().map(card -> card.getEffects(EffectTiming.Boost))
             .flatMap(Collection::stream)
-            .filter(boost -> boost.canBeTriggered.test(this))
-            .forEach(boost->boost.effect.accept(this));
+            .filter(boost -> boost.getEffect().test(this))
+            .map(effect -> effect.getOwnerObj().getName()).collect(Collectors.joining("、"));
+        if(!boostCards.isEmpty()){
+            info.msgToThisPlayer(boostCards + "发动增幅效果");
+        }
 
         ownerPlayer().count(PLAY_NUM);
 
@@ -235,26 +225,4 @@ public abstract class Card extends GameObj {
             info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
     }
 
-    public static class Event {
-        /** 回合开始瞬召 */
-        public record InvocationBegin(PredicateN canBeTriggered, FunctionN effect){}
-        /** 回合结束瞬召 */
-        public record InvocationEnd(PredicateN canBeTriggered, FunctionN effect){}
-        /** 轮回(由墓地进入牌堆) */
-        public record Transmigration(FunctionN effect){}
-        /** 除外(从游戏中除外) */
-        public record Exile(FunctionN effect){}
-        /** 增幅(其他卡牌被使用) */
-        public record Boost(Predicate<Card> canBeTriggered, Consumer<Card> effect){
-            public Boost(Predicate<Card> canBeTriggered,FunctionN effect){
-                this(canBeTriggered,card -> effect.apply());
-            }
-        }
-        /** 注能(场上卡牌被破坏) */
-        public record Charge(Predicate<Card> canBeTriggered, Consumer<Card> effect){}
-        /** 击杀时 */
-        public record WhenKill(Consumer<FollowCard> effect){}
-        /** 被抽到时 */
-        public record WhenDrawn(FunctionN effect){}
-    }
 }
