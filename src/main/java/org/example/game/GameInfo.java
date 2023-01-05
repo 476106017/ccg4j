@@ -23,6 +23,7 @@ public class GameInfo {
 
     // 连锁次数
     int chainDeep = 10;
+    boolean inSettle = false;
     int turn;
     int turnPlayer;
     boolean gameset;
@@ -61,11 +62,19 @@ public class GameInfo {
         server.getClient(oppositePlayer().getUuid()).sendEvent("receiveMsg", msg);
     }
 
-    public void measureDeath(){
+    public void measureLeader(){
         if(thisPlayer().getHp()<=0)
             gameset(oppositePlayer());
         if(oppositePlayer().getHp()<=0)
             gameset(thisPlayer());
+    }
+    public void measureFollows(){
+        thisPlayer().getAreaFollowsAsFollow().stream()
+            .filter(followCard -> followCard.getDestroyedBy()!=null)
+            .forEach(followCard -> followCard.destroyedBy(followCard.getDestroyedBy()));
+        oppositePlayer().getAreaFollowsAsFollow().stream()
+            .filter(followCard -> followCard.getDestroyedBy()!=null)
+            .forEach(followCard -> followCard.destroyedBy(followCard.getDestroyedBy()));
     }
 
     public void gameset(PlayerInfo winner){
@@ -145,14 +154,18 @@ public class GameInfo {
 
     // 结算效果
     public void startEffect(){
+        if(inSettle)return;
+        inSettle = true;
         msg("——————开始结算——————");
         consumeEffectChain(chainDeep);
         // 计算主战者死亡状况
-        measureDeath();
+        measureLeader();
+        inSettle = false;
     }
     public void consumeEffectChain(int deep){
         if(deep==0){
             msg("停止连锁！不再触发任何效果");
+            effectInstances.clear();
             return;
         }
         if(effectInstances.isEmpty()) return;
@@ -161,6 +174,7 @@ public class GameInfo {
 
         msg("——————开始触发效果——————");
         consumeEffectOnce();
+        measureFollows();
         msg("——————停止触发效果——————");
 
         if(!effectInstances.isEmpty()){
@@ -170,6 +184,15 @@ public class GameInfo {
     }
     public void consumeEffectOnce(){
         List<Effect.EffectInstance> copy = new LinkedList<>(effectInstances);
+        copy.sort((o1, o2) -> {
+            for (EffectTiming value : EffectTiming.values()) {
+                if(value.equals(o1.getEffect().getTiming()))
+                    return -1;
+                else if(value.equals(o2.getEffect().getTiming()))
+                    return 1;
+            }
+            return 0;
+        });
         copy.forEach(Effect.EffectInstance::consume);
         effectInstances.removeAll(copy);
     }

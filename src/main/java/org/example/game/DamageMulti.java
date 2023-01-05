@@ -91,11 +91,7 @@ public class DamageMulti {
                 }
             }
         });
-        // endregion 受伤结算
-        info.startEffect();
-        info.thisPlayer().getArea().stream().filter(areaCard -> areaCard.getDestroyedBy()!=null)
-            .forEach(areaCard -> areaCard.destroyedBy(areaCard.getDestroyedBy()));
-        // 死亡结算
+        // endregion 结算
         info.startEffect();
 
     }

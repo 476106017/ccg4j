@@ -3,12 +3,14 @@ package org.example.game;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
+import org.example.card.Card;
 import org.example.card.EquipmentCard;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
 import org.example.system.function.FunctionN;
 import org.example.system.function.PredicateN;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -102,6 +104,31 @@ public class Effect{
                 GameObj effectOwnerCard = effect.getOwnerObj();
                 PlayerInfo ownerPlayer = effectOwnerCard.ownerPlayer();
                 GameInfo info = effectOwnerCard.getInfo();
+
+                // region 判断结算时是否在场
+                if(List.of(EffectTiming.WhenKill,EffectTiming.WhenAtArea,
+                        EffectTiming.Entering,EffectTiming.AfterDamaged,
+                        EffectTiming.WhenDraw,EffectTiming.WhenEnemyDraw,
+                        EffectTiming.WhenSummon,EffectTiming.WhenEnemySummon,
+                        EffectTiming.AfterLeaderDamaged,EffectTiming.LeaderHealed)
+                        .contains(effect.getTiming())
+                    && effect.getOwnerObj() instanceof AreaCard areaCard
+                    && !areaCard.atArea()) return;
+                // endregion 判断结算时是否在场
+                // region 判断结算时是否离场
+                if(List.of(EffectTiming.WhenNoLongerAtArea,EffectTiming.Leaving,
+                        EffectTiming.Exile,EffectTiming.DeathRattle)
+                    .contains(effect.getTiming())
+                    && effect.getOwnerObj() instanceof Card card
+                    && card.atArea()) return;
+                // endregion 判断结算时是否离场
+                // region 判断结算时是否在手牌
+                if(List.of(EffectTiming.Charge,EffectTiming.WhenBackToHand)
+                    .contains(effect.getTiming())
+                    && effect.getOwnerObj() instanceof Card card
+                    && !card.atHand()) return;
+                // endregion 判断结算时是否在场
+
                 if(effect.getTiming().isSecret())
                     info.msgTo(ownerPlayer.getUuid(),effectOwnerCard.getIdWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
                 else
@@ -120,11 +147,6 @@ public class Effect{
                     }
                 }
                 // endregion 瞬召卡片要在发动效果前召唤/揭示
-                // region 场上击杀时要判断结算时是否在场
-                if(effect.getTiming().equals(EffectTiming.WhenKill)
-                    && effect.getOwnerObj() instanceof AreaCard areaCard
-                    && !areaCard.atArea()) return;
-                // endregion 击杀时要判断结算时是否在场
                 effect.getEffect().accept(param);
             }
         }
