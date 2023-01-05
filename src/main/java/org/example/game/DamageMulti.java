@@ -5,12 +5,9 @@ import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
-import org.springframework.cglib.transform.impl.FieldProvider;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 同步伤害
@@ -23,32 +20,37 @@ public class DamageMulti {
 
     public DamageMulti(GameInfo info, List<Damage> damages) {
         this.info = info;
-        this.damages = damages;
+        this.damages = new ArrayList<>(damages);
     }
 
     public void apply(){
-        // region 受到伤害
         // 主战者受伤前
         damages.forEach(damage -> {
             if(damage.getTo() instanceof Leader leader){
-                leader.getInfo().getAreaCardsCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.BeforeLeaderDamaged,damage));
+                leader.getInfo().getAreaCardsCopy().forEach(areaCard ->
+                    areaCard.useEffects(EffectTiming.BeforeLeaderDamaged,damage));
                 leader.useEffects(EffectTiming.BeforeLeaderDamaged,damage);
             }
         });
         damages.removeIf(damage -> damage.getTo() instanceof FollowCard toFollow && !toFollow.atArea());
-        // 受伤扣血
+        // region 扣血
         damages.forEach(damage -> {
-            if(damage.getTo() instanceof FollowCard toFollow){
+            GameObj to = damage.getTo();
+            if(to instanceof FollowCard toFollow){
                 damage.reduce();
                 toFollow.setHp(toFollow.getHp() - damage.getDamage());
-            }
-            else if (damage.getTo() instanceof Leader leader){
+                info.msg(to.getNameWithOwner()+"受到了来自"+damage.getFrom().getNameWithOwner()+"的"+damage.getDamage()+"点伤害！" +
+                    "（剩余"+ toFollow.getHp()+"点生命值）");
+            }else if (to instanceof Leader leader){
                 leader.ownerPlayer().setHp(leader.ownerPlayer().getHp()- damage.getDamage());
+                info.msg(to.getNameWithOwner()+"受到了来自"+damage.getFrom().getNameWithOwner()+"的"+damage.getDamage()+"点伤害！" +
+                    "（剩余"+ leader.getHp()+"点生命值）");
             }
         });
-        // 受伤时
+        // endregion 扣血
+        // region 受伤
         damages.forEach(damage -> {
-            if(damage.getTo() instanceof FollowCard toFollow){
+            if(damage.getTo() instanceof FollowCard toFollow && toFollow.atArea()){
                 // 攻击方是随从，计算关键词
                 if (damage.getFrom() instanceof FollowCard fromFollow) {
                     // 普攻伤害消耗攻击方装备耐久
@@ -68,31 +70,33 @@ public class DamageMulti {
                     }
                 }
                 toFollow.tempEffects(EffectTiming.AfterDamaged,damage);
-            }
-            else if (damage.getTo() instanceof Leader leader){
-                leader.damaged(damage);
+            }else if (damage.getTo() instanceof Leader leader){
                 leader.getInfo().getAreaCardsCopy().forEach(areaCard -> areaCard.tempEffects(EffectTiming.AfterLeaderDamaged,damage));
                 leader.tempEffects(EffectTiming.AfterLeaderDamaged,damage);
             }
         });
-        info.startEffect();
+        // endregion 受伤
 
+
+        // region 破坏
         damages.forEach(damage -> {
-            if(damage.getTo() instanceof FollowCard toFollow){
+            if(damage.getTo() instanceof FollowCard toFollow && toFollow.atArea()){
                 if(damage.getFrom() instanceof Card card && card.hasKeyword("剧毒")) {
                     // 剧毒伤害击杀
                     info.msg(card.getNameWithOwner() + "发动剧毒效果！");
-                    toFollow.destroyedBy(damage.getFrom());
+                    toFollow.setDestroyedBy(damage.getFrom());
                 }else if(toFollow.getHp()<=0){
                     // 终结伤害击杀
-                    toFollow.destroyedBy(damage.getFrom());
+                    toFollow.setDestroyedBy(damage.getFrom());
                 }
             }
         });
+        // endregion 受伤结算
+        info.startEffect();
+        info.thisPlayer().getArea().stream().filter(areaCard -> areaCard.getDestroyedBy()!=null)
+            .forEach(areaCard -> areaCard.destroyedBy(areaCard.getDestroyedBy()));
+        // 死亡结算
         info.startEffect();
 
-        // endregion
-        // region 受伤效果
-        // endregion
     }
 }

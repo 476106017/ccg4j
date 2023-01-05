@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.PlayerInfo;
 import org.example.system.Lists;
 
@@ -34,14 +36,14 @@ public class MahjongTable extends AmuletCard {
 
 
     public MahjongTable() {
-        getEffects().add(new Effect(this,this, EffectTiming.WhenSummon,areaCard -> checkSummon(enemyPlayer(),areaCard)));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenEnemySummon,areaCard -> checkSummon(ownerPlayer(),areaCard)));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenDraw,) -> checkWin(ownerPlayer())));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenEnemyDraw,) -> checkWin(ownerPlayer())));
+        addEffects((new Effect(this,this, EffectTiming.WhenPlay, areaCard -> checkSummon(enemyPlayer(),(Card)areaCard))));
+        addEffects((new Effect(this,this, EffectTiming.WhenEnemyPlay,areaCard -> checkSummon(ownerPlayer(),(Card)areaCard))));
+        addEffects((new Effect(this,this, EffectTiming.WhenDraw, obj -> checkWin(ownerPlayer()))));
+        addEffects((new Effect(this,this, EffectTiming.WhenEnemyDraw, obj -> checkWin(ownerPlayer()))));
     }
 
-    private void checkSummon(PlayerInfo player, AreaCard areaCard){
-        if(info.thisPlayer()==player) return;// 是本回合的玩家不需要检查
+    private void checkSummon(PlayerInfo player, Card playCard){
+        if(!(playCard instanceof AreaCard areaCard))return;
         if(player.getArea().size() == player.getAreaMax()) return;
         Integer theCost = areaCard.getCost();
         Map<Integer, List<AreaCard>> costGroup = player.getHand().stream()

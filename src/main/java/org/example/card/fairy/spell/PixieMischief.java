@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
 import org.example.game.GameObj;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -26,12 +27,10 @@ public class PixieMischief extends SpellCard {
     public PixieMischief() {
         setPlay(new Play(
             () -> ownerPlayer().getAreaBy(areaCard -> true).stream()
-                .map(areaCard -> (GameObj)areaCard).toList(),1,
-            gameObjs -> {
-                GameObj areaCard = gameObjs.get(0);
-                ((AreaCard) areaCard).backToHand();
+                .map(areaCard -> (GameObj)areaCard).toList(),true,
+            gameObj -> {
+                ((AreaCard) gameObj).backToHand();
                 Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()).backToHand();
-            }
-        ));
+            }));
     }
 }

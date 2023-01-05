@@ -3,6 +3,7 @@ package org.example.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.CardType;
+import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -59,18 +60,10 @@ public abstract class EquipmentCard extends AreaCard{
             setTarget(null);
         }
 
-        if(!getWhenNoLongerAtAreas().isEmpty()) {
-            info.msg(getNameWithOwner() + "在场时效果消失！");
-            getWhenNoLongerAtAreas().forEach(noLongerAtArea -> noLongerAtArea.effect().apply());
-        }
-        if(!getLeavings().isEmpty()){
-            info.msg(getNameWithOwner() + "发动离场时效果！");
-            getLeavings().forEach(leaving -> leaving.effect().apply());
-        }
-        if(!getDeathRattles().isEmpty()){
-            info.msg(getNameWithOwner() + "发动亡语效果！");
-            getDeathRattles().forEach(leaving -> leaving.effect().apply());
-        }
+        tempEffects(EffectTiming.WhenNoLongerAtArea);
+        tempEffects(EffectTiming.Leaving);
+        tempEffects(EffectTiming.DeathRattle);
+
         ownerPlayer().getGraveyard().add(this);
         ownerPlayer().countToGraveyard(1);
 

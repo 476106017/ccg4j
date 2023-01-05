@@ -30,8 +30,7 @@ public class ChainsawMode extends EquipmentCard {
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj().stream()
                 .filter(gameObj -> gameObj.getName().equals("链锯恶魔")).toList(),true,
-            gameObjs -> {}
-        ));
+            gameObjs -> {}));
 
     }
 

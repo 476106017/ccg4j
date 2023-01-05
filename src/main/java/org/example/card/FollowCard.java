@@ -99,7 +99,7 @@ public abstract class FollowCard extends AreaCard{
         getKeywords().clear();
         List<Effect> noLongerAtArea = new ArrayList<>(getEffects(EffectTiming.WhenNoLongerAtArea));
         getEffects().clear();
-        noLongerAtArea.forEach(effect -> effect.getEffect().test(null));
+        noLongerAtArea.forEach(effect -> effect.getEffect().accept(null));
     }
     public void addStatus(int atk, int hp){
         if(atk==0 && hp==0)return;
@@ -136,16 +136,15 @@ public abstract class FollowCard extends AreaCard{
 
         Damage damage = new Damage(this,target);
 
-        useEffects(EffectTiming.WhenAttack);
+        useEffectsAndSettle(EffectTiming.WhenAttack);
 
         if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard)
-            useEffects(EffectTiming.WhenBattle);
+            useEffectsAndSettle(EffectTiming.WhenBattle);
 
         if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow)
-            toFollow.useEffects(EffectTiming.WhenBattle);
+            toFollow.useEffectsAndSettle(EffectTiming.WhenBattle);
 
-        damage.applyWithoutSettle();
-
+        info.damageAttacking(this,target);
 
         if(equipped())expireEquipSettlement();
 
@@ -154,126 +153,5 @@ public abstract class FollowCard extends AreaCard{
         info.msgTo(enemyPlayer().getUuid(),
             info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
 
-    }
-
-    public void damageBoth(Damage damage){
-        GameObj from = damage.getFrom();
-        if (!(from instanceof FollowCard fromFollow)) {
-            throw new RuntimeException("伤害来源非随从，无法生成反击！");
-        }
-        setHp(getHp() - damage.getDamage());
-        info.msg(getNameWithOwner()+"受到了来自"+ fromFollow.getName()+"的"+damage.getDamage()+"点伤害" +
-            "（剩余"+getHp()+"点生命值）");
-
-        fromFollow.setHp(fromFollow.getHp() - damage.getCountDamage());
-        info.msg(fromFollow.getNameWithOwner()+"受到了来自"+ getName()+"的"+damage.getCountDamage()+"点反击伤害" +
-            "（剩余"+fromFollow.getHp()+"点生命值）");
-
-        damageSettlement(damage);
-        // 先结算伤害，触发完所有事件后结算武器是否损毁
-        if(fromFollow.equipped())
-            fromFollow.expireEquipSettlement();
-    }
-    public void damagedWithoutSettle(Damage damage){
-        if(!damage.isFromAtk() && hasKeyword("效果伤害免疫")){
-            damage.setDamage(0);
-            info.msg(getNameWithOwner() + "免疫了效果伤害！");
-        }
-        setHp(getHp()- damage.getDamage());
-        info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害" +
-            "（剩余"+getHp()+"点生命值）");
-    }
-    public void damageSettlement(Damage damage){
-
-        if(!atArea()) return;
-        GameObj from = damage.getFrom();
-        boolean fromAtk = damage.isFromAtk();
-        assert !fromAtk || from instanceof FollowCard; // 非a或b，即非(a且非b)，a出现时一定不是“非b”
-
-        // 攻击方是随从，计算关键词
-        if (from instanceof FollowCard fromFollow) {
-            // 普攻伤害消耗攻击方装备耐久
-            if(fromAtk && fromFollow.equipped())
-                fromFollow.expireEquip();
-            if(fromFollow.hasKeyword("重伤")){
-                info.msg(fromFollow.getNameWithOwner() + "发动重伤效果！");
-                addKeyword("无法回复");
-            }
-            if(hasKeyword("重伤")){
-                info.msg(getNameWithOwner() + "发动重伤效果！");
-                fromFollow.addKeyword("无法回复");
-            }
-            if(fromFollow.hasKeyword("自愈")){
-                info.msg(fromFollow.getNameWithOwner() + "发动自愈效果！");
-                fromFollow.heal(damage.getDamage());
-            }
-            // 普攻伤害反击
-            if(fromAtk && hasKeyword("自愈")){
-                info.msg(getNameWithOwner() + "发动自愈效果！(反击)");
-                heal(damage.getCountDamage());
-            }
-            if(fromFollow.hasKeyword("吸血")){
-                info.msg(fromFollow.getNameWithOwner() + "发动吸血效果！");
-                fromFollow.ownerPlayer().heal(damage.getDamage());
-            }
-            // 普攻伤害反击
-            if(fromAtk && hasKeyword("吸血")){
-                info.msg(getNameWithOwner() + "发动吸血效果！(反击)");
-                ownerPlayer().heal(damage.getCountDamage());
-            }
-
-        }
-        // 结算本随从
-        if(getHp() <= 0){
-            if(from instanceof Card fromCard
-                && !fromCard.getWhenKills().isEmpty()){
-                info.msg(fromCard.getNameWithOwner() + "发动击杀时效果！");
-                fromCard.getWhenKills().forEach(whenKill -> whenKill.effect().accept(this));
-            }
-            death();
-        }else {
-            if(!getAfterDamageds().isEmpty()){
-                info.msg(getNameWithOwner() + "发动受伤时效果！");
-                getAfterDamageds().forEach(afterDamaged -> afterDamaged.effect().accept(damage));
-            }
-
-        }
-        // 结算反击随从
-        if(from instanceof FollowCard fromFollow && fromFollow.atArea()){
-            if(fromFollow.getHp() <= 0){
-                fromFollow.death();
-            }else {
-                if(!fromFollow.getAfterDamageds().isEmpty()){
-                    info.msg(fromFollow.getNameWithOwner() + "发动受伤时效果！");
-                    fromFollow.getAfterDamageds().forEach(afterDamaged -> afterDamaged.effect().accept(damage));
-                }
-            }
-
-            // 计算剧毒效果
-            // region 先记录剧毒效果，再破坏（不要先后计算剧毒效果）
-            boolean destroyThis = false, destroyFrom = false;
-            if (atArea() && fromFollow.hasKeyword("剧毒")) {
-                info.msg(fromFollow.getNameWithOwner() + "发动剧毒效果！");
-                destroyThis = true;
-            }
-            // 普攻伤害才反击
-            if (fromAtk && fromFollow.atArea() && hasKeyword("剧毒")) {
-                info.msg(getNameWithOwner() + "发动剧毒效果！(反击)");
-                destroyFrom = true;
-            }
-            if (destroyThis)
-                fromFollow.destroy(this);
-            if (destroyFrom)
-                destroy(fromFollow);
-            // endregion
-        }
-    }
-
-    public void damaged(Card from,int damage){
-        damaged(new Damage(from,this,damage));
-    }
-    public void damaged(Damage damage){
-        damagedWithoutSettle(damage);
-        damageSettlement(damage);
     }
 }

@@ -31,8 +31,7 @@ public class ForestGenesis extends SpellCard {
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));
                 ownerPlayer().addDeck(addCards);
-            }
-        ));
+            }));
     }
 
 }

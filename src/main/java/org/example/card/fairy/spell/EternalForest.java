@@ -48,12 +48,10 @@ public class EternalForest extends SpellCard {
                 }else {
                     info.gameset(ownerPlayer());
                 }
-            }
-        ));
+            }));
 
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
+        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,
-            ()->{}
-        ));
+            ()->{})));
     }
 }

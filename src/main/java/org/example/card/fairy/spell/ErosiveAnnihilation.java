@@ -2,9 +2,11 @@ package org.example.card.fairy.spell;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -37,17 +39,18 @@ public class ErosiveAnnihilation extends SpellCard {
     public ErosiveAnnihilation() {
         setPlay(new Play(()->
             // 创建主战者回合结束效果
-            ownerPlayer().getLeader()
-                .addEffect(this, EffectTiming.EndTurn, getCount(),false,obj ->{
+            ownerPlayer().getLeader().addEffect(new Effect(
+                this,ownerPlayer().getLeader(),EffectTiming.EndTurn,
+                getCount(),() ->{
                     List<FollowCard> enemyFollows =
                         enemyPlayer().getAreaFollowsAsFollow();
                     enemyFollows.forEach(followCard -> followCard.addStatus(-1,-1));
-                    return true;
-                })));
-
-        getEffects().add(new Effect(this,this, EffectTiming.Boost,
-            card-> card.getCost()>=2,
-            ()->count()
+                }),false)
         ));
+
+        addEffects((new Effect(this,this, EffectTiming.Boost,
+            card-> ((Card)card).getCost()>=2,
+            card->count()
+        )));
     }
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
 import org.example.game.GameObj;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -26,16 +27,10 @@ public class NaturesGuidance extends SpellCard {
     public NaturesGuidance() {
         setPlay(new Play(
             () -> ownerPlayer().getAreaBy(areaCard -> true).stream()
-                .map(areaCard -> (GameObj)areaCard).toList(),1,
+                .map(areaCard -> (GameObj)areaCard).toList(),true,
             gameObjs -> {
-
-
-                GameObj areaCard = gameObjs.get(0);
-                assert areaCard instanceof AreaCard;
-
-                ((AreaCard) areaCard).backToHand();
+                ((AreaCard) gameObjs).backToHand();
                 ownerPlayer().draw(1);
-            }
-        ));
+            }));
     }
 }

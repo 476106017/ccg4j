@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Damage;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -26,12 +28,14 @@ public class MercurialMight  extends SpellCard {
 
     public MercurialMight() {
 
-        setPlay(new Play(ArrayList::new, 0,
-            gameObjs -> {// 使用效
+        setPlay(new Play(ArrayList::new, false,
+            gameObjs -> {
                 // 增加主战者效果
-                ownerPlayer().getLeader().addEffect(this, EffectTiming.BeforeLeaderDamaged, 2,true,
-                    damage-> {if(!damage.isFromAtk()) damage.setDamage(0);});
-            }
-        ));
+                ownerPlayer().getLeader().addEffect(new Effect(
+                    this, ownerPlayer().getLeader(),EffectTiming.BeforeLeaderDamaged, 2,
+                    obj-> {
+                        Damage damage = (Damage) obj;
+                        if(!damage.isFromAtk()) damage.setDamage(0);}),false);
+            }));
     }
 }

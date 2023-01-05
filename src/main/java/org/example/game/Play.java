@@ -36,6 +36,14 @@ public record Play(Supplier<List<List<GameObj>>> canTargets, int targetNum, bool
             0,((integer, gameObjs) -> effect.accept(gameObjs.get(0))));
     }
     /**
+     * 必须一个目标，抉择
+     */
+    public Play(Supplier<List<GameObj>> targets,
+                int choiceNum, BiConsumer<Integer,GameObj> effect) {
+        this(()->List.of(targets.get()) ,1,true,choiceNum,
+            ((integer, gameObjs) -> effect.accept(integer,gameObjs.get(0))));
+    }
+    /**
      * 须选择一个目标，没有任何效果（装备牌）
      */
     public Play(Supplier<List<GameObj>> targets) {

@@ -26,10 +26,9 @@ public class SylvanJustice extends SpellCard {
 
     public SylvanJustice() {
         setPlay(new Play(
-            ()->enemyPlayer().getAreaFollowsAsGameObj(), 1,
-            targets->{
-                FollowCard followCard = (FollowCard) targets.get(0);
-                followCard.damaged(this,3);
+            ()->enemyPlayer().getAreaFollowsAsGameObj(), true,
+            target->{
+                info.damageEffect(this,target,3);
                 ownerPlayer().addHand(createCard(Fairy.class));
             }));
     }

@@ -28,9 +28,9 @@ public class AmbitiousGoblinMage  extends FollowCard {
         setPlay(new Play(
             ()->ownerPlayer().getHandAsGameObjBy(card ->
                 card instanceof FollowCard followCard && followCard!=this ),
-            1,
+            true,
             target->{
-                ownerPlayer().backToDeck((FollowCard)target.get(0));
+                ownerPlayer().backToDeck((FollowCard)target);
                 ownerPlayer().draw(card -> card instanceof FollowCard followCard && followCard.getCost() < getCost());
             }));
 

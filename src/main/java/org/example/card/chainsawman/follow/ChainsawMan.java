@@ -2,9 +2,10 @@ package org.example.card.chainsawman.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.chainsawman.equipment.ChainsawMode;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -36,8 +37,9 @@ public class ChainsawMan extends FollowCard {
             ownerPlayer().addHand(createCard(ChainsawMode.class))
         ));
 
-        getEffects().add(new Effect(this,this, EffectTiming.WhenKill,
-            followCard -> {
+        addEffects((new Effect(this,this, EffectTiming.WhenKill,
+            obj -> {
+                FollowCard followCard = (FollowCard) obj;
                 if(followCard.getHp() < 0){
                     if ("链锯模式".equals(getEquipment().getName())) {
                         getEquipment().addCountdown(1);
@@ -47,7 +49,6 @@ public class ChainsawMan extends FollowCard {
                     followCard.purify();
                     getInfo().exile(followCard);
                 }
-            }
-        ));
+            })));
     }
 }

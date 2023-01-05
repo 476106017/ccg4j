@@ -53,8 +53,6 @@ public class PlayerInfo {
         return info.anotherPlayerByUuid(getUuid());
     }
 
-    Map<Integer,List<GameRecord>> turnRecords = new HashMap<>();
-
     public Integer getCount(String key){
         return Optional.ofNullable(counter.get(key)).orElse(0);
     }
@@ -70,13 +68,13 @@ public class PlayerInfo {
 
     public void heal(int hp){
         Damage heal = new Damage(null, this.getLeader(), hp);
-        getLeader().useEffectWithDamage(EffectTiming.LeaderHealing,heal);
+        getLeader().useEffects(EffectTiming.LeaderHealing,heal);
 
         if(heal.getDamage()>0){
             int oldHp = getHp();
             setHp(Math.min(getHpMax(),getHp() + heal.getDamage()));
             info.msg(this.getName()+"回复" + (getHp()-oldHp) + "点（剩余"+this.getHp()+"点生命值）");
-            getLeader().useEffectWithDamage(EffectTiming.LeaderHealed,heal);
+            getLeader().tempEffects(EffectTiming.LeaderHealed,heal);
         }else {
             info.msg(this.getName()+"没有回复生命值（剩余"+this.getHp()+"点生命值）");
         }
@@ -103,18 +101,8 @@ public class PlayerInfo {
         deck = deck.subList(finalNum,deck.size());
         addHand(cards);
 
-        getAreaCopy().forEach(areaCard -> {
-            if (areaCard.atArea() && !areaCard.getWhenDraws().isEmpty()) {
-                info.msg(areaCard.getNameWithOwner() + "发动抽牌时效果！");
-                areaCard.getWhenDraws().forEach(whenDraw -> whenDraw.effect().accept(cards));
-            }
-        });
-        getEnemy().getAreaCopy().forEach(areaCard -> {
-            if (areaCard.atArea() && !areaCard.getWhenEnemyDraws().isEmpty()) {
-                info.msg(areaCard.getNameWithOwner() + "发动对手抽牌时效果！");
-                areaCard.getWhenEnemyDraws().forEach(whenDraw -> whenDraw.effect().accept(cards));
-            }
-        });
+        info.tempEffectBatch(getAreaAsGameObj(),EffectTiming.WhenDraw,cards);
+        info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
     }
     public void draw(Predicate<? super Card> condition){
         Optional<Card> findCard = getDeck().stream()
@@ -169,33 +157,27 @@ public class PlayerInfo {
             hand.addAll(cards.subList(0,handMax-handSize));
             info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌从游戏中除外！");
 
-            cards.subList(handMax-handSize,cards.size()).forEach(card -> {
-                if(!card.getExiles().isEmpty()){
-                    info.msg(card.getNameWithOwner() + "发动除外时效果！");
-                    card.getExiles().forEach(exile -> exile.effect().apply());
-                }
-            });
+            List<Card> exileCards = cards.subList(handMax - handSize, cards.size());
+            info.tempCardEffectBatch(exileCards,EffectTiming.Exile);
+
         }else{
             hand.addAll(cards);
         }
     }
     public void addArea(AreaCard areaCard){
-        if(getArea().size() == getAreaMax()){
-            info.msg(areaCard.getNameWithOwner() + "掉出战场，从游戏中除外！");
-            if(!areaCard.getExiles().isEmpty()){
-                info.msg(areaCard.getNameWithOwner() + "发动除外时效果！");
-                areaCard.getExiles().forEach(exile -> exile.effect().apply());
-            }
-        }else {
-            getArea().add(areaCard);
-            if(!areaCard.getWhenAtAreas().isEmpty()){
-                info.msg(areaCard.getNameWithOwner() + "发动在场上时效果！");
-                areaCard.getWhenAtAreas().forEach(exile -> exile.effect().apply());
-            }
-        }
+        addArea(List.of(areaCard));
     }
     public void addArea(List<AreaCard> cards){
-        cards.forEach(this::addArea);
+        if(area.size() == areaMax) return;
+        int i = cards.size() + area.size() - areaMax;
+        if(i>0){
+            List<AreaCard> exileCards = cards.subList(cards.size() - i, cards.size());
+            info.tempAreaCardEffectBatch(exileCards,EffectTiming.Exile);
+
+            cards.removeAll(exileCards);
+        }
+        getArea().addAll(cards);
+        info.tempAreaCardEffectBatch(cards,EffectTiming.WhenAtArea);
     }
 
     // 卡牌的快照。用来循环（原本卡牌List可以随便删）
@@ -221,6 +203,11 @@ public class PlayerInfo {
     public List<Card> getAreaAsCard(){
         return getArea().stream()
             .map(areaCard -> (Card)areaCard)
+            .toList();
+    }
+    public List<GameObj> getAreaAsGameObj(){
+        return getArea().stream()
+            .map(areaCard -> (GameObj)areaCard)
             .toList();
     }
     public List<FollowCard> getAreaFollowsAsFollow(){
@@ -260,43 +247,30 @@ public class PlayerInfo {
     }
 
     public void summon(AreaCard summonedCard){
-        info.msg(getName() + "召唤了" + summonedCard.getName());
-        addArea(summonedCard);
-        if(!summonedCard.getEnterings().isEmpty()){
-            info.msg(summonedCard.getNameWithOwner() + "发动入场时效果！");
-            summonedCard.getEnterings().forEach(entering -> entering.effect().apply());// 发动入场时
-        }
-        getAreaBy(areaCard -> areaCard!=summonedCard).forEach(areaCard -> {
-            if (areaCard.atArea() && !areaCard.getWhenSummons().isEmpty()) {
-                info.msg(areaCard.getNameWithOwner() + "发动召唤时效果！");
-                areaCard.getWhenSummons().forEach(whenSummon -> whenSummon.effect().accept(summonedCard));
-            }
-        });
-        getEnemy().getAreaCopy().forEach(areaCard -> {
-            if (areaCard.atArea() && !areaCard.getWhenEnemySummons().isEmpty()) {
-                info.msg(areaCard.getNameWithOwner() + "发动对手召唤时效果！");
-                areaCard.getWhenEnemySummons().forEach(whenSummon -> whenSummon.effect().accept(summonedCard));
-            }
-        });
+        summon(List.of(summonedCard));
+    }
+
+    public void summon(List<AreaCard> summonedCards){
+        info.msg(getName() + "召唤了" + summonedCards.stream().map(AreaCard::getName).collect(Collectors.joining("、")));
+        addArea(summonedCards);
+        info.tempAreaCardEffectBatch(summonedCards,EffectTiming.Entering);
+
+        List<AreaCard> areaCards = getAreaBy(areaCard -> !summonedCards.contains(areaCard));
+        info.tempAreaCardEffectBatch(areaCards,EffectTiming.WhenSummon,summonedCards);
+
+        List<AreaCard> enemyAreaCards = getEnemy().getAreaBy(areaCard -> !summonedCards.contains(areaCard));
+        info.tempAreaCardEffectBatch(enemyAreaCards,EffectTiming.WhenEnemySummon,summonedCards);
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){
         shuffleGraveyard();
-        List<Card> outGraveyardCards = new ArrayList<>();
-        getGraveyardCopy().stream().filter(predicate)
-            .limit(num).forEach(card -> {
-                info.msgTo(getUuid(),card.getName()+"轮回到了牌堆中");
-                if(!card.getTransmigrations().isEmpty()){
-                    info.msg(card.getNameWithOwner() + "发动轮回时效果！");
-                }
-                card.getTransmigrations().forEach(entering -> entering.effect().apply());// 发动轮回时
-                outGraveyardCards.add(card);
-                addDeck(card.copyCard());
-            });
-        info.msg(getName() + "的"+num+"张牌轮回了");
-        count(TRANSMIGRATION_NUM,num);
-
-        getGraveyard().removeAll(outGraveyardCards);
+        List<Card> cards = getGraveyardCopy().stream().filter(predicate).limit(num).toList();
+        getGraveyard().removeAll(cards);
+        addDeck(cards);
+        info.msgTo(getUuid(),cards.stream().map(GameObj::getName).collect(Collectors.joining("、"))+"轮回到了牌堆中");
+        info.msg(getName() + "的"+cards.size()+"张牌轮回了");
+        info.tempCardEffectBatch(cards,EffectTiming.Transmigration);
+        count(TRANSMIGRATION_NUM,cards.size());
     }
 
     public String describePPNum(){

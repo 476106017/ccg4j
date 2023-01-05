@@ -29,9 +29,15 @@ public abstract class GameObj {
 
     public abstract void setName(String name);
     public abstract String getName();
+    public String getId(){
+        return getName() + "#" + hashCode()%10000;
+    }
 
     public String getNameWithOwner(){
         return ownerPlayer().getName()+"的"+getName();
+    };
+    public String getIdWithOwner(){
+        return ownerPlayer().getName()+"的"+getId();
     };
 
     public void initCounter(){}
@@ -40,24 +46,44 @@ public abstract class GameObj {
     // region 效果操作
     private List<Effect> effects = new ArrayList<>();
 
+    public void addEffects(Effect effect){
+        effects.add(effect);
+    }
+
     public List<Effect> getEffects(EffectTiming timing){
         return getEffects().stream().filter(effect -> effect.getTiming().equals(timing)).toList();
     }
-    public void useEffects(EffectTiming timing){
-        useEffects(timing,null);
+    public List<Effect> getEffectsFrom(GameObj parent){
+        return getEffects().stream().filter(effect -> effect.getParent().equals(parent)).toList();
     }
-    public void useEffects(EffectTiming timing,Object param){
+    // 不加入队列，立即生效的效果（增加回复量、伤害量、加减状态等）
+    public void useEffects(EffectTiming timing, Object param){
+        getEffects(timing).forEach(effect -> {
+            new Effect.EffectInstance(effect,param).consume();
+        });
+    }
+    public void useEffects(EffectTiming timing){
+        getEffects(timing).forEach(effect -> {
+            new Effect.EffectInstance(effect,null).consume();
+        });
+    }
+    public void useEffectsAndSettle(EffectTiming timing){
+        useEffectsAndSettle(timing,null);
+    }
+    public void useEffectsAndSettle(EffectTiming timing, Object param){
         tempEffects(timing,param);
         info.startEffect();
     }
     public void tempEffects(EffectTiming timing){
         getEffects(timing).forEach(effect -> {
-            info.tempEffect(new Effect.EffectInstance(effect));
+            if(effect.getCanEffect().test(null))
+                info.tempEffect(new Effect.EffectInstance(effect));
         });
     }
     public void tempEffects(EffectTiming timing,Object param){
         getEffects(timing).forEach(effect -> {
-            info.tempEffect(new Effect.EffectInstance(effect,param));
+            if(effect.getCanEffect().test(param))
+                info.tempEffect(new Effect.EffectInstance(effect,param));
         });
     }
     // endregion 效果操作

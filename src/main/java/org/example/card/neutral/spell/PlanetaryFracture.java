@@ -30,7 +30,7 @@ public class PlanetaryFracture extends SpellCard {
     }
 
     public PlanetaryFracture() {
-        setPlay(new Play(()->
+        setPlay(new Play(()->{
             List<AreaCard> toDestroy = new ArrayList<>();
             toDestroy.addAll(ownerPlayer().getAreaFollowsBy(followCard -> followCard.getCost()>5));
             toDestroy.addAll(enemyPlayer().getAreaFollowsBy(followCard -> followCard.getCost()>5));

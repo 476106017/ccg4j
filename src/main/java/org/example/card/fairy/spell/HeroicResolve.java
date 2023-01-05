@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -32,12 +33,14 @@ public class HeroicResolve extends SpellCard {
     public HeroicResolve() {
         setPlay(new Play(()->
             // 创建主战者回合结束效果
-            ownerPlayer().getLeader()
-                .addEffect(this, EffectTiming.EndTurn, 1,false, damage ->{
+            ownerPlayer().getLeader().addEffect(new Effect(
+                    this,this, EffectTiming.EndTurn,
+                    1, damage ->{
                     int x = ownerPlayer().getCount(PLAY_NUM) / 4;
 
                     ownerPlayer().draw(x);
                     ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> followCard.addStatus(x,x));
-                })));
+                }),false)
+        ));
     }
 }

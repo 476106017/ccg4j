@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.EquipmentCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 
 import java.util.List;
@@ -30,15 +32,14 @@ public class DeathNote extends EquipmentCard {
     public DeathNote() {
         getKeywords().add("游魂");
         setPlay(new Play(
-            ()->ownerPlayer().getAreaFollowsAsGameObj(),1,2,
+            ()->ownerPlayer().getAreaFollowsAsGameObj(),2,
             (choice,gameObjs) -> {
                 if(choice==2){
                     ownerPlayer().getLeader().damaged(this,ownerPlayer().getHp()/2);
                     enemyPlayer().getAreaFollows().forEach(Card::exposeRealName);
                 }
-            }
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->{
+            }));
+        addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
             if(getTarget().getTurnAttack() < getTarget().getTurnAttackMax()){
                 List<AreaCard> areaFollows = enemyPlayer().getAreaFollowsBy(Card::isRealName);
                 int killNum = destroy(areaFollows);
@@ -51,6 +52,6 @@ public class DeathNote extends EquipmentCard {
                         areaCard.backToHand();
                     });
             }
-        }));
+        })));
     }
 }

@@ -197,10 +197,7 @@ public class GameHandler {
                     }
                     targets.add(target);
                 }
-            }catch (Exception e){
-                info.msgToThisPlayer("序号出错:"+targetS);
-                return;
-            }
+            }catch (Exception e){}
         }
         // endregion 获取选择目标
 

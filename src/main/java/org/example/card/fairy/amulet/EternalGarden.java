@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -31,13 +33,13 @@ public class EternalGarden extends AmuletCard {
 
 
     public EternalGarden() {
-        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->{
+        addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
             Integer x = ownerPlayer().getCount(PLAY_NUM);
             ownerPlayer().heal(x);
 
             ownerPlayer().transmigration(card ->
                 card instanceof FollowCard followCard && "妖精".equals(followCard.getJob()),x);
-        }));
+        })));
     }
 
 }

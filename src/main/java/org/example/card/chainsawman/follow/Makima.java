@@ -2,9 +2,10 @@ package org.example.card.chainsawman.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.card.chainsawman.equipment.DominatePipe;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -52,7 +53,7 @@ public class Makima extends FollowCard {
             }
 
         }));
-        getEffects().add(new Effect(this,this, EffectTiming.EffectBegin,)->{
+        addEffects((new Effect(this,this, EffectTiming.BeginTurn, obj->{
             List<FollowCard> canTarget = new ArrayList<>();
             canTarget.addAll(new ArrayList<>(enemyPlayer().getAreaFollowsAsFollow().stream()
                 .filter(followCard -> !(followCard.getName().equals("支配恶魔"))
@@ -70,10 +71,10 @@ public class Makima extends FollowCard {
             }else {
                 info.msg(getNameWithOwner()+"发现自己无法支配"+target.getName());
             }
-        }));
+        })));
 
 
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,) -> {
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj -> {
 
             ownerPlayer().getAreaCopy().stream()
                 .filter(areaCard -> areaCard instanceof FollowCard follow
@@ -83,6 +84,6 @@ public class Makima extends FollowCard {
                     ownerPlayer().recall(this);
                 });
 
-        }));
+        })));
     }
 }

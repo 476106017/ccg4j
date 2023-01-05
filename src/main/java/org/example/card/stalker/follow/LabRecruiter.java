@@ -28,9 +28,9 @@ public class LabRecruiter extends FollowCard {
     public LabRecruiter() {
         setMaxHp(getHp());
         setPlay(new Play(
-            ()->ownerPlayer().getAreaFollowsAsGameObj(),1,
+            ()->ownerPlayer().getAreaFollowsAsGameObj(),true,
             gameObjs -> {
-                FollowCard followCard = (FollowCard) gameObjs.get(0);
+                FollowCard followCard = (FollowCard) gameObjs;
                 List<Card> addCards = new ArrayList<>();
                 FollowCard card;
 

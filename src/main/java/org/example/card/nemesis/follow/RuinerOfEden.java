@@ -2,10 +2,11 @@ package org.example.card.nemesis.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.nemesis.spell.CalamitysEnd;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,22 +34,21 @@ public class RuinerOfEden extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("守护");
         getKeywords().add("剧毒");
-        getEffects().add(new Effect(this,this, EffectTiming.Entering,)->{
+        addEffects((new Effect(this,this, EffectTiming.Entering, obj->{
             ownerPlayer().summon(createCard(WorldEliminator.class,"剧毒"));
             ownerPlayer().summon(createCard(WorldEliminator.class,"剧毒"));
             ownerPlayer().summon(createCard(WorldEliminator.class,"剧毒"));
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.Leaving,)->{
+        })));
+        addEffects((new Effect(this,this, EffectTiming.Leaving, obj->{
             List<Card> addCards = new ArrayList<>();
             addCards.add(createCard(CalamitysEnd.class));
             ownerPlayer().addDeck(addCards);
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
+        })));
+        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> ownerPlayer().getGraveyard().stream()
                 .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                 .count() >= 10,
-            ()->{}
-        ));
+            ()->{})));
     }
 
 }

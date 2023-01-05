@@ -53,14 +53,12 @@ public class CalamitysEnd extends SpellCard {
                 }else {
                     info.gameset(ownerPlayer());
                 }
-            }
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
+            }));
+        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> ownerPlayer().getGraveyard().stream()
                 .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                 .count() >= 20,
-            ()->{}
-        ));
+            ()->{})));
     }
 
 

@@ -2,10 +2,10 @@ package org.example.card.chainsawman.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -28,15 +28,14 @@ public class DarkDemon extends FollowCard {
     public DarkDemon() {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
-            // 如果没有获得过该效果
-            ownerPlayer().getLeader().addEffect(this, EffectTiming.BeginTurn,() -> {
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
+            ownerPlayer().getLeader().addEffect(new Effect(this, ownerPlayer().getLeader(), EffectTiming.BeginTurn,() -> {
                 if(this.atGraveyard()){
                     List<Card> graveyard = enemyPlayer().getGraveyardCopy();
                     enemyPlayer().countToGraveyard(-graveyard.size());
                     getInfo().exile(graveyard);
                 }
-            });
-        }));
+            }),true);
+        })));
     }
 }

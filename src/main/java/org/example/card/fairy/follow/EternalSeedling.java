@@ -2,10 +2,11 @@ package org.example.card.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.fairy.amulet.EternalGarden;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -41,13 +42,13 @@ public class EternalSeedling extends FollowCard {
 
     public EternalSeedling() {
         setMaxHp(getHp());
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
+        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,
             ()->{}
-        ));
+        )));
 
 
-        getEffects().add(new Effect(this,this, EffectTiming.Leaving,
+        addEffects((new Effect(this,this, EffectTiming.Leaving,
             ()->{
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));
@@ -62,15 +63,15 @@ public class EternalSeedling extends FollowCard {
                     ownerPlayer().summon(createCard(EternalGarden.class));
                 }
             }
-        ));
+        )));
 
-        getEffects().add(new Effect(this,this, EffectTiming.Transmigration,
+        addEffects((new Effect(this,this, EffectTiming.Transmigration,
             ()->{
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalBloom.class));
                 ownerPlayer().addDeck(addCards);
             }
-        ));
+        )));
     }
 
 }

@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.fairy.follow.Fairy;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -27,13 +29,13 @@ public class FirespriteGrove extends AmuletCard {
     public String subMark = "";
 
     public FirespriteGrove() {
-        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->
+        addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->
             ownerPlayer().addHand(createCard(Fairy.class))
-        ));
+        )));
 
-        getEffects().add(new Effect(this,this, EffectTiming.Leaving,)->
-            Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()).damaged(this,1)
-        ));
+        addEffects((new Effect(this,this, EffectTiming.Leaving, obj->
+            info.damageEffect(this,Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()),1)
+        )));
     }
 
 }

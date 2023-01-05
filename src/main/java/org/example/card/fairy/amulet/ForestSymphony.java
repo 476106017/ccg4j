@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class ForestSymphony extends AmuletCard {
     public String subMark = "";
 
     public ForestSymphony() {
-        getEffects().add(new Effect(this,this, EffectTiming.EffectEnd,)->{
+        addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
             if(ownerPlayer().isShortRope()) return;
 
             Set<String> nameSet = ownerPlayer().getArea().stream()
@@ -43,7 +45,7 @@ public class ForestSymphony extends AmuletCard {
                 });
                 death();
             }
-        }));
+        })));
     }
 
 }

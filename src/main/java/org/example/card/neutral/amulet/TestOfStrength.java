@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class TestOfStrength extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
     public TestOfStrength() {
-        getEffects().add(new Effect(this,this, EffectTiming.WhenAtArea,)->{
+        addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
             ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
@@ -38,22 +40,22 @@ public class TestOfStrength extends AmuletCard {
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
             });
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
+        })));
+        addEffects((new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
             }
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenEnemySummon,areaCard -> {
+        })));
+        addEffects((new Effect(this,this, EffectTiming.WhenEnemySummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
                 followCard.addKeyword("守护");
                 effectFollows.add(followCard);
             }
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenNoLongerAtArea,)->
+        })));
+        addEffects((new Effect(this,this, EffectTiming.WhenNoLongerAtArea, obj->
             effectFollows.forEach(((followCard) -> followCard.removeKeyword("守护")))
-        ));
+        )));
     }
 
 }

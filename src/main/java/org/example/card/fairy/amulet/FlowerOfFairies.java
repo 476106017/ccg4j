@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.fairy.follow.Fairy;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -31,12 +33,12 @@ public class FlowerOfFairies extends AmuletCard {
         setPlay(new Play(()->{
             ownerPlayer().draw(1);
         }));
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
             ownerPlayer().addHand(createCard(Fairy.class))
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenBackToHand,)->
+        )));
+        addEffects((new Effect(this,this, EffectTiming.WhenBackToHand, obj->
             ownerPlayer().addHand(createCard(Fairy.class))
-        ));
+        )));
     }
 
 }

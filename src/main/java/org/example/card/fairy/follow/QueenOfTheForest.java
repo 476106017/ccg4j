@@ -2,9 +2,10 @@ package org.example.card.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -35,11 +36,11 @@ public class QueenOfTheForest extends FollowCard {
             && followCard.getCost().equals(
                 ownerPlayer().getDeck().stream().filter(deckCard -> deckCard instanceof FollowCard)
                 .map(Card::getCost).min(Comparator.naturalOrder()).orElse(-1)))));
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
             ownerPlayer().draw(card -> card instanceof FollowCard followCard
                 && followCard.getCost().equals(
                 ownerPlayer().getDeck().stream().filter(deckCard -> deckCard instanceof FollowCard)
-                    .map(Card::getCost).max(Comparator.naturalOrder()).orElse(-1)))));
+                    .map(Card::getCost).max(Comparator.naturalOrder()).orElse(-1))))));
     }
 
 }

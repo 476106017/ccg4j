@@ -28,12 +28,14 @@ public class PhantombloomPredator extends FollowCard {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObjBy(followCard -> followCard.getCost()==1),
-            1,
-            targets->{
-                FollowCard followCard = (FollowCard) (targets.get(0));
-                followCard.backToHand();
-                addStatus(1,0);
-                addKeyword("疾驰");
+            false,
+            target->{
+                if(target!=null){
+                    FollowCard followCard = (FollowCard) target;
+                    followCard.backToHand();
+                    addStatus(1,0);
+                    addKeyword("疾驰");
+                }
             }));
     }
 }

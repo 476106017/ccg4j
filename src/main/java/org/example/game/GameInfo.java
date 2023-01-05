@@ -10,7 +10,6 @@ import org.example.system.Lists;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
@@ -22,13 +21,15 @@ public class GameInfo {
     SocketIOServer server;
     String room;
 
-    // 最大连锁次数
+    // 连锁次数
     int chainDeep = 10;
     int turn;
     int turnPlayer;
     boolean gameset;
     ScheduledFuture<?> rope;
 
+    public record Event(GameObj obj,EffectTiming timing,Object param){};
+    List<Event> events = new LinkedList<>();
     List<Effect.EffectInstance> effectInstances = new LinkedList<>();
 
     PlayerInfo[] playerInfos;
@@ -105,39 +106,79 @@ public class GameInfo {
         }
     }
 
+    // region effect
+    public void addEvent(GameObj obj,EffectTiming timing,Object param){
+        events.add(new Event(obj,timing,param));
+    }
+
+    public void useCardEffectBatch(List<Card> cards, EffectTiming timing){
+        List<GameObj> gameObjs = cards.stream().map(p -> (GameObj) p).toList();
+        tempEffectBatch(gameObjs,timing);
+        startEffect();
+    }
+    public void useEffectBatch(List<GameObj> objs, EffectTiming timing){
+        tempEffectBatch(objs,timing);
+        startEffect();
+    }
+
+    public void tempEffectBatch(List<GameObj> objs, EffectTiming timing,Object param){
+        objs.forEach(obj -> obj.tempEffects(timing,param));
+    }
     public void tempEffectBatch(List<GameObj> objs, EffectTiming timing){
         objs.forEach(obj -> obj.tempEffects(timing));
     }
+    public void tempCardEffectBatch(List<Card> objs, EffectTiming timing){
+        objs.forEach(obj -> obj.tempEffects(timing));
+    }
+    public void tempAreaCardEffectBatch(List<AreaCard> objs, EffectTiming timing){
+        objs.forEach(obj -> obj.tempEffects(timing));
+    }
+    public void tempAreaCardEffectBatch(List<AreaCard> objs, EffectTiming timing,Object param){
+        objs.forEach(obj -> obj.tempEffects(timing,param));
+    }
     public void tempEffect(Effect.EffectInstance instance){
+        Effect effect = instance.getEffect();
         effectInstances.add(instance);
+        msg(effect.getOwnerObj().getIdWithOwner()+"的【"+effect.getTiming().getName()+"】效果已加入队列" +
+            "（队列现在有" + effectInstances.size() + "个效果）");
     }
 
     // 结算效果
     public void startEffect(){
+        msg("——————开始结算——————");
         consumeEffectChain(chainDeep);
+        // 计算主战者死亡状况
+        measureDeath();
     }
     public void consumeEffectChain(int deep){
         if(deep==0){
             msg("停止连锁！不再触发任何效果");
+            return;
         }
-        msg("——————开始效果连锁——————");
+        if(effectInstances.isEmpty()) return;
 
+
+
+        msg("——————开始触发效果——————");
         consumeEffectOnce();
-        // 计算主战者死亡状况
-        measureDeath();
+        msg("——————停止触发效果——————");
 
-        if(!effectInstances.isEmpty())
+        if(!effectInstances.isEmpty()){
+            msg("——————效果连锁（"+deep+"）——————");
             consumeEffectChain(deep - 1);
+        }
     }
     public void consumeEffectOnce(){
         List<Effect.EffectInstance> copy = new LinkedList<>(effectInstances);
         copy.forEach(Effect.EffectInstance::consume);
         effectInstances.removeAll(copy);
     }
+    // endregion effect
 
 
+    // region event
 
-        public void transform(Card fromCard, Card toCard){
+    public void transform(Card fromCard, Card toCard){
         msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getName());
         if(fromCard.atArea()){
             List<AreaCard> area = fromCard.ownerPlayer().getArea();
@@ -221,6 +262,21 @@ public class GameInfo {
         });
         startEffect();
     }
+    public void damageMulti(GameObj from,List<GameObj> objs, int damage){
+        List<Damage> damages = objs.stream().map(obj -> new Damage(from, obj, damage)).toList();
+        new DamageMulti(this,damages).apply();
+    }
+    public void damageAttacking(FollowCard from, GameObj to){
+        if(to instanceof FollowCard)
+            new DamageMulti(this,List.of(new Damage(from,to), new Damage(to,from))).apply();
+        else
+            new DamageMulti(this,List.of(new Damage(from,to))).apply();
+    }
+    public void damageEffect(GameObj from,GameObj to, int damage){
+        new DamageMulti(this,List.of(new Damage(from,to,damage))).apply();
+    }
+
+    // endregion event
 
     public List<AreaCard> getAreaCardsCopy(){
         List<AreaCard> _result = new ArrayList<>();
@@ -253,30 +309,27 @@ public class GameInfo {
         msg("游戏开始，请选择3张手牌交换");
     }
 
+    // region turn
     public void startTurn(){
         thisPlayer().clearCount(PLAY_NUM);
-        try {
-            beforeTurn();
-            if(thisPlayer().ppMax<10){
+        if(thisPlayer().ppMax<10){
                 thisPlayer().ppMax++;
-            }
-            thisPlayer().ppNum = thisPlayer().ppMax;
-            thisPlayer().draw(1);
-            msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
-
-            if(thisPlayer().isShortRope()){
-                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
-                msg("倒计时30秒！");
-            }else{
-                rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
-                msg("倒计时300秒！");
-            }
-            msgToThisPlayer(describeGame(thisPlayer().getUuid()));
-            msgToThisPlayer("请出牌！");
-            msgToOppositePlayer("等待对手出牌......");
-        }catch (Exception e){
-            e.printStackTrace();
         }
+        thisPlayer().ppNum = thisPlayer().ppMax;
+        thisPlayer().draw(1);
+        msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
+        beforeTurn();
+
+        if(thisPlayer().isShortRope()){
+            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
+            msg("倒计时30秒！");
+        }else{
+            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
+            msg("倒计时300秒！");
+        }
+        msgToThisPlayer(describeGame(thisPlayer().getUuid()));
+        msgToThisPlayer("请出牌！");
+        msgToOppositePlayer("等待对手出牌......");
     }
 
     public void endTurnOfTimeout(){
@@ -303,12 +356,11 @@ public class GameInfo {
         startTurn();
     }
 
-
     public void beforeTurn(){
         // 主战者技能重置、发动主战者效果
         Leader leader = thisPlayer().getLeader();
         leader.setCanUseSkill(true);
-        leader.useEffects(EffectTiming.BeginTurn);
+        leader.useEffectsAndSettle(EffectTiming.BeginTurn);
         leader.expireEffect();
 
         // 场上随从驻场回合+1、攻击次数清零
@@ -317,13 +369,13 @@ public class GameInfo {
         thisPlayer().getAreaCopy().forEach(areaCard -> {
             if(!areaCard.atArea())return;
 
-            areaCard.useEffects(EffectTiming.BeginTurn);
+            areaCard.useEffectsAndSettle(EffectTiming.BeginTurn);
             if(!areaCard.atArea())return;
 
 
             if(areaCard instanceof FollowCard followCard && followCard.equipped()){
                 EquipmentCard equipment = followCard.getEquipment();
-                equipment.useEffects(EffectTiming.BeginTurn);
+                equipment.useEffectsAndSettle(EffectTiming.BeginTurn);
             }
             if(!areaCard.atArea())return;
 
@@ -353,143 +405,41 @@ public class GameInfo {
         Map<String, GameObj> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
-        tempEffectBatch(nameCard.values(),EffectTiming.InvocationBegin);
-
-        // 法术卡揭示到手牌
-        while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
-            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof SpellCard).findFirst();
-            if(first.isEmpty()) break;
-
-            // region 从牌堆召唤到手牌
-            SpellCard card = (SpellCard)first.get();
-            AtomicBoolean summon = new AtomicBoolean(false);
-            card.getInvocationBegins().stream()
-                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
-                .findFirst().ifPresent(invocationBegin -> {
-                    if(!summon.get()){
-                        // 触发第一个效果时，揭示
-                        msg(thisPlayer().getName()+"揭示了"+card.getName());
-                        thisPlayer().getHand().add(card);
-                        thisPlayer().getDeck().remove(card);
-                        summon.set(true);
-                    }
-                    invocationBegin.effect().apply();
-                });
-            canInvocation.remove(card);
-            // endregion
-
-        }
-
-        // 瞬念召唤到场上
-        while(thisPlayer().getArea().size() < thisPlayer().getAreaMax()){
-            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof AreaCard).findFirst();
-            if(first.isEmpty()) break;
-
-            // region 从牌堆召唤到场上
-            AreaCard card = (AreaCard)first.get();
-            AtomicBoolean summon = new AtomicBoolean(false);
-            card.getInvocationBegins().stream()
-                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
-                .findFirst().ifPresent(invocationBegin -> {
-                    if(!summon.get()){
-                        // 触发第一个效果时，召唤
-                        msg(thisPlayer().getName()+"发动瞬念召唤");
-                        thisPlayer().summon(card);
-                        thisPlayer().getDeck().remove(card);
-                        summon.set(true);
-                    }
-                    invocationBegin.effect().apply();
-                });
-
-            canInvocation.remove(card);
-            // endregion
-        }
+        // 瞬召卡牌
+        useEffectBatch(new ArrayList<>(nameCard.values()),EffectTiming.InvocationBegin);
 
     }
     public void afterTurn(){
         // 发动主战者效果
         Leader leader = thisPlayer().getLeader();
-        leader.useEffect(EffectTiming.EndTurn);
+        leader.useEffectsAndSettle(EffectTiming.EndTurn);
         leader.expireEffect();
 
         // 发动回合结束效果
         thisPlayer().getAreaCopy().forEach(areaCard -> {
-            if (areaCard.atArea())
-                if (!areaCard.getEffectEnds().isEmpty()) {
-                    msg(areaCard.getNameWithOwner() + "发动回合结束效果");
-                    areaCard.getEffectEnds().forEach(effectEnd -> {
-                        effectEnd.effect().apply();
-                    });
-                }
             if(!areaCard.atArea())return;
+
+            areaCard.useEffectsAndSettle(EffectTiming.EndTurn);
+            if(!areaCard.atArea())return;
+
+
             if(areaCard instanceof FollowCard followCard && followCard.equipped()){
                 EquipmentCard equipment = followCard.getEquipment();
-                List<AreaCard.Event.EffectEnd> effectEnds = equipment.getEffectEnds();
-                if(!effectEnds.isEmpty()){
-                    msg(areaCard.getNameWithOwner() + "发动其装备"+equipment.getName()+"的回合结束效果");
-                    effectEnds.forEach(effectEnd -> effectEnd.effect().apply());
-                }
+                equipment.useEffectsAndSettle(EffectTiming.EndTurn);
             }
         });
 
-        // 查找牌堆是否有瞬召卡牌
-        Map<String, Card> nameCard =
+        // 查找牌堆是否有瞬召卡牌，同名字卡牌各取一张
+        Map<String, GameObj> nameCard =
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
-        List<Card> canInvocation =
-            new ArrayList<>(nameCard.values().stream()
-                .filter(card -> !card.getInvocationEnds().isEmpty())
-                .toList());
 
-        // 法术卡揭示到手牌
-        while(thisPlayer().getHand().size() < thisPlayer().getHandMax()){
-            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof SpellCard).findFirst();
-            if(first.isEmpty()) break;
-
-            // region 从牌堆召唤到手牌
-            SpellCard card = (SpellCard)first.get();
-            AtomicBoolean summon = new AtomicBoolean(false);
-            card.getInvocationBegins().stream()
-                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
-                .findFirst().ifPresent(invocationBegin -> {
-                    if(!summon.get()){
-                        // 触发第一个效果时，揭示
-                        msg(thisPlayer().getName()+"揭示了"+card.getName());
-                        thisPlayer().getHand().add(card);
-                        thisPlayer().getDeck().remove(card);
-                        summon.set(true);
-                    }
-                    invocationBegin.effect().apply();
-                });
-            canInvocation.remove(card);
-            // endregion
-
-        }
-        // 瞬念召唤到场上
-        while(thisPlayer().getArea().size() < thisPlayer().getAreaMax()){
-            Optional<Card> first = canInvocation.stream().filter(card -> card instanceof AreaCard).findFirst();
-            if(first.isEmpty()) break;
-
-            // region 从牌堆召唤到场上
-            AreaCard card = (AreaCard)first.get();
-            AtomicBoolean summon = new AtomicBoolean(false);
-            card.getInvocationBegins().stream()
-                .filter(invocationBegin -> invocationBegin.canBeTriggered().test())
-                .findFirst().ifPresent(invocationBegin -> {
-                    if(!summon.get()){
-                        // 触发第一个效果时，召唤
-                        msg(thisPlayer().getName()+"发动瞬念召唤");
-                        thisPlayer().summon(card);
-                        thisPlayer().getDeck().remove(card);
-                        summon.set(true);
-                    }
-                    invocationBegin.effect().apply();
-                });
-
-            canInvocation.remove(card);
-            // endregion
-        }
+        // 瞬召卡牌
+        useEffectBatch(new ArrayList<>(nameCard.values()),EffectTiming.InvocationEnd);
     }
 
+    // endregion turn
+
+    // region describe
     public String describeArea(UUID uuid){
         StringBuilder sb = new StringBuilder();
         PlayerInfo player = playerByUuid(uuid);
@@ -641,4 +591,5 @@ public class GameInfo {
 
         return sb.toString();
     }
+    // endregion describe
 }

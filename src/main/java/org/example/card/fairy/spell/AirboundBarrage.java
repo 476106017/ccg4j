@@ -30,8 +30,7 @@ public class AirboundBarrage extends SpellCard {
                 .map(areaCard -> (GameObj)areaCard).toList(),true,
             gameObjs -> {
                 ((AreaCard) gameObjs).backToHand();
-                Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()).damaged(this,3);
-            }
-        ));
+                info.damageEffect(this, Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()),3);
+            }));
     }
 }

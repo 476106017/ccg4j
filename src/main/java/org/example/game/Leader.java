@@ -31,6 +31,9 @@ public abstract class Leader extends GameObj {
     public String getNameWithOwner(){
         return ownerPlayer().getName()+"的主战者【"+getName()+"】";
     };
+    public Integer getHp(){
+        return ownerPlayer().getHp();
+    };
 
     private List<Effect> effects = new ArrayList<>();
 
@@ -58,17 +61,8 @@ public abstract class Leader extends GameObj {
 
 
     public void damaged(GameObj from,int damage){
-        damaged(new Damage(from,this,damage));
+        new Damage(from,this,damage).apply();
     }
-    public void damaged(Damage damage){
-        GameInfo info = ownerPlayer().getInfo();
-
-        damage.apply();
-
-        info.msg(getNameWithOwner()+"受到了来自"+damage.getFrom().getName()+"的"+damage.getDamage()+"点伤害！" +
-            "（剩余"+ownerPlayer().getHp()+"点生命值）");
-    }
-
 
     public void addEffect(Effect newEffect,boolean only){
         newEffect.setOwnerObj(this);

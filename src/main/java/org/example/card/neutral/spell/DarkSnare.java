@@ -3,6 +3,7 @@ package org.example.card.neutral.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
@@ -47,20 +48,16 @@ public class DarkSnare extends SpellCard {
                 targetable.addAll(info.oppositePlayer().getAreaFollows());
                 return targetable;
             },
-            1,
-            targets->{
-                GameObj target = targets.get(0);
-                Integer darkSnareDamage = getCount();
-                Damage damage = new Damage(this, target, darkSnareDamage);
+            true,
+            target->{
                 if(target instanceof FollowCard followCard){
-                    followCard.damaged(damage);
+                    info.damageEffect(this,followCard,getCount());
                 } else if (target instanceof Leader leader) {
-                    leader.damaged(damage);
+                    leader.damaged(this,getCount());
                 }
-            }
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.Boost,
-            card-> card.getCost()>=5,
+            }));
+        addEffects((new Effect(this,this, EffectTiming.Boost,
+            card-> ((Card)card).getCost()>=5,
             card->{
                 List<AreaCard> follows = info.oppositePlayer().getArea()
                     .stream().filter(areaCard -> "随从".equals(areaCard.getType()))
@@ -68,11 +65,11 @@ public class DarkSnare extends SpellCard {
                 if(!follows.isEmpty()){
                     int randIndex = new Random().nextInt(follows.size());
                     FollowCard followCard = (FollowCard) follows.get(randIndex);
-                    followCard.damaged(new Damage(this,followCard,getCount()));
+                    info.damageEffect(this,followCard,getCount());
                 }
             }
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenKill, followCard -> count()));
+        )));
+        addEffects((new Effect(this,this, EffectTiming.WhenKill, followCard -> count())));
     }
 
 }

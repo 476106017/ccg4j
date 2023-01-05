@@ -2,8 +2,9 @@ package org.example.card.nemesis.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,10 @@ public class WorldEliminator extends FollowCard {
     public WorldEliminator() {
         setMaxHp(getHp());
         getKeywords().add("突进");
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().addHpMax(2);
             ownerPlayer().heal(2);
-        }));
+        })));
     }
 
 }

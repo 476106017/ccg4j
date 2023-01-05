@@ -3,6 +3,7 @@ package org.example.card.stalker.spell.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -25,7 +26,6 @@ public class Vanish extends SpellCard {
         setPlay(new Play(
             () -> {
                 // TODO 要同时触发离场时
-            }
-        ));
+            }));
     }
 }

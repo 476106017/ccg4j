@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -24,13 +25,12 @@ public class Shadowstep extends SpellCard {
 
     public Shadowstep() {
         setPlay(new Play(
-            () -> ownerPlayer().getAreaFollowsAsGameObj(),1,
-            gameObjs -> {
-                AreaCard areaCard = (AreaCard)gameObjs.get(0);
+            () -> ownerPlayer().getAreaFollowsAsGameObj(),true,
+            gameObj -> {
+                AreaCard areaCard = (AreaCard)gameObj;
                 areaCard.backToHand();
                 int newCost = areaCard.getCost()-2;
                 areaCard.setCost(Math.max(newCost, 0));
-            }
-        ));
+            }));
     }
 }

@@ -25,6 +25,7 @@ import org.example.card.rule.amulet.MahjongTable;
 import org.example.card.stalker.follow.LabRecruiter;
 import org.example.card.stalker.spell.spell.Preparation;
 import org.example.card.stalker.spell.spell.Shadowstep;
+import org.example.card.test.folow.TestFollow;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class DeckPreset {
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
         ));
         decks.put("测试牌组",List.of(
-            LabRecruiter.class, LabRecruiter.class, LabRecruiter.class, LabRecruiter.class
+            TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class
         ));
     }
 

@@ -25,7 +25,6 @@ public class Preparation extends SpellCard {
     public String subMark = "";
 
     public Map<SpellCard,Integer> cutCosts = new HashMap<>();
-    public Map<SpellCard, Event.Play> clearEffects = new HashMap<>();
 
     public Preparation() {
         setPlay(new Play(
@@ -37,22 +36,17 @@ public class Preparation extends SpellCard {
                         cutCosts.put(spellCard,cutCost);
 
                         // 打出后伺机待发临时效果消失
-                        Event.Play clearEffect = new Event.Play(() -> {
+                        Play clearEffect = new Play(() -> {
                             // 其他牌增费
-                            cutCosts.forEach((spellCard1, cutCost1) ->
-                                spellCard1.setCost(spellCard1.getCost() + cutCost1));
-                            cutCosts.clear();
-
-                            // 清除其他牌的临时效果
-                            clearEffects.forEach((spellCard1, play) -> {
-                                if(spellCard1.atHand()) spellCard1.getPlays().remove(play);
-                            });
-                        });
-                        spellCard.getPlays().add(clearEffect);
-                        clearEffects.put(spellCard,clearEffect);
+                            ownerPlayer().getHand().forEach(other -> {
+                                if(other instanceof SpellCard otherSpell)
+                                    otherSpell.getEffectsFrom(this).forEach(effect ->
+                                        cutCosts.computeIfPresent(otherSpell,(k,v)->{
+                                            k.setCost(k.getCost() + v);
+                                            return 0;}));});});
+                        spellCard.setPlay(clearEffect);
                     }
                 });
-            }
-        ));
+            }));
     }
 }

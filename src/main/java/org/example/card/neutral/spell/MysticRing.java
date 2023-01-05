@@ -38,8 +38,7 @@ public class MysticRing extends SpellCard {
                 Card target = (Card)obj;
                 ownerPlayer().backToDeck(target);
                 ownerPlayer().draw(1);
-            }
-        ));
+            }));
     }
 
 }

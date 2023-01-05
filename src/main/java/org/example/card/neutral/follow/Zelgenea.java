@@ -2,13 +2,12 @@ package org.example.card.neutral.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
-import org.example.game.Damage;
-import org.example.game.Play;
+import org.example.game.*;
 import org.example.system.Lists;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,43 +45,22 @@ public class Zelgenea extends FollowCard {
                     .ifPresent(followCard -> followCard.destroyedBy(this));
             }
         }));
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
+        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> info.getTurn() == 10,
             ()->{
                 addStatus(5,5);
                 addKeyword("突进");
-                getEffects().add(new Effect(this,this, EffectTiming.WhenAttack,damage -> {
-                    ownerPlayer().getLeader().addEffect(this, EffectTiming.EndTurn,()->{
-                        // 主战者扣血
-                        ownerPlayer().getLeader().damaged(this,4);
-                        enemyPlayer().getLeader().damaged(this,4);
-                        // 敌方随从扣血
-                        enemyPlayer().getAreaFollowsAsFollow()
-                            .forEach(followCard -> {
-                                Damage dmg = new Damage(this, followCard, 4);
-                                followCard.damagedWithoutSettle(dmg);
-                            });
-                        // 我方随从扣血
-                        ownerPlayer().getAreaFollowsAsFollow()
-                            .forEach(followCard -> {
-                                Damage dmg = new Damage(this, followCard, 4);
-                                followCard.damagedWithoutSettle(dmg);
-                            });
-                        // 敌方随从结算
-                        enemyPlayer().getAreaFollowsAsFollow()
-                            .forEach(followCard -> {
-                                Damage dmg = new Damage(this, followCard, 4);
-                                followCard.damageSettlement(dmg);
-                            });
-                        // 我方随从结算
-                        ownerPlayer().getAreaFollowsAsFollow()
-                            .forEach(followCard -> {
-                                Damage dmg = new Damage(this, followCard, 4);
-                                followCard.damageSettlement(dmg);
-                            });
-                    } );
-                }));
+                addEffects((new Effect(this,this, EffectTiming.WhenAttack,damage -> {
+                    ownerPlayer().getLeader().addEffect(new Effect(this, ownerPlayer().getLeader(), EffectTiming.EndTurn,()->{
+                        List<GameObj> objs = new ArrayList<>();
+                        objs.add(ownerPlayer().getLeader());
+                        objs.add(enemyPlayer().getLeader());
+                        objs.addAll(enemyPlayer().getAreaFollows());
+                        objs.addAll(ownerPlayer().getAreaFollows());
+                        info.damageMulti(this,objs,4);
+                    } ),true);
+                })));
             }
-        ));
+        )));
     }
 }

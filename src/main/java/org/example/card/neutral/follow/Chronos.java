@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -29,14 +30,16 @@ public class Chronos extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("突进");
         setPlay(new Play(()->{
-            ownerPlayer().getLeader().addEffect(this, EffectTiming.EndTurn, ()->
+            ownerPlayer().getLeader().addEffect(new Effect(this, ownerPlayer().getLeader(), EffectTiming.EndTurn, ()->
                 ownerPlayer().getAreaFollowsAsFollow().stream()
                     .max(Comparator.comparing(FollowCard::getAtk))
-                    .ifPresent(followCard -> ownerPlayer().draw(followCard.getAtk())));
-            enemyPlayer().getLeader().addEffect(this, EffectTiming.EndTurn, ()->
+                    .ifPresent(followCard -> ownerPlayer().draw(followCard.getAtk())))
+                ,true);
+            enemyPlayer().getLeader().addEffect(new Effect(this, enemyPlayer().getLeader(), EffectTiming.EndTurn, ()->
                 enemyPlayer().getAreaFollowsAsFollow().stream()
                     .max(Comparator.comparing(FollowCard::getAtk))
-                    .ifPresent(followCard -> enemyPlayer().draw(followCard.getAtk())));
+                    .ifPresent(followCard -> enemyPlayer().draw(followCard.getAtk())))
+                ,true);
         }));
     }
 }

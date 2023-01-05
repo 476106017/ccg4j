@@ -2,8 +2,9 @@ package org.example.card.deathnote.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -30,8 +31,8 @@ public class YagamiLight  extends FollowCard {
 
     public YagamiLight() {
         setMaxHp(getHp());
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             enemyPlayer().getLeader().damaged(this,getCount());
-        }));
+        })));
     }
 }

@@ -2,8 +2,9 @@ package org.example.card.nemesis.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -26,8 +27,8 @@ public class AnalyzingArtifact  extends FollowCard {
 
     public AnalyzingArtifact() {
         setMaxHp(getHp());
-        getEffects().add(new Effect(this,this, EffectTiming.DeathRattle,)->{
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().draw(1);
-        }));
+        })));
     }
 }

@@ -1,7 +1,6 @@
 package org.example.constant;
 
 import lombok.Getter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.Damage;
@@ -24,13 +23,21 @@ public enum EffectTiming {
     WhenNoLongerAtArea("不在场时"),
     DeathRattle("亡语"),
     /**
+     * 我方出牌
+     */
+    WhenPlay("我方出牌时",Card.class),
+    /**
+     * 敌方出牌
+     */
+    WhenEnemyPlay("敌方出牌时",Card.class),
+    /**
      * 我方召唤（召唤的卡牌）
      */
-    WhenSummon("我方召唤时",AreaCard.class),
+    WhenSummon("我方召唤时",List.class),
     /**
      * 敌方召唤（召唤的卡牌）
      */
-    WhenEnemySummon("敌方召唤时",AreaCard.class),
+    WhenEnemySummon("敌方召唤时",List.class),
     /**
      * 我方抽牌（抽到的卡牌）
      */
@@ -83,6 +90,7 @@ public enum EffectTiming {
      * 激励时
      */
     WhenLeaderSkill("激励时"),
+
     ;
 
     private String name;
@@ -102,5 +110,4 @@ public enum EffectTiming {
         this.paramClass = param;
         this.secret = secret;
     }
-
 }

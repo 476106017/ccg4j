@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.game.PlayerInfo;
 import org.example.system.Lists;
@@ -39,9 +41,8 @@ public class Bahamut extends FollowCard {
         setPlay(new Play(() -> {
                 List<AreaCard> area = enemyPlayer().getArea();
                 destroy(area);
-            }
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationEnd,
+            }));
+        addEffects((new Effect(this,this, EffectTiming.InvocationEnd,
             ()-> ownerPlayer().getCount(ALL_COST) >= 50,
             ()->{
                 PlayerInfo oppositePlayer = info.oppositePlayer();
@@ -49,7 +50,6 @@ public class Bahamut extends FollowCard {
                 if (deck.size()>5) {
                     deck.removeAll(deck.subList(5,deck.size()));
                 }
-            }
-        ));
+            })));
     }
 }

@@ -2,9 +2,10 @@ package org.example.card.nemesis.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,21 +31,20 @@ public class MagisterialDreadnought extends FollowCard {
 
     public MagisterialDreadnought() {
         setMaxHp(getHp());
-        getEffects().add(new Effect(this,this, EffectTiming.Entering,)->{
+        addEffects((new Effect(this,this, EffectTiming.Entering, obj->{
             ownerPlayer().summon(createCard(WorldEliminator.class));
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.Leaving,)->{
+        })));
+        addEffects((new Effect(this,this, EffectTiming.Leaving, obj->{
             List<Card> addCards = new ArrayList<>();
             addCards.add(createCard(RuinerOfEden.class));
             addCards.add(createCard(RuinerOfEden.class));
             ownerPlayer().addDeck(addCards);
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationBegin,
+        })));
+        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> ownerPlayer().getGraveyard().stream()
                 .filter(card -> card instanceof FollowCard followCard && followCard.getCost() >= 5)
                 .count() >= 5,
-            ()->{}
-        ));
+            ()->{})));
     }
 
 }

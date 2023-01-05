@@ -90,10 +90,7 @@ public abstract class Card extends GameObj {
     public void removeWhenAtArea(){
         if(atArea() && this instanceof AreaCard areaCard) {
             ownerPlayer().getArea().remove(this);
-            if(!areaCard.getWhenNoLongerAtAreas().isEmpty()) {
-                info.msg(getNameWithOwner() + "在场时效果消失！");
-                areaCard.getWhenNoLongerAtAreas().forEach(noLongerAtArea -> noLongerAtArea.effect().apply());
-            }
+            areaCard.useEffects(EffectTiming.WhenNoLongerAtArea);
         }
     }
 
@@ -201,17 +198,22 @@ public abstract class Card extends GameObj {
 
         // region 发动卡牌效果
         if(getPlay() != null){
-            if (this instanceof AreaCard) {
-                info.msg(getNameWithOwner() + "发动战吼");
+            // 如果必须传目标，没有可选择目标时不发动效果
+            if(getPlay().mustTarget() && targets.isEmpty()){
+                info.msg(getNameWithOwner() + "因为没有目标而无法发动效果！");
+            }else {
+                if (this instanceof AreaCard) {
+                    info.msg(getNameWithOwner() + "发动战吼");
+                }
+                getPlay().effect().accept(choice,targets);
             }
-            getPlay().effect().accept(choice,targets);
         }
         // endregion 发动卡牌效果
 
         // 触发手牌上全部增幅效果
         String boostCards = ownerPlayer().getHandCopy().stream().map(card -> card.getEffects(EffectTiming.Boost))
             .flatMap(Collection::stream)
-            .filter(boost -> boost.getEffect().test(this))
+            .filter(boost -> boost.getCanEffect().test(this))
             .map(effect -> effect.getOwnerObj().getName()).collect(Collectors.joining("、"));
         if(!boostCards.isEmpty()){
             info.msgToThisPlayer(boostCards + "发动增幅效果");

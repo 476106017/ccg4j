@@ -32,10 +32,10 @@ public class InsectLord extends FollowCard {
     public InsectLord() {
         setMaxHp(getHp());
         setPlay(new Play(
-            ()->enemyPlayer().getAreaFollowsAsGameObj(), 1,
+            ()->enemyPlayer().getAreaFollowsAsGameObj(), false,
             targets->{
-                FollowCard followCard = (FollowCard) targets.get(0);
-                followCard.damaged(this,ownerPlayer().getCount(PLAY_NUM));
+                FollowCard followCard = (FollowCard) targets;
+                info.damageEffect(this,followCard,ownerPlayer().getCount(PLAY_NUM));
             }));
     }
 }

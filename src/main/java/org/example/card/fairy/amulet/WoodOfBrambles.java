@@ -5,12 +5,13 @@ import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
 import org.example.card.fairy.follow.Fairy;
+import org.example.constant.EffectTiming;
+import org.example.game.Damage;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Getter
@@ -30,36 +31,36 @@ public class WoodOfBrambles extends AmuletCard {
         """;
     public String subMark = "";
 
-    private Map<FollowCard, FollowCard.Event.WhenBattle> effectFollows = new HashMap<>();
-
     public WoodOfBrambles() {
         setPlay(new Play(()->{
             ownerPlayer().addHand(createCard(Fairy.class));
             ownerPlayer().addHand(createCard(Fairy.class));
         }));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenAtArea,)->
+        addEffects((new Effect(this,this, EffectTiming.WhenAtArea, ignored->
             ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
-                FollowCard.Event.WhenBattle whenBattle = new FollowCard.Event.WhenBattle(damage -> {
+                followCard.addEffects(new Effect(this,followCard,EffectTiming.WhenBattle,
+                obj -> {
+                    Damage damage = (Damage) obj;
                     FollowCard another = (FollowCard) damage.another(followCard);
-                    another.damaged(followCard, 1);
-                });
-                followCard.getWhenBattles().add(whenBattle);
-                effectFollows.put(followCard,whenBattle);
+                    info.damageEffect(followCard,another,1);
+                    info.damageEffect(followCard,another,1);
+                }));
             })
-        ));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
+        )));
+        addEffects((new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
-                FollowCard.Event.WhenBattle whenBattle = new FollowCard.Event.WhenBattle(damage -> {
+                followCard.addEffects(new Effect(this,followCard,EffectTiming.WhenBattle,
+                obj -> {
+                    Damage damage = (Damage) obj;
                     FollowCard another = (FollowCard) damage.another(followCard);
-                    another.damaged(followCard, 1);
-                });
-                followCard.getWhenBattles().add(whenBattle);
-                effectFollows.put(followCard,whenBattle);
+                    info.damageEffect(followCard,another,1);
+                }));
             }
-        }));
-        getEffects().add(new Effect(this,this, EffectTiming.WhenNoLongerAtArea,)->
-            effectFollows.forEach(((followCard, whenBattle) -> followCard.getWhenBattles().remove(whenBattle)))
-        ));
+        })));
+        addEffects((new Effect(this,this, EffectTiming.WhenNoLongerAtArea, obj->
+            ownerPlayer().getAreaFollowsAsFollow().forEach(followCard ->
+                followCard.getEffects().removeIf(effect -> effect.getParent().equals(this)))
+        )));
     }
 
 }

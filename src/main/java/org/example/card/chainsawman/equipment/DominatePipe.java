@@ -24,9 +24,7 @@ public class DominatePipe extends EquipmentCard {
     public String subMark = "";
 
     public DominatePipe() {
-        setPlay(new Play(ArrayList::new
-            , 0,gameObjs -> {}
-        ));
+        setPlay(new Play(()->new ArrayList<>()));
 
     }
 }

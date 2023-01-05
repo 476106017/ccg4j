@@ -2,8 +2,9 @@ package org.example.card.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -27,9 +28,8 @@ public class Fairy extends FollowCard {
 
     public Fairy() {
         setMaxHp(getHp());
-        getEffects().add(new Effect(this,this, EffectTiming.InvocationEnd,
+        addEffects((new Effect(this,this, EffectTiming.InvocationEnd,
             ()->ownerPlayer().getPpNum() == 1,
-            ()->{}
-        ));
+            ()->{})));
     }
 }
