@@ -28,10 +28,13 @@ public class GameInfo {
     int turnPlayer;
     boolean gameset;
     ScheduledFuture<?> rope;
-
-    public record Event(GameObj obj,EffectTiming timing,Object param){};
-    List<Event> events = new LinkedList<>();
+    List<Damage> incommingDamages = new ArrayList<>();
+    Map<Card,EventType> events = new HashMap<>();
     List<Effect.EffectInstance> effectInstances = new LinkedList<>();
+
+    public boolean hasEvent(){
+        return !incommingDamages.isEmpty() || !events.isEmpty();
+    }
 
     PlayerInfo[] playerInfos;
 
@@ -69,12 +72,26 @@ public class GameInfo {
             gameset(thisPlayer());
     }
     public void measureFollows(){
-        thisPlayer().getAreaFollowsAsFollow().stream()
-            .filter(followCard -> followCard.getDestroyedBy()!=null)
-            .forEach(followCard -> followCard.destroyedBy(followCard.getDestroyedBy()));
-        oppositePlayer().getAreaFollowsAsFollow().stream()
-            .filter(followCard -> followCard.getDestroyedBy()!=null)
-            .forEach(followCard -> followCard.destroyedBy(followCard.getDestroyedBy()));
+        msg("——————结算卡牌状态——————");
+        // 立即结算受伤状态
+        List<Damage> incommingDamagesCopy = new ArrayList<>(incommingDamages);
+        incommingDamages = new ArrayList<>();
+        incommingDamagesCopy.forEach(damage->{
+            damage.getTo().useEffects(EffectTiming.AfterDamaged,damage);
+        });
+
+        Map<Card, EventType> eventsCopy = events;
+        events = new HashMap<>();
+        // 再结算其他状态
+        eventsCopy.forEach((card, type) -> {
+            switch (type){
+                case Destroy -> {
+                    if(card instanceof AreaCard areaCard) areaCard.destroyed();
+                }
+            }
+        });
+
+        assert incommingDamages.isEmpty() && events.isEmpty();
     }
 
     public void gameset(PlayerInfo winner){
@@ -116,10 +133,16 @@ public class GameInfo {
     }
 
     // region effect
-    public void addEvent(GameObj obj,EffectTiming timing,Object param){
-        events.add(new Event(obj,timing,param));
+    public boolean addEvent(Card card,EventType type){
+        EventType oldType = events.get(card);
+        if(oldType != null){
+//            msg(card.getNameWithOwner() + "已经被" + oldType.getName() + "，无法再被" + type.getName());
+            return false;
+        }
+//        msg(card.getNameWithOwner() + "的" + type.getName() + "状态已加入队列");
+        events.put(card,type);
+        return true;
     }
-
     public void useCardEffectBatch(List<Card> cards, EffectTiming timing){
         List<GameObj> gameObjs = cards.stream().map(p -> (GameObj) p).toList();
         tempEffectBatch(gameObjs,timing);
@@ -148,8 +171,8 @@ public class GameInfo {
     public void tempEffect(Effect.EffectInstance instance){
         Effect effect = instance.getEffect();
         effectInstances.add(instance);
-        msg(effect.getOwnerObj().getIdWithOwner()+"的【"+effect.getTiming().getName()+"】效果已加入队列" +
-            "（队列现在有" + effectInstances.size() + "个效果）");
+//        msg(effect.getOwnerObj().getNameWithOwner()+"的【"+effect.getTiming().getName()+"】效果已加入队列" +
+//            "（队列现在有" + effectInstances.size() + "个效果）");
     }
 
     // 结算效果
@@ -166,25 +189,25 @@ public class GameInfo {
         if(deep==0){
             msg("停止连锁！不再触发任何效果");
             effectInstances.clear();
+            events.clear();
             return;
         }
-        if(effectInstances.isEmpty()) return;
+        if(!hasEvent()) return;
 
-
-
-        msg("——————开始触发效果——————");
-        consumeEffectOnce();
+//        msg("——————开始触发事件——————");
         measureFollows();
-        msg("——————停止触发效果——————");
+//        msg("——————开始触发效果——————");
+        consumeEffect();
+//        msg("——————停止触发效果——————");
 
-        if(!effectInstances.isEmpty()){
-            msg("——————效果连锁（"+deep+"）——————");
+        if(hasEvent()){
+            msg("——————事件连锁（"+deep+"）——————");
             consumeEffectChain(deep - 1);
         }
     }
-    public void consumeEffectOnce(){
-        List<Effect.EffectInstance> copy = new LinkedList<>(effectInstances);
-        copy.sort((o1, o2) -> {
+    public void consumeEffect(){
+        if(effectInstances.isEmpty()) return;
+        effectInstances.sort((o1, o2) -> {
             for (EffectTiming value : EffectTiming.values()) {
                 if(value.equals(o1.getEffect().getTiming()))
                     return -1;
@@ -193,8 +216,12 @@ public class GameInfo {
             }
             return 0;
         });
-        copy.forEach(Effect.EffectInstance::consume);
-        effectInstances.removeAll(copy);
+        ArrayList<Effect.EffectInstance> instances = new ArrayList<>(effectInstances);
+        instances.forEach(Effect.EffectInstance::consume);
+
+        assert effectInstances.isEmpty();// 效果只能产生事件，事件消费步骤前不能产生效果！
+
+        effectInstances.clear();
     }
     // endregion effect
 
@@ -202,7 +229,7 @@ public class GameInfo {
     // region event
 
     public void transform(Card fromCard, Card toCard){
-        msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getName());
+        msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getId());
         if(fromCard.atArea()){
             List<AreaCard> area = fromCard.ownerPlayer().getArea();
             int index = area.indexOf(fromCard);
@@ -475,13 +502,13 @@ public class GameInfo {
             Card card = oppositePlayer.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
-                .append(card.getName()).append("\t");
+                .append(card.getId()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
                 sb.append(follow.getAtk()).append("/").append(follow.getHp())
                     .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getName());
+                    sb.append("装备中：").append(follow.getEquipment().getId());
                     if(follow.getEquipment().getCountdown()!=-1)
                         sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
                     sb.append("\t");
@@ -529,7 +556,7 @@ public class GameInfo {
             Card card = player.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
-                .append(card.getName()).append("\t");
+                .append(card.getId()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
                 if(follow.getTurnAttack() < follow.getTurnAttackMax() && (// 回合可攻击数没有打满
@@ -539,7 +566,7 @@ public class GameInfo {
                 sb.append(follow.getAtk()).append("/").append(follow.getHp())
                     .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getName());
+                    sb.append("装备中：").append(follow.getEquipment().getId());
                     if(follow.getEquipment().getCountdown()!=-1)
                         sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
                     sb.append("\t");

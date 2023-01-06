@@ -69,7 +69,7 @@ public class DamageMulti {
                         fromFollow.ownerPlayer().heal(damage.getDamage());
                     }
                 }
-                toFollow.tempEffects(EffectTiming.AfterDamaged,damage);
+                toFollow.setIncommingDamage(damage);
             }else if (damage.getTo() instanceof Leader leader){
                 leader.getInfo().getAreaCardsCopy().forEach(areaCard -> areaCard.tempEffects(EffectTiming.AfterLeaderDamaged,damage));
                 leader.tempEffects(EffectTiming.AfterLeaderDamaged,damage);

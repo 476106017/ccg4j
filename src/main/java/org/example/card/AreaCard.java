@@ -3,6 +3,7 @@ package org.example.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.EffectTiming;
+import org.example.game.EventType;
 import org.example.game.GameObj;
 
 
@@ -13,6 +14,11 @@ public abstract class AreaCard extends Card{
 
     // 准备破坏
     public GameObj destroyedBy = null;
+
+    public void setDestroyedBy(GameObj destroyedBy) {
+        if(info.addEvent(this,EventType.Destroy))
+            this.destroyedBy = destroyedBy;
+    }
 
     public void backToHand(){
         if(!atArea())return;
@@ -39,15 +45,18 @@ public abstract class AreaCard extends Card{
 
         tempEffects(EffectTiming.WhenBackToHand);
     }
+    public boolean destroyed(){
+        return destroyedBy!=null && destroyedBy(destroyedBy);
+    }
 
     public boolean destroyedBy(GameObj from){
         if(!atArea())return false;
 
         if(hasKeyword("无法破坏")) {
-            info.msg(getIdWithOwner() + "无法破坏！");
+            info.msg(getNameWithOwner() + "无法破坏！");
             return false;
         }
-        info.msg(getIdWithOwner() + "被"+from.getIdWithOwner()+"破坏！");
+        info.msg(getNameWithOwner() + "被"+from.getNameWithOwner()+"破坏！");
         death();
         if(this instanceof FollowCard thisFollow && from instanceof Card card){
             card.tempEffects(EffectTiming.WhenKill,thisFollow);

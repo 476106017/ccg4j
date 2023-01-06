@@ -261,7 +261,7 @@ public class GameHandler {
         }
         Card myCard = player.getArea().get(indexI - 1);
         if(myCard instanceof AmuletCard amuletCard){
-            info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getName());
+            info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getId());
             return;
         } else if (myCard instanceof FollowCard followCard) {
             if(followCard.getTurnAge() == 0 &&
@@ -300,7 +300,7 @@ public class GameHandler {
             myFollow.attack(enemy.getLeader());
             return;
         } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
-            info.msgToThisPlayer("无法攻击护符卡:"+amuletCard.getName());
+            info.msgToThisPlayer("无法攻击护符卡:"+amuletCard.getId());
             return;
         }
         FollowCard myFollow = (FollowCard) myCard;
@@ -352,7 +352,7 @@ public class GameHandler {
                         // 卡牌属于哪方
                         PlayerInfo ownerPlayer = targetCard.ownerPlayer();
                         sb.append(ownerPlayer == player ? "我方\t":"敌方\t")
-                            .append(targetCard.getName()).append("\t");
+                            .append(targetCard.getId()).append("\t");
                         if(gameObj instanceof FollowCard followCard){
                             sb.append("随从\t")
                                 .append(followCard.getAtk()).append("/").append(followCard.getHp());

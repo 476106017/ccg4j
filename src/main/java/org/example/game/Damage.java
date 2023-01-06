@@ -66,6 +66,6 @@ public class Damage{
 
 
     public void apply(){
-        new DamageMulti(to.getInfo(), List.of(this));
+        new DamageMulti(to.getInfo(), List.of(this)).apply();
     }
 }

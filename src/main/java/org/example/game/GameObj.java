@@ -34,12 +34,8 @@ public abstract class GameObj {
     }
 
     public String getNameWithOwner(){
-        return ownerPlayer().getName()+"的"+getName();
-    };
-    public String getIdWithOwner(){
         return ownerPlayer().getName()+"的"+getId();
     };
-
     public void initCounter(){}
 
 
@@ -104,7 +100,7 @@ public abstract class GameObj {
     public <T extends Card> T createCard(Class<T> clazz){
         try {
             T card = clazz.getDeclaredConstructor().newInstance();
-            info.msg(getNameWithOwner()+"创造了"+card.getName());
+            info.msg(getNameWithOwner()+"创造了"+card.getId());
             card.setParent(this); ;
             card.setOwner(getOwner());
             card.setInfo(getInfo());

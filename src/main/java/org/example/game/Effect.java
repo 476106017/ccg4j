@@ -98,7 +98,7 @@ public class Effect{
 
         public void consume() {
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             }catch (Exception ignored){}
             if(effect.getCanEffect().test(param)){
                 GameObj effectOwnerCard = effect.getOwnerObj();
@@ -130,9 +130,9 @@ public class Effect{
                 // endregion 判断结算时是否在场
 
                 if(effect.getTiming().isSecret())
-                    info.msgTo(ownerPlayer.getUuid(),effectOwnerCard.getIdWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
+                    info.msgTo(ownerPlayer.getUuid(),effectOwnerCard.getNameWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
                 else
-                    info.msg(effectOwnerCard.getIdWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
+                    info.msg(effectOwnerCard.getNameWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
                 // region 瞬召卡片要在发动效果前召唤/揭示
                 if(effect.getTiming().equals(EffectTiming.InvocationBegin) || effect.getTiming().equals(EffectTiming.InvocationEnd)){
                     if(effectOwnerCard instanceof AreaCard areaCard){

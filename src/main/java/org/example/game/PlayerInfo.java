@@ -251,7 +251,7 @@ public class PlayerInfo {
     }
 
     public void summon(List<AreaCard> summonedCards){
-        info.msg(getName() + "召唤了" + summonedCards.stream().map(AreaCard::getName).collect(Collectors.joining("、")));
+        info.msg(getName() + "召唤了" + summonedCards.stream().map(AreaCard::getId).collect(Collectors.joining("、")));
         addArea(summonedCards);
         info.tempAreaCardEffectBatch(summonedCards,EffectTiming.Entering);
 
@@ -284,7 +284,7 @@ public class PlayerInfo {
             Card card = graveyard.get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
-                .append(card.getName()).append("\t")
+                .append(card.getId()).append("\t")
                 .append(card.getCost()).append("\t")
                 .append(card.getRace()).append("\t");
             if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
@@ -303,7 +303,7 @@ public class PlayerInfo {
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getCost()).append("\t")
                 .append(card.getType()).append("\t")
-                .append(card.getName()).append("\t")
+                .append(card.getId()).append("\t")
                 .append(String.join("/", card.getRace())).append("\t");
             if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
                 sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\t");

@@ -214,7 +214,7 @@ public abstract class Card extends GameObj {
         String boostCards = ownerPlayer().getHandCopy().stream().map(card -> card.getEffects(EffectTiming.Boost))
             .flatMap(Collection::stream)
             .filter(boost -> boost.getCanEffect().test(this))
-            .map(effect -> effect.getOwnerObj().getName()).collect(Collectors.joining("、"));
+            .map(effect -> effect.getOwnerObj().getId()).collect(Collectors.joining("、"));
         if(!boostCards.isEmpty()){
             info.msgToThisPlayer(boostCards + "发动增幅效果");
         }

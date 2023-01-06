@@ -6,6 +6,7 @@ import org.example.constant.CardType;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
+import org.example.game.EventType;
 import org.example.game.GameObj;
 
 import java.util.ArrayList;
@@ -24,7 +25,12 @@ public abstract class FollowCard extends AreaCard{
     private int turnAttackMax = 1;
     private int turnAttack = 0;
     private EquipmentCard equipment;
+    private Damage incommingDamage = null;
 
+    public void setIncommingDamage(Damage incommingDamage) {
+//        info.msg(incommingDamage.getFrom().getId()+"对"+incommingDamage.getTo().getId()+"造成的伤害效果已被记录");
+        info.getIncommingDamages().add(incommingDamage);
+    }
     @Override
     public String getType() {
         return TYPE.getName();
@@ -35,12 +41,12 @@ public abstract class FollowCard extends AreaCard{
         if(equipped()){
             getEquipment().death();
             if(!atArea()){
-                info.msg(getNameWithOwner()+"没来得及装备"+equipmentCard.getName());
+                info.msg(getNameWithOwner()+"没来得及装备"+equipmentCard.getId());
                 equipmentCard.death();
                 return;
             }
         }
-        info.msg(getNameWithOwner() + "成功装备了" + equipmentCard.getName());
+        info.msg(getNameWithOwner() + "成功装备了" + equipmentCard.getId());
         setEquipment(equipmentCard);
         if(equipmentCard.isControl() && getOwner()!=equipmentCard.getOwner()){
             info.msg(getNameWithOwner() + "被"+enemyPlayer().getName()+"控制！");
@@ -130,7 +136,7 @@ public abstract class FollowCard extends AreaCard{
     }
 
     public void attack(GameObj target){
-        info.msg(getNameWithOwner()+"攻击了对手的"+target.getName()+"！");
+        info.msg(getNameWithOwner()+"攻击了对手的"+target.getId()+"！");
 
         turnAttackOnce();// 总之攻击过一次
 
