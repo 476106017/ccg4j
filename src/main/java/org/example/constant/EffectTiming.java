@@ -11,6 +11,9 @@ import java.util.List;
 public enum EffectTiming {
     BeginTurn("回合开始时"),
     EndTurn("回合结束时"),
+    EnemyBeginTurn("敌方回合开始时"),
+    EnemyEndTurn("敌方回合结束时"),
+
 
     InvocationBegin("瞬念召唤（回合开始时）"),
     InvocationEnd("瞬念召唤（回合结束时）"),

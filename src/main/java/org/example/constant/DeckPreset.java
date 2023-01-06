@@ -21,10 +21,12 @@ import org.example.card.neutral.follow.*;
 import org.example.card.neutral.spell.DarkSnare;
 import org.example.card.neutral.spell.MysticRing;
 import org.example.card.neutral.spell.PlanetaryFracture;
+import org.example.card.rule.amulet.BreakingChain;
+import org.example.card.rule.amulet.HearthstoneBattleChess;
 import org.example.card.rule.amulet.MahjongTable;
 import org.example.card.stalker.follow.LabRecruiter;
-import org.example.card.stalker.spell.spell.Preparation;
-import org.example.card.stalker.spell.spell.Shadowstep;
+import org.example.card.stalker.spell.Preparation;
+import org.example.card.stalker.spell.Shadowstep;
 import org.example.card.test.folow.TestFollow;
 
 import java.util.HashMap;
@@ -64,7 +66,8 @@ public class DeckPreset {
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
         ));
         decks.put("测试牌组",List.of(
-            TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class
+            TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,
+            HearthstoneBattleChess.class,HearthstoneBattleChess.class, BreakingChain.class,BreakingChain.class
         ));
     }
 

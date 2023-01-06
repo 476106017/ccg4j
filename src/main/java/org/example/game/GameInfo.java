@@ -21,7 +21,8 @@ public class GameInfo {
     SocketIOServer server;
     String room;
 
-    // 连锁次数
+    // 连锁
+    boolean canChain = true;
     int chainDeep = 10;
     boolean inSettle = false;
     int turn;
@@ -34,6 +35,15 @@ public class GameInfo {
 
     public boolean hasEvent(){
         return !incommingDamages.isEmpty() || !events.isEmpty();
+    }
+
+    public void setCanChain(boolean canChain) {
+        if (canChain)
+            msg("本场游戏已启用连锁");
+        else
+            msg("本场游戏已禁用连锁");
+
+        this.canChain = canChain;
     }
 
     PlayerInfo[] playerInfos;
@@ -72,7 +82,7 @@ public class GameInfo {
             gameset(thisPlayer());
     }
     public void measureFollows(){
-        msg("——————结算卡牌状态——————");
+//        msg("——————结算卡牌状态——————");
         // 立即结算受伤状态
         List<Damage> incommingDamagesCopy = new ArrayList<>(incommingDamages);
         incommingDamages = new ArrayList<>();
@@ -177,23 +187,17 @@ public class GameInfo {
 
     // 结算效果
     public void startEffect(){
+
         if(inSettle)return;
         inSettle = true;
         msg("——————开始结算——————");
+
         consumeEffectChain(chainDeep);
         // 计算主战者死亡状况
         measureLeader();
         inSettle = false;
     }
     public void consumeEffectChain(int deep){
-        if(deep==0){
-            msg("停止连锁！不再触发任何效果");
-            effectInstances.clear();
-            events.clear();
-            return;
-        }
-        if(!hasEvent()) return;
-
 //        msg("——————开始触发事件——————");
         measureFollows();
 //        msg("——————开始触发效果——————");
@@ -201,6 +205,13 @@ public class GameInfo {
 //        msg("——————停止触发效果——————");
 
         if(hasEvent()){
+            if(!canChain || deep==0){
+                msg("停止连锁！本次死亡结算后不触发任何效果");
+                measureFollows();
+                effectInstances.clear();
+                events.clear();
+                return;
+            }
             msg("——————事件连锁（"+deep+"）——————");
             consumeEffectChain(deep - 1);
         }
@@ -410,22 +421,43 @@ public class GameInfo {
         // 主战者技能重置、发动主战者效果
         Leader leader = thisPlayer().getLeader();
         leader.setCanUseSkill(true);
-        leader.useEffectsAndSettle(EffectTiming.BeginTurn);
+        leader.useEffects(EffectTiming.BeginTurn);
         leader.expireEffect();
+
+        Leader enemyLeader = oppositePlayer().getLeader();
+        enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
+        enemyLeader.expireEffect();
+
 
         // 场上随从驻场回合+1、攻击次数清零
         // 发动回合开始效果
         // 场上护符倒数-1
-        thisPlayer().getAreaCopy().forEach(areaCard -> {
+        oppositePlayer().getAreaCopy().forEach(areaCard -> {
             if(!areaCard.atArea())return;
 
-            areaCard.useEffectsAndSettle(EffectTiming.BeginTurn);
+            areaCard.useEffects(EffectTiming.EnemyBeginTurn);
             if(!areaCard.atArea())return;
 
 
             if(areaCard instanceof FollowCard followCard && followCard.equipped()){
                 EquipmentCard equipment = followCard.getEquipment();
-                equipment.useEffectsAndSettle(EffectTiming.BeginTurn);
+                equipment.useEffects(EffectTiming.EnemyBeginTurn);
+            }
+
+            if(areaCard instanceof FollowCard followCard){
+                followCard.setTurnAttack(0);
+            }
+        });
+        thisPlayer().getAreaCopy().forEach(areaCard -> {
+            if(!areaCard.atArea())return;
+
+            areaCard.useEffects(EffectTiming.BeginTurn);
+            if(!areaCard.atArea())return;
+
+
+            if(areaCard instanceof FollowCard followCard && followCard.equipped()){
+                EquipmentCard equipment = followCard.getEquipment();
+                equipment.useEffects(EffectTiming.BeginTurn);
             }
             if(!areaCard.atArea())return;
 
@@ -462,20 +494,36 @@ public class GameInfo {
     public void afterTurn(){
         // 发动主战者效果
         Leader leader = thisPlayer().getLeader();
-        leader.useEffectsAndSettle(EffectTiming.EndTurn);
+        leader.useEffects(EffectTiming.EndTurn);
         leader.expireEffect();
 
+        Leader enemyLeader = oppositePlayer().getLeader();
+        enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
+        enemyLeader.expireEffect();
+
         // 发动回合结束效果
-        thisPlayer().getAreaCopy().forEach(areaCard -> {
+        oppositePlayer().getAreaCopy().forEach(areaCard -> {
             if(!areaCard.atArea())return;
 
-            areaCard.useEffectsAndSettle(EffectTiming.EndTurn);
+            areaCard.useEffects(EffectTiming.EnemyEndTurn);
             if(!areaCard.atArea())return;
 
 
             if(areaCard instanceof FollowCard followCard && followCard.equipped()){
                 EquipmentCard equipment = followCard.getEquipment();
-                equipment.useEffectsAndSettle(EffectTiming.EndTurn);
+                equipment.useEffects(EffectTiming.EnemyEndTurn);
+            }
+        });
+        thisPlayer().getAreaCopy().forEach(areaCard -> {
+            if(!areaCard.atArea())return;
+
+            areaCard.useEffects(EffectTiming.EndTurn);
+            if(!areaCard.atArea())return;
+
+
+            if(areaCard instanceof FollowCard followCard && followCard.equipped()){
+                EquipmentCard equipment = followCard.getEquipment();
+                equipment.useEffects(EffectTiming.EndTurn);
             }
         });
 
@@ -559,8 +607,7 @@ public class GameInfo {
                 .append(card.getId()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
-                if(follow.getTurnAttack() < follow.getTurnAttackMax() && (// 回合可攻击数没有打满
-                    follow.getTurnAge()>0 || follow.hasKeyword("突进") || follow.hasKeyword("疾驰"))){
+                if(follow.notAttacked()){
                     sb.append("未攻击").append("\t");
                 }
                 sb.append(follow.getAtk()).append("/").append(follow.getHp())

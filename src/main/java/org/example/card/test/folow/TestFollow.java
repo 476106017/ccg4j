@@ -49,12 +49,10 @@ public class TestFollow extends FollowCard {
 //            getInfo().msg(getNameWithOwner() + "交战时"))));
         addEffects((new Effect(this,this, EffectTiming.AfterDamaged,damage->
        {
-               getInfo().msg(getNameWithOwner() + "受伤时");
                ownerPlayer().summon(createCard(TestFollow.class));
        })));
         addEffects((new Effect(this,this, EffectTiming.WhenKill,damage->
         {
-            getInfo().msg(getNameWithOwner() + "击杀时");
             getInfo().damageMulti(this,enemyPlayer().getAreaFollowsAsGameObj(),1);
         })));
 //        addEffects((new Effect(this,this, EffectTiming.Exile, obj->

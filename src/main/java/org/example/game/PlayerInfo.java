@@ -28,7 +28,7 @@ public class PlayerInfo {
     int hpMax = 20;
     int step = -1; // 0换牌完成 1使用
     int ppNum = 0;
-    int ppMax = 0;
+    int ppMax = 2;
     int deckMax = 60;
     int handMax = 9;
     int areaMax = 5;
@@ -168,15 +168,15 @@ public class PlayerInfo {
         addArea(List.of(areaCard));
     }
     public void addArea(List<AreaCard> cards){
-        if(area.size() == areaMax) return;
         int i = cards.size() + area.size() - areaMax;
+        List<AreaCard> exileCards = new ArrayList<>();
         if(i>0){
-            List<AreaCard> exileCards = cards.subList(cards.size() - i, cards.size());
+            exileCards = cards.subList(cards.size() - i, cards.size());
+            info.msg(getName()+"的战场放不下了，多出的"+i+"张牌从游戏中除外！");
             info.tempAreaCardEffectBatch(exileCards,EffectTiming.Exile);
-
-            cards.removeAll(exileCards);
         }
         getArea().addAll(cards);
+        getArea().removeAll(exileCards);
         info.tempAreaCardEffectBatch(cards,EffectTiming.WhenAtArea);
     }
 
@@ -224,6 +224,19 @@ public class PlayerInfo {
     public List<AreaCard> getAreaFollowsBy(Predicate<FollowCard> p){
         return getArea().stream()
             .filter(areaCard -> areaCard instanceof FollowCard followCard && p.test(followCard))
+            .toList();
+    }
+    public List<FollowCard> getAreaCanAttackFollows(){
+        List<FollowCard> shogoFollows = getAreaFollowsAsFollowBy(followCard -> followCard.hasKeyword("守护"));
+        if(!shogoFollows.isEmpty())
+            return shogoFollows;
+
+        return getAreaFollowsAsFollow();
+    }
+    public List<FollowCard> getAreaFollowsAsFollowBy(Predicate<FollowCard> p){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard followCard && p.test(followCard))
+            .map(areaCard -> (FollowCard)areaCard)
             .toList();
     }
     public List<GameObj> getAreaFollowsAsGameObj(){

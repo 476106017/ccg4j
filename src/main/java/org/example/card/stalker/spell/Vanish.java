@@ -1,4 +1,4 @@
-package org.example.card.stalker.spell.spell;
+package org.example.card.stalker.spell;
 
 import lombok.Getter;
 import lombok.Setter;

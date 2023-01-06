@@ -6,7 +6,6 @@ import org.example.constant.CardType;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
-import org.example.game.EventType;
 import org.example.game.GameObj;
 
 import java.util.ArrayList;
@@ -34,6 +33,11 @@ public abstract class FollowCard extends AreaCard{
     @Override
     public String getType() {
         return TYPE.getName();
+    }
+
+    public boolean notAttacked(){
+        return getTurnAttack() < getTurnAttackMax() && (// 回合可攻击数没有打满
+            getTurnAge()>0 || hasKeyword("突进") || hasKeyword("疾驰"));
     }
 
     public void equip(EquipmentCard equipmentCard){
@@ -153,11 +157,6 @@ public abstract class FollowCard extends AreaCard{
         info.damageAttacking(this,target);
 
         if(equipped())expireEquipSettlement();
-
-        info.msgTo(ownerPlayer().getUuid(),
-            info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
-        info.msgTo(enemyPlayer().getUuid(),
-            info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
 
     }
 }

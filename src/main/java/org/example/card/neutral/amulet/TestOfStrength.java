@@ -3,6 +3,7 @@ package org.example.card.neutral.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
+import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
@@ -32,30 +33,25 @@ public class TestOfStrength extends AmuletCard {
 
     public TestOfStrength() {
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
-            ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
-                followCard.addKeyword("守护");
-                effectFollows.add(followCard);
-            });
-            enemyPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
-                followCard.addKeyword("守护");
-                effectFollows.add(followCard);
-            });
+            ownerPlayer().getAreaFollowsAsFollow().forEach(this::sh);
+            enemyPlayer().getAreaFollowsAsFollow().forEach(this::sh);
         })));
-        addEffects((new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
-            if(areaCard instanceof FollowCard followCard){
-                followCard.addKeyword("守护");
-                effectFollows.add(followCard);
-            }
-        })));
-        addEffects((new Effect(this,this, EffectTiming.WhenEnemySummon,areaCard -> {
-            if(areaCard instanceof FollowCard followCard){
-                followCard.addKeyword("守护");
-                effectFollows.add(followCard);
-            }
-        })));
+        addEffects((new Effect(this,this,
+            EffectTiming.WhenSummon,areaCard -> sh(((List<AreaCard>)areaCard)))));
+        addEffects((new Effect(this,this,
+            EffectTiming.WhenEnemySummon,areaCard -> sh(((List<AreaCard>)areaCard)))));
         addEffects((new Effect(this,this, EffectTiming.WhenNoLongerAtArea, obj->
             effectFollows.forEach(((followCard) -> followCard.removeKeyword("守护")))
         )));
     }
 
+    private void sh(List<AreaCard> areaCards){
+        areaCards.forEach(this::sh);
+    }
+    private void sh(AreaCard areaCard){
+        if(areaCard instanceof FollowCard followCard){
+            followCard.addKeyword("守护");
+            effectFollows.add(followCard);
+        }
+    }
 }

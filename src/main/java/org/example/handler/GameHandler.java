@@ -313,6 +313,9 @@ public class GameHandler {
         }
         myFollow.attack(target);
 
+        info.msgToThisPlayer(info.describeArea(player.getUuid()) + player.describePPNum());
+        info.msgToOppositePlayer(info.describeArea(enemy.getUuid()) + enemy.describePPNum());
+
 
     }
 
