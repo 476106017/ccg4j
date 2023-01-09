@@ -24,13 +24,11 @@ public class DamageMulti {
     }
 
     public void apply(){
-        // 主战者受伤前
+        // 受伤前
         damages.forEach(damage -> {
-            if(damage.getTo() instanceof Leader leader){
-                leader.getInfo().getAreaCardsCopy().forEach(areaCard ->
-                    areaCard.useEffects(EffectTiming.BeforeLeaderDamaged,damage));
-                leader.useEffects(EffectTiming.BeforeLeaderDamaged,damage);
-            }
+            damage.getTo().getInfo().getAreaCardsCopy().forEach(areaCard ->
+                areaCard.useEffects(EffectTiming.BeforeDamaged,damage));
+            damage.getTo().useEffects(EffectTiming.BeforeDamaged,damage);
         });
         damages.removeIf(damage -> damage.getTo() instanceof FollowCard toFollow && !toFollow.atArea());
         // region 扣血

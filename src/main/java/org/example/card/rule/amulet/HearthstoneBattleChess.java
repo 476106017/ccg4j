@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
@@ -20,7 +19,7 @@ public class HearthstoneBattleChess  extends AmuletCard {
     public Integer cost = 3;
 
     public String name = "酒馆战棋";
-    public String job = "棋牌规则";
+    public String job = "游戏规则";
     private List<String> race = Lists.ofStr("机器");
     public String mark = """
         若此卡在场上，双方全部随从获得【缴械】【疾驰】

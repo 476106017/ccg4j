@@ -179,7 +179,15 @@ public class PlayerInfo {
         getArea().removeAll(exileCards);
         info.tempAreaCardEffectBatch(cards,EffectTiming.WhenAtArea);
     }
-
+    public void addGraveyard(Card card){
+        addGraveyard(List.of(card));
+    }
+    public void addGraveyard(List<Card> cards){
+        String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
+        info.msgTo(getUuid(),cardNames + "加入了墓地");
+        info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手墓地");
+        graveyard.addAll(cards);
+    }
     // 卡牌的快照。用来循环（原本卡牌List可以随便删）
     public List<AreaCard> getAreaCopy(){
         return new ArrayList<>(getArea());
@@ -257,6 +265,11 @@ public class PlayerInfo {
         followCard.removeWhenNotAtArea();
         followCard.setHp(followCard.getMaxHp());
         summon(followCard);
+    }
+    public void abandon(List<Card> cards){
+        info.msg(getName() + "舍弃了"+cards.size()+"张卡牌！");
+        getHand().removeAll(cards);
+        addGraveyard(cards);
     }
 
     public void summon(AreaCard summonedCard){

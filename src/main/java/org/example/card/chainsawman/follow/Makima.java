@@ -2,8 +2,8 @@ package org.example.card.chainsawman.follow;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.EquipmentCard;
 import org.example.card.FollowCard;
-import org.example.card.chainsawman.equipment.DominatePipe;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
@@ -86,4 +86,28 @@ public class Makima extends FollowCard {
 
         })));
     }
+
+
+    @Getter
+    @Setter
+    public static class DominatePipe extends EquipmentCard {
+        private int apposition = 0;
+        public Integer cost = 2;
+        public String name = "支配之线";
+        public boolean control = true;
+        public int addAtk = 0;
+        public int addHp = 0;
+        public String job = "链锯人";
+        public String mark = """
+        获得随从的控制权
+        """;
+
+        public String subMark = "";
+
+        public DominatePipe() {
+            setPlay(new Play(()->new ArrayList<>()));
+
+        }
+    }
+
 }

@@ -24,7 +24,7 @@ public enum EffectTiming {
     WhenAttack("攻击时",Damage.class),
     WhenBattle("交战时",Damage.class),
     WhenLeaderSkill("激励时"),
-    BeforeLeaderDamaged("主战者受伤时",Damage.class),
+    BeforeDamaged("受伤前",Damage.class),
 
     // ———————————————————— 以下是可以通过连锁触发的效果 ————————————————————//
 

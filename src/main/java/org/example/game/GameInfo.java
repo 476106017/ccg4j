@@ -6,10 +6,12 @@ import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
@@ -23,7 +25,7 @@ public class GameInfo {
 
     // 连锁
     boolean canChain = true;
-    int chainDeep = 10;
+    int chainDeep = 3;
     boolean inSettle = false;
     int turn;
     int turnPlayer;
@@ -101,7 +103,7 @@ public class GameInfo {
             }
         });
 
-        assert incommingDamages.isEmpty() && events.isEmpty();
+        assert events.isEmpty();
     }
 
     public void gameset(PlayerInfo winner){
@@ -227,10 +229,10 @@ public class GameInfo {
             }
             return 0;
         });
-        ArrayList<Effect.EffectInstance> instances = new ArrayList<>(effectInstances);
-        instances.forEach(Effect.EffectInstance::consume);
 
-        assert effectInstances.isEmpty();// 效果只能产生事件，事件消费步骤前不能产生效果！
+        List<Effect.EffectInstance> instances = new ArrayList<>(effectInstances);
+
+        instances.forEach(Effect.EffectInstance::consume);
 
         effectInstances.clear();
     }
@@ -328,7 +330,7 @@ public class GameInfo {
         new DamageMulti(this,damages).apply();
     }
     public void damageAttacking(FollowCard from, GameObj to){
-        if(to instanceof FollowCard)
+        if(to instanceof FollowCard && !from.hasKeyword("远程"))
             new DamageMulti(this,List.of(new Damage(from,to), new Damage(to,from))).apply();
         else
             new DamageMulti(this,List.of(new Damage(from,to))).apply();

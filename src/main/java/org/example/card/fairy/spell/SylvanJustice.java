@@ -2,7 +2,6 @@ package org.example.card.fairy.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.card.fairy.follow.Fairy;
 import org.example.game.Play;

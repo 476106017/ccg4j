@@ -23,7 +23,7 @@ public class MahjongTable extends AmuletCard {
     public Integer cost = 7;
 
     public String name = "自动麻将桌";
-    public String job = "棋牌规则";
+    public String job = "游戏规则";
     private List<String> race = Lists.ofStr("机器");
     public String mark = """
         双方抽牌时：
