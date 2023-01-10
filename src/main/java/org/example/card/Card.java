@@ -31,6 +31,12 @@ public abstract class Card extends GameObj {
         info.msg(getNameWithOwner()+"获得了【"+k+"】");
         getKeywords().add(k);
     }
+    public void addKeywordN(String k,int n){
+        info.msg(getNameWithOwner()+"获得了"+n+"层【"+k+"】");
+        for (int i = 0; i < n; i++) {
+            getKeywords().add(k);
+        }
+    }
     public void addKeywords(List<String> ks){
         if(ks.isEmpty())return;
         info.msg(getNameWithOwner()+"获得了【"+ String.join("】【", ks) +"】");
@@ -47,11 +53,13 @@ public abstract class Card extends GameObj {
         ks.forEach(this::removeKeyword);
     }
     public void removeKeyword(String k){
-        info.msg(getNameWithOwner()+"失去了【"+ k +"】");
         getKeywords().stream()
             .filter(keyword -> keyword.equals(k))
             .findFirst()
-            .ifPresent(s -> getKeywords().remove(s));
+            .ifPresent(s -> {
+                getKeywords().remove(s);
+                info.msg(getNameWithOwner()+"失去了1层【"+ k +"】");
+            });
     }
 
     public String getNameWithOwnerWithPlace(){

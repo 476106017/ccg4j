@@ -7,6 +7,7 @@ import org.example.card.Card;
 import org.example.card.EquipmentCard;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
+import org.example.system.Lists;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -104,18 +105,19 @@ public class PlayerInfo {
         info.tempEffectBatch(getAreaAsGameObj(),EffectTiming.WhenDraw,cards);
         info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
     }
-    public void draw(Predicate<? super Card> condition){
+    public Card draw(Predicate<? super Card> condition){
         Optional<Card> findCard = getDeck().stream()
             .filter(condition)
             .findAny();
         if(findCard.isEmpty()){
             info.msg(getName()+"搜索失败！");
-            return;
+            return null;
         }
         Card card = findCard.get();
         info.msg(getName()+"搜索成功！");
         addHand(card);
         getDeck().remove(card);
+        return card;
     }
     public void backToDeck(Card cards){
         addDeck(cards);
@@ -223,6 +225,12 @@ public class PlayerInfo {
             .filter(areaCard -> areaCard instanceof FollowCard)
             .map(areaCard -> (FollowCard)areaCard)
             .toList();
+    }
+    public AreaCard getAreaRandomFollow(){
+        List<AreaCard> areaCards = getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard)
+            .toList();
+        return Lists.randOf(areaCards);
     }
     public List<AreaCard> getAreaFollows(){
         return getArea().stream()

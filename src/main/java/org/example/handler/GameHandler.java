@@ -268,6 +268,10 @@ public class GameHandler {
                 info.msgToThisPlayer("被缴械的随从无法攻击！");
                 return;
             }
+            if(followCard.hasKeyword("眩晕")){
+                info.msgToThisPlayer("眩晕的随从无法攻击！");
+                return;
+            }
             if(followCard.getTurnAge() == 0 &&
                 !followCard.hasKeyword("突进") &&
                 !followCard.hasKeyword("疾驰")){

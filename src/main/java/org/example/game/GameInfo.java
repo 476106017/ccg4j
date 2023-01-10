@@ -330,7 +330,7 @@ public class GameInfo {
         new DamageMulti(this,damages).apply();
     }
     public void damageAttacking(FollowCard from, GameObj to){
-        if(to instanceof FollowCard && !from.hasKeyword("远程"))
+        if(to instanceof FollowCard && !from.hasKeyword("远程") && !((FollowCard) to).hasKeyword("眩晕"))
             new DamageMulti(this,List.of(new Damage(from,to), new Damage(to,from))).apply();
         else
             new DamageMulti(this,List.of(new Damage(from,to))).apply();
@@ -448,6 +448,7 @@ public class GameInfo {
 
             if(areaCard instanceof FollowCard followCard){
                 followCard.setTurnAttack(0);
+                followCard.removeKeyword("眩晕");
             }
         });
         thisPlayer().getAreaCopy().forEach(areaCard -> {
