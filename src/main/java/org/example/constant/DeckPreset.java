@@ -7,6 +7,9 @@ import org.example.card.chainsawman.follow.Makima;
 import org.example.card.deathnote.equipment.DeathNote;
 import org.example.card.deathnote.follow.Lawliet;
 import org.example.card.deathnote.follow.YagamiLight;
+import org.example.card.dota.equipment.*;
+import org.example.card.dota.follow.*;
+import org.example.card.dota.spell.RoosterCrow;
 import org.example.card.fairy.amulet.FirespriteGrove;
 import org.example.card.fairy.amulet.FlowerOfFairies;
 import org.example.card.fairy.amulet.ForestSymphony;
@@ -64,6 +67,19 @@ public class DeckPreset {
 
             PhantombloomPredator.class,PhantombloomPredator.class,QueenOfTheForest.class,QueenOfTheForest.class,NaturesGuidance.class,
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
+        ));
+        decks.put("dota",List.of(
+            Roshan.class,Roshan.class, Nevermore.class,Nevermore.class, FacelessVoid.class,FacelessVoid.class,
+            DefenceTower.class,DefenceTower.class,
+            RoosterCrow.class, RoosterCrow.class, RoosterCrow.class,
+            PoorMansSheild.class, PoorMansSheild.class, PoorMansSheild.class,
+            TravelerGoblin.class, TravelerGoblin.class, TravelerGoblin.class,
+            Vanguard.class, Vanguard.class,
+            DragonHeart.class, DragonHeart.class,
+            Zelgenea.class, Zelgenea.class,
+            AmbitiousGoblinMage.class, AmbitiousGoblinMage.class,
+            MaskOfMadness.class, MaskOfMadness.class,
+            Alchemist.class,Alchemist.class, DivineRapier.class
         ));
         decks.put("测试牌组",List.of(
             TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,

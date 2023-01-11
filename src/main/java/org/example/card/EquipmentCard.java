@@ -67,6 +67,7 @@ public abstract class EquipmentCard extends AreaCard{
                 tempEffects(EffectTiming.DeathRattle);
 
                 enemyPlayer().addHand(this);
+                setOwner(1-getOwner());
                 return;
             }
         }

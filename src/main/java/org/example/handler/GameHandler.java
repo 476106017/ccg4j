@@ -189,7 +189,7 @@ public class GameHandler {
                 targetI = Integer.valueOf(targetS);
                 // 获取选择对象
                 GameObj target = play.canTargets().get()
-                    .get(i).get(targetI - 1);
+                    .get(i-1).get(targetI - 1);
                 if(target!=null){
                     if(targets.contains(target)){
                         info.msgToThisPlayer("输入了重复的对象:"+target.getName());

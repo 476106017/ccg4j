@@ -192,7 +192,7 @@ public class GameInfo {
 
         if(inSettle)return;
         inSettle = true;
-        msg("——————开始结算——————");
+//        msg("——————开始结算——————");
 
         consumeEffectChain(chainDeep);
         // 计算主战者死亡状况
@@ -466,10 +466,10 @@ public class GameInfo {
 
             if(areaCard instanceof FollowCard followCard){
                 int turnAgePlus = followCard.getTurnAge() + 1;
-                if(turnAgePlus>0){// 可能有随从会需要准备多个回合，还是判断下
+                followCard.setTurnAge(turnAgePlus);
+                if(followCard.notAttacked()){
                     msg(followCard.getNameWithOwner() + "可以攻击了！");
                 }
-                followCard.setTurnAge(turnAgePlus);
 
                 followCard.setTurnAttack(0);
             }
@@ -491,7 +491,9 @@ public class GameInfo {
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
         // 瞬召卡牌
-        useEffectBatch(new ArrayList<>(nameCard.values()),EffectTiming.InvocationBegin);
+        Collection<GameObj> objs = nameCard.values();
+        objs // TODO 有bug
+        useEffectBatch(new ArrayList<>(objs),EffectTiming.InvocationBegin);
 
     }
     public void afterTurn(){
@@ -501,7 +503,7 @@ public class GameInfo {
         leader.expireEffect();
 
         Leader enemyLeader = oppositePlayer().getLeader();
-        enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
+        enemyLeader.useEffects(EffectTiming.EnemyEndTurn);
         enemyLeader.expireEffect();
 
         // 发动回合结束效果

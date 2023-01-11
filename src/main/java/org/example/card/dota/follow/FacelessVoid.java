@@ -23,7 +23,7 @@ public class FacelessVoid extends FollowCard {
     private List<String> race = Lists.ofStr("天灾军团","英雄");
     private String mark = """
         战吼：获得1张时间结界
-        交战时：有25%的几率给予目标1层【眩晕】且重置攻击次数
+        攻击时：有25%的几率重置攻击，如果目标是随从还会给予目标1层【眩晕】
         """;
     private String subMark = "";
 
@@ -35,12 +35,12 @@ public class FacelessVoid extends FollowCard {
             ownerPlayer().addHand(createCard(Chronosphere.class));
         }));
 
-        addEffects(new Effect(this,this,EffectTiming.WhenBattle,obj->{
+        addEffects(new Effect(this,this,EffectTiming.WhenAttack,obj->{
             Damage damage = (Damage) obj;
-            if(damage.another(this) instanceof FollowCard toFollow){
+            if(damage.getTo() instanceof FollowCard toFollow){
                 toFollow.addKeyword("眩晕");
-                setTurnAttack(0);
             }
+            setTurnAttack(0);
         }));
     }
 

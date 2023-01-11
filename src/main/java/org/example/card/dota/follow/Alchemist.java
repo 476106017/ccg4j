@@ -22,7 +22,7 @@ public class Alchemist extends FollowCard {
     private List<String> race = Lists.ofStr("近卫军团","英雄");
     private String mark = """
         击杀时：搜索1张装备并使其费用-1
-        回合开始时：如果是入场后第3/6/9个回合，给予任意1个敌方随从3层【眩晕】（如无目标则给自己）
+        回合开始时：如果是入场后第3/6/9个回合，给予任意1个敌方随从2层【眩晕】（如无目标则给自己）
         """;
     public String subMark = "入场后回合数：{}";
 

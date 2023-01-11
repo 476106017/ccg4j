@@ -36,8 +36,9 @@ public abstract class FollowCard extends AreaCard{
     }
 
     public boolean notAttacked(){
-        return getTurnAttack() < getTurnAttackMax() && (// 回合可攻击数没有打满
-            getTurnAge()>0 || hasKeyword("突进") || hasKeyword("疾驰"));
+        return getTurnAttack() < getTurnAttackMax() && // 回合可攻击数没有打满
+            !hasKeyword("缴械") && !hasKeyword("眩晕") &&
+            (getTurnAge()>0 || hasKeyword("突进") || hasKeyword("疾驰"));
     }
 
     public void equip(EquipmentCard equipmentCard){
@@ -82,7 +83,7 @@ public abstract class FollowCard extends AreaCard{
     public void expireEquipSettlement(){
         if(atArea()){
             int canUse = getEquipment().getCountdown();
-            if(canUse <= 0){
+            if(canUse == 0){
                 // 用完了销毁
                 getEquipment().death();
             }

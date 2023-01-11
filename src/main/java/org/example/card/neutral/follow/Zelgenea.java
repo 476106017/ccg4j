@@ -59,7 +59,7 @@ public class Zelgenea extends FollowCard {
                         objs.add(enemyPlayer().getLeader());
                         objs.addAll(enemyPlayer().getAreaFollows());
                         objs.addAll(ownerPlayer().getAreaFollows());
-                        info.damageMulti(this,objs,4);
+                        info.damageMulti(ownerPlayer().getLeader(),objs,4);
                     } ),true);
                 })));
             }

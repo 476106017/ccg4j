@@ -21,7 +21,7 @@ public class MaskOfMadness extends EquipmentCard {
     public int addHp = 0;
     public String job = "dota";
     public String mark = """
-        装备对象受到2倍的伤害
+        战吼：装备对象受到2倍的伤害
         """;
 
     public String subMark = "";
@@ -34,6 +34,7 @@ public class MaskOfMadness extends EquipmentCard {
                 gameObj.addEffects(new Effect(this,gameObj,EffectTiming.AfterDamaged,obj->{
                     Damage damage = (Damage) obj;
                     damage.setDamage(damage.getDamage() * 2);
+                    info.msg(damage.getTo().getName() + "遭受的伤害变成了2倍（"+damage.getDamage()+"点）！");
                 }));
             }));
     }
