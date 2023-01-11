@@ -20,7 +20,7 @@ public class FacelessVoid extends FollowCard {
     private int atk = 2;
     private int hp = 2;
     private String job = "dota";
-    private List<String> race = Lists.ofStr("天灾军团");
+    private List<String> race = Lists.ofStr("天灾军团","英雄");
     private String mark = """
         战吼：获得1张时间结界
         交战时：有25%的几率给予目标1层【眩晕】且重置攻击次数

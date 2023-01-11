@@ -58,6 +58,17 @@ public abstract class EquipmentCard extends AreaCard{
             info.msg(target.getNameWithOwner()+"的装备"+getName()+"被破坏了！");
             target.setEquipment(null);
             setTarget(null);
+
+            if (hasKeyword("死亡掉落")){
+                setCountdown(((EquipmentCard)prototype()).getCountdown());// 重置使用次数
+
+                tempEffects(EffectTiming.WhenNoLongerAtArea);
+                tempEffects(EffectTiming.Leaving);
+                tempEffects(EffectTiming.DeathRattle);
+
+                enemyPlayer().addHand(this);
+                return;
+            }
         }
 
         tempEffects(EffectTiming.WhenNoLongerAtArea);

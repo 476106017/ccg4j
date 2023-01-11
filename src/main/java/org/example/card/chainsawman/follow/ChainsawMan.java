@@ -24,7 +24,7 @@ public class ChainsawMan extends FollowCard {
     private List<String> race = Lists.ofStr("恶魔");
     private String mark = """
         战吼：增加1张链锯形态到手牌
-        击杀时：如果对象是【恶魔】，则将其沉默并除外；
+        击杀时：如果对象是恶魔，则将其沉默并除外；
         如果超杀，则当前装备中的链锯形态可使用次数+1
         """;
     private String subMark = "";
@@ -64,7 +64,7 @@ public class ChainsawMan extends FollowCard {
 
         public String job = "链锯人";
         public String mark = """
-        使场上的一个链锯恶魔获得+2/+2、突进、自愈、重伤
+        指定：链锯人
         """;
 
         public String subMark = "";

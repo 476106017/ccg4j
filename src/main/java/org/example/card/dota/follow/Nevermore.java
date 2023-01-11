@@ -23,7 +23,7 @@ public class Nevermore  extends FollowCard {
     private int atk = 0;
     private int hp = 1;
     private String job = "dota";
-    private List<String> race = Lists.ofStr("天灾军团");
+    private List<String> race = Lists.ofStr("天灾军团","英雄");
     private String mark = """
         战吼：获得3张影压
         击杀时：+2/+0

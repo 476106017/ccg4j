@@ -20,7 +20,7 @@ public class DragonHeart extends EquipmentCard {
     public int addHp = 6;
     public String job = "dota";
     public String mark = """
-        装备对象在己方回合结束时，回复X点生命（X是本回合使用的卡牌数）
+        战吼：装备对象获得【在己方回合结束时，回复X点生命（X是本回合使用的卡牌数）】
         """;
 
     public String subMark = "X等于{}";
