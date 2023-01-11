@@ -585,7 +585,7 @@ public class GameInfo {
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
                 detail.append("<b>")
-                    .append(String.join(" ", card.getKeywords()))
+                    .append(card.getKeywordStr())
                     .append("</b>\n");
             detail.append(card.getMark()).append("\n");
             if(!card.getSubMark().isBlank())
@@ -640,7 +640,7 @@ public class GameInfo {
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
                 detail.append("<b>")
-                    .append(String.join(" ", card.getKeywords()))
+                    .append(card.getKeywordStr())
                     .append("</b>\n");
             detail.append(card.getMark()).append("\n");
             if(!card.getSubMark().isBlank())

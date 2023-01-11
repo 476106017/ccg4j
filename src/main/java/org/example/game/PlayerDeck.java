@@ -92,7 +92,7 @@ public class PlayerDeck {
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
                 detail.append("<b>")
-                    .append(String.join(" ", card.getKeywords()))
+                    .append(card.getKeywordStr())
                     .append("</b>\n");
             detail.append(card.getMark()).append("\n\n");
             detail.append("职业：").append(card.getJob());

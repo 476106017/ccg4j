@@ -27,6 +27,18 @@ public abstract class Card extends GameObj {
     public boolean hasRace(String k){
         return getRace().contains(k);
     }
+    public String getKeywordStr(){
+        Map<String, Long> count = keywords.stream()
+            .collect(Collectors.groupingBy(k->k, Collectors.counting()));
+        List<String> keywordWithCount = new ArrayList<>();
+        count.forEach(((k,v)->{
+            if(v.intValue()==1)
+                keywordWithCount.add(k);
+            else
+                keywordWithCount.add(k+"("+v+")");
+        }));
+        return String.join(" ", keywordWithCount);
+    }
     public void addKeyword(String k){
         info.msg(getNameWithOwner()+"获得了【"+k+"】");
         getKeywords().add(k);
