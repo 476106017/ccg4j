@@ -491,9 +491,7 @@ public class GameInfo {
             thisPlayer().getDeck().stream().collect(Collectors.toMap(Card::getName, o -> o, (a,b)->a));
 
         // 瞬召卡牌
-        Collection<GameObj> objs = nameCard.values();
-        objs // TODO 有bug
-        useEffectBatch(new ArrayList<>(objs),EffectTiming.InvocationBegin);
+        useEffectBatch(new ArrayList<>(nameCard.values()),EffectTiming.InvocationBegin);
 
     }
     public void afterTurn(){

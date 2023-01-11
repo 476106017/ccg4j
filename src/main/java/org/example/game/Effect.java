@@ -135,15 +135,16 @@ public class Effect{
                     info.msg(effectOwnerCard.getNameWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
                 // region 瞬召卡片要在发动效果前召唤/揭示
                 if(effect.getTiming().equals(EffectTiming.InvocationBegin) || effect.getTiming().equals(EffectTiming.InvocationEnd)){
-                    if(effectOwnerCard instanceof AreaCard areaCard){
-                        areaCard.ownerPlayer().getDeck().remove(areaCard);
+                    if(effectOwnerCard instanceof AreaCard areaCard &&
+                        ownerPlayer.getArea().size() < ownerPlayer.getAreaMax()){// 有足够空间才召唤
+                        ownerPlayer.getDeck().remove(areaCard);
                         // 装备卡自己写逻辑（装备给谁）
                         if(!(areaCard instanceof EquipmentCard))
-                            areaCard.ownerPlayer().summon(areaCard);
+                            ownerPlayer.summon(areaCard);
                     }
                     if(effectOwnerCard instanceof SpellCard spellCard){
-                        spellCard.ownerPlayer().getHand().add(spellCard);
-                        spellCard.ownerPlayer().getDeck().remove(spellCard);
+                        ownerPlayer.getHand().add(spellCard);
+                        ownerPlayer.getDeck().remove(spellCard);
                     }
                 }
                 // endregion 瞬召卡片要在发动效果前召唤/揭示
