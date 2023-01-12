@@ -2,7 +2,11 @@ package org.example.card.stalker.spell;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
+import org.example.game.Leader;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -31,20 +35,24 @@ public class Preparation extends SpellCard {
             () -> {
                 ownerPlayer().getHand().forEach(card -> {
                     if(card instanceof SpellCard spellCard){
-                        Integer cutCost = Math.min(spellCard.getCost(),2);
+                        Integer cutCost = Math.min(spellCard.getCost(),1);
                         spellCard.setCost(spellCard.getCost() - cutCost);
                         cutCosts.put(spellCard,cutCost);
 
-                        // 打出后伺机待发临时效果消失
-                        Play clearEffect = new Play(() -> {
-                            // 其他牌增费
-                            ownerPlayer().getHand().forEach(other -> {
-                                if(other instanceof SpellCard otherSpell)
-                                    otherSpell.getEffectsFrom(this).forEach(effect ->
-                                        cutCosts.computeIfPresent(otherSpell,(k,v)->{
-                                            k.setCost(k.getCost() + v);
-                                            return 0;}));});});
-                        spellCard.setPlay(clearEffect);
+                        // 给主战者挂一个使用时
+                        Leader leader = ownerPlayer().getLeader();
+                        leader.addEffect(new Effect(this,leader, EffectTiming.WhenPlay,1, o ->{
+                            // 如果打的牌在影响列表，则影响列表的其他牌费用加回来
+                            if(cutCosts.containsKey(o)){
+                                cutCosts.forEach((k, v)->{
+                                    if(k!=o){
+                                        k.setCost(k.getCost() + v);
+                                    }
+                                });
+                                // 移除这个使用时
+                                leader.getEffects().removeAll(leader.getEffectsFrom(this));
+                            }
+                        }), false);
                     }
                 });
             }));

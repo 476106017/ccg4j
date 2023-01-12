@@ -68,6 +68,7 @@ public class PhantomAssassin extends FollowCard {
             setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),true,obj->{
                 if(obj instanceof FollowCard followCard){
                     new Damage(getParent(),followCard,1).apply();
+                    followCard.addKeyword("眩晕");
                 }
             }));
         }

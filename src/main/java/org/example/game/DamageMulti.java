@@ -26,8 +26,6 @@ public class DamageMulti {
     public void apply(){
         // 受伤前
         damages.forEach(damage -> {
-            damage.getTo().getInfo().getAreaCardsCopy().forEach(areaCard ->
-                areaCard.useEffects(EffectTiming.BeforeDamaged,damage));
             damage.getTo().useEffects(EffectTiming.BeforeDamaged,damage);
         });
         damages.removeIf(damage -> damage.getTo() instanceof FollowCard toFollow

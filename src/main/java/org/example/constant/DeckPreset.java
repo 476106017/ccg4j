@@ -10,6 +10,7 @@ import org.example.card.deathnote.follow.YagamiLight;
 import org.example.card.dota.equipment.*;
 import org.example.card.dota.follow.*;
 import org.example.card.dota.spell.RoosterCrow;
+import org.example.card.dota.spell.TeleportToBattleGround;
 import org.example.card.fairy.amulet.FirespriteGrove;
 import org.example.card.fairy.amulet.FlowerOfFairies;
 import org.example.card.fairy.amulet.ForestSymphony;
@@ -69,21 +70,23 @@ public class DeckPreset {
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
         ));
         decks.put("dota",List.of(
-            Roshan.class,Roshan.class, Nevermore.class,Nevermore.class, FacelessVoid.class,FacelessVoid.class,
-            DefenceTower.class,DefenceTower.class,
+            Roshan.class, Nevermore.class,Nevermore.class,
+            FacelessVoid.class,FacelessVoid.class, DefenceTower.class,DefenceTower.class,DefenceTower.class,
             RoosterCrow.class, RoosterCrow.class, RoosterCrow.class,
             PoorMansSheild.class, PoorMansSheild.class, PoorMansSheild.class,
-            TravelerGoblin.class, TravelerGoblin.class, TravelerGoblin.class,
+            TeleportToBattleGround.class, TeleportToBattleGround.class, TeleportToBattleGround.class,
             Vanguard.class, Vanguard.class,
             DragonHeart.class, DragonHeart.class,
-            Zelgenea.class, Zelgenea.class,
-            AmbitiousGoblinMage.class, AmbitiousGoblinMage.class,
+            KingLeoric.class, KingLeoric.class,
+            PhantomAssassin.class, PhantomAssassin.class,
             MaskOfMadness.class, MaskOfMadness.class,
-            Alchemist.class,Alchemist.class, DivineRapier.class
+            Alchemist.class,Alchemist.class, DivineRapier.class,
+            ArcaneBoots.class,ArcaneBoots.class,ArcaneBoots.class,
+            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class
         ));
-        decks.put("测试牌组",List.of(
-            TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,TestFollow.class,
-            HearthstoneBattleChess.class,HearthstoneBattleChess.class, BreakingChain.class,BreakingChain.class
+        decks.put("test",List.of(
+            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,
+            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class
         ));
     }
 

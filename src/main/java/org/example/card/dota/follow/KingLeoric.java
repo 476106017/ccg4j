@@ -36,6 +36,7 @@ public class KingLeoric extends FollowCard {
 
         addEffects(new Effect(this,this,EffectTiming.WhenAttack,obj->{
             if(Math.random()>0.15)return;
+            getInfo().msg("致命一击！");
 
             Damage damage = (Damage) obj;
             int damageInt = damage.getDamage();

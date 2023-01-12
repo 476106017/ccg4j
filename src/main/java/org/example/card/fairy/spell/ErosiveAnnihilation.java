@@ -41,7 +41,7 @@ public class ErosiveAnnihilation extends SpellCard {
             // 创建主战者回合结束效果
             ownerPlayer().getLeader().addEffect(new Effect(
                 this,ownerPlayer().getLeader(),EffectTiming.EndTurn,
-                getCount(),() ->{
+                getCount()*2,() ->{
                     List<FollowCard> enemyFollows =
                         enemyPlayer().getAreaFollowsAsFollow();
                     enemyFollows.forEach(followCard -> followCard.addStatus(-1,-1));

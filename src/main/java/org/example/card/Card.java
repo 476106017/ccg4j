@@ -208,6 +208,13 @@ public abstract class Card extends GameObj {
         ownerPlayer().count(ALL_COST,getCost());
         // endregion 消耗PP
 
+        // region 在使用卡牌造成任何影响前，先计算使用时
+        ownerPlayer().getLeader().useEffects(EffectTiming.WhenPlay,this);
+        enemyPlayer().getLeader().useEffects(EffectTiming.WhenEnemyPlay,this);
+        ownerPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.WhenPlay,this));
+        enemyPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.WhenEnemyPlay,this));
+        // endregion 在使用卡牌造成任何影响前，先计算使用时
+
         // region 驻场卡召唤到场上(装备卡装备给随从)，法术卡丢到墓地
         if(this instanceof AreaCard areaCard){
             if(this instanceof EquipmentCard equipmentCard){

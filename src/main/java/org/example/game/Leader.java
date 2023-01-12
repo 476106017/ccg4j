@@ -75,7 +75,7 @@ public abstract class Leader extends GameObj {
             info.msg("该主战者效果不能叠加！");
             return;
         }
-        info.msg(newEffect.getParent().getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了主战者效果！");
+        info.msg(newEffect.getParent().getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了"+newEffect.getTiming().getName()+"效果！");
         effects.add(newEffect);
     }
 

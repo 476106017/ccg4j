@@ -110,6 +110,26 @@ public abstract class GameObj {
             throw new RuntimeException(e);
         }
     }
+    public <T extends Card> T createEnemyCard(Class<T> clazz, String... keywords){
+        T card = createEnemyCard(clazz);
+        for (String keyword : keywords) {
+            card.addKeyword(keyword);
+        }
+        return card;
+    }
+    public <T extends Card> T createEnemyCard(Class<T> clazz){
+        try {
+            T card = clazz.getDeclaredConstructor().newInstance();
+            info.msg(getNameWithOwner()+"创造了"+card.getId());
+            card.setParent(this);
+            card.setOwner(1-getOwner());
+            card.setInfo(getInfo());
+            card.initCounter();
+            return card;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void destroy(AreaCard card){destroy(List.of(card));}
     public int destroy(List<AreaCard> cards){

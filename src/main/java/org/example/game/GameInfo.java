@@ -113,13 +113,13 @@ public class GameInfo {
         // 释放资源
         roomReadyMatch.remove(getRoom());
         roomGame.remove(getRoom());
-        roomSchedule.get(getRoom()).shutdown();
-        roomSchedule.remove(getRoom());
         // 退出房间
         try {
             server.getClient(thisPlayer().getUuid()).leaveRoom(getRoom());
             server.getClient(oppositePlayer().getUuid()).leaveRoom(getRoom());
-        }catch (Exception e){}
+            roomSchedule.get(getRoom()).shutdown();
+            roomSchedule.remove(getRoom());
+        }catch (Exception ignored){}
         throw new RuntimeException("Game Set");
     }
 
@@ -442,11 +442,9 @@ public class GameInfo {
         Leader leader = thisPlayer().getLeader();
         leader.setCanUseSkill(true);
         leader.useEffects(EffectTiming.BeginTurn);
-        leader.expireEffect();
 
         Leader enemyLeader = oppositePlayer().getLeader();
         enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
-        enemyLeader.expireEffect();
 
 
         // 场上随从驻场回合+1、攻击次数清零

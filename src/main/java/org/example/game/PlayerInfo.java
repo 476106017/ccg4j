@@ -2,10 +2,7 @@ package org.example.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
-import org.example.card.Card;
-import org.example.card.EquipmentCard;
-import org.example.card.FollowCard;
+import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 
@@ -339,18 +336,23 @@ public class PlayerInfo {
                 .append(card.getType()).append("\t")
                 .append(card.getId()).append("\t")
                 .append(String.join("/", card.getRace())).append("\t");
-            if (card instanceof EquipmentCard equipmentCard) {
-                sb.append(equipmentCard.getAddAtk()).append("➹")
-                    .append(equipmentCard.getAddHp()).append("♥\t");
-                if (equipmentCard.getCountdown() > 0) {
-                    sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\t");
-                }
-            }
             // region 显示详情
             StringBuilder detail = new StringBuilder();
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
                     .append(followCard.getHp()).append("♥");
+            if (card instanceof EquipmentCard equipmentCard) {
+                sb.append(equipmentCard.getAddAtk()).append("➹")
+                    .append(equipmentCard.getAddHp()).append("♥");
+                if (equipmentCard.getCountdown() > 0) {
+                    sb.append(equipmentCard.getCountdown()).append("⌛︎");
+                }
+            }
+            if (card instanceof AmuletCard amuletCard) {
+                if (amuletCard.getCountDown() > 0) {
+                    sb.append(amuletCard.getCountDown()).append("⌛︎");
+                }
+            }
             detail.append("<div style='text-align:right;float:right;'>")
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
