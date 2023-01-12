@@ -70,19 +70,14 @@ public class DeckPreset {
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
         ));
         decks.put("dota",List.of(
-            Roshan.class, Nevermore.class,Nevermore.class,
-            FacelessVoid.class,FacelessVoid.class, DefenceTower.class,DefenceTower.class,DefenceTower.class,
-            RoosterCrow.class, RoosterCrow.class, RoosterCrow.class,
-            PoorMansSheild.class, PoorMansSheild.class, PoorMansSheild.class,
-            TeleportToBattleGround.class, TeleportToBattleGround.class, TeleportToBattleGround.class,
-            Vanguard.class, Vanguard.class,
-            DragonHeart.class, DragonHeart.class,
-            KingLeoric.class, KingLeoric.class,
-            PhantomAssassin.class, PhantomAssassin.class,
-            MaskOfMadness.class, MaskOfMadness.class,
-            Alchemist.class,Alchemist.class, DivineRapier.class,
-            ArcaneBoots.class,ArcaneBoots.class,ArcaneBoots.class,
-            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class
+            Roshan.class, Nevermore.class,Nevermore.class, FacelessVoid.class,FacelessVoid.class,
+            DefenceTower.class,DefenceTower.class,DefenceTower.class,Slark.class,Slark.class,
+            RoosterCrow.class, RoosterCrow.class, RoosterCrow.class,Vanguard.class, Vanguard.class,
+            PoorMansSheild.class, PoorMansSheild.class, PoorMansSheild.class,DragonHeart.class, DragonHeart.class,
+            TeleportToBattleGround.class, TeleportToBattleGround.class, TeleportToBattleGround.class, KingLeoric.class, KingLeoric.class,
+            PhantomAssassin.class, PhantomAssassin.class,Alchemist.class,Alchemist.class, DivineRapier.class,
+            MaskOfMadness.class, MaskOfMadness.class, ArcaneBoots.class,ArcaneBoots.class,ArcaneBoots.class,
+            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,Zelgenea.class,Zelgenea.class
         ));
         decks.put("test",List.of(
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,

@@ -74,6 +74,14 @@ public abstract class Card extends GameObj {
                 info.msg(getNameWithOwner()+"失去了1层【"+ k +"】");
             });
     }
+    public void removeKeywordAll(String k){
+        List<String> keys = getKeywords().stream()
+            .filter(keyword -> keyword.equals(k)).toList();
+        if(keys.size()>0){
+            info.msg(getNameWithOwner()+"失去了"+keys.size()+"层【"+ k +"】");
+            getKeywords().removeAll(keys);
+        }
+    }
 
     public String getNameWithOwnerWithPlace(){
         String place;
