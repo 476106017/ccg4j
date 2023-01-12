@@ -242,17 +242,17 @@ public class GameInfo {
     // region event
 
     public void transform(Card fromCard, Card toCard){
-        if(fromCard.hasKeyword("魔法免疫")){
-            fromCard.getInfo().msg(fromCard.getNameWithOwner() + "免疫了本次变身！");
-            return;
-        }
-        if(fromCard.hasKeyword("魔法护盾")){
-            fromCard.getInfo().msg(fromCard.getNameWithOwner() + "的魔法护盾抵消了本次除外！");
-            fromCard.removeKeyword("魔法护盾");
-            return;
-        }
         msg(fromCard.getNameWithOwnerWithPlace()+ "变身成了" + toCard.getId());
         if(fromCard.atArea()){
+            if(fromCard.hasKeyword("魔法免疫")){
+                fromCard.getInfo().msg(fromCard.getNameWithOwner() + "免疫了本次变身！");
+                return;
+            }
+            if(fromCard.hasKeyword("魔法护盾")){
+                fromCard.getInfo().msg(fromCard.getNameWithOwner() + "的魔法护盾抵消了本次变身！");
+                fromCard.removeKeyword("魔法护盾");
+                return;
+            }
             List<AreaCard> area = fromCard.ownerPlayer().getArea();
             int index = area.indexOf(fromCard);
             area.remove(index);

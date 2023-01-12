@@ -19,7 +19,7 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @Setter
 public class DefenceTower extends FollowCard {
     private String name = "防御塔";
-    private Integer cost = 3;
+    private Integer cost = 4;
     private int atk = 0;
     private int hp = 12;
     private String job = "dota";
