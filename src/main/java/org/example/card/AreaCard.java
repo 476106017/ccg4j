@@ -24,6 +24,15 @@ public abstract class AreaCard extends Card{
         if(!atArea())return;
 
         info.msg(getNameWithOwner() + "返回手牌！");
+        if(hasKeyword("魔法免疫")){
+            getInfo().msg(getNameWithOwner() + "免疫了本次返回手牌！");
+            return;
+        }
+        if(hasKeyword("魔法护盾")){
+            getInfo().msg(getNameWithOwner() + "的魔法护盾抵消了本次返回手牌！");
+            removeKeyword("魔法护盾");
+            return;
+        }
 
 
         removeWhenAtArea();
@@ -56,6 +65,15 @@ public abstract class AreaCard extends Card{
             info.msg(getNameWithOwner() + "无法破坏！");
             return false;
         }
+        if(hasKeyword("魔法免疫")){
+            getInfo().msg(getNameWithOwner() + "免疫了本次破坏！");
+            return true;
+        }
+        if(hasKeyword("魔法护盾")){
+            getInfo().msg(getNameWithOwner() + "的魔法护盾抵消了本次破坏！");
+            removeKeyword("魔法护盾");
+            return true;
+        }
         info.msg(getNameWithOwner() + "被"+from.getNameWithOwner()+"破坏！");
         death();
         if(this instanceof FollowCard thisFollow && from instanceof Card card){
@@ -80,6 +98,13 @@ public abstract class AreaCard extends Card{
         removeWhenAtArea();
         tempEffects(EffectTiming.Leaving);
         tempEffects(EffectTiming.DeathRattle);
+
+        // 重生时，保留装备，不进墓地，原地重新召唤
+        if(hasKeyword("重生")){
+            removeKeyword("重生");
+            ownerPlayer().summon(this);
+            return;
+        }
 
         if(this instanceof FollowCard followCard && followCard.equipped()){
             followCard.getEquipment().death();

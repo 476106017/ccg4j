@@ -30,7 +30,8 @@ public class DamageMulti {
                 areaCard.useEffects(EffectTiming.BeforeDamaged,damage));
             damage.getTo().useEffects(EffectTiming.BeforeDamaged,damage);
         });
-        damages.removeIf(damage -> damage.getTo() instanceof FollowCard toFollow && !toFollow.atArea());
+        damages.removeIf(damage -> damage.getTo() instanceof FollowCard toFollow
+            && (!toFollow.atArea() || damage.avoid()));// 如果被伤害随从不在场上或者免疫/闪避，则从伤害列表中移除
         // region 扣血
         damages.forEach(damage -> {
             GameObj to = damage.getTo();

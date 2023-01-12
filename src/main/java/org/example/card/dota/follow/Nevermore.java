@@ -27,7 +27,7 @@ public class Nevermore  extends FollowCard {
     private String mark = """
         战吼：获得3张影压
         击杀时：+2/+0
-        亡语：对敌方第1个位置造成影魔攻击力一半的伤害，舍弃未使用的影压
+        亡语：对敌方第1个位置造成影魔攻击力一半的伤害
         """;
     private String subMark = "";
 
@@ -69,7 +69,7 @@ public class Nevermore  extends FollowCard {
         public Integer cost = 0;
         public String name = "影压";
         public String job = "dota";
-        private List<String> race = Lists.ofStr();
+        private List<String> race = Lists.ofStr("技能");
 
     }
     @Getter

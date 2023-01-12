@@ -14,6 +14,7 @@ public class Damage{
     int damage;
     boolean isCounter = false;
     boolean isFromAtk = false;
+    boolean miss = false;
 
     public Damage(GameObj from, GameObj to, int damage) {
         this.from = from;
@@ -40,6 +41,29 @@ public class Damage{
         if(getTo() instanceof FollowCard toFollow && !toFollow.atArea())
             return false;
         return true;
+    }
+
+    public boolean avoid(){
+        // 普通攻击的时候
+        if(to instanceof FollowCard toFollow && toFollow.atArea() && isFromAtk()) {
+            if(isMiss()){
+                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "闪避了本次攻击伤害！");
+                return true;
+            }
+        }
+        // 效果伤害的时候
+        if(to instanceof FollowCard toFollow && toFollow.atArea() && !isFromAtk()) {
+            if(toFollow.hasKeyword("魔法免疫")){
+                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "免疫了本次效果伤害！");
+                return true;
+            }
+            if(toFollow.hasKeyword("魔法护盾")){
+                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "的魔法护盾抵消了本次效果伤害！");
+                toFollow.removeKeyword("魔法护盾");
+                return true;
+            }
+        }
+        return false;
     }
 
     public void reduce(){

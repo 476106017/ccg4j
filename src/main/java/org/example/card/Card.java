@@ -8,6 +8,7 @@ import org.example.game.Play;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.example.constant.CounterKey.*;
 import static org.example.system.Database.getPrototype;
@@ -111,6 +112,15 @@ public abstract class Card extends GameObj {
         if(atArea() && this instanceof AreaCard areaCard) {
             ownerPlayer().getArea().remove(this);
             areaCard.useEffects(EffectTiming.WhenNoLongerAtArea);
+
+            List<Card> skills = ownerPlayer().getHandCopy().stream()
+                .filter(card -> card.getRace().contains("技能") && card.getParent() == this)
+                .toList();
+
+            if(!skills.isEmpty()){
+                getInfo().exile(skills);
+                getInfo().msg(getNameWithOwner() + "的技能从手牌中除外了");
+            }
         }
     }
 

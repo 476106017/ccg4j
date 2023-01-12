@@ -339,8 +339,12 @@ public class PlayerInfo {
                 .append(card.getType()).append("\t")
                 .append(card.getId()).append("\t")
                 .append(String.join("/", card.getRace())).append("\t");
-            if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
-                sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\t");
+            if (card instanceof EquipmentCard equipmentCard) {
+                sb.append(equipmentCard.getAddAtk()).append("➹")
+                    .append(equipmentCard.getAddHp()).append("♥\t");
+                if (equipmentCard.getCountdown() > 0) {
+                    sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\t");
+                }
             }
             // region 显示详情
             StringBuilder detail = new StringBuilder();

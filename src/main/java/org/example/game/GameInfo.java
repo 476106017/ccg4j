@@ -242,7 +242,16 @@ public class GameInfo {
     // region event
 
     public void transform(Card fromCard, Card toCard){
-        msg(fromCard.getNameWithOwnerWithPlace()+ "已变身成了" + toCard.getId());
+        if(fromCard.hasKeyword("魔法免疫")){
+            fromCard.getInfo().msg(fromCard.getNameWithOwner() + "免疫了本次变身！");
+            return;
+        }
+        if(fromCard.hasKeyword("魔法护盾")){
+            fromCard.getInfo().msg(fromCard.getNameWithOwner() + "的魔法护盾抵消了本次除外！");
+            fromCard.removeKeyword("魔法护盾");
+            return;
+        }
+        msg(fromCard.getNameWithOwnerWithPlace()+ "变身成了" + toCard.getId());
         if(fromCard.atArea()){
             List<AreaCard> area = fromCard.ownerPlayer().getArea();
             int index = area.indexOf(fromCard);
@@ -275,7 +284,16 @@ public class GameInfo {
 
 
             // 场上卡除外时，有机会发动离场时效果
-            if (card.atArea() && card instanceof AreaCard){
+            if (card.atArea() && card instanceof AreaCard areaCard){
+                if(areaCard.hasKeyword("魔法免疫")){
+                    areaCard.getInfo().msg(areaCard.getNameWithOwner() + "免疫了本次除外！");
+                    return;
+                }
+                if(areaCard.hasKeyword("魔法护盾")){
+                    areaCard.getInfo().msg(areaCard.getNameWithOwner() + "的魔法护盾抵消了本次除外！");
+                    areaCard.removeKeyword("魔法护盾");
+                    return;
+                }
                 card.removeWhenAtArea();
                 card.tempEffects(EffectTiming.Leaving);
                 // 场上随从除外时，装备也除外
