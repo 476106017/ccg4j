@@ -22,12 +22,12 @@ import static org.example.constant.CounterKey.ALL_COST;
 @Getter
 @Setter
 public class RoosterCrow extends SpellCard {
-    public Integer cost = 3;
-    public String name = "战场晨啼";
+    public Integer cost = 2;
+    public String name = "出兵的号角";
     public String job = "dota";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        主战者获得唯一效果【敌方回合结束时，双方各召唤3个近卫军团/天灾军团】
+        敌方回合结束时，双方各召唤3个近卫军团/天灾军团
         """;
 
     public String subMark = "";
@@ -36,7 +36,7 @@ public class RoosterCrow extends SpellCard {
         setPlay(new Play(
             () -> {
                 Leader leader = ownerPlayer().getLeader();
-                leader.addEffect(new Effect(this,leader,EffectTiming.EnemyEndTurn,()->{
+                leader.addEffect(new Effect(this,leader,EffectTiming.EnemyEndTurn,3,()->{
                     List<AreaCard> cards = new ArrayList<>();
                     cards.add(createCard(SentinelCorps.class));
                     cards.add(createCard(SentinelCorps.class));

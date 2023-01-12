@@ -3,6 +3,7 @@ package org.example.card.dota.equipment;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.EquipmentCard;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -24,5 +25,6 @@ public class DivineRapier extends EquipmentCard {
 
     public DivineRapier() {
         getKeywords().add("死亡掉落");
+        setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));
     }
 }

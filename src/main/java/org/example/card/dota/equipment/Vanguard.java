@@ -3,6 +3,7 @@ package org.example.card.dota.equipment;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.EquipmentCard;
+import org.example.game.Play;
 
 @Getter
 @Setter
@@ -21,5 +22,6 @@ public class Vanguard extends EquipmentCard {
     public Vanguard() {
         getKeywords().add("护甲");
         getKeywords().add("护甲");
+        setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));
     }
 }

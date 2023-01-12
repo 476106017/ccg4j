@@ -35,7 +35,8 @@ public class DefenceTower extends FollowCard {
         getKeywords().add("缴械");
         addEffects((new Effect(this,this, EffectTiming.EndTurn, ()->{
             AreaCard areaRandomFollow = enemyPlayer().getAreaRandomFollow();
-            new Damage(this,areaRandomFollow,2).apply();
+            if(areaRandomFollow!=null)
+                new Damage(this,areaRandomFollow,2).apply();
         })));
     }
 }
