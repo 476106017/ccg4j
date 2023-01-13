@@ -39,7 +39,7 @@ public class SVPlayer extends Leader {
     };
 
     @Override
-    public void initCounter() {
+    public void init() {
         if (ownerPlayer().isInitative()) {
             ownerPlayer().count(EP_NUM,2);
         }else {

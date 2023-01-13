@@ -26,7 +26,7 @@ public class MysticRing extends SpellCard {
     public int target = 1;
 
     @Override
-    public void initCounter() {
+    public void init() {
         this.count();
     }
 

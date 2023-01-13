@@ -370,17 +370,17 @@ public class GameInfo {
 
         PlayerInfo p0 = thisPlayer();
         PlayerDeck playerDeck0 = userDecks.get(u0);
-        p0.setLeader(playerDeck0.getLeader(0, this));
-        p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
         p0.setUuid(u0);
         p0.setName(userNames.get(u0));
+        p0.setLeader(playerDeck0.getLeader(0, this));
+        p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
         Collections.shuffle(p0.getDeck());
 
         PlayerInfo p1 = oppositePlayer();
-        p1.setLeader(playerDeck0.getLeader(1, this));
-        p1.setDeck(userDecks.get(u1).getActiveDeckInstance(1, this));
         p1.setUuid(u1);
         p1.setName(userNames.get(u1));
+        p1.setLeader(playerDeck0.getLeader(1, this));
+        p1.setDeck(userDecks.get(u1).getActiveDeckInstance(1, this));
         Collections.shuffle(p1.getDeck());
 
         p0.draw(3);

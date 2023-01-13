@@ -40,7 +40,7 @@ public class DarkSnare extends SpellCard {
     }
 
     @Override
-    public void initCounter() {
+    public void init() {
         this.count();
     }
 

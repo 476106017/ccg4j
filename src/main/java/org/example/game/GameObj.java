@@ -39,7 +39,7 @@ public abstract class GameObj {
     public String getNameWithOwner(){
         return ownerPlayer().getName()+"的"+getId();
     };
-    public void initCounter(){}
+    public void init(){}
 
 
     // region 效果操作
@@ -107,7 +107,7 @@ public abstract class GameObj {
             card.setParent(this); ;
             card.setOwner(getOwner());
             card.setInfo(getInfo());
-            card.initCounter();
+            card.init();
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -127,7 +127,7 @@ public abstract class GameObj {
             card.setParent(this);
             card.setOwner(1-getOwner());
             card.setInfo(getInfo());
-            card.initCounter();
+            card.init();
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -185,7 +185,7 @@ public abstract class Card extends GameObj {
             card.parent = this;
             card.owner = this.owner;
             card.info = this.info;
-            card.initCounter();
+            card.init();
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);

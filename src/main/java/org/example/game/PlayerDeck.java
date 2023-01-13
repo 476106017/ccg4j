@@ -25,7 +25,7 @@ public class PlayerDeck {
             Leader leader = leaderClass.getDeclaredConstructor().newInstance();
             leader.setOwner(owner);
             leader.setInfo(info);
-            leader.initCounter();
+            leader.init();
             return leader;
         } catch (NoSuchMethodException | InstantiationException |
                  IllegalAccessException | InvocationTargetException e) {
@@ -40,7 +40,7 @@ public class PlayerDeck {
                 Card card = cardClass.getDeclaredConstructor().newInstance();
                 card.setOwner(owner);
                 card.setInfo(info);
-                card.initCounter();
+                card.init();
                 _return.add(card);
             } catch (NoSuchMethodException | InstantiationException |
                      IllegalAccessException | InvocationTargetException e) {

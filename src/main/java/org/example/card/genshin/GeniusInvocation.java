@@ -42,7 +42,8 @@ public class GeniusInvocation extends Leader {
 
     private List<Elemental> elementDices = new ArrayList<>();
 
-    public GeniusInvocation() {
+    @Override
+    public void init() {
         addEffect(new Effect(this,this, EffectTiming.BeginGame,()->{
             ownerPlayer().draw(card -> card instanceof ElementBaseFollowCard,3);
             ownerPlayer().addHand(createCard(NormalAttack.class));

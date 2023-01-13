@@ -32,7 +32,7 @@ public class ErosiveAnnihilation extends SpellCard {
     }
 
     @Override
-    public void initCounter() {
+    public void init() {
         this.count();
     }
 
