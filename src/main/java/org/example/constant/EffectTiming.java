@@ -9,6 +9,8 @@ import java.util.List;
 
 @Getter
 public enum EffectTiming {
+    BeginGame("游戏开始时"),
+
     BeginTurn("回合开始时"),
     EndTurn("回合结束时"),
     EnemyBeginTurn("敌方回合开始时"),

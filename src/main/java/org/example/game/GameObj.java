@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.genshin.Elemental;
 import org.example.constant.EffectTiming;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public abstract class GameObj {
     public final int id;
 
     protected GameInfo info = null;
+
+    public Elemental elementalCling = Elemental.Void;
 
     protected int owner = 0;
     public PlayerInfo ownerPlayer(){

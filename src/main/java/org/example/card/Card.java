@@ -8,7 +8,6 @@ import org.example.game.Play;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.example.constant.CounterKey.*;
 import static org.example.system.Database.getPrototype;
@@ -73,6 +72,17 @@ public abstract class Card extends GameObj {
                 getKeywords().remove(s);
                 info.msg(getNameWithOwner()+"失去了1层【"+ k +"】");
             });
+    }
+    public void removeKeyword(String k,int n){
+        List<String> keys = getKeywords().stream()
+            .filter(keyword -> keyword.equals(k)).toList();
+        if(keys.size()>0){
+            int min = Math.min(n, keys.size());
+            for (int i = 0; i < min; i++) {
+                getKeywords().remove(keys.get(i));
+            }
+            info.msg(getNameWithOwner()+"失去了"+min+"层【"+ k +"】");
+        }
     }
     public void removeKeywordAll(String k){
         List<String> keys = getKeywords().stream()
@@ -239,6 +249,10 @@ public abstract class Card extends GameObj {
             ownerPlayer().countToGraveyard(1);
         }
         ownerPlayer().getHand().remove(this);
+        if(this.hasKeyword("无限")){
+            info.msg(getNameWithOwner() + "是无限的！");
+            ownerPlayer().addHand(copyCard());
+        }
         // endregion
 
         // region 发动卡牌效果

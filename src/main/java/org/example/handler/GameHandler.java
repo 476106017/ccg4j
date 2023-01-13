@@ -77,7 +77,7 @@ public class GameHandler {
             String turnPlayerName = info.getPlayerInfos()[info.getTurnPlayer()].getName();
             // 两名玩家都换完了，开始游戏
             info.msg("双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
-
+            info.beginGame();
             roomSchedule.put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
             info.startTurn();
         }else {

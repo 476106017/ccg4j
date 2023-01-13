@@ -391,6 +391,15 @@ public class GameInfo {
     }
 
     // region turn
+    public void beginGame(){
+        Leader leader = thisPlayer().getLeader();
+        leader.setCanUseSkill(true);
+        leader.useEffects(EffectTiming.BeginGame);
+
+        Leader enemyLeader = oppositePlayer().getLeader();
+        enemyLeader.useEffects(EffectTiming.BeginGame);
+    }
+
     public void startTurn(){
         thisPlayer().clearCount(PLAY_NUM);
         if(thisPlayer().ppMax<10){
@@ -465,6 +474,7 @@ public class GameInfo {
             if(areaCard instanceof FollowCard followCard){
                 followCard.setTurnAttack(0);
                 followCard.removeKeyword("眩晕");
+                followCard.removeKeywordAll("格挡");
             }
         });
         thisPlayer().getAreaCopy().forEach(areaCard -> {

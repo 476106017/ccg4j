@@ -81,8 +81,16 @@ public class Damage{
 
                 if (reduce > 0) {
                     int finalReduce = Math.min(getDamage(), reduce);
-                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "减少了" + finalReduce + "点伤害");
                     setDamage(getDamage() - finalReduce);
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "通过抗性减少了" + finalReduce + "点伤害");
+                }
+
+                int parry = toFollow.countKeyword("格挡");
+                if(getDamage()>0 && parry>0){
+                    int parryReduce = Math.min(getDamage(), parry);
+                    setDamage(getDamage() - parryReduce);
+                    toFollow.removeKeyword("格挡",parryReduce);
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "格挡了" + parryReduce + "点伤害");
                 }
             }
         }

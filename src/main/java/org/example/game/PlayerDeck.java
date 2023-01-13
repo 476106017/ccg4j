@@ -59,9 +59,11 @@ public class PlayerDeck {
             sb.append(leader.getName()).append("\t");
             sb.append("技能：").append(leader.getSkillName())
                 .append("（").append(leader.getSkillCost()).append("）\n");
-            sb.append(leader.getSkillMark()).append("\n");
+            sb.append(leader.getSkillMark()).append("\n\n");
+            if(!leader.getMark().isEmpty())
+                sb.append(leader.getMark()).append("\n");
             sb.append("超抽效果：").append(leader.getOverDrawMark()).append("\n");
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         sb.append("【使用中的牌组】\n");
         sb.append(describeDeck(activeDeck));
         return sb.toString();

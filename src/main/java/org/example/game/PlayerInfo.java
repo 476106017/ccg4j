@@ -103,18 +103,23 @@ public class PlayerInfo {
         info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
     }
     public Card draw(Predicate<? super Card> condition){
-        Optional<Card> findCard = getDeck().stream()
-            .filter(condition)
-            .findAny();
-        if(findCard.isEmpty()){
-            info.msg(getName()+"搜索失败！");
-            return null;
+        List<Card> draws = draw(condition, 1);
+        if(draws.size()>0){
+            return draws.get(0);
         }
-        Card card = findCard.get();
-        info.msg(getName()+"搜索成功！");
-        addHand(card);
-        getDeck().remove(card);
-        return card;
+        return null;
+    }
+    public List<Card> draw(Predicate<? super Card> condition, int num){
+        List<Card> searches = getDeck().stream().filter(condition).limit(num)
+            .toList();
+        if(searches.isEmpty()){
+            info.msg(getName()+"搜索失败！");
+            return searches;
+        }
+        info.msg(getName()+"搜索到了"+num+"张牌！");
+        addHand(searches);
+        getDeck().removeAll(searches);
+        return searches;
     }
     public void backToDeck(Card cards){
         addDeck(cards);
@@ -230,9 +235,21 @@ public class PlayerInfo {
         return Lists.randOf(areaCards);
     }
     public List<AreaCard> getAreaFollows(){
-        return getArea().stream()
-            .filter(areaCard -> areaCard instanceof FollowCard)
-            .toList();
+        return getAreaFollows(true);
+    }
+    public List<AreaCard> getAreaFollows(boolean ignoreGuard){
+        if(ignoreGuard)
+            return getArea().stream()
+                .filter(areaCard -> areaCard instanceof FollowCard)
+                .toList();
+        else{
+            List<AreaCard> guards = getArea().stream()
+                .filter(areaCard -> areaCard instanceof FollowCard followCard && followCard.hasKeyword("守护"))
+                .toList();
+            if(guards.isEmpty())// 没有守护随从，则返回全部随从
+                return getAreaFollows(true);
+            return guards;// 有守护随从则返回
+        }
     }
     public List<AreaCard> getAreaFollowsBy(Predicate<FollowCard> p){
         return getArea().stream()

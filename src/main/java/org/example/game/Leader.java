@@ -17,6 +17,7 @@ public abstract class Leader extends GameObj {
 
     private boolean needTarget = true;
     private boolean canUseSkill = true;
+    private String Mark = "";// 能力介绍
 
     private String overDrawMark = """
         输掉游戏

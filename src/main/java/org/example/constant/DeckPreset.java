@@ -17,6 +17,7 @@ import org.example.card.fairy.amulet.ForestSymphony;
 import org.example.card.fairy.amulet.WoodOfBrambles;
 import org.example.card.fairy.follow.*;
 import org.example.card.fairy.spell.*;
+import org.example.card.genshin.follow.Diluc;
 import org.example.card.nemesis.follow.AnalyzingArtifact;
 import org.example.card.nemesis.follow.ImmortalAegis;
 import org.example.card.nemesis.spell.CalamitysGenesis;
@@ -78,6 +79,10 @@ public class DeckPreset {
             PhantomAssassin.class, PhantomAssassin.class,Alchemist.class,Alchemist.class, DivineRapier.class,
             MaskOfMadness.class, MaskOfMadness.class, ArcaneBoots.class,ArcaneBoots.class,ArcaneBoots.class,
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,Zelgenea.class,Zelgenea.class
+        ));
+        decks.put("原神",List.of(
+            Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class,
+            Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class
         ));
         decks.put("test",List.of(
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,
