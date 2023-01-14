@@ -7,6 +7,7 @@ import org.example.card.FollowCard;
 @Getter
 @Setter
 public abstract class ElementBaseFollowCard extends FollowCard {
+    public Integer cost = 0;
     private Elemental element = Elemental.Universal;
     private int burstNeedCharge = 3;
 

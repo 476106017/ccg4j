@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class NormalAttack extends ElementCostSpellCard {
-    public Integer cost = 10;
+    Integer cost = 2;
     public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Void, Elemental.Void);
     public String name = "普通攻击";
     public String job = "原神";

@@ -18,7 +18,6 @@ import java.util.List;
 @Setter
 public class Diluc extends ElementBaseFollowCard {
     private String name = "迪卢克";
-    private Integer cost = 0;
     private int atk = 0;
     private int hp = 10;
     private String job = "原神";
@@ -53,7 +52,6 @@ public class Diluc extends ElementBaseFollowCard {
     @Getter
     @Setter
     public static class SearingOnslaught extends ElementCostSpellCard {
-        public Integer cost = 10;
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "逆焰之刃";
         public String job = "原神";

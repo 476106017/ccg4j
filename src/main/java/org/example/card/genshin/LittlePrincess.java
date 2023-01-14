@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class GeniusInvocation extends Leader {
+public class LittlePrincess extends Leader {
     private String name = "小王子";
     private String job = "原神";
 
     private String Mark = """
         游戏开始时：搜索3张元素随从，获得1张普通攻击和1张换人
-        回合开始时：将PP点转换成随机元素骰；
+        回合开始时：生成与PP点相同数量的随机元素骰；
         如果不是第一回合、且场上没有任何元素随从，则输掉游戏。
         """;
 
@@ -53,11 +53,11 @@ public class GeniusInvocation extends Leader {
         addEffect(new Effect(this,this, EffectTiming.BeginTurn,()->{
             List<AreaCard> follows = ownerPlayer().getAreaFollowsBy(followCard ->
                 followCard instanceof ElementBaseFollowCard);
-            if(follows.isEmpty()) info.gameset(enemyPlayer());
+            if(follows.isEmpty() && info.getTurn()!=1)
+                info.gameset(enemyPlayer());
 
             rollDices(ownerPlayer().getPpNum());
             showDices();
-            ownerPlayer().setPpNum(0);
 
         }), true);
     }
@@ -89,9 +89,8 @@ public class GeniusInvocation extends Leader {
     }
 
     public void rollDices(int num){
-        List<Elemental> dices = Arrays.asList(Elemental.values());
-        dices.remove(Elemental.Main);
-        dices.remove(Elemental.Void);
+        List<Elemental> dices = Arrays.stream(Elemental.values())
+            .filter(Elemental::isDice).toList();
 
         elementDices = new ArrayList<>();
         for (int i = 0; i < num; i++) {
@@ -105,5 +104,18 @@ public class GeniusInvocation extends Leader {
         StringBuilder sb = new StringBuilder("当前拥有的元素骰：\n");
         count.forEach((k,v)-> sb.append(k.getStr()).append("\t").append(v).append("\n"));
         info.msgTo(ownerPlayer().getUuid(),sb.toString());
+    }
+    public boolean hasDices(List<Elemental> costDices) {
+        List<Elemental> diceRemains = new ArrayList<>(elementDices);
+        try {
+            costDices.forEach(costDice -> {
+                if (!diceRemains.remove(costDice)
+                    && !diceRemains.remove(Elemental.Universal))
+                    throw new RuntimeException();
+            });
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

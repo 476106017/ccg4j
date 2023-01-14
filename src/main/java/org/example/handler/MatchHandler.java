@@ -8,8 +8,7 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.example.card.genshin.GeniusInvocation;
-import org.example.card.neutral.SVPlayer;
+import org.example.card.genshin.LittlePrincess;
 import org.example.constant.DeckPreset;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
@@ -54,8 +53,8 @@ public class MatchHandler {
         log.info("客户端" + uuid + "建立websocket连接成功,用户名："+name);
         // region TODO 先用默认牌组
         PlayerDeck playerDeck = new PlayerDeck();
-        playerDeck.setLeaderClass(SVPlayer.class);
-        playerDeck.getActiveDeck().addAll(DeckPreset.decks.get("默认"));
+        playerDeck.setLeaderClass(LittlePrincess.class);
+        playerDeck.getActiveDeck().addAll(DeckPreset.decks.get("原神"));
         userDecks.put(uuid, playerDeck);
         // endregion TODO 先用默认牌组
         userNames.put(uuid,name);
