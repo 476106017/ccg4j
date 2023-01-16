@@ -152,7 +152,7 @@ public class PlayerInfo {
 
 
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
-        info.msgTo(getUuid(),cardNames + "加入了手牌");
+        info.msgTo(getUuid(),cardNames.isBlank()?"没有牌":cardNames + "加入了手牌");
         info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手手牌");
         int cardsSize = cards.size();
         int handSize = hand.size();
@@ -267,6 +267,12 @@ public class PlayerInfo {
         return getArea().stream()
             .filter(areaCard -> areaCard instanceof FollowCard followCard && p.test(followCard))
             .map(areaCard -> (FollowCard)areaCard)
+            .toList();
+    }
+    public List<Card> getAreaFollowsAsCardBy(Predicate<FollowCard> p){
+        return getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard followCard && p.test(followCard))
+            .map(areaCard -> (Card)areaCard)
             .toList();
     }
     public List<GameObj> getAreaFollowsAsGameObj(){

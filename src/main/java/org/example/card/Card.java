@@ -172,6 +172,9 @@ public abstract class Card extends GameObj {
     public void count(String key){
         count(key,1);
     }
+    public void clearCount(){
+        counter.remove(DEFAULT);
+    }
     public void clearCount(String key){
         counter.remove(key);
     }
@@ -249,10 +252,6 @@ public abstract class Card extends GameObj {
             ownerPlayer().countToGraveyard(1);
         }
         ownerPlayer().getHand().remove(this);
-        if(this.hasKeyword("无限")){
-            info.msg(getNameWithOwner() + "是无限的！");
-            ownerPlayer().addHand(copyCard());
-        }
         // endregion
 
         // region 发动卡牌效果

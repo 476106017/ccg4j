@@ -1,9 +1,11 @@
-package org.example.game;
+package org.example.card.genshin.system;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
-import org.example.card.genshin.Elemental;
+import org.example.game.Damage;
+import org.example.game.DamageMulti;
+import org.example.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +21,19 @@ public class ElementalDamage extends Damage {
     }
 
     public void apply() {
-        Elemental cling = to.getElementalCling();
+        Elemental cling = getTo().getElementalCling();
         List<ElementalDamage> moreDamage = new ArrayList<>();
         if (element == Elemental.Anemo) {
             if (cling.isActive()) {
-                to.getInfo().msg("扩散！");
-                to.ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != to)
+                getTo().getInfo().msg("扩散！");
+                getTo().ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != getTo())
                     .forEach(followCard ->
                         moreDamage.add(new ElementalDamage(getFrom(), followCard, 1, cling)));
                 setDamage(getDamage() + 1);
             }
         } else if (element == Elemental.Geo) {
             if (cling.isActive()) {
-                to.getInfo().msg("结晶！");
+                getTo().getInfo().msg("结晶！");
                 if (getFrom() instanceof FollowCard fromFollow) {
                     fromFollow.addKeywordN("格挡", 2);
                 }
@@ -42,23 +44,23 @@ public class ElementalDamage extends Damage {
                 case Electro -> {// 雷附着
                     switch (element) {
                         case Hydro -> {
-                            to.getInfo().msg("感电！");
-                            to.ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != to)
+                            getTo().getInfo().msg("感电！");
+                            getTo().ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != getTo())
                                 .forEach(followCard ->
                                     moreDamage.add(new ElementalDamage(getFrom(), followCard, 1, Elemental.Electro)));
                         }
                         case Pydro -> {
-                            to.getInfo().msg("超载！");
-                            new Damage(from, to, 2);
-                            if (to instanceof FollowCard toFollow)
+                            getTo().getInfo().msg("超载！");
+                            new Damage(getFrom(), getTo(), 2).apply();
+                            if (getTo() instanceof FollowCard toFollow)
                                 toFollow.removeKeywordAll("守护");
                         }
                         case Cryo -> {
-                            to.getInfo().msg("超导！");
-                            to.ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != to)
+                            getTo().getInfo().msg("超导！");
+                            getTo().ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != getTo())
                                 .forEach(followCard ->
                                     moreDamage.add(new ElementalDamage(getFrom(), followCard, 1, Elemental.Void)));
-                            if (to instanceof FollowCard toFollow)
+                            if (getTo() instanceof FollowCard toFollow)
                                 toFollow.removeKeywordAll("护甲");
                         }
                     }
@@ -66,18 +68,18 @@ public class ElementalDamage extends Damage {
                 case Hydro -> {
                     switch (element) {
                         case Electro -> {
-                            to.getInfo().msg("感电！");
-                            to.ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != to)
+                            getTo().getInfo().msg("感电！");
+                            getTo().ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != getTo())
                                 .forEach(followCard ->
                                     moreDamage.add(new ElementalDamage(getFrom(), followCard, 1, Elemental.Electro)));
                         }
                         case Pydro -> {
-                            to.getInfo().msg("蒸发！");
+                            getTo().getInfo().msg("蒸发！");
                             setDamage(getDamage() * 2);
                         }
                         case Cryo -> {
-                            to.getInfo().msg("冻结！");
-                            if (to instanceof FollowCard toFollow)
+                            getTo().getInfo().msg("冻结！");
+                            if (getTo() instanceof FollowCard toFollow)
                                 toFollow.addKeywordN("眩晕", 2);
                         }
                     }
@@ -85,17 +87,17 @@ public class ElementalDamage extends Damage {
                 case Pydro -> {
                     switch (element) {
                         case Electro -> {
-                            to.getInfo().msg("超载！");
-                            new Damage(from, to, 2);
-                            if (to instanceof FollowCard toFollow)
+                            getTo().getInfo().msg("超载！");
+                            new Damage(getFrom(), getTo(), 2).apply();
+                            if (getTo() instanceof FollowCard toFollow)
                                 toFollow.removeKeywordAll("守护");
                         }
                         case Hydro -> {
-                            to.getInfo().msg("蒸发（反向）！");
+                            getTo().getInfo().msg("蒸发（反向）！");
                             setDamage((int)(getDamage()*1.5));
                         }
                         case Cryo -> {
-                            to.getInfo().msg("融化！");
+                            getTo().getInfo().msg("融化！");
                             setDamage(getDamage() * 2);
                         }
                     }
@@ -103,32 +105,32 @@ public class ElementalDamage extends Damage {
                 case Cryo -> {
                     switch (element) {
                         case Electro -> {
-                            to.getInfo().msg("超导！");
-                            to.ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != to)
+                            getTo().getInfo().msg("超导！");
+                            getTo().ownerPlayer().getAreaFollowsAsFollowBy(followCard -> followCard != getTo())
                                 .forEach(followCard ->
                                     moreDamage.add(new ElementalDamage(getFrom(), followCard, 1, Elemental.Void)));
-                            if (to instanceof FollowCard toFollow)
+                            if (getTo() instanceof FollowCard toFollow)
                                 toFollow.removeKeywordAll("护甲");
                         }
                         case Hydro -> {
-                            to.getInfo().msg("冻结！");
-                            if (to instanceof FollowCard toFollow)
+                            getTo().getInfo().msg("冻结！");
+                            if (getTo() instanceof FollowCard toFollow)
                                 toFollow.addKeywordN("眩晕", 2);
                         }
                         case Pydro -> {
-                            to.getInfo().msg("融化（反向）！");
+                            getTo().getInfo().msg("融化（反向）！");
                             setDamage((int)(getDamage()*1.5));
                         }
                     }
                 }
                 case Void -> {
-                    to.setElementalCling(element);
+                    getTo().setElementalCling(element);
                 }
             }
         }
-        to.setElementalCling(Elemental.Void);
+        getTo().setElementalCling(Elemental.Void);
 
-        new DamageMulti(to.getInfo(), List.of(this)).apply();
+        new DamageMulti(getTo().getInfo(), List.of(this)).apply();
 
         moreDamage.forEach(Damage::apply);
     }

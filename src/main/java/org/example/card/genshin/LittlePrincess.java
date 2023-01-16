@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.FollowCard;
+import org.example.card.genshin.system.ElementBaseFollowCard;
+import org.example.card.genshin.system.ElementCostSpellCard;
+import org.example.card.genshin.system.Elemental;
+import org.example.card.genshin.system.ElementalDamage;
 import org.example.constant.EffectTiming;
-import org.example.game.Effect;
-import org.example.game.GameObj;
-import org.example.game.Leader;
-import org.example.game.PlayerInfo;
+import org.example.game.*;
 import org.example.system.Lists;
 
 import java.util.*;
@@ -23,7 +25,7 @@ public class LittlePrincess extends Leader {
     private String job = "原神";
 
     private String Mark = """
-        游戏开始时：搜索3张元素随从，获得1张普通攻击和1张换人
+        游戏开始时：搜索3张元素随从，获得1张普通攻击和1张切换角色
         回合开始时：生成与PP点相同数量的随机元素骰；
         如果不是第一回合、且场上没有任何元素随从，则输掉游戏。
         """;
@@ -36,7 +38,7 @@ public class LittlePrincess extends Leader {
 
     private String skillName = "元素调和";
     private String skillMark =  """
-        除外1张手牌，生成1个与场上拥有【守护】的元素随从同元素骰子
+        除外指定手牌，生成1个与场上拥有【守护】的元素随从同元素骰子
         """;
     private int skillCost = 0;
 
@@ -47,7 +49,7 @@ public class LittlePrincess extends Leader {
         addEffect(new Effect(this,this, EffectTiming.BeginGame,()->{
             ownerPlayer().draw(card -> card instanceof ElementBaseFollowCard,3);
             ownerPlayer().addHand(createCard(NormalAttack.class));
-            ownerPlayer().addHand(createCard(NormalAttack.class));
+            ownerPlayer().addHand(createCard(SwapCharacter.class));
         }), true);
 
         addEffect(new Effect(this,this, EffectTiming.BeginTurn,()->{
@@ -72,10 +74,10 @@ public class LittlePrincess extends Leader {
     @Override
     public void skill(GameObj target) {
         super.skill(target);
-        PlayerInfo playerInfo = ownerPlayer();
+        Card targetCard = (Card) target;
 
         // 将1张手牌除外
-        info.exile((Card) target);
+        info.exile(targetCard);
 
         // 生成1个与第1位角色同元素的骰子
         List<AreaCard> follows = ownerPlayer().getAreaFollowsBy(followCard ->
@@ -83,6 +85,7 @@ public class LittlePrincess extends Leader {
 
         if(!follows.isEmpty()){
             ElementBaseFollowCard elementBaseFollowCard = (ElementBaseFollowCard) follows.get(0);
+            info.msgToThisPlayer("生成了一个"+elementBaseFollowCard.getElement()+"骰子");
             getElementDices().add(elementBaseFollowCard.getElement());
         }
 
@@ -117,5 +120,78 @@ public class LittlePrincess extends Leader {
             return false;
         }
         return true;
+    }
+    public void useDices(List<Elemental> costDices) {
+        costDices.forEach(costDice -> {
+            if (!elementDices.remove(costDice))
+                elementDices.remove(Elemental.Universal);
+        });
+    }
+
+
+
+    @Getter
+    @Setter
+    public static class NormalAttack extends ElementCostSpellCard {
+        Integer cost = 2;
+        public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Void, Elemental.Void);
+        public String name = "普通攻击";
+        public String job = "原神";
+        private List<String> race = Lists.ofStr("行动");
+        public String mark = """
+        我方由第1位【守护】随从对指定目标发起攻击
+        如果我方是法器随从，则造成对目标造成1+X点对应元素伤害
+        否则对目标造成3+X点无元素伤害
+        （X是我方随从攻击力）
+        （效果伤害）
+        """;
+        public String subMark = "";
+
+        public NormalAttack() {
+            setPlay(new Play(
+                ()->{
+                    List<GameObj> enemyTargets = new ArrayList<>();
+                    enemyTargets.add(info.oppositePlayer().getLeader());
+                    enemyTargets.addAll(info.oppositePlayer().getAreaFollows(false));
+                    return enemyTargets;
+                }, true,
+                toObj->{
+                    ElementBaseFollowCard fromFollow = activeFollow();
+                    fromFollow.count();
+                    if(fromFollow.hasRace("法器"))
+                        new ElementalDamage(fromFollow,toObj,
+                            1 + fromFollow.getAtk(),fromFollow.getElement()).apply();
+                    else if(fromFollow.getAttackElement() != Elemental.Void)
+                        new ElementalDamage(fromFollow,toObj,
+                            3 + fromFollow.getAtk(),fromFollow.getAttackElement()).apply();
+                    else
+                        new Damage(fromFollow,toObj,3 + fromFollow.getAtk()).apply();
+                }));
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class SwapCharacter extends ElementCostSpellCard {
+        Integer cost = 1;
+        public List<Elemental> elementCost = List.of(Elemental.Void);
+        public String name = "切换角色";
+        public String job = "原神";
+        private List<String> race = Lists.ofStr("行动");
+        public String mark = """
+        指定一名我方场上的元素随从
+        移除我方场上随从的【守护】效果，然后指定的随从获得【守护】
+        """;
+        public String subMark = "";
+
+        public SwapCharacter() {
+            setPlay(new Play(
+                ()->ownerPlayer().getAreaFollowsAsGameObj(), true,
+                toObj->{
+                    ownerPlayer().getAreaFollows().forEach(areaCard -> areaCard.removeKeywordAll("守护"));
+                    if(toObj instanceof FollowCard followCard)
+                        followCard.addKeyword("守护");
+                }));
+        }
     }
 }

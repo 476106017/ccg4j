@@ -1,11 +1,10 @@
-package org.example.card.genshin;
+package org.example.card.genshin.system;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.EquipmentCard;
-import org.example.card.FollowCard;
 import org.example.card.SpellCard;
+import org.example.card.genshin.LittlePrincess;
 import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 
@@ -14,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM;
 
 @Getter
@@ -23,9 +21,24 @@ public abstract class ElementCostSpellCard extends SpellCard {
     Integer cost = 0;
     List<Elemental> elementCost;
 
+    public ElementBaseFollowCard activeFollow(){
+        List<AreaCard> guards = ownerPlayer().getAreaFollowsBy(followCard ->
+            followCard instanceof ElementBaseFollowCard elementBaseFollowCard && elementBaseFollowCard.hasKeyword("守护"));
+        if(guards.isEmpty()){
+            return null;
+        }
+        return (ElementBaseFollowCard) guards.get(0);
+    }
+
     public void play(List<GameObj> targets, int choice){
         if(!(ownerPlayer().getLeader() instanceof LittlePrincess littlePrincess)){
             info.msgToThisPlayer("请使用主战者【小王子】来打出此牌！");
+            return;
+        }
+        ElementBaseFollowCard activeFollow = activeFollow();
+        if(getParent() instanceof ElementBaseFollowCard && getParent()!=activeFollow){
+            // 如果是由元素随从创造的技能牌，创造者必须是当前上场随从
+            info.msgToThisPlayer(getParent().getName()+"不是出战角色，无法使用该技能！");
             return;
         }
 
@@ -36,7 +49,7 @@ public abstract class ElementCostSpellCard extends SpellCard {
             .filter(elemental -> elemental == Elemental.Void).count();
 
         int ppNum = ownerPlayer().getPpNum();
-        int usePP = 0;
+        int usePP;
         if(ppNum < costVoidCount){
             // pp不够用的情况
             usePP = ppNum;
@@ -51,25 +64,17 @@ public abstract class ElementCostSpellCard extends SpellCard {
         // endregion
 
         // region 转换消耗中的主元素
-        Elemental mainElemental;
-        if(this instanceof NormalAttack){
-            List<AreaCard> guards = ownerPlayer().getAreaFollowsBy(followCard ->
-                followCard instanceof ElementBaseFollowCard elementBaseFollowCard && elementBaseFollowCard.hasKeyword("守护"));
-            if(guards.isEmpty()){
-                info.msg("没有可以攻击的随从，技能没有任何效果！");
-                return;
-            }
-            ElementBaseFollowCard fromFollow = (ElementBaseFollowCard) guards.get(0);
-            mainElemental = fromFollow.getElement();
-        }else {// 普攻以外，都是取创造该技能的随从
-            mainElemental = ((ElementBaseFollowCard)getParent()).getElement();
-        }
-
         long main = elementCostCopy.stream()
             .filter(elemental -> elemental == Elemental.Main).count();
-        for (long i = 0; i < main; i++) {
-            elementCostCopy.remove(Elemental.Main);
-            elementCostCopy.add(mainElemental);
+        if(main>0){
+            if(activeFollow == null){
+                info.msg("没有出战中的随从，技能没有任何效果！");
+                return;
+            }
+            for (long i = 0; i < main; i++) {
+                elementCostCopy.remove(Elemental.Main);
+                elementCostCopy.add(activeFollow.getElement());
+            }
         }
         // endregion
 
@@ -79,6 +84,10 @@ public abstract class ElementCostSpellCard extends SpellCard {
         }
 
         info.msg(ownerPlayer().getName() + "使用了技能：" + getName());
+        // region 实际扣费
+        ownerPlayer().setPpNum(ppNum - usePP);
+        littlePrincess.useDices(elementCostCopy);
+        // endregion 实际扣费
 
         // region 在使用卡牌造成任何影响前，先计算使用时
         ownerPlayer().getLeader().useEffects(EffectTiming.WhenPlay,this);

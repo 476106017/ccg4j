@@ -81,8 +81,7 @@ public class DeckPreset {
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,Zelgenea.class,Zelgenea.class
         ));
         decks.put("原神",List.of(
-            Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class,
-            Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class,Diluc.class
+            Diluc.class,Diluc.class,Diluc.class
         ));
         decks.put("test",List.of(
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,

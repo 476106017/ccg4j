@@ -1,4 +1,4 @@
-package org.example.card.genshin;
+package org.example.card.genshin.system;
 
 import lombok.Getter;
 import org.example.system.Lists;

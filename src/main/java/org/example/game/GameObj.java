@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
-import org.example.card.genshin.Elemental;
+import org.example.card.genshin.system.Elemental;
 import org.example.constant.EffectTiming;
 
 import java.util.ArrayList;

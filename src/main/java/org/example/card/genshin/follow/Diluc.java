@@ -3,9 +3,9 @@ package org.example.card.genshin.follow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
-import org.example.card.genshin.ElementBaseFollowCard;
-import org.example.card.genshin.ElementCostSpellCard;
-import org.example.card.genshin.Elemental;
+import org.example.card.genshin.system.ElementBaseFollowCard;
+import org.example.card.genshin.system.ElementCostSpellCard;
+import org.example.card.genshin.system.Elemental;
 import org.example.game.Damage;
 import org.example.game.GameObj;
 import org.example.game.Play;
@@ -46,7 +46,7 @@ public class Diluc extends ElementBaseFollowCard {
 
     @Override
     public void elementalBurst() {
-        ownerPlayer().addHand(createCard(SearingOnslaught.class));
+        ownerPlayer().addHand(createCard(Dawn.class));
     }
 
     @Getter
@@ -69,15 +69,47 @@ public class Diluc extends ElementBaseFollowCard {
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
                     enemyTargets.add(info.oppositePlayer().getLeader());
-                    boolean ignoreGuard = hasKeyword("无视守护");
-                    enemyTargets.addAll(info.oppositePlayer().getAreaFollows(ignoreGuard));
+                    enemyTargets.addAll(info.oppositePlayer().getAreaFollows(hasKeyword("无视守护")));
                     return enemyTargets;
                 },
                true,
                 obj->{
-                    FollowCard fromFollow = (FollowCard)getParent();
-                    new Damage(fromFollow,obj,3 + fromFollow.getAtk());
+                    ElementBaseFollowCard fromFollow = (ElementBaseFollowCard)getParent();
+                    new Damage(fromFollow,obj,3 + fromFollow.getAtk()).apply();
                     fromFollow.count();
+                }));
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class Dawn extends ElementCostSpellCard {
+        public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
+        public String name = "黎明";
+        public String job = "原神";
+        private List<String> race = Lists.ofStr("技能","元素爆发");
+        public String mark = """
+        对敌方随从造成8+X点火元素伤害（X是迪卢克攻击力），迪卢克的普攻获得火元素附魔
+        """;
+        public String subMark = "X等于{}";
+        public String getSubMark() {
+            return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
+        }
+
+        public Dawn() {
+            setPlay(new Play(
+                ()->{
+                    List<GameObj> enemyTargets = new ArrayList<>();
+                    enemyTargets.add(info.oppositePlayer().getLeader());
+                    enemyTargets.addAll(info.oppositePlayer().getAreaFollows(hasKeyword("无视守护")));
+                    return enemyTargets;
+                },
+                true,
+                obj->{
+                    ElementBaseFollowCard fromFollow = (ElementBaseFollowCard)getParent();
+                    new Damage(fromFollow,obj,8 + fromFollow.getAtk()).apply();
+                    fromFollow.clearCount();
+                    fromFollow.setAttackElement(Elemental.Pydro);
                 }));
         }
     }
