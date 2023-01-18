@@ -83,7 +83,14 @@ public abstract class ElementCostSpellCard extends SpellCard {
             return;
         }
 
-        info.msg(ownerPlayer().getName() + "使用了技能：" + getName());
+        if (hasRace("行动")) {
+            info.msg(ownerPlayer().getName() + "使用行动：" + getName());
+        } else {
+            info.msg(ownerPlayer().getName() + "使用了：" + getName());
+            ownerPlayer().getGraveyard().add(this);
+            ownerPlayer().countToGraveyard(1);
+            ownerPlayer().getHand().remove(this);
+        }
         // region 实际扣费
         ownerPlayer().setPpNum(ppNum - usePP);
         littlePrincess.useDices(elementCostCopy);

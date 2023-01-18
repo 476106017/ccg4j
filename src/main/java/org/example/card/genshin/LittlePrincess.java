@@ -25,7 +25,7 @@ public class LittlePrincess extends Leader {
     private String job = "原神";
 
     private String Mark = """
-        游戏开始时：搜索3张元素随从，获得1张普通攻击和1张切换角色
+        游戏开始时：搜索1张元素随从，获得1张普通攻击和1张切换角色
         回合开始时：生成与PP点相同数量的随机元素骰；
         如果不是第一回合、且场上没有任何元素随从，则输掉游戏。
         """;
@@ -47,7 +47,7 @@ public class LittlePrincess extends Leader {
     @Override
     public void init() {
         addEffect(new Effect(this,this, EffectTiming.BeginGame,()->{
-            ownerPlayer().draw(card -> card instanceof ElementBaseFollowCard,3);
+            ownerPlayer().draw(card -> card instanceof ElementBaseFollowCard);
             ownerPlayer().addHand(createCard(NormalAttack.class));
             ownerPlayer().addHand(createCard(SwapCharacter.class));
         }), true);
@@ -58,8 +58,8 @@ public class LittlePrincess extends Leader {
             if(follows.isEmpty() && info.getTurn()!=1)
                 info.gameset(enemyPlayer());
 
-            rollDices(ownerPlayer().getPpNum());
-            showDices();
+            elementDices = new ArrayList<>();
+            addDices(ownerPlayer().getPpNum());
 
         }), true);
     }
@@ -91,22 +91,31 @@ public class LittlePrincess extends Leader {
 
     }
 
-    public void rollDices(int num){
+    public int diceTypeNum(){
+        return (int) elementDices.stream().filter(p->p!=Elemental.Universal).distinct().count();
+    }
+
+    public void addDices(int num){
         List<Elemental> dices = Arrays.stream(Elemental.values())
             .filter(Elemental::isDice).toList();
-
-        elementDices = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             elementDices.add(Lists.randOf(dices));
         }
     }
 
-    public void showDices(){
+    public String showDices(){
         Map<Elemental, Long> count = elementDices.stream()
             .collect(Collectors.groupingBy(p->p, Collectors.counting()));
         StringBuilder sb = new StringBuilder("当前拥有的元素骰：\n");
-        count.forEach((k,v)-> sb.append(k.getStr()).append("\t").append(v).append("\n"));
-        info.msgTo(ownerPlayer().getUuid(),sb.toString());
+        count.forEach((k,v)-> {
+            sb.append("【").append(k.getStr().replaceAll("元素","")).append("】");
+            if(v>1){
+                sb.append("*").append(v).append("\t");
+            }
+            sb.append("\t");
+        });
+        sb.append("\n");
+        return sb.toString();
     }
     public boolean hasDices(List<Elemental> costDices) {
         List<Elemental> diceRemains = new ArrayList<>(elementDices);
@@ -158,14 +167,19 @@ public class LittlePrincess extends Leader {
                 toObj->{
                     ElementBaseFollowCard fromFollow = activeFollow();
                     fromFollow.count();
+                    Damage damage;
                     if(fromFollow.hasRace("法器"))
-                        new ElementalDamage(fromFollow,toObj,
-                            1 + fromFollow.getAtk(),fromFollow.getElement()).apply();
+                        damage = new ElementalDamage(fromFollow,toObj,
+                            1 + fromFollow.getAtk(),fromFollow.getElement());
                     else if(fromFollow.getAttackElement() != Elemental.Void)
-                        new ElementalDamage(fromFollow,toObj,
-                            3 + fromFollow.getAtk(),fromFollow.getAttackElement()).apply();
+                        damage = new ElementalDamage(fromFollow,toObj,
+                            3 + fromFollow.getAtk(),fromFollow.getAttackElement());
                     else
-                        new Damage(fromFollow,toObj,3 + fromFollow.getAtk()).apply();
+                        damage = new Damage(fromFollow,toObj,2 + fromFollow.getAtk());
+
+                    fromFollow.getEffects(EffectTiming.WhenAttack)// 触发攻击时
+                        .forEach(effect -> effect.getEffect().accept(damage));
+                    damage.apply();
                 }));
         }
     }

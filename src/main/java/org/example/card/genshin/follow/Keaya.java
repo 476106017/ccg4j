@@ -2,14 +2,14 @@ package org.example.card.genshin.follow;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.card.genshin.system.ElementBaseFollowCard;
 import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.card.genshin.system.Elemental;
 import org.example.card.genshin.system.ElementalDamage;
-import org.example.game.Damage;
-import org.example.game.GameObj;
-import org.example.game.Play;
+import org.example.constant.EffectTiming;
+import org.example.game.*;
 import org.example.system.Lists;
 
 import java.util.ArrayList;
@@ -17,55 +17,56 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Diluc extends ElementBaseFollowCard {
-    private String name = "迪卢克";
+public class Keaya extends ElementBaseFollowCard {
+    private String name = "凯亚";
     private int atk = 0;
     private int hp = 10;
     private String job = "原神";
-    private List<String> race = Lists.ofStr("元素","双手剑");
+    private List<String> race = Lists.ofStr("元素","单手剑");
 
-    private Elemental element = Elemental.Pydro;
+    private Elemental element = Elemental.Cryo;
+    private int burstNeedCharge = 2;
 
     private String mark = """
-        战吼：获得1张逆焰之刃
-        元素充能（3）：获得1张黎明
+        战吼：获得1张霜袭
+        元素充能（2）：获得1张凌冽轮舞
         """;
-    private String subMark = "充能进度：{}/3";
+    private String subMark = "充能进度：{}/2";
 
     public String getSubMark() {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public Diluc() {
+    public Keaya() {
         setMaxHp(getHp());
         getKeywords().add("缴械");
         getKeywords().add("无法破坏");
         setPlay(new Play(
-            ()->ownerPlayer().addHand(createCard(SearingOnslaught.class))
+            ()->ownerPlayer().addHand(createCard(Frostgnaw.class))
         ));
     }
 
     @Override
     public void elementalBurst() {
-        ownerPlayer().addHand(createCard(Dawn.class));
+        ownerPlayer().addHand(createCard(GlacialWaltz.class));
     }
 
     @Getter
     @Setter
-    public static class SearingOnslaught extends ElementCostSpellCard {
+    public static class Frostgnaw extends ElementCostSpellCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
-        public String name = "逆焰之刃";
+        public String name = "霜袭";
         public String job = "原神";
         private List<String> race = Lists.ofStr("技能","元素战技");
         public String mark = """
-        对敌方随从造成3+X点火元素伤害（X是迪卢克攻击力）
+        对敌方随从造成3+X点冰元素伤害（X是凯亚攻击力）
         """;
         public String subMark = "X等于{}";
         public String getSubMark() {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public SearingOnslaught() {
+        public Frostgnaw() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -76,7 +77,7 @@ public class Diluc extends ElementBaseFollowCard {
                true,
                 obj->{
                     ElementBaseFollowCard fromFollow = (ElementBaseFollowCard)getParent();
-                    new ElementalDamage(fromFollow,obj,3 + fromFollow.getAtk(),Elemental.Pydro).apply();
+                    new ElementalDamage(fromFollow,obj,3 + fromFollow.getAtk(),Elemental.Cryo).apply();
                     fromFollow.count();
                 }));
         }
@@ -84,20 +85,20 @@ public class Diluc extends ElementBaseFollowCard {
 
     @Getter
     @Setter
-    public static class Dawn extends ElementCostSpellCard {
-        public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
-        public String name = "黎明";
+    public static class GlacialWaltz extends ElementCostSpellCard {
+        public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main, Elemental.Main);
+        public String name = "凌冽轮舞";
         public String job = "原神";
         private List<String> race = Lists.ofStr("技能","元素爆发");
         public String mark = """
-        对敌方随从造成8+X点火元素伤害（X是迪卢克攻击力），迪卢克的普攻获得火元素附魔
+        对敌方随从造成1+X点冰元素伤害（X是凯亚攻击力），主战者获得唯一效果【切换时：对随机一个敌方随从造成2点冰元素伤害（每回合仅可发动1次）】
         """;
         public String subMark = "X等于{}";
         public String getSubMark() {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public Dawn() {
+        public GlacialWaltz() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -108,8 +109,21 @@ public class Diluc extends ElementBaseFollowCard {
                 true,
                 obj->{
                     ElementBaseFollowCard fromFollow = (ElementBaseFollowCard)getParent();
-                    new ElementalDamage(fromFollow,obj,8 + fromFollow.getAtk(),Elemental.Pydro).apply();
-                    fromFollow.setAttackElement(Elemental.Pydro);
+                    new ElementalDamage(fromFollow,obj,1 + fromFollow.getAtk(),Elemental.Cryo).apply();
+
+                    Leader leader = ownerPlayer().getLeader();
+                    leader.addEffect(new Effect(this,leader, EffectTiming.BeginTurn,()->{
+                        ownerPlayer().count(getName());
+                    }), true);
+                    leader.addEffect(new Effect(this,leader, EffectTiming.WhenSwapChara,()->{
+                        if(ownerPlayer().getCount(getName()) > 0){
+                            AreaCard areaRandomFollow = enemyPlayer().getAreaRandomFollow();
+                            if(areaRandomFollow != null)
+                                new ElementalDamage(leader, areaRandomFollow,2,Elemental.Cryo).apply();
+
+                            ownerPlayer().clearCount(getName());
+                        }
+                    }), true);
                 }));
         }
     }

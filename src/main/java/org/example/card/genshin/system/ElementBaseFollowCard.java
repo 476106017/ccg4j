@@ -17,8 +17,10 @@ public abstract class ElementBaseFollowCard extends FollowCard {
     public void count() {
         if(getCount() < getBurstNeedCharge()){
             super.count();
-            if(getCount() == getBurstNeedCharge())
+            if(getCount() == getBurstNeedCharge()){
                 elementalBurst();
+                clearCount();
+            }
         }
     }
 }

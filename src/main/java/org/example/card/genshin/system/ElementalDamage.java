@@ -23,6 +23,7 @@ public class ElementalDamage extends Damage {
     public void apply() {
         Elemental cling = getTo().getElementalCling();
         List<ElementalDamage> moreDamage = new ArrayList<>();
+        boolean clingToVoid = false;
         if (element == Elemental.Anemo) {
             if (cling.isActive()) {
                 getTo().getInfo().msg("扩散！");
@@ -124,11 +125,14 @@ public class ElementalDamage extends Damage {
                     }
                 }
                 case Void -> {
+                    clingToVoid =true;
+                    getTo().getInfo().msg("附着"+element.getStr()+"！");
                     getTo().setElementalCling(element);
                 }
             }
         }
-        getTo().setElementalCling(Elemental.Void);
+        if(!clingToVoid)
+            getTo().setElementalCling(Elemental.Void);
 
         new DamageMulti(getTo().getInfo(), List.of(this)).apply();
 

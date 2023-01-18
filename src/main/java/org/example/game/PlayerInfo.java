@@ -3,6 +3,8 @@ package org.example.game;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
+import org.example.card.genshin.LittlePrincess;
+import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 
@@ -157,16 +159,21 @@ public class PlayerInfo {
         int cardsSize = cards.size();
         int handSize = hand.size();
         int handTotal = handSize + cardsSize;
+        List<Card> successCards;
         if(handTotal > handMax){
-            hand.addAll(cards.subList(0,handMax-handSize));
+            successCards = cards.subList(0,handMax-handSize);
             info.msg(getName()+"的手牌放不下了，多出的"+(handTotal-handMax)+"张牌从游戏中除外！");
 
             List<Card> exileCards = cards.subList(handMax - handSize, cards.size());
             info.tempCardEffectBatch(exileCards,EffectTiming.Exile);
 
         }else{
-            hand.addAll(cards);
+            successCards = cards;
         }
+        hand.addAll(successCards);
+
+        successCards.forEach(card -> card.tempEffects(EffectTiming.WhenDrawn));
+
     }
     public void addArea(AreaCard areaCard){
         addArea(List.of(areaCard));
@@ -234,6 +241,15 @@ public class PlayerInfo {
             .toList();
         return Lists.randOf(areaCards);
     }
+
+    public AreaCard getAreaRandomGuardFollow(){
+        List<AreaCard> areaCards = getArea().stream()
+            .filter(areaCard -> areaCard instanceof FollowCard followCard
+                && followCard.hasKeyword("守护"))
+            .toList();
+        return Lists.randOf(areaCards);
+    }
+
     public List<AreaCard> getAreaFollows(){
         return getAreaFollows(true);
     }
@@ -328,6 +344,11 @@ public class PlayerInfo {
     }
 
     public String describePPNum(){
+        if(info.thisPlayer()==this &&// 本回合玩家才知道骰子
+            getLeader() instanceof LittlePrincess littlePrincess){
+            return "\n剩余pp：【"+getPpNum()+"】\n"+littlePrincess.showDices();
+
+        }
         return "\n剩余pp：【"+getPpNum()+"】\n";
     }
 
@@ -375,6 +396,11 @@ public class PlayerInfo {
                 if (amuletCard.getCountDown() > 0) {
                     sb.append(amuletCard.getCountDown()).append("⌛︎");
                 }
+            }
+            if (card instanceof ElementCostSpellCard elementCostSpellCard) {
+                elementCostSpellCard.getElementCost().forEach(elemental -> {
+                    sb.append("【").append(elemental.getStr().replaceAll("元素","")).append("】︎");
+                });
             }
             detail.append("<div style='text-align:right;float:right;'>")
                 .append(String.join("/",card.getRace())).append("</div>\n");

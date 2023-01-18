@@ -32,8 +32,6 @@ public class FakeSky extends AmuletCard {
         """;
     public String subMark = "";
 
-    List<FollowCard> effectFollows = new ArrayList<>();
-
     public FakeSky() {
         addEffects((new Effect(this,this, EffectTiming.BeginTurn, ()->{
             long count = ownerPlayer()

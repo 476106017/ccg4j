@@ -51,6 +51,9 @@ public enum EffectTiming {
     Charge("注能",List.class,true),
     WhenKill("击杀时",FollowCard.class),
 
+    // 特殊规则事件
+    WhenSwapChara("切换时"),
+
     ;
 
     private String name;
