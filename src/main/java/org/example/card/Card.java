@@ -70,7 +70,10 @@ public abstract class Card extends GameObj {
             .findFirst()
             .ifPresent(s -> {
                 getKeywords().remove(s);
-                info.msg(getNameWithOwner()+"失去了1层【"+ k +"】");
+                if(hasKeyword(s))
+                    info.msg(getNameWithOwner()+"失去了1层【"+ k +"】");
+                else
+                    info.msg(getNameWithOwner()+"失去了【"+ k +"】");
             });
     }
     public void removeKeyword(String k,int n){

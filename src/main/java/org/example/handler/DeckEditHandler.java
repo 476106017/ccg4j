@@ -7,7 +7,9 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
+import org.example.card.neutral.SVPlayer;
 import org.example.constant.DeckPreset;
+import org.example.game.Leader;
 import org.example.game.PlayerDeck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -45,9 +47,13 @@ public class DeckEditHandler {
             return;
         }
         List<Class<? extends Card>> deck = DeckPreset.decks.get(data);
+        Class<? extends Leader> leader = DeckPreset.deckLeader.get(data);
         if(deck==null){
             client.sendEvent("receiveMsg", "不存在的牌组名字");
             return;
+        }
+        if(leader==null){
+            leader = SVPlayer.class;
         }
 
         PlayerDeck playerDeck = userDecks.get(me);
@@ -59,6 +65,7 @@ public class DeckEditHandler {
         List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
         activeDeck.clear();
         activeDeck.addAll(deck);
+        playerDeck.setLeaderClass(leader);
 
         client.sendEvent("receiveMsg", "成功使用预设牌组：" + data);
     }

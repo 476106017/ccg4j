@@ -29,7 +29,7 @@ public class GameInfo {
     boolean inSettle = false;
     int turn;
     int turnPlayer;
-    boolean gameset;
+    boolean gameset = false;
     ScheduledFuture<?> rope;
     List<Damage> incommingDamages = new ArrayList<>();
     Map<Card,EventType> events = new HashMap<>();
@@ -55,11 +55,24 @@ public class GameInfo {
         this.server = server;
         this.turn = 1;
         this.turnPlayer = 0;
-        this.gameset = false;
         this.playerInfos = new PlayerInfo[2];
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
 
+    }
+
+    public void resetGame(){
+        msg("游戏重启！");
+        roomSchedule.get(getRoom()).shutdown();
+        roomSchedule.remove(getRoom());
+        this.turn = 1;
+        this.turnPlayer = 0;
+        UUID thisUUid = thisPlayer().uuid;
+        UUID oppoUUid = oppositePlayer().uuid;
+        this.playerInfos = new PlayerInfo[2];
+        this.playerInfos[0] = new PlayerInfo(this,true);
+        this.playerInfos[1] = new PlayerInfo(this,false);
+        zeroTurn(thisUUid,oppoUUid);
     }
 
     public void msg(String msg){
@@ -439,6 +452,8 @@ public class GameInfo {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        if(thisPlayer().getStep() == -1)return;// 回合结束效果触发了重启游戏
         turn += turnPlayer;// 如果是玩家1就加回合数
         turnPlayer = 1 ^ turnPlayer;
         msg("——————————");

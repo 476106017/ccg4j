@@ -37,6 +37,7 @@ public abstract class GameObj {
     }
 
     public String getNameWithOwner(){
+        if(info==null) return getId();
         return ownerPlayer().getName()+"的"+getId();
     };
     public void init(){}

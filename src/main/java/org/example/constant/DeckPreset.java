@@ -17,11 +17,16 @@ import org.example.card.fairy.amulet.ForestSymphony;
 import org.example.card.fairy.amulet.WoodOfBrambles;
 import org.example.card.fairy.follow.*;
 import org.example.card.fairy.spell.*;
+import org.example.card.genshin.LittlePrincess;
 import org.example.card.genshin.amulet.FakeSky;
 import org.example.card.genshin.follow.Diluc;
 import org.example.card.genshin.follow.Keaya;
 import org.example.card.genshin.follow.Sucrose;
 import org.example.card.genshin.spell.*;
+import org.example.card.jojo.follow.EnricoPucci;
+import org.example.card.jojo.follow.JolyneCujoh;
+import org.example.card.jojo.follow.KujoJotaro;
+import org.example.card.nemesis.Yuwan;
 import org.example.card.nemesis.follow.AnalyzingArtifact;
 import org.example.card.nemesis.follow.ImmortalAegis;
 import org.example.card.nemesis.spell.CalamitysGenesis;
@@ -37,6 +42,7 @@ import org.example.card.stalker.follow.LabRecruiter;
 import org.example.card.stalker.spell.Preparation;
 import org.example.card.stalker.spell.Shadowstep;
 import org.example.card.test.folow.TestFollow;
+import org.example.game.Leader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +53,7 @@ import java.util.Map;
  */
 public class DeckPreset {
     public static final Map<String,List<Class<? extends Card>>> decks = new HashMap<>();
+    public static final Map<String,Class<? extends Leader>> deckLeader = new HashMap<>();
     static {
         decks.put("默认",List.of(
             Bahamut.class, DarkSnare.class, TestOfStrength.class, AmbitiousGoblinMage.class,Hamsa.class,
@@ -61,6 +68,7 @@ public class DeckPreset {
             SylvanJustice.class,AncientElf.class,FairyWhisperer.class,InsectLord.class,PhantombloomPredator.class,
             QueenOfTheForest.class, FirespriteGrove.class, FlowerOfFairies.class, ForestSymphony.class, WoodOfBrambles.class
         ));
+        deckLeader.put("默认", Yuwan.class);
         decks.put("预设妖精",List.of(
             Bahamut.class, TestOfStrength.class, AmbitiousGoblinMage.class, AmbitiousGoblinMage.class,Hamsa.class,
             TravelerGoblin.class, TravelerGoblin.class, TravelerGoblin.class, Zelgenea.class, Zelgenea.class,
@@ -87,6 +95,12 @@ public class DeckPreset {
         decks.put("原神",List.of(
             Diluc.class, Keaya.class, Sucrose.class, FakeSky.class, ChaosMeteor.class,
             DawnOfWinery.class, ForgeSummon.class, Kokomi.class, Kokomi.class, LuckyDay.class
+        ));
+        deckLeader.put("原神", LittlePrincess.class);
+        decks.put("jojo",List.of(
+            EnricoPucci.class, EnricoPucci.class, EnricoPucci.class,
+            JolyneCujoh.class,JolyneCujoh.class,JolyneCujoh.class,
+            KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,
