@@ -3,7 +3,7 @@
 可以看做影之诗（シャドバ）的fan made作品。以后可能会变成别的玩法。
 
 ## 试玩
-http://card4j.top/
+http://www.card4j.top/
 
 黑客大哥不要搞破坏欧！
 
