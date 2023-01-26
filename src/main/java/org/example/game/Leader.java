@@ -58,6 +58,7 @@ public abstract class Leader extends GameObj {
         }
         info.msg(ownerPlayer().getName() + "使用了"+getName()+"的主战者技能："+getSkillName());
         setCanUseSkill(false);
+        ownerPlayer().setPpNum(ownerPlayer().getPpNum() - getSkillCost());
     };
 
 

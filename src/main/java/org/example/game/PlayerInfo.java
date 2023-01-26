@@ -141,7 +141,9 @@ public class PlayerInfo {
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
-        info.msg(getName() + "的" + cards.size() + "张卡洗入牌堆中");
+        info.msgTo(getEnemy().getUuid(),"对手将" + cards.size() + "张卡洗入牌堆中");
+        info.msgTo(getUuid(),
+            cards.stream().map(GameObj::getName).collect(Collectors.joining("、")) + "被洗入牌堆");
         cards.forEach(card -> {
             int index = (int)(Math.random() * getDeck().size());
             getDeck().add(index,card);
@@ -344,12 +346,10 @@ public class PlayerInfo {
     }
 
     public String describePPNum(){
-        if(info.thisPlayer()==this &&// 本回合玩家才知道骰子
-            getLeader() instanceof LittlePrincess littlePrincess){
-            return "\n剩余pp：【"+getPpNum()+"】\n"+littlePrincess.showDices();
-
-        }
-        return "\n剩余pp：【"+getPpNum()+"】\n";
+        if(getLeader() instanceof LittlePrincess littlePrincess)
+            return "剩余pp：【"+getPpNum()+"】\n"+littlePrincess.showDices();
+        else
+            return "剩余pp：【"+getPpNum()+"】\n";
     }
 
     public String describeGraveyard(){
@@ -415,14 +415,32 @@ public class PlayerInfo {
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s"
+                    title="%s" data-content="%s" data-placement="auto top"
                     data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
             // endregion
             sb.append("</p>");
         }
-        sb.append(describePPNum());
+        sb.append("<br/>");
+        if(getStep()!=-1){// 不是换牌阶段
+            if(info.thisPlayer()==this){
+                if (getLeader().isCanUseSkill())
+                    sb.append("<p>可使用主战者技能：").append(getLeader().getSkillName())
+                        .append("（").append(getLeader().getSkillCost()).append("）")
+                        .append("""
+                   <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                            title="%s" data-content="%s" data-placement="auto top"
+                            data-container="body" data-toggle="popover"
+                              data-trigger="hover" data-html="true"/></p>
+                    """.formatted(getLeader().getSkillName(),getLeader().getSkillMark().replaceAll("\\n","<br/>")));
+                else
+                    sb.append("不可使用主战者技能<br/>");
+                sb.append(describePPNum());
+            }else {
+                sb.append("等待对手的回合结束......");
+            }
+        }
         return sb.toString();
     }
 

@@ -33,8 +33,11 @@ public abstract class GameObj {
     public abstract void setName(String name);
     public abstract String getName();
     public String getId(){
-        return getName() + "#" + hashCode()%10000;
+        return getName();
     }
+//    public String getId(){
+//        return getName() + "#" + hashCode()%10000;
+//    }
 
     public String getNameWithOwner(){
         if(info==null) return getId();

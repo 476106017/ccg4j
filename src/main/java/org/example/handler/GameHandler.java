@@ -31,7 +31,9 @@ public class GameHandler {
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.playerByUuid(me);
         // endregion
@@ -70,8 +72,6 @@ public class GameHandler {
         }
         // endregion
 
-        info.msgTo(me,"交换后的手牌:\n"+player.describeHand());
-
         player.setStep(0);
         if(info.anotherPlayerByUuid(me).getStep()==0){
             String turnPlayerName = info.getPlayerInfos()[info.getTurnPlayer()].getName();
@@ -92,7 +92,8 @@ public class GameHandler {
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         // endregion
@@ -116,7 +117,9 @@ public class GameHandler {
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         // endregion
@@ -221,8 +224,6 @@ public class GameHandler {
             }
 
         }
-
-
     }
     @OnEvent(value = "attack")
     public void attack(SocketIOClient client, String msg){
@@ -230,7 +231,8 @@ public class GameHandler {
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
@@ -321,9 +323,6 @@ public class GameHandler {
         }
         myFollow.attack(target);
 
-        info.msgToThisPlayer(info.describeArea(player.getUuid()) + player.describePPNum());
-        info.msgToOppositePlayer(info.describeArea(enemy.getUuid()) + enemy.describePPNum());
-
 
     }
 
@@ -332,7 +331,8 @@ public class GameHandler {
         // region 获取游戏对象
         UUID me = client.getSessionId();
         String name = userNames.get(me);
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
@@ -391,97 +391,29 @@ public class GameHandler {
             }
             leader.skill(target);
         }
-
+        info.pushInfo();
     }
 
-
-    @OnEvent(value = "info")
-    public void info(SocketIOClient client, String msg){
-
-        UUID me = client.getSessionId();
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
-        GameInfo info = roomGame.get(room);
-
-        info.msgTo(me, info.describeGame(me));
-    }
-    @OnEvent(value = "area")
-    public void area(SocketIOClient client, String msg){
-
-        UUID me = client.getSessionId();
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
-        GameInfo info = roomGame.get(room);
-
-        info.msgTo(me, info.describeArea(me));
-    }
-    @OnEvent(value = "hand")
-    public void hand(SocketIOClient client, String msg){
-
-        UUID me = client.getSessionId();
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
-        GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
-
-        info.msgTo(me, player.describeHand());
-    }
     @OnEvent(value = "grave")
     public void grave(SocketIOClient client, String msg){
 
         UUID me = client.getSessionId();
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.playerByUuid(me);
 
         info.msgTo(me, player.describeGraveyard());
-    }
-    @OnEvent(value = "ff")
-    public void ff(SocketIOClient client, String msg){
-
-        UUID me = client.getSessionId();
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
-        GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
-        PlayerInfo enemy = info.anotherPlayerByUuid(me);
-
-        info.msg(player.getName() + "宣告投降！");
-        info.gameset(enemy);
-
-
-    }
-    @OnEvent(value = "leave")
-    public void leave(SocketIOClient client, String msg){
-
-        UUID me = client.getSessionId();
-        Optional<String> roomOpt = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny();
-        if(roomOpt.isEmpty()){
-            client.sendEvent("receiveMsg","你不在任何房间中");
-        }
-        String room = roomOpt.get();
-        GameInfo info = roomGame.get(room);
-        if(info!=null){
-            PlayerInfo player = info.playerByUuid(me);
-            PlayerInfo enemy = info.anotherPlayerByUuid(me);
-            info.msg(player.getName() + "离开了游戏！");
-            info.gameset(enemy);
-            return;
-        }
-        client.leaveRoom(room);
-        client.sendEvent("receiveMsg","离开房间成功");
-        // 释放资源
-        roomReadyMatch.remove(room);
-        roomGame.remove(room);
-        if(me.equals(waitUser) || room.equals(waitRoom) ){
-            waitRoom = "";
-            waitUser = null;
-        }
-        // 退出房间
-
     }
 
     // TODO 测试用，顺序出牌
     @OnEvent(value = "test")
     public void test(SocketIOClient client, String msg){
         UUID me = client.getSessionId();
-        String room = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny().get();
+
+        String room = userRoom.get(me);
+        if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
 

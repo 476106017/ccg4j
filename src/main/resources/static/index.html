@@ -28,6 +28,9 @@
 <body>
 
 <div id="app" style="margin-left: 100px;">
+    <div id="battleInfo"
+         style="background-color: aliceblue; border:1px solid; right:0;position:fixed; z-index:1;white-space: pre-line;
+         margin: 50px; padding: 50px;">无法获取游戏信息</div>
     <ul id="msgList" style="margin-left: -50px;"></ul>
     <b id="name"></b>
     <br/>
@@ -46,14 +49,11 @@
     <input type="button" onclick="$('#msgContent').val('play')" value="出牌"/>
     <input type="button" onclick="$('#msgContent').val('attack')" value="攻击"/>
     <input type="button" onclick="$('#msgContent').val('skill')" value="主战者技能"/>
-    <br/>
-    <input type="button" onclick="$('#msgContent').val('info')" value="综合信息"/>
-    <input type="button" onclick="$('#msgContent').val('area')" value="战场信息"/>
-    <input type="button" onclick="$('#msgContent').val('hand')" value="手牌信息"/>
-    <input type="button" onclick="$('#msgContent').val('grave')" value="墓地信息"/>
-    <br/>
     <input type="button" onclick="$('#msgContent').val('end')" value="结束回合"/>
-    <input type="button" onclick="$('#msgContent').val('ff')" value="投降"/>
+    <br/>
+    <br/>
+    <!-- <input type="button" onclick="$('#msgContent').val('grave')" value="墓地信息"/> -->
+    <!-- <br/> -->
 </div>
 
 <script type="text/javascript" th:inline="javascript">
@@ -62,7 +62,8 @@
         var historyStack=[];
         // Socket连接
         function initIm() {
-            userName = prompt("请输入用户名进入聊天室");
+            userName = prompt("请输入用户名进入游戏大厅");
+            // userName = "zdm";
             if ($.trim(userName)) {
                 socket = io.connect("localhost:18089", {
                     'query': 'name=' + userName
@@ -80,6 +81,9 @@
                     $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
                     $(function () { $("[data-toggle='popover']").popover(); });
                     scrollToEnd();
+                });
+                socket.on('battleInfo', function (data) {
+                    $('#battleInfo').html(data);
                 });
             } else {
                 alert("非法用户名");
@@ -127,6 +131,7 @@
         // 清空消息
         function cleanMsg() {
             $('#msgList').html('');
+            $('#battleInfo').html('无法获取游戏信息');
         }
         function scrollToEnd(){//滚动到底部
             var h = $(document).height()-$(window).height();

@@ -72,14 +72,11 @@ public class MatchHandler {
         UUID me = client.getSessionId();
         String ip = client.getHandshakeData().getHttpHeaders().get("X-Forwarded-For");
         String name = userNames.get(me);
-        Optional<String> roomOpt = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny();
         socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
             "【系统广播】"+name+"（"+ip+"）退出了游戏！");
-        if(roomOpt.isEmpty()){
-            log.info("客户端" + client.getSessionId() + "断开websocket连接成功");
-            return;
-        }
-        String room = roomOpt.get();
+        String room = userRoom.get(me);
+        if(room==null)return;
+
         GameInfo info = roomGame.get(room);
         if(info!=null){
             PlayerInfo player = info.playerByUuid(me);
@@ -106,8 +103,8 @@ public class MatchHandler {
     @OnEvent(value = "jr")
     public void joinRoom(SocketIOClient client) throws InterruptedException {
         UUID me = client.getSessionId();
-        Set<String> allRooms = client.getAllRooms();
-        if(allRooms.size()>1){
+        String room = userRoom.get(me);
+        if(room != null){
             socketIOServer.getClient(me).sendEvent("receiveMsg", "请不要重复进入房间！");
             return;
         }
@@ -116,9 +113,11 @@ public class MatchHandler {
             waitUser = me;
             waitRoom = UUID.randomUUID().toString();
             client.joinRoom(waitRoom);
+            userRoom.put(me,waitRoom);
             socketIOServer.getClient(me).sendEvent("receiveMsg", "进入房间（"+waitRoom+"），等待对手");
         }else {
             client.joinRoom(waitRoom);
+            userRoom.put(me,waitRoom);
             socketIOServer.getClient(me).sendEvent("receiveMsg", "进入房间（"+waitRoom+"）");
             socketIOServer.getClient(me).sendEvent("receiveMsg",
                 "匹配成功！ 【"+userNames.get(me)+"】vs【"+userNames.get(waitUser)+"】");
@@ -145,11 +144,11 @@ public class MatchHandler {
     public void leave(SocketIOClient client, String msg){
 
         UUID me = client.getSessionId();
-        Optional<String> roomOpt = client.getAllRooms().stream().filter(p -> !p.isBlank()).findAny();
-        if(roomOpt.isEmpty()){
+        String room = userRoom.get(me);
+        if(room==null){
             client.sendEvent("receiveMsg","你不在任何房间中");
+            return;
         }
-        String room = roomOpt.get();
         GameInfo info = roomGame.get(room);
         if(info!=null){
             PlayerInfo player = info.playerByUuid(me);
@@ -158,6 +157,7 @@ public class MatchHandler {
             info.gameset(enemy);
             return;
         }
+        userRoom.remove(me);
         client.leaveRoom(room);
         client.sendEvent("receiveMsg","离开房间成功");
         // 释放资源

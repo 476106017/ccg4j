@@ -283,11 +283,8 @@ public abstract class Card extends GameObj {
         ownerPlayer().count(PLAY_NUM);
 
         info.startEffect();
+        info.pushInfo();
 
-        info.msgTo(ownerPlayer().getUuid(),
-            info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
-        info.msgTo(enemyPlayer().getUuid(),
-            info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
     }
 
 }

@@ -127,9 +127,6 @@ public abstract class ElementCostSpellCard extends SpellCard {
 
         info.startEffect();
 
-        info.msgTo(ownerPlayer().getUuid(),
-            info.describeArea(ownerPlayer().getUuid()) + ownerPlayer().describePPNum());
-        info.msgTo(enemyPlayer().getUuid(),
-            info.describeArea(enemyPlayer().getUuid()) + ownerPlayer().describePPNum());
+        info.pushInfo();
     }
 }

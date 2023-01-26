@@ -1,5 +1,6 @@
 package org.example.game;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import org.example.system.Lists;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -83,6 +85,18 @@ public class GameInfo {
         server.getClient(uuid).sendEvent("receiveMsg", msg);
     }
 
+    public void pushInfo(){
+        //
+        try {
+            server.getClient(thisPlayer().getUuid())
+                .sendEvent("battleInfo", describeGame(thisPlayer().getUuid()));
+        }catch (Exception ignored){}
+        try {
+            server.getClient(oppositePlayer().getUuid())
+            .sendEvent("battleInfo", describeGame(oppositePlayer().getUuid()));
+        }catch (Exception ignored){}
+    }
+
     public void msgToThisPlayer(String msg){
         server.getClient(thisPlayer().getUuid()).sendEvent("receiveMsg", msg);
     }
@@ -122,17 +136,32 @@ public class GameInfo {
     public void gameset(PlayerInfo winner){
         gameset = true;
         msg("游戏结束，获胜者："+winner.getName());
+        pushInfo();
 
         // 释放资源
         roomReadyMatch.remove(getRoom());
         roomGame.remove(getRoom());
         // 退出房间
         try {
-            server.getClient(thisPlayer().getUuid()).leaveRoom(getRoom());
-            server.getClient(oppositePlayer().getUuid()).leaveRoom(getRoom());
-            roomSchedule.get(getRoom()).shutdown();
+            // 如果找不到玩家，就算了
+            try {
+                userRoom.remove(thisPlayer().getUuid());
+                SocketIOClient client = server.getClient(thisPlayer().getUuid());
+                client.leaveRoom(getRoom());
+                client.sendEvent("receiveMsg","离开房间成功");
+            }catch (Exception ignored){}
+            try {
+                userRoom.remove(oppositePlayer().getUuid());
+                SocketIOClient client = server.getClient(oppositePlayer().getUuid());
+                client.leaveRoom(getRoom());
+                client.sendEvent("receiveMsg","离开房间成功");
+            }catch (Exception ignored){}
+
+            ScheduledExecutorService ses = roomSchedule.get(getRoom());
+            ses.shutdown();
+            ses.close();
             roomSchedule.remove(getRoom());
-        }catch (Exception ignored){}
+        }catch (Exception e){e.printStackTrace();}
         throw new RuntimeException("Game Set");
     }
 
@@ -430,7 +459,7 @@ public class GameInfo {
             rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
             msg("倒计时300秒！");
         }
-        msgToThisPlayer(describeGame(thisPlayer().getUuid()));
+        pushInfo();
         msgToThisPlayer("请出牌！");
         msgToOppositePlayer("等待对手出牌......");
     }
@@ -597,6 +626,9 @@ public class GameInfo {
                 .append(card.getId()).append("\t");
             if("随从".equals(card.getType())){
                 FollowCard follow = (FollowCard) card;
+                if(follow.notAttacked()){
+                    sb.append("未攻击").append("\t");
+                }
                 sb.append(follow.getAtk()).append("/").append(follow.getHp())
                     .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
                 if(follow.getEquipment()!=null){
@@ -635,7 +667,7 @@ public class GameInfo {
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s"
+                    title="%s" data-content="%s" data-placement="auto left"
                     data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
@@ -690,7 +722,7 @@ public class GameInfo {
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s"
+                    title="%s" data-content="%s" data-placement="auto left"
                     data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
@@ -704,22 +736,22 @@ public class GameInfo {
 
 
     public String describeGame(UUID uuid){
+        if(gameset)return "无法获取游戏信息";
+
         StringBuilder sb = new StringBuilder();
         PlayerInfo player = playerByUuid(uuid);
         PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
 
-        sb.append("局面信息\n");
-        sb.append(player.describePPNum());
-        sb.append("\n");
-        sb.append(oppositePlayer.name)
-            .append("\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
-            .append("\t牌：").append(oppositePlayer.deck.size())
+        sb.append("【主战者信息】\n");
+        sb.append("玩家【").append(oppositePlayer.name)
+            .append("】\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
+            .append("\n牌：").append(oppositePlayer.deck.size())
             .append("\t墓：").append(oppositePlayer.graveyardCount)
             .append("\t手：").append(oppositePlayer.hand.size())
             .append("\n");
-        sb.append(player.name)
-            .append("\t血：").append(player.getHp()).append("/").append(player.getHpMax())
-            .append("\t牌：").append(player.deck.size())
+        sb.append("玩家【").append(player.name)
+            .append("】\t血：").append(player.getHp()).append("/").append(player.getHpMax())
+            .append("\n牌：").append(player.deck.size())
             .append("\t墓：").append(player.graveyardCount)
             .append("\t手：").append(player.hand.size())
             .append("\n");
