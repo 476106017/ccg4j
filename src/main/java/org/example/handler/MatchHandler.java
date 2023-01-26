@@ -63,7 +63,8 @@ public class MatchHandler {
         socketIOServer.getClient(uuid).sendEvent("receiveMsg", name+"（"+uuid+"）登录成功！");
 
         socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
-            "【系统广播】"+name+"（"+ip+"）登录了游戏！");
+            "【系统广播】"+name+"（"+ip+"）登录了游戏！" +
+                "当前在线："+socketIOServer.getAllClients().size()+"人");
     }
 
 
@@ -72,6 +73,7 @@ public class MatchHandler {
         UUID me = client.getSessionId();
         String ip = client.getHandshakeData().getHttpHeaders().get("X-Forwarded-For");
         String name = userNames.get(me);
+        userNames.remove(me);
         socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
             "【系统广播】"+name+"（"+ip+"）退出了游戏！");
         String room = userRoom.get(me);
@@ -89,6 +91,7 @@ public class MatchHandler {
         // 释放资源
         roomReadyMatch.remove(room);
         roomGame.remove(room);
+        userRoom.remove(me);
         if(me.equals(waitUser) || room.equals(waitRoom) ){
             waitRoom = "";
             waitUser = null;
