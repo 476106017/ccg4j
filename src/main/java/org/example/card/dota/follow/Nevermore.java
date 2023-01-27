@@ -6,7 +6,6 @@ import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card.fairy.follow.Fairy;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;

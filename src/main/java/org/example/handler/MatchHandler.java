@@ -8,9 +8,7 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.example.card.genshin.LittlePrincess;
-import org.example.card.nemesis.Yuwan;
-import org.example.card.neutral.SVPlayer;
+import org.example.card.shadowverse.nemesis.Yuwan;
 import org.example.constant.DeckPreset;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
@@ -19,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.example.system.Database.*;

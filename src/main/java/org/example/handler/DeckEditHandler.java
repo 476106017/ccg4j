@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
-import org.example.card.neutral.SVPlayer;
+import org.example.card.shadowverse.neutral.SVPlayer;
 import org.example.constant.DeckPreset;
 import org.example.game.Leader;
 import org.example.game.PlayerDeck;

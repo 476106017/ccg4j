@@ -3,7 +3,6 @@ package org.example.card.dota.follow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
-import org.example.card.fairy.follow.Fairy;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
