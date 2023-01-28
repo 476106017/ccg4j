@@ -35,7 +35,7 @@ public class RoosterCrow extends SpellCard {
     public RoosterCrow() {
         setPlay(new Play(
             () -> {
-                Leader leader = ownerPlayer().getLeader();
+                Leader leader = ownerLeader();
                 leader.addEffect(new Effect(this,leader,EffectTiming.EnemyEndTurn,3,()->{
                     List<AreaCard> cards = new ArrayList<>();
                     cards.add(createCard(SentinelCorps.class));

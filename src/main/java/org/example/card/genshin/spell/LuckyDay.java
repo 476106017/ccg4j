@@ -31,12 +31,12 @@ public class LuckyDay extends ElementCostSpellCard {
 
     public LuckyDay() {
         addEffects(new Effect(this,this, EffectTiming.InvocationBegin,
-            ()-> ownerPlayer().getLeader() instanceof LittlePrincess littlePrincess
+            ()-> ownerLeader() instanceof LittlePrincess littlePrincess
                     && littlePrincess.diceTypeNum() == 7,
             ()-> info.gameset(ownerPlayer())));
 
         setPlay(new Play(()->{
-            if(ownerPlayer().getLeader() instanceof LittlePrincess littlePrincess){
+            if(ownerLeader() instanceof LittlePrincess littlePrincess){
                 littlePrincess.getElementDices().add(Elemental.Universal);
             }
             ownerPlayer().getHand().remove(this);

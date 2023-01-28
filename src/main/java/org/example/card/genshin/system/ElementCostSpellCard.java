@@ -31,7 +31,7 @@ public abstract class ElementCostSpellCard extends SpellCard {
     }
 
     public void play(List<GameObj> targets, int choice){
-        if(!(ownerPlayer().getLeader() instanceof LittlePrincess littlePrincess)){
+        if(!(ownerLeader() instanceof LittlePrincess littlePrincess)){
             info.msgToThisPlayer("请使用主战者【小王子】来打出此牌！");
             return;
         }
@@ -97,8 +97,8 @@ public abstract class ElementCostSpellCard extends SpellCard {
         // endregion 实际扣费
 
         // region 在使用卡牌造成任何影响前，先计算使用时
-        ownerPlayer().getLeader().useEffects(EffectTiming.WhenPlay,this);
-        enemyPlayer().getLeader().useEffects(EffectTiming.WhenEnemyPlay,this);
+        ownerLeader().useEffects(EffectTiming.WhenPlay,this);
+        enemyLeader().useEffects(EffectTiming.WhenEnemyPlay,this);
         ownerPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.WhenPlay,this));
         enemyPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.WhenEnemyPlay,this));
         // endregion 在使用卡牌造成任何影响前，先计算使用时

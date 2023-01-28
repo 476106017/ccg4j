@@ -59,7 +59,7 @@ public class Slark extends FollowCard {
                 Slark slark = (Slark)getParent();
                 new Damage(this, slark, slark.getHp()>1?1:0).apply();
 
-                Leader leader = ownerPlayer().getLeader();
+                Leader leader = ownerLeader();
                 leader.addEffect(new Effect(this,leader,EffectTiming.BeginTurn,3,()->{
                     slark.removeKeywordAll("眩晕");
                     slark.removeKeywordAll("缴械");

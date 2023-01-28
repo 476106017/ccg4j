@@ -91,7 +91,7 @@ public class ShadowShaman extends FollowCard {
                     this.sheep = sheep;
                     getInfo().transform(followCard,sheep);
 
-                    Leader leader = ownerPlayer().getLeader();
+                    Leader leader = ownerLeader();
                     leader.addEffect(new Effect(this,leader,EffectTiming.BeginTurn,3,()->{
                         getInfo().transform(this.sheep,target);
                     }), false);
@@ -213,7 +213,7 @@ public class ShadowShaman extends FollowCard {
 
             public SerpentBar() {
                 addEffects((new Effect(this,this, EffectTiming.EnemyEndTurn, obj->
-                    new Damage(this,ownerPlayer().getLeader(),1).apply()
+                    new Damage(this,ownerLeader(),1).apply()
                 )));
             }
         }

@@ -44,23 +44,28 @@ public class Damage{
     }
 
     public boolean avoid(){
-        // 普通攻击的时候
-        if(to instanceof FollowCard toFollow && toFollow.atArea() && isFromAtk()) {
-            if(isMiss()){
-                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "闪避了本次攻击伤害！");
+        if (to instanceof FollowCard toFollow && toFollow.atArea()) {
+            if (toFollow.hasKeyword("圣盾")) {
+                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "的圣盾抵消了本次伤害！");
+                toFollow.removeKeyword("圣盾");
                 return true;
             }
-        }
-        // 效果伤害的时候
-        if(to instanceof FollowCard toFollow && toFollow.atArea() && !isFromAtk()) {
-            if(toFollow.hasKeyword("魔法免疫")){
-                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "免疫了本次效果伤害！");
-                return true;
+            if (isFromAtk()) {
+                if (isMiss()) {
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "闪避了本次攻击伤害！");
+                    return true;
+                }
             }
-            if(toFollow.hasKeyword("魔法护盾")){
-                toFollow.getInfo().msg(toFollow.getNameWithOwner() + "的魔法护盾抵消了本次效果伤害！");
-                toFollow.removeKeyword("魔法护盾");
-                return true;
+            if (!isFromAtk()) {
+                if (toFollow.hasKeyword("魔法免疫")) {
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "免疫了本次效果伤害！");
+                    return true;
+                }
+                if (toFollow.hasKeyword("魔法护盾")) {
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "的魔法护盾抵消了本次效果伤害！");
+                    toFollow.removeKeyword("魔法护盾");
+                    return true;
+                }
             }
         }
         return false;

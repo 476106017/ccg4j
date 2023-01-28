@@ -111,7 +111,7 @@ public class Keaya extends ElementBaseFollowCard {
                     ElementBaseFollowCard fromFollow = (ElementBaseFollowCard)getParent();
                     new ElementalDamage(fromFollow,obj,1 + fromFollow.getAtk(),Elemental.Cryo).apply();
 
-                    Leader leader = ownerPlayer().getLeader();
+                    Leader leader = ownerLeader();
                     leader.addEffect(new Effect(this,leader, EffectTiming.BeginTurn,()->{
                         ownerPlayer().count(getName());
                     }), true);

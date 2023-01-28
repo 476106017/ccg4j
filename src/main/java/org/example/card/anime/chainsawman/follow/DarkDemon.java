@@ -29,7 +29,7 @@ public class DarkDemon extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
-            ownerPlayer().getLeader().addEffect(new Effect(this, ownerPlayer().getLeader(), EffectTiming.BeginTurn,() -> {
+            ownerLeader().addEffect(new Effect(this, ownerLeader(), EffectTiming.BeginTurn,() -> {
                 if(this.atGraveyard()){
                     List<Card> graveyard = enemyPlayer().getGraveyardCopy();
                     enemyPlayer().countToGraveyard(-graveyard.size());

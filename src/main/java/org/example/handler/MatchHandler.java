@@ -8,7 +8,7 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.example.card.shadowverse.nemesis.Yuwan;
+import org.example.card.ccg.nemesis.Yuwan;
 import org.example.constant.DeckPreset;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;

@@ -26,8 +26,14 @@ public abstract class GameObj {
     public PlayerInfo ownerPlayer(){
         return info.getPlayerInfos()[owner];
     }
+    public Leader ownerLeader(){
+        return ownerPlayer().getLeader();
+    }
     public PlayerInfo enemyPlayer(){
         return info.getPlayerInfos()[1-owner];
+    }
+    public Leader enemyLeader(){
+        return enemyLeader();
     }
 
     public abstract void setName(String name);

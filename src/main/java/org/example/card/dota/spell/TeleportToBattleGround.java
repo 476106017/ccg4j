@@ -44,7 +44,7 @@ public class TeleportToBattleGround extends SpellCard {
                 });
 
                 // 给主战者挂一个使用时
-                Leader leader = ownerPlayer().getLeader();
+                Leader leader = ownerLeader();
                 leader.addEffect(new Effect(this,leader,EffectTiming.WhenPlay,1,o ->{
                     // 如果打的牌在影响列表，则影响列表的其他牌费用加回来
                     if(cutCosts.containsKey(o)){

@@ -37,7 +37,7 @@ public class FakeSky extends AmuletCard {
             long count = ownerPlayer()
                 .getAreaFollowsBy(followCard -> followCard instanceof ElementBaseFollowCard).size();
 
-            Leader leader = ownerPlayer().getLeader();
+            Leader leader = ownerLeader();
             if(leader instanceof LittlePrincess littlePrincess){
                 for (int i = 0; i < count; i++) {
                     littlePrincess.getElementDices().add(Elemental.Universal);
@@ -49,7 +49,7 @@ public class FakeSky extends AmuletCard {
             long count = ownerPlayer()
                 .getAreaFollowsBy(followCard -> followCard instanceof ElementBaseFollowCard).size();
 
-            Leader leader = ownerPlayer().getLeader();
+            Leader leader = ownerLeader();
             if(leader instanceof LittlePrincess littlePrincess){
                 for (int i = 0; i < count; i++) {
                     littlePrincess.getElementDices().add(Elemental.Universal);
@@ -81,7 +81,7 @@ public class FakeSky extends AmuletCard {
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, ()->{
                 info.msg("【总有一天我要撕碎这虚假的星空。】");
 
-                Leader leader = ownerPlayer().getLeader();
+                Leader leader = ownerLeader();
                 leader.addEffect(new Effect(this,leader,EffectTiming.BeginTurn,()->{
                     info.exile(ownerPlayer().getAreaFollowsAsCardBy(p->p instanceof ElementBaseFollowCard));
                     info.exile(enemyPlayer().getAreaFollowsAsCardBy(p->p instanceof ElementBaseFollowCard));

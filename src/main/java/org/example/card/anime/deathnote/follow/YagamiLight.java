@@ -32,7 +32,7 @@ public class YagamiLight  extends FollowCard {
     public YagamiLight() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
-            enemyPlayer().getLeader().damaged(this,getCount());
+            enemyLeader().damaged(this,getCount());
         })));
     }
 }

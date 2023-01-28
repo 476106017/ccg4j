@@ -33,7 +33,7 @@ public class KujoJotaro extends FollowCard {
 
                 List<AreaCard> areaFollows = enemyPlayer().getAreaFollows();
                 if(areaFollows.isEmpty())
-                    attack(enemyPlayer().getLeader());
+                    attack(enemyLeader());
                 else
                     attack(areaFollows.get(0));
             }

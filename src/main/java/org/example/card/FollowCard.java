@@ -148,7 +148,10 @@ public abstract class FollowCard extends AreaCard{
 
         Damage damage = new Damage(this,target);
 
-        useEffectsAndSettle(EffectTiming.WhenAttack,damage);
+        ownerLeader().useEffectsAndSettle(EffectTiming.WhenAttack,damage);
+
+        if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard)
+            useEffectsAndSettle(EffectTiming.WhenAttack,damage);
 
         if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard)
             useEffectsAndSettle(EffectTiming.WhenBattle,damage);

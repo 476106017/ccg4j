@@ -35,7 +35,7 @@ public class DeathNote extends EquipmentCard {
             ()->ownerPlayer().getAreaFollowsAsGameObj(),2,
             (choice,gameObjs) -> {
                 if(choice==2){
-                    ownerPlayer().getLeader().damaged(this,ownerPlayer().getHp()/2);
+                    ownerLeader().damaged(this,ownerPlayer().getHp()/2);
                     enemyPlayer().getAreaFollows().forEach(Card::exposeRealName);
                 }
             }));

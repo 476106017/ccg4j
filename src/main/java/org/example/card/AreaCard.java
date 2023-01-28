@@ -10,6 +10,7 @@ import org.example.game.GameObj;
 @Getter
 @Setter
 public abstract class AreaCard extends Card{
+    private int leaveIndex = -1;// 离场时所在的下标
     public abstract String getType();
 
     // 准备破坏
@@ -110,7 +111,6 @@ public abstract class AreaCard extends Card{
             followCard.getEquipment().death();
         }
 
-        ownerPlayer().getGraveyard().add(this);
-        ownerPlayer().countToGraveyard(1);
+        ownerPlayer().addGraveyard(this);
     }
 }

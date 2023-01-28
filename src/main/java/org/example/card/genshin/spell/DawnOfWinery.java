@@ -55,7 +55,7 @@ public class DawnOfWinery extends ElementCostSpellCard {
                 if(getCount()==0){
                     count();
 
-                    Leader leader = ownerPlayer().getLeader();
+                    Leader leader = ownerLeader();
                     if(leader instanceof LittlePrincess littlePrincess){
                         littlePrincess.addDices(2);
                     }

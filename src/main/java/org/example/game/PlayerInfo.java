@@ -36,6 +36,7 @@ public class PlayerInfo {
     List<Card> hand = new ArrayList<>();
     List<AreaCard> area = new ArrayList<>();
     List<Card> graveyard = new ArrayList<>();
+    Set<Card> abandon = new HashSet<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
     public void countToGraveyard(int count){
         graveyardCount += count;
@@ -43,6 +44,16 @@ public class PlayerInfo {
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
     Map<Integer,List<Card>> playedCard = new HashMap<>();// 使用卡牌计数器
     Leader leader;
+
+    private int weary = 1;// 疲劳
+
+    public int countWeary(){
+        return weary++;
+    }
+
+    public void wearyDamaged(){
+        getLeader().damaged(new Weary(),countWeary());
+    }
 
     public PlayerInfo(GameInfo info,boolean initative) {
         this.info = info;
@@ -88,6 +99,16 @@ public class PlayerInfo {
     public void shuffleGraveyard(){
         Collections.shuffle(getGraveyard());
     }
+
+    public void steal(int num){
+        info.msg(this.name+"从对手牌堆中偷取了"+num+"张卡牌");
+        List<Card> enemyDeck = getEnemy().getDeck();
+        int finalNum = Math.min(num, enemyDeck.size()) ;// 真正抽到的牌数
+
+        List<Card> cards = enemyDeck.subList(0, finalNum);
+        getEnemy().setDeck(enemyDeck.subList(finalNum,enemyDeck.size()));
+        addHand(cards);
+    }
     public void draw(int num){
         info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
         int overDraw = num - deck.size();
@@ -95,6 +116,8 @@ public class PlayerInfo {
         if(overDraw>0){
             info.msg(this.name+"从牌堆超抽了"+overDraw+"张卡牌");
             getLeader().getOverDraw().accept(overDraw);
+            getLeader().tempEffects(EffectTiming.WhenOverDraw,overDraw);
+            getEnemy().getLeader().tempEffects(EffectTiming.WhenEnemyOverDraw,overDraw);
             finalNum = deck.size();
         }
         List<Card> cards = deck.subList(0, finalNum);
@@ -199,6 +222,7 @@ public class PlayerInfo {
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
         info.msgTo(getUuid(),cardNames + "加入了墓地");
         info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手墓地");
+        graveyardCount+=cards.size();
         graveyard.addAll(cards);
     }
     // 卡牌的快照。用来循环（原本卡牌List可以随便删）
@@ -306,6 +330,19 @@ public class PlayerInfo {
             .toList();
     }
 
+    public void recall(int n){
+        info.msg(getName() + "发动亡灵召还（"+n+"）！");
+        Optional<FollowCard> follow = getGraveyard().stream()
+            .filter(card -> card instanceof FollowCard && card.getCost()<=n)
+            .map(card -> (FollowCard)card)
+            .sorted(Comparator.comparingInt(Card::getCost).reversed())
+            .findFirst();
+        follow.ifPresent(this::recall);
+        if (follow.isEmpty()) {
+            info.msg(getName() + "发动亡灵召还（"+n+"）失败了，没有召唤任何随从！");
+        }
+
+    }
     public void recall(FollowCard followCard){
         info.msg(getName() + "发动亡灵召还！");
         followCard.removeWhenNotAtArea();
@@ -316,6 +353,7 @@ public class PlayerInfo {
         info.msg(getName() + "舍弃了"+cards.size()+"张卡牌！");
         getHand().removeAll(cards);
         addGraveyard(cards);
+        abandon.addAll(cards);
     }
 
     public void summon(AreaCard summonedCard){
@@ -337,6 +375,10 @@ public class PlayerInfo {
     public void transmigration(Predicate<? super Card> predicate,int num){
         shuffleGraveyard();
         List<Card> cards = getGraveyardCopy().stream().filter(predicate).limit(num).toList();
+        if(cards.isEmpty()){
+            info.msg("没有符合要求的牌，轮回失败！");
+            return;
+        }
         getGraveyard().removeAll(cards);
         addDeck(cards);
         info.msgTo(getUuid(),cards.stream().map(GameObj::getName).collect(Collectors.joining("、"))+"轮回到了牌堆中");
@@ -444,4 +486,10 @@ public class PlayerInfo {
         return sb.toString();
     }
 
+
+    @Getter
+    @Setter
+    public static class Weary extends GameObj{
+        private String name = "疲劳";
+    }
 }
