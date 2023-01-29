@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public enum EventType{
     Destroy("破坏"),
-    BackToHand("回到手牌"),
+    BackToHand("返回手牌"),
     Exile("除外"),
     ;
 

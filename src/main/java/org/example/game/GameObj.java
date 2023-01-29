@@ -33,7 +33,7 @@ public abstract class GameObj {
         return info.getPlayerInfos()[1-owner];
     }
     public Leader enemyLeader(){
-        return enemyLeader();
+        return enemyPlayer().getLeader();
     }
 
     public abstract void setName(String name);
@@ -114,7 +114,7 @@ public abstract class GameObj {
         try {
             T card = clazz.getDeclaredConstructor().newInstance();
             info.msg(getNameWithOwner()+"创造了"+card.getId());
-            card.setParent(this); ;
+            card.setParent(this);
             card.setOwner(getOwner());
             card.setInfo(getInfo());
             card.init();

@@ -14,7 +14,7 @@ import java.util.List;
 public class TestFollow extends FollowCard {
     private String name = "测试随从";
     private Integer cost = 1;
-    private int atk = 1;
+    private int atk = 18;
     private int hp = 3;
     private String job = "测试";
     private List<String> race = Lists.ofStr();
@@ -32,11 +32,11 @@ public class TestFollow extends FollowCard {
 //            getInfo().msg(getNameWithOwner() + "入场时"))));
 //        addEffects((new Effect(this,this, EffectTiming.Leaving, obj->
 //            getInfo().msg(getNameWithOwner() + "离场时"))));
-        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
-        {
-            getInfo().msg(getNameWithOwner() + "亡语：对对方全部随从造成1点伤害");
-            getInfo().damageMulti(this,enemyPlayer().getAreaFollowsAsGameObj(),1);
-        })));
+//        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
+//        {
+//            getInfo().msg(getNameWithOwner() + "亡语：对对方全部随从造成1点伤害");
+//            getInfo().damageMulti(this,enemyPlayer().getAreaFollowsAsGameObj(),1);
+//        })));
 //        addEffects((new Effect(this,this, EffectTiming.BeginTurn, obj->
 //            getInfo().msg(getNameWithOwner() + "回合开始时"))));
 //        addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->
@@ -45,14 +45,14 @@ public class TestFollow extends FollowCard {
 //            getInfo().msg(getNameWithOwner() + "攻击时"))));
 //        addEffects((new Effect(this,this, EffectTiming.WhenBattle,damage->
 //            getInfo().msg(getNameWithOwner() + "交战时"))));
-        addEffects((new Effect(this,this, EffectTiming.AfterDamaged,damage->
-       {
-               ownerPlayer().summon(createCard(TestFollow.class));
-       })));
-        addEffects((new Effect(this,this, EffectTiming.WhenKill,damage->
-        {
-            getInfo().damageMulti(this,enemyPlayer().getAreaFollowsAsGameObj(),1);
-        })));
+//        addEffects((new Effect(this,this, EffectTiming.AfterDamaged,damage->
+//       {
+//               ownerPlayer().summon(createCard(TestFollow.class));
+//       })));
+//        addEffects((new Effect(this,this, EffectTiming.WhenKill,damage->
+//        {
+//            getInfo().damageMulti(this,enemyPlayer().getAreaFollowsAsGameObj(),1);
+//        })));
 //        addEffects((new Effect(this,this, EffectTiming.Exile, obj->
 //            getInfo().msg(getNameWithOwner() + "除外时"))));
 //        addEffects((new Effect(this,this, EffectTiming.Transmigration, obj->

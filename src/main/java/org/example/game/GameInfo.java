@@ -256,7 +256,7 @@ public class GameInfo {
                 events.clear();
                 return;
             }
-            msg("——————事件连锁（"+deep+"）——————");
+//            msg("——————事件连锁（"+deep+"）——————");
             consumeEffectChain(deep - 1);
         }
     }
@@ -407,6 +407,18 @@ public class GameInfo {
         _result.addAll(oppositePlayer().getArea());
         return _result;
     }
+    public List<AreaCard> getAreaFollowsCopy(){
+        List<AreaCard> _result = new ArrayList<>();
+        _result.addAll(thisPlayer().getAreaFollows());
+        _result.addAll(oppositePlayer().getAreaFollows());
+        return _result;
+    }
+    public List<GameObj> getAreaFollowsAsGameObj(){
+        List<GameObj> _result = new ArrayList<>();
+        _result.addAll(thisPlayer().getAreaFollows());
+        _result.addAll(oppositePlayer().getAreaFollows());
+        return _result;
+    }
 
     public void zeroTurn(UUID u0, UUID u1){
 
@@ -491,13 +503,15 @@ public class GameInfo {
     }
 
     public void beforeTurn(){
-        // 主战者技能重置、发动主战者效果
+        // 主战者技能重置、发动主战者效果和手牌效果
         Leader leader = thisPlayer().getLeader();
         leader.setCanUseSkill(true);
         leader.useEffects(EffectTiming.BeginTurn);
+        thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.BeginTurnAtHand));
 
         Leader enemyLeader = oppositePlayer().getLeader();
         enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
+        oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyBeginTurnAtHand));
 
 
         // 场上随从驻场回合+1、攻击次数清零
@@ -569,10 +583,12 @@ public class GameInfo {
         Leader leader = thisPlayer().getLeader();
         leader.useEffects(EffectTiming.EndTurn);
         leader.expireEffect();
+        thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EndTurnAtHand));
 
         Leader enemyLeader = oppositePlayer().getLeader();
         enemyLeader.useEffects(EffectTiming.EnemyEndTurn);
         enemyLeader.expireEffect();
+        oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyEndTurnAtHand));
 
         // 发动回合结束效果
         oppositePlayer().getAreaCopy().forEach(areaCard -> {

@@ -33,15 +33,22 @@ public class LassyLoyalCompanion extends FollowCard {
         addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->ownerPlayer().getHp() < ownerPlayer().getHpMax(),
             ()->{
-                ownerLeader().addEffect(new Effect(this, ownerLeader(), EffectTiming.BeforeDamaged, obj->{
-                    Optional<Card> first = ownerPlayer().getHand().stream()
-                        .filter(card -> card instanceof LassyLoyalCompanion).findFirst();
-                    first.ifPresent(card -> {
-                        LassyLoyalCompanion lassyLoyalCompanion = (LassyLoyalCompanion) card;
+                ownerLeader().addEffect(new Effect(this, ownerLeader(), EffectTiming.BeforeDamaged,
+                    obj->{
                         Damage damage = (Damage) obj;
+                        if(damage.getDamage()>ownerPlayer().getHp()) return true;
+                        return false;
+                    },
+                    obj->{
+                        Optional<Card> first = ownerPlayer().getHand().stream()
+                            .filter(card -> card instanceof LassyLoyalCompanion).findFirst();
+                        first.ifPresent(card -> {
+                            info.msg("忠犬拉叙跳下战场为"+ownerPlayer().getName()+"承受了本次伤害！");
+                            LassyLoyalCompanion lassyLoyalCompanion = (LassyLoyalCompanion) card;
+                            Damage damage = (Damage) obj;
 
-                        ownerPlayer().summon(lassyLoyalCompanion);
-                        damage.setTo(lassyLoyalCompanion);
+                            ownerPlayer().summon(lassyLoyalCompanion);
+                            damage.setTo(lassyLoyalCompanion);
                     });
                 }),true);
             }

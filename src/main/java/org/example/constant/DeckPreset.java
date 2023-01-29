@@ -7,7 +7,13 @@ import org.example.card.anime.chainsawman.follow.Makima;
 import org.example.card.anime.deathnote.equipment.DeathNote;
 import org.example.card.anime.deathnote.follow.Lawliet;
 import org.example.card.anime.deathnote.follow.YagamiLight;
+import org.example.card.ccg.druid.follow.LassyLoyalCompanion;
 import org.example.card.ccg.fairy.Alisa;
+import org.example.card.ccg.rogue.follow.TheOneWhoLurks;
+import org.example.card.ccg.rogue.spell.Haggle;
+import org.example.card.ccg.warlock.spell.BlackDeath;
+import org.example.card.ccg.warrior.follow.AssaultCatapult;
+import org.example.card.ccg.warrior.spell.Chew;
 import org.example.card.dota.equipment.*;
 import org.example.card.dota.follow.*;
 import org.example.card.dota.spell.RoosterCrow;
@@ -40,6 +46,7 @@ import org.example.card.other.rule.amulet.MahjongTable;
 import org.example.card.ccg.rogue.follow.LabRecruiter;
 import org.example.card.ccg.rogue.spell.Preparation;
 import org.example.card.ccg.rogue.spell.Shadowstep;
+import org.example.card.other.test.folow.TestFollow;
 import org.example.game.Leader;
 
 import java.util.HashMap;
@@ -102,8 +109,10 @@ public class DeckPreset {
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
-            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,
-            ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,ShadowShaman.class
+            TestFollow.class,TestFollow.class, TheOneWhoLurks.class,TheOneWhoLurks.class,TheOneWhoLurks.class,TheOneWhoLurks.class,
+            TestFollow.class,TestFollow.class, AssaultCatapult.class,AssaultCatapult.class,AssaultCatapult.class,AssaultCatapult.class,
+            TestFollow.class,TestFollow.class, Chew.class,Chew.class,Chew.class,Chew.class,
+            TestFollow.class,TestFollow.class, Haggle.class,Haggle.class,Haggle.class,Haggle.class
         ));
     }
 

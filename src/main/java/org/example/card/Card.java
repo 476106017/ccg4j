@@ -20,6 +20,11 @@ public abstract class Card extends GameObj {
 
     private GameObj parent = null;
 
+    public void changeParent(GameObj obj){
+        info.msg(getNameWithOwner()+"的创造者被变更为："+obj.getName());
+        this.parent = obj;
+    }
+
     private Map<String,Integer> counter = new HashMap<>();
 
     private List<String> keywords = new ArrayList<>();
@@ -113,6 +118,11 @@ public abstract class Card extends GameObj {
     public abstract String getType();
     public abstract void setCost(Integer cost);
     public abstract Integer getCost();
+
+    public void addCost(Integer cost){
+        setCost(Math.max(0,getCost() + cost));
+        info.msg(getNameWithOwner()+"的费用变成了"+getCost());
+    }
     public abstract String getJob();
     public abstract List<String> getRace();
     public abstract String getMark();
@@ -266,10 +276,11 @@ public abstract class Card extends GameObj {
             if(getPlay().mustTarget() && targets.isEmpty()){
                 info.msg(getNameWithOwner() + "因为没有目标而无法发动效果！");
             }else {
-                if (this instanceof AreaCard) {
+                if (this instanceof AreaCard && ownerPlayer().isCanFanfare()){
                     info.msg(getNameWithOwner() + "发动战吼");
-                }
-                getPlay().effect().accept(choice,targets);
+                    getPlay().effect().accept(choice,targets);
+                }else
+                    getPlay().effect().accept(choice,targets);
             }
         }
         // endregion 发动卡牌效果
@@ -284,6 +295,7 @@ public abstract class Card extends GameObj {
         }
 
         ownerPlayer().count(PLAY_NUM);
+        ownerPlayer().count(PLAY_NUM_ALL);
 
         info.startEffect();
         info.pushInfo();

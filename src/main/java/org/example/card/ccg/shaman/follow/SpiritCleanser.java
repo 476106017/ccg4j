@@ -25,7 +25,7 @@ public class SpiritCleanser extends FollowCard {
     private String job = "萨满";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        战吼：将1个随从变形成为其自身
+        战吼：将1个随从变身成其自身
         """;
     private String subMark = "";
 

@@ -25,6 +25,7 @@ public class BlackDeath extends SpellCard {
     private List<String> race = Lists.ofStr("灾厄");
     public String mark = """
         对1名敌方随从造成2点伤害，如果该随从没有死亡，获得【亡语：对相邻随从释放黑死病】
+        （该亡语不能叠加）
         """;
 
     public String subMark = "";
@@ -35,15 +36,16 @@ public class BlackDeath extends SpellCard {
             FollowCard targetFollow = (FollowCard) target;
 
             info.damageEffect(this, targetFollow, 2);
-            if (targetFollow.atArea()) {
+            if (targetFollow.atArea() && !targetFollow.hasKeyword("黑死病")) {
+                targetFollow.addKeyword("黑死病");
                 targetFollow.addEffects(new Effect(this,targetFollow, EffectTiming.DeathRattle, obj->{
                     int leaveIndex = targetFollow.getLeaveIndex();
-                    if(leaveIndex < enemyPlayer().getArea().size()-1){
-                        AreaCard areaCard = enemyPlayer().getArea().get(leaveIndex + 1);
+                    if(leaveIndex < enemyPlayer().getArea().size()){
+                        AreaCard areaCard = enemyPlayer().getArea().get(leaveIndex);
                         if(areaCard instanceof FollowCard followCard){
                             List<GameObj> targets = new ArrayList<>();
                             targets.add(followCard);
-                            play(targets,0);
+                            getPlay().effect().accept(0,targets);
                         }
                     }
                     if(leaveIndex > 0){
@@ -51,7 +53,7 @@ public class BlackDeath extends SpellCard {
                         if(areaCard instanceof FollowCard followCard){
                             List<GameObj> targets = new ArrayList<>();
                             targets.add(followCard);
-                            play(targets,0);
+                            getPlay().effect().accept(0,targets);
                         }
                     }
                 }));

@@ -24,6 +24,8 @@ public class PlayerInfo {
     UUID uuid;
     boolean initative;// 先攻
     boolean shortRope = false;
+    // 战吼
+    boolean canFanfare = true;
     int hp = 20;
     int hpMax = 20;
     int step = -1; // 0换牌完成 1使用
@@ -124,8 +126,10 @@ public class PlayerInfo {
         deck = deck.subList(finalNum,deck.size());
         addHand(cards);
 
-        info.tempEffectBatch(getAreaAsGameObj(),EffectTiming.WhenDraw,cards);
-        info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
+        if(getStep()>-1){
+            info.tempEffectBatch(getAreaAsGameObj(),EffectTiming.WhenDraw,cards);
+            info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
+        }
     }
     public Card draw(Predicate<? super Card> condition){
         List<Card> draws = draw(condition, 1);
@@ -197,7 +201,8 @@ public class PlayerInfo {
         }
         hand.addAll(successCards);
 
-        successCards.forEach(card -> card.tempEffects(EffectTiming.WhenDrawn));
+        if(getStep()>-1)
+            successCards.forEach(card -> card.tempEffects(EffectTiming.WhenDrawn));
 
     }
     public void addArea(AreaCard areaCard){
@@ -220,7 +225,10 @@ public class PlayerInfo {
     }
     public void addGraveyard(List<Card> cards){
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
-        info.msgTo(getUuid(),cardNames + "加入了墓地");
+        if(cards.size()<10)
+            info.msgTo(getUuid(),cardNames + "加入了墓地");
+        else
+            info.msgTo(getUuid(),cards.size() + "张牌加入了墓地");
         info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手墓地");
         graveyardCount+=cards.size();
         graveyard.addAll(cards);
@@ -260,6 +268,13 @@ public class PlayerInfo {
             .filter(areaCard -> areaCard instanceof FollowCard)
             .map(areaCard -> (FollowCard)areaCard)
             .toList();
+    }
+    public FollowCard getDeckRandomFollow(){
+        List<FollowCard> areaCards = getDeck().stream()
+            .filter(card -> card instanceof FollowCard)
+            .map(card -> (FollowCard)card)
+            .toList();
+        return Lists.randOf(areaCards);
     }
     public AreaCard getAreaRandomFollow(){
         List<AreaCard> areaCards = getArea().stream()
@@ -348,6 +363,9 @@ public class PlayerInfo {
         followCard.removeWhenNotAtArea();
         followCard.setHp(followCard.getMaxHp());
         summon(followCard);
+    }
+    public void abandon(Card card){
+        abandon(List.of(card));
     }
     public void abandon(List<Card> cards){
         info.msg(getName() + "舍弃了"+cards.size()+"张卡牌！");

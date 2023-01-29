@@ -8,6 +8,8 @@ import org.example.system.Lists;
 
 import java.util.List;
 
+import static org.example.constant.CounterKey.*;
+
 
 @Getter
 @Setter
@@ -20,13 +22,31 @@ public class TheGalaxyGuide extends FollowCard {
     private List<String> race = Lists.ofStr();
     private String mark = """
         战吼：如果在卡牌上的总消耗pp恰好是42，使对手pp最大值归零；
-        如果打出卡牌数恰好是42，除外对方战场及牌库所有牌
+        如果打出卡牌数恰好是42，除外对方所有的牌
         """;
-    private String subMark = "";
+    public String subMark = "总消耗pp等于{P}，打出卡牌数等于{C}";
+
+    public String getSubMark() {
+        return subMark.replaceAll("\\{P}",ownerPlayer().getCount(ALL_COST)+"")
+            .replaceAll("\\{C}",ownerPlayer().getCount(PLAY_NUM_ALL)+"");
+    }
 
     public TheGalaxyGuide() {
         setMaxHp(getHp());
-        setPlay(new Play(()->// TODO 施工中
-            ownerPlayer().draw(card -> card.getCost().equals(ownerPlayer().getPpNum()))));
+        setPlay(new Play(()->
+        {
+            if (ownerPlayer().getCount(ALL_COST) == 42){
+                info.msg("在卡牌上的总消耗pp恰好是42，使对手pp最大值归零！");
+                enemyPlayer().setPpMax(0);
+            }
+            if (ownerPlayer().getCount(PLAY_NUM_ALL) == 42){
+                info.msg("打出卡牌数恰好是42，除外对方所有的牌！");
+                info.exile(enemyPlayer().getDeckCopy());
+                info.exile(enemyPlayer().getHandCopy());
+                info.exile(enemyPlayer().getAreaAsCard());
+                info.exile(enemyPlayer().getGraveyardCopy());
+            }
+            info.msg("什么也没有发生！");
+        }));
     }
 }

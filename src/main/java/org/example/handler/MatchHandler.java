@@ -52,7 +52,7 @@ public class MatchHandler {
         // region TODO 先用默认牌组
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(Yuwan.class);
-        playerDeck.getActiveDeck().addAll(DeckPreset.decks.get("默认"));
+        playerDeck.getActiveDeck().addAll(DeckPreset.decks.get("test"));
         userDecks.put(uuid, playerDeck);
         // endregion TODO 先用默认牌组
         userNames.put(uuid,name);

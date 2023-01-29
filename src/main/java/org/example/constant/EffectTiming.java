@@ -13,8 +13,12 @@ public enum EffectTiming {
 
     BeginTurn("回合开始时"),
     EndTurn("回合结束时"),
+    BeginTurnAtHand("在手牌上回合开始时"),
+    EndTurnAtHand("在手牌上回合结束时"),
     EnemyBeginTurn("敌方回合开始时"),
     EnemyEndTurn("敌方回合结束时"),
+    EnemyBeginTurnAtHand("在手牌上敌方回合开始时"),
+    EnemyEndTurnAtHand("在手牌上敌方回合结束时"),
 
 
     InvocationBegin("瞬念召唤（回合开始时）"),
