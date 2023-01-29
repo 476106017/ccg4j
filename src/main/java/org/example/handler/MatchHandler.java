@@ -16,6 +16,8 @@ import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.game.PlayerInfo;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
@@ -58,11 +60,10 @@ public class MatchHandler {
         playerDeck.setLeaderClass(ThePlayer.class);
 
         Set<Class<? extends Card>> subTypesOf =
-            new Reflections("org.example.card.ccg").getSubTypesOf(Card.class);
-        subTypesOf.addAll(
-            new Reflections("org.example.card.dota").getSubTypesOf(Card.class));
-        subTypesOf.addAll(
-            new Reflections("org.example.card.other").getSubTypesOf(Card.class));
+            new Reflections(new ConfigurationBuilder()
+                .filterInputsBy(s -> !s.contains("genshin"))
+                .forPackage("org.example.card"))
+                .getSubTypesOf(Card.class);
         // 移除不符合的卡牌类型
         subTypesOf.removeIf(aClass ->{
             int modifiers = aClass.getModifiers();
