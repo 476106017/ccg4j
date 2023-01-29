@@ -100,9 +100,9 @@ public class PlayerDeck {
             detail.append("职业：").append(card.getJob());
 
             sb.append("""
-            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto left"
-                    data-container="body" data-toggle="popover"
+            <icon class="bi bi-eye" style="font-size:18px;"
+                    title="%s" data-bs-content="%s" data-placement="auto left"
+                    data-container="body" data-bs-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
             // endregion
