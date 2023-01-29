@@ -8,16 +8,19 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.example.card.Card;
 import org.example.card.ccg.nemesis.Yuwan;
 import org.example.constant.DeckPreset;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.game.PlayerInfo;
+import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 import static org.example.system.Database.*;
 
@@ -49,12 +52,23 @@ public class MatchHandler {
             return;
         }
         log.info("客户端" + uuid + "建立websocket连接成功,用户名："+name);
-        // region TODO 先用默认牌组
+        // region
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(Yuwan.class);
-        playerDeck.getActiveDeck().addAll(DeckPreset.decks.get("test"));
+
+        Reflections reflections = new Reflections("org.example.card.ccg");
+        Set<Class<? extends Card>> subTypesOf = reflections.getSubTypesOf(Card.class);
+        // 移除不符合的卡牌类型
+        subTypesOf.removeIf(aClass ->{
+            int modifiers = aClass.getModifiers();
+            return Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers);
+        });
+        // 随机取30张
+        List<Class<? extends Card>> classes = new ArrayList<>(subTypesOf.stream().toList());
+        Collections.shuffle(classes);
+        playerDeck.getActiveDeck().addAll(classes.subList(0,30));
         userDecks.put(uuid, playerDeck);
-        // endregion TODO 先用默认牌组
+        // endregion
         userNames.put(uuid,name);
         socketIOServer.getClient(uuid).sendEvent("receiveMsg", name+"（"+uuid+"）登录成功！");
 
