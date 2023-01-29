@@ -682,9 +682,9 @@ public class GameInfo {
             detail.append("\n\n职业：").append(card.getJob());
 
             sb.append("""
-            <icon class="bi bi-eye" style="font-size:18px;"
-                    title="%s" data-bs-content="%s" data-placement="auto left"
-                    data-container="body" data-bs-toggle="popover"
+            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                    title="%s" data-content="%s" data-placement="auto left"
+                    data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
             // endregion
@@ -737,9 +737,9 @@ public class GameInfo {
             detail.append("\n\n职业：").append(card.getJob());
 
             sb.append("""
-            <icon class="bi bi-eye" style="font-size:18px;"
-                    title="%s" data-bs-content="%s" data-placement="auto left"
-                    data-container="body" data-bs-toggle="popover"
+            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                    title="%s" data-content="%s" data-placement="auto left"
+                    data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
             // endregion

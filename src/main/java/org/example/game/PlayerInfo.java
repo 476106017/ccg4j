@@ -474,9 +474,9 @@ public class PlayerInfo {
             detail.append("\n\n职业：").append(card.getJob());
 
             sb.append("""
-            <icon class="bi bi-eye" style="font-size:18px;"
-                    title="%s" data-bs-content="%s" data-placement="auto top"
-                    data-container="body" data-bs-toggle="popover"
+            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                    title="%s" data-content="%s" data-placement="auto top"
+                    data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
             // endregion
@@ -489,9 +489,9 @@ public class PlayerInfo {
                     sb.append("<p>可使用主战者技能：").append(getLeader().getSkillName())
                         .append("（").append(getLeader().getSkillCost()).append("）")
                         .append("""
-                   <icon class="bi bi-eye" style="font-size:18px;"
-                            title="%s" data-bs-content="%s" data-placement="auto top"
-                            data-container="body" data-bs-toggle="popover"
+                   <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
+                            title="%s" data-content="%s" data-placement="auto top"
+                            data-container="body" data-toggle="popover"
                               data-trigger="hover" data-html="true"/></p>
                     """.formatted(getLeader().getSkillName(),getLeader().getSkillMark().replaceAll("\\n","<br/>")));
                 else
