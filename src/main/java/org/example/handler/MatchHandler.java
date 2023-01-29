@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
 import org.example.card.ccg.nemesis.Yuwan;
+import org.example.card.ccg.neutral.ThePlayer;
 import org.example.constant.DeckPreset;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
@@ -54,10 +55,14 @@ public class MatchHandler {
         log.info("客户端" + uuid + "建立websocket连接成功,用户名："+name);
         // region
         PlayerDeck playerDeck = new PlayerDeck();
-        playerDeck.setLeaderClass(Yuwan.class);
+        playerDeck.setLeaderClass(ThePlayer.class);
 
-        Reflections reflections = new Reflections("org.example.card.ccg");
-        Set<Class<? extends Card>> subTypesOf = reflections.getSubTypesOf(Card.class);
+        Set<Class<? extends Card>> subTypesOf =
+            new Reflections("org.example.card.ccg").getSubTypesOf(Card.class);
+        subTypesOf.addAll(
+            new Reflections("org.example.card.dota").getSubTypesOf(Card.class));
+        subTypesOf.addAll(
+            new Reflections("org.example.card.other").getSubTypesOf(Card.class));
         // 移除不符合的卡牌类型
         subTypesOf.removeIf(aClass ->{
             int modifiers = aClass.getModifiers();

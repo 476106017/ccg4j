@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.card.ccg.nemesis.spell.MercurialMight;
+import org.example.card.SpellCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Damage;
+import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -40,4 +43,32 @@ public class ImmortalAegis extends FollowCard {
                 ownerPlayer().addHand(addCards);
         }));
     }
+
+    @Getter
+    @Setter
+    public static class MercurialMight  extends SpellCard {
+        public Integer cost = 1;
+        public String name = "水银的断绝";
+        public String job = "复仇者";
+        private List<String> race = Lists.ofStr();
+        public String mark = """
+        直到下个回合开始，使主战者获得效果伤害免疫
+        """;
+
+        public String subMark = "";
+
+        public MercurialMight() {
+
+            setPlay(new Play(ArrayList::new, false,
+                gameObjs -> {
+                    // 增加主战者效果
+                    ownerLeader().addEffect(new Effect(
+                        this, ownerLeader(), EffectTiming.BeforeDamaged, 2,
+                        obj-> {
+                            Damage damage = (Damage) obj;
+                            if(!damage.isFromAtk()) damage.setDamage(0);}),false);
+                }));
+        }
+    }
+
 }
