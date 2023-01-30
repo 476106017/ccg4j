@@ -2,6 +2,7 @@ package org.example.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.AmuletCard;
 import org.example.card.Card;
 import org.example.card.EquipmentCard;
 import org.example.card.FollowCard;
@@ -90,6 +91,18 @@ public class PlayerDeck {
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
                     .append(followCard.getHp()).append("♥");
+            if (card instanceof EquipmentCard equipmentCard) {
+                detail.append(equipmentCard.getAddAtk()).append("➹")
+                    .append(equipmentCard.getAddHp()).append("♥");
+                if (equipmentCard.getCountdown() > 0) {
+                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
+                }
+            }
+            if (card instanceof AmuletCard amuletCard) {
+                if (amuletCard.getCountDown() > 0) {
+                    detail.append(amuletCard.getCountDown()).append("⌛︎");
+                }
+            }
             detail.append("<div style='text-align:right;float:right;'>")
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())

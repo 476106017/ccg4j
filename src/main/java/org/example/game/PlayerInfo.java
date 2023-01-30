@@ -498,20 +498,20 @@ public class PlayerInfo {
                 detail.append(followCard.getAtk()).append("➹")
                     .append(followCard.getHp()).append("♥");
             if (card instanceof EquipmentCard equipmentCard) {
-                sb.append(equipmentCard.getAddAtk()).append("➹")
+                detail.append(equipmentCard.getAddAtk()).append("➹")
                     .append(equipmentCard.getAddHp()).append("♥");
                 if (equipmentCard.getCountdown() > 0) {
-                    sb.append(equipmentCard.getCountdown()).append("⌛︎");
+                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
                 }
             }
             if (card instanceof AmuletCard amuletCard) {
                 if (amuletCard.getCountDown() > 0) {
-                    sb.append(amuletCard.getCountDown()).append("⌛︎");
+                    detail.append(amuletCard.getCountDown()).append("⌛︎");
                 }
             }
             if (card instanceof ElementCostSpellCard elementCostSpellCard) {
                 elementCostSpellCard.getElementCost().forEach(elemental -> {
-                    sb.append("【").append(elemental.getStr().replaceAll("元素","")).append("】︎");
+                    detail.append("【").append(elemental.getStr().replaceAll("元素","")).append("】︎");
                 });
             }
             detail.append("<div style='text-align:right;float:right;'>")
