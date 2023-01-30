@@ -129,7 +129,9 @@ public class PlayerInfo {
             info.msg(this.name+"的场上没有足够的空间，葬送失败");
             return false;
         }
+        info.msg(this.name+"正在葬送："+followCard.getName());
         followCard.purify();
+        followCard.removeWhenNotAtArea();
         summon(followCard);
         followCard.death();
         return true;

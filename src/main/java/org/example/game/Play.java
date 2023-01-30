@@ -87,6 +87,7 @@ public record Play(Supplier<List<List<GameObj>>> canTargets, int targetNum, bool
                     }
                 }
             }
+            sb.append("\n");
         }
         return sb.toString();
 

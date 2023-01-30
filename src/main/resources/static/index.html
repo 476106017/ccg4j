@@ -28,11 +28,11 @@
 <body>
 
 <div id="app" style="margin-left: 100px;">
-    <button type="button" class="btn" style="right:0;position:fixed;z-index:999"
-            data-toggle="collapse" data-target="#battleInfo"><<</button>
+    <button type="button" class="btn" style="right:0;position:fixed;z-index:999;color: blue;border:1px solid;border-color: blue;"
+            data-toggle="collapse" data-target="#battleInfo">切换战场视窗</button>
     <div id="battleInfo" class="collapse"
          style="background-color: aliceblue; border:1px solid; right:0;position:fixed; z-index:1;white-space: pre-line;
-    max-height:80% ;overflow:auto;margin: 50px; padding: 50px;">无法获取游戏信息</div>
+    max-height:80% ;overflow:auto;margin: 50px; padding: 50px;">无法获取游戏信息，请先匹配</div>
 
     <ul id="msgList" style="margin-left: -50px;"></ul>
     <b id="name"></b>
@@ -71,6 +71,10 @@
                 socket = io.connect("localhost:18089", {
                     'query': 'name=' + userName
                 });
+                // 上线请用nginx代理
+                // socket = io.connect(document.domain, {
+                //    'query': 'name=' + userName
+                // });
 
                 $("#name").html("你好，"+userName);
 
@@ -87,6 +91,7 @@
                 });
                 socket.on('battleInfo', function (data) {
                     $('#battleInfo').html(data);
+                    $(function () { $("[data-toggle='popover']").popover(); });
                 });
             } else {
                 alert("非法用户名");

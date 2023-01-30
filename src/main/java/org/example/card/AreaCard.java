@@ -87,7 +87,7 @@ public abstract class AreaCard extends Card{
 
     public void death(){
         if(!atArea())return;
-        info.msg(getNameWithOwner()+"被送入墓地！");
+        info.msg(getNameWithOwner()+"正在送入墓地");
 
         if(hasKeyword("游魂")){
             info.msg("墓地拒绝了【游魂】！");
