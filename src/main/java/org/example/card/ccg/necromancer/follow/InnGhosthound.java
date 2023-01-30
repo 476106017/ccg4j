@@ -1,0 +1,36 @@
+package org.example.card.ccg.necromancer.follow;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
+import org.example.game.Play;
+import org.example.system.Lists;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class InnGhosthound extends FollowCard {
+    private String name = "旅馆的幽灵犬";
+    private Integer cost = 1;
+    private int atk = 1;
+    private int hp = 1;
+    private String job = "死灵术士";
+    private List<String> race = Lists.ofStr();
+    private String mark = """
+        战吼：如果葬送发动，则抽一张卡
+        """;
+    private String subMark = "";
+
+    public InnGhosthound() {
+        setMaxHp(getHp());
+        setPlay(new Play(()->ownerPlayer().getHandAsGameObjBy(card -> card instanceof FollowCard),
+            false,
+            obj->{
+                if(obj==null || !ownerPlayer().burial(this))return;
+                ownerPlayer().draw(1);
+        }));
+    }
+}

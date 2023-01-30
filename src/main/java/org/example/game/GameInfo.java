@@ -584,6 +584,7 @@ public class GameInfo {
         leader.useEffects(EffectTiming.EndTurn);
         leader.expireEffect();
         thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EndTurnAtHand));
+        thisPlayer().setHandPlayable(card -> true);
 
         Leader enemyLeader = oppositePlayer().getLeader();
         enemyLeader.useEffects(EffectTiming.EnemyEndTurn);

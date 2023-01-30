@@ -67,11 +67,13 @@ public abstract class GameObj {
     }
     // 不加入队列，立即生效的效果（增加回复量、伤害量、加减状态等）
     public void useEffects(EffectTiming timing, Object param){
+        ownerPlayer().count(timing.getName());
         getEffects(timing).forEach(effect -> {
             new Effect.EffectInstance(effect,param).consume();
         });
     }
     public void useEffects(EffectTiming timing){
+        ownerPlayer().count(timing.getName());
         getEffects(timing).forEach(effect -> {
             new Effect.EffectInstance(effect,null).consume();
         });
@@ -84,12 +86,14 @@ public abstract class GameObj {
         info.startEffect();
     }
     public void tempEffects(EffectTiming timing){
+        ownerPlayer().count(timing.getName());
         getEffects(timing).forEach(effect -> {
             if(effect.getCanEffect().test(null))
                 info.tempEffect(new Effect.EffectInstance(effect));
         });
     }
     public void tempEffects(EffectTiming timing,Object param){
+        ownerPlayer().count(timing.getName());
         getEffects(timing).forEach(effect -> {
             if(effect.getCanEffect().test(param))
                 info.tempEffect(new Effect.EffectInstance(effect,param));

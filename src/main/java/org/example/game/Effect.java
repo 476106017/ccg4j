@@ -107,6 +107,8 @@ public class Effect{
 
                 // region 判断结算时是否在场
                 if(List.of(EffectTiming.WhenKill,EffectTiming.WhenAtArea,
+                        EffectTiming.WhenRecalled,EffectTiming.WhenOthersRecall,
+                        EffectTiming.WhenOverDraw,EffectTiming.WhenEnemyOverDraw,
                         EffectTiming.Entering,EffectTiming.AfterDamaged,
                         EffectTiming.WhenDraw,EffectTiming.WhenEnemyDraw,
                         EffectTiming.WhenSummon,EffectTiming.WhenEnemySummon,

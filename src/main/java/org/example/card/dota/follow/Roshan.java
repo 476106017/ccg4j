@@ -46,7 +46,7 @@ public class Roshan extends FollowCard {
         public String job = "dota";
         private List<String> race = Lists.ofStr("圣遗物");
         public String mark = """
-        战吼：使装备者获得【重生】
+        战吼：使装备者获得【复生】
         """;
 
         public String subMark = "信春哥，得永生";
@@ -55,7 +55,7 @@ public class Roshan extends FollowCard {
             getKeywords().add("死亡掉落");
             setPlay(new Play(
                 ()->ownerPlayer().getAreaFollowsAsGameObj(),true,
-                gameObj -> ((Card)gameObj).addKeyword("重生")));
+                gameObj -> ((Card)gameObj).addKeyword("复生")));
         }
     }
 }

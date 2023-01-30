@@ -31,7 +31,7 @@ public class KingLeoric extends FollowCard {
         setMaxHp(getHp());
         getKeywords().add("自愈");
         getKeywords().add("吸血");
-        getKeywords().add("重生");
+        getKeywords().add("复生");
         setPlay(new Play(() -> ownerPlayer().addHand(createCard(StormBolt.class))));
 
         addEffects(new Effect(this,this,EffectTiming.WhenAttack,obj->{

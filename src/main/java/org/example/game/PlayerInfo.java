@@ -7,13 +7,16 @@ import org.example.card.genshin.LittlePrincess;
 import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
+import org.example.system.function.FunctionN;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
+import static org.example.constant.CounterKey.*;
+import static org.example.constant.EffectTiming.*;
 
 @Getter
 @Setter
@@ -36,13 +39,32 @@ public class PlayerInfo {
     int areaMax = 5;
     List<Card> deck = new ArrayList<>();
     List<Card> hand = new ArrayList<>();
+    Predicate<Card> handPlayable = card -> true;
     List<AreaCard> area = new ArrayList<>();
     List<Card> graveyard = new ArrayList<>();
     Set<Card> abandon = new HashSet<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
     public void countToGraveyard(int count){
-        graveyardCount += count;
+        graveyardCount = Math.max(0, graveyardCount + count);
     }
+    public boolean costGraveyardCountTo(int cost, FunctionN function){
+        if(graveyardCount < cost)return false;
+        countToGraveyard(-cost);
+        info.tempEffectBatch(getAreaFollowsAsGameObj(),EffectTiming.WhenCostGraveyard, cost);
+        info.startEffect();
+        function.apply();
+        return true;
+    }
+    public boolean costMoreGraveyardCountTo(int costMax, Consumer<Integer> consumer){
+        if(graveyardCount == 0)return false;
+        int cost = Math.min(graveyardCount,costMax);
+        countToGraveyard(-cost);
+        info.tempEffectBatch(getAreaFollowsAsGameObj(),EffectTiming.WhenCostGraveyard, cost);
+        info.startEffect();
+        consumer.accept(cost);
+        return true;
+    }
+
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
     Map<Integer,List<Card>> playedCard = new HashMap<>();// 使用卡牌计数器
     Leader leader;
@@ -100,6 +122,17 @@ public class PlayerInfo {
 
     public void shuffleGraveyard(){
         Collections.shuffle(getGraveyard());
+    }
+
+    public boolean burial(FollowCard followCard){
+        if(getArea().size()>=getAreaMax()){
+            info.msg(this.name+"的场上没有足够的空间，葬送失败");
+            return false;
+        }
+        followCard.purify();
+        summon(followCard);
+        followCard.death();
+        return true;
     }
 
     public void steal(int num){
@@ -247,6 +280,13 @@ public class PlayerInfo {
         return new ArrayList<>(getGraveyard());
     }
 
+    public List<FollowCard> getHandFollows(){
+        return getHand().stream().filter(card -> card instanceof FollowCard)
+            .map(card -> (FollowCard) card).toList();
+    }
+    public List<Card> getHandBy(Predicate<Card> p){
+        return getHand().stream().filter(p).toList();
+    }
     public List<GameObj> getHandAsGameObjBy(Predicate<Card> p){
         return getHand().stream().filter(p).map(i->(GameObj)i).toList();
     }
@@ -358,11 +398,20 @@ public class PlayerInfo {
         }
 
     }
-    public void recall(FollowCard followCard){
+    public void recall(List<AreaCard> recalledCards){
         info.msg(getName() + "发动亡灵召还！");
-        followCard.removeWhenNotAtArea();
-        followCard.setHp(followCard.getMaxHp());
-        summon(followCard);
+        recalledCards.forEach(areaCard -> {
+            areaCard.removeWhenNotAtArea();
+            if(areaCard instanceof FollowCard followCard)
+                followCard.setHp(followCard.getMaxHp());
+        });
+        List<AreaCard> areaCopy = getAreaCopy();// 召还前的场上卡牌
+        summon(recalledCards);
+        info.tempAreaCardEffectBatch(recalledCards,EffectTiming.WhenRecalled);
+        info.tempAreaCardEffectBatch(areaCopy,EffectTiming.WhenOthersRecall,recalledCards);
+    }
+    public void recall(AreaCard areaCard){
+        recall(List.of(areaCard));
     }
     public void abandon(Card card){
         abandon(List.of(card));
@@ -388,6 +437,7 @@ public class PlayerInfo {
 
         List<AreaCard> enemyAreaCards = getEnemy().getAreaBy(areaCard -> !summonedCards.contains(areaCard));
         info.tempAreaCardEffectBatch(enemyAreaCards,EffectTiming.WhenEnemySummon,summonedCards);
+        info.startEffect();
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){

@@ -7,4 +7,8 @@ public class CounterKey {
     public static final String ALL_COST = "allCost";
     public static final String EP_NUM = "epNum";
     public static final String TRANSMIGRATION_NUM = "transmigrationNum";
+
+    public static final String DEATH_PREFIX = "death_";
+
+
 }

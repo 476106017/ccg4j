@@ -205,6 +205,14 @@ public abstract class Card extends GameObj {
             card.owner = this.owner;
             card.info = this.info;
             card.init();
+            if(card instanceof FollowCard f1 && this instanceof FollowCard f2){
+                f1.setAtk(f2.getAtk());
+                f1.setName(f2.getName());
+                f1.setKeywords(new ArrayList<>(f2.getKeywords()));
+                f1.setCost(f2.getCost());
+                f1.setMaxHp(f2.getMaxHp());
+                f1.setHp(f2.getHp());
+            }
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -233,9 +241,13 @@ public abstract class Card extends GameObj {
 
 
     public void play(List<GameObj> targets,int choice){
+        if(!ownerPlayer().getHandPlayable().test(this)){
+            info.msgToThisPlayer("由于限制，目前无法使用这张卡牌！");
+            return;
+        }
         if(ownerPlayer().getPpNum() < getCost()){
             info.msgToThisPlayer("你没有足够的PP来使用该卡牌！");
-            throw new RuntimeException();
+            return;
         }
         info.msg(ownerPlayer().getName() + "使用了" + getName());
 
@@ -257,7 +269,7 @@ public abstract class Card extends GameObj {
             if(this instanceof EquipmentCard equipmentCard){
                 if(targets.size()!=1 || !(targets.get(0) instanceof FollowCard target)){
                     info.msgToThisPlayer("无法使用装备卡！");
-                    throw new RuntimeException();
+                    return;
                 }
                 target.equip(equipmentCard);
             }else {

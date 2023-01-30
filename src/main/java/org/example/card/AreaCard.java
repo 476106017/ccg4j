@@ -6,6 +6,8 @@ import org.example.constant.EffectTiming;
 import org.example.game.EventType;
 import org.example.game.GameObj;
 
+import static org.example.constant.CounterKey.DEATH_PREFIX;
+
 
 @Getter
 @Setter
@@ -97,12 +99,14 @@ public abstract class AreaCard extends Card{
         ownerPlayer().getHand().forEach(card ->card.tempEffects(EffectTiming.Charge,this));
 
         removeWhenAtArea();
+        ownerPlayer().count(DEATH_PREFIX+getName());
         tempEffects(EffectTiming.Leaving);
         tempEffects(EffectTiming.DeathRattle);
 
-        // 重生时，保留装备，不进墓地，原地重新召唤
-        if(hasKeyword("重生")){
-            removeKeyword("重生");
+        // 复生时，保留装备，不进墓地，原地重新召唤
+        if(hasKeyword("复生")){
+            removeKeyword("复生");
+            if(this instanceof FollowCard followCard)followCard.setHp(1);
             ownerPlayer().summon(this);
             return;
         }

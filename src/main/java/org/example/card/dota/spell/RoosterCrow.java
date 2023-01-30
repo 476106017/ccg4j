@@ -48,6 +48,7 @@ public class RoosterCrow extends SpellCard {
                     cards.add(createCard(SentinelCorps.class));
                     cards.add(createCard(SentinelCorps.class));
                     ownerPlayer().summon(cards);
+
                 }),true);
             }));
     }
