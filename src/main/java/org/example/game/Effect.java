@@ -112,6 +112,7 @@ public class Effect{
                         EffectTiming.Entering,EffectTiming.AfterDamaged,
                         EffectTiming.WhenDraw,EffectTiming.WhenEnemyDraw,
                         EffectTiming.WhenSummon,EffectTiming.WhenEnemySummon,
+                        EffectTiming.WhenDestroy,EffectTiming.WhenEnemyDestroy,
                         EffectTiming.AfterLeaderDamaged,EffectTiming.LeaderHealed)
                         .contains(effect.getTiming())
                     && effect.getOwnerObj() instanceof AreaCard areaCard

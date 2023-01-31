@@ -2,15 +2,13 @@ package org.example.card.ccg.necromancer.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card.ccg.necromancer.follow.Ghost;
+import org.example.card._derivant.Derivant;
 import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -33,7 +31,7 @@ public class CorralSouls extends SpellCard {
             true,
             obj->{
                 destroy((FollowCard)obj);
-                ownerPlayer().summon(List.of(createCard(Ghost.class),createCard(Ghost.class)));
+                ownerPlayer().summon(List.of(createCard(Derivant.Ghost.class),createCard(Derivant.Ghost.class)));
                 ownerPlayer().draw(2);
             }));
     }

@@ -20,7 +20,7 @@ public class MalignantHorror extends FollowCard {
     private String job = "死灵术士";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        回合结束时：死灵术 5：召唤1个该随从的复制
+        回合结束时：死灵术 4：召唤1个该随从的复制
         """;
     private String subMark = "";
 
@@ -29,7 +29,7 @@ public class MalignantHorror extends FollowCard {
         getKeywords().add("复生");
         addEffects((new Effect(this,this,
             EffectTiming.EndTurn, obj -> {
-            ownerPlayer().summon((AreaCard) copyCard());
+            ownerPlayer().costGraveyardCountTo(4,()-> ownerPlayer().summon((AreaCard) copyCard()));
         })));
     }
 }

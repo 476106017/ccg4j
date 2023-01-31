@@ -2,6 +2,8 @@ package org.example.card;
 
 import org.example.constant.CardType;
 
+import java.util.ArrayList;
+
 public abstract class SpellCard extends Card{
     public final CardType TYPE = CardType.SPELL;
 
@@ -10,4 +12,16 @@ public abstract class SpellCard extends Card{
         return TYPE.getName();
     }
 
+    // 法术自动施放
+    public void autoPlay(){
+        if(!ownerPlayer().getHandPlayable().test(this)){
+            info.msgToThisPlayer("由于限制，目前无法自动施放！");
+            return;
+        }
+        info.msg(getNameWithOwner() + "触发自动施放！");
+        ownerPlayer().getGraveyard().add(this);
+        ownerPlayer().countToGraveyard(1);
+        ownerPlayer().getHand().remove(this);
+        getPlay().effect().accept(0,new ArrayList<>());
+    }
 }

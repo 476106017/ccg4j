@@ -44,7 +44,7 @@ public abstract class EquipmentCard extends AreaCard{
                     info.msg(target.getNameWithOwner() + "解除了控制，移动到"+target.enemyPlayer().getName()+"场上！");
                     target.removeWhenAtArea();
                     // region 转移控制器
-                    target.setOwner(1-target.getOwner());
+                    target.changeOwner();
                     target.enemyPlayer().addArea(target);
                     // endregion
                 }else {
@@ -67,7 +67,7 @@ public abstract class EquipmentCard extends AreaCard{
                 tempEffects(EffectTiming.DeathRattle);
 
                 enemyPlayer().addHand(this);
-                setOwner(1-getOwner());
+                changeOwner();
                 return;
             }
         }

@@ -33,7 +33,7 @@ public class TheOneWhoLurks extends FollowCard {
             ()->canEffect,
             ()->{
                 removeWhenNotAtArea();
-                setOwner(1-getOwner());
+                changeOwner();
                 ownerPlayer().addDeck(this);
                 setCanEffect(false);
         })));

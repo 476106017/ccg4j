@@ -35,14 +35,14 @@ public class PacifistsWar extends SpellCard {
             player.getLeader().setOverDraw(i-> info.gameset(player));
             player.getLeader().setOverDrawMark("赢得游戏胜利");
         }));
-        addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
+        addEffects(new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,
             ()->{
                 Leader leader = ownerLeader();
                 leader.addEffect(new Effect(this,leader, EffectTiming.WhenAttack,damage->{
                     info.gameset(enemyPlayer());
                 }), true);
-            })));
+            }));
     }
 
 }

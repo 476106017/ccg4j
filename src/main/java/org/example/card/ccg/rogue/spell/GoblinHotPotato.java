@@ -29,7 +29,7 @@ public class GoblinHotPotato extends SpellCard {
 
     public GoblinHotPotato() {
         setPlay(new Play(()->{
-            setOwner(1-getOwner());
+            changeOwner();
             removeWhenNotAtArea();
             enemyPlayer().addHand(this);
         }));

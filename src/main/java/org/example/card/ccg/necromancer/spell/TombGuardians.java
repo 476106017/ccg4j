@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
-import org.example.card.ccg.necromancer.follow.Zombie;
+import org.example.card._derivant.Derivant;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -29,8 +29,8 @@ public class TombGuardians extends SpellCard {
     public TombGuardians() {
         setPlay(new Play(()->{
             List<AreaCard> zombies = new ArrayList<>();
-            zombies.add(createCard(Zombie.class,"守护"));
-            zombies.add(createCard(Zombie.class,"守护"));
+            zombies.add(createCard(Derivant.Zombie.class,"守护"));
+            zombies.add(createCard(Derivant.Zombie.class,"守护"));
             ownerPlayer().summon(zombies);
             ownerPlayer().costGraveyardCountTo(4,()->
                 zombies.forEach(zombie-> zombie.addKeyword("复生")));

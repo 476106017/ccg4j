@@ -48,7 +48,10 @@ public class PlayerInfo {
         graveyardCount = Math.max(0, graveyardCount + count);
     }
     public boolean costGraveyardCountTo(int cost, FunctionN function){
-        if(graveyardCount < cost)return false;
+        if(graveyardCount < cost){
+            info.msg(this.getName()+"没有足够的墓地来发动死灵术！");
+            return false;
+        }
         countToGraveyard(-cost);
         info.tempEffectBatch(getAreaFollowsAsGameObj(),EffectTiming.WhenCostGraveyard, cost);
         info.startEffect();
@@ -56,7 +59,10 @@ public class PlayerInfo {
         return true;
     }
     public boolean costMoreGraveyardCountTo(int costMax, Consumer<Integer> consumer){
-        if(graveyardCount == 0)return false;
+        if(graveyardCount == 0){
+            info.msg(this.getName()+"没有足够的墓地来发动死灵术！");
+            return false;
+        }
         int cost = Math.min(graveyardCount,costMax);
         countToGraveyard(-cost);
         info.tempEffectBatch(getAreaFollowsAsGameObj(),EffectTiming.WhenCostGraveyard, cost);

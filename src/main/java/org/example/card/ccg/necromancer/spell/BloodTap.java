@@ -2,9 +2,7 @@ package org.example.card.ccg.necromancer.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card.ccg.necromancer.follow.Ghost;
 import org.example.game.Play;
 import org.example.system.Lists;
 
