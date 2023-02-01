@@ -1,6 +1,7 @@
 package org.example.constant;
 
 import org.example.card.Card;
+import org.example.card._derivant.Derivant;
 import org.example.card.anime.chainsawman.follow.ChainsawMan;
 import org.example.card.anime.chainsawman.follow.DarkDemon;
 import org.example.card.anime.chainsawman.follow.Makima;
@@ -34,7 +35,6 @@ import org.example.card.anime.jojo.follow.EnricoPucci;
 import org.example.card.anime.jojo.follow.JolyneCujoh;
 import org.example.card.anime.jojo.follow.KujoJotaro;
 import org.example.card.ccg.nemesis.Yuwan;
-import org.example.card.ccg.nemesis.follow.AnalyzingArtifact;
 import org.example.card.ccg.nemesis.follow.ImmortalAegis;
 import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
 import org.example.card.ccg.neutral.amulet.TestOfStrength;
@@ -64,7 +64,7 @@ public class DeckPreset {
             Bahamut.class, DarkSnare.class, TestOfStrength.class, AmbitiousGoblinMage.class,Hamsa.class,
             ColdlightOracle.class, MysticRing.class, TravelerGoblin.class, Zelgenea.class, PlanetaryFracture.class,
 
-            MahjongTable.class, LabRecruiter.class, Preparation.class, Shadowstep.class, AnalyzingArtifact.class,
+            MahjongTable.class, LabRecruiter.class, Preparation.class, Shadowstep.class, Derivant.AnalyzingArtifact.class,
             ImmortalAegis.class, CalamitysGenesis.class, Lawliet.class, YagamiLight.class, DeathNote.class,
 
             ChainsawMan.class, DarkDemon.class, Makima.class, AirboundBarrage.class, ErosiveAnnihilation.class,

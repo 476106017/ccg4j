@@ -3,7 +3,7 @@ package org.example.card.ccg.nemesis;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
-import org.example.card.ccg.nemesis.follow.AnalyzingArtifact;
+import org.example.card._derivant.Derivant;
 import org.example.game.GameObj;
 import org.example.game.Leader;
 import org.example.game.PlayerInfo;
@@ -39,7 +39,7 @@ public class Yuwan extends Leader {
         playerInfo.backToDeck((Card) target);
 
         // 召唤1个解析的造物
-        playerInfo.summon(createCard(AnalyzingArtifact.class));
+        playerInfo.summon(createCard(Derivant.AnalyzingArtifact.class));
 
     }
 }
