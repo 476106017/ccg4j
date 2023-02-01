@@ -29,7 +29,7 @@ public class InnGhosthound extends FollowCard {
         setPlay(new Play(()->ownerPlayer().getHandAsGameObjBy(card -> card instanceof FollowCard),
             false,
             obj->{
-                if(obj==null || !ownerPlayer().burial(this))return;
+                if(obj==null || !ownerPlayer().burial((FollowCard) obj))return;
                 ownerPlayer().draw(1);
         }));
     }

@@ -115,7 +115,6 @@ public abstract class FollowCard extends AreaCard{
     }
     public void addStatus(int atk, int hp){
         if(atk==0 && hp==0)return;
-        if(!atArea())return;
         // region 构造消息
         StringBuilder sb = new StringBuilder();
         sb.append(this.getNameWithOwner()).append("获得了");

@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
+import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.constant.EffectTiming;
 import org.example.system.Lists;
 import org.springframework.util.CollectionUtils;
@@ -677,6 +678,18 @@ public class GameInfo {
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
                     .append(followCard.getHp()).append("♥");
+            if (card instanceof EquipmentCard equipmentCard) {
+                detail.append(equipmentCard.getAddAtk()).append("➹")
+                    .append(equipmentCard.getAddHp()).append("♥");
+                if (equipmentCard.getCountdown() > 0) {
+                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
+                }
+            }
+            if (card instanceof AmuletCard amuletCard) {
+                if (amuletCard.getCountDown() > 0) {
+                    detail.append(amuletCard.getCountDown()).append("⌛︎");
+                }
+            }
             detail.append("<div style='text-align:right;float:right;'>")
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
@@ -690,7 +703,7 @@ public class GameInfo {
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto left"
+                    title="%s" data-content="%s" data-placement="auto"
                     data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
@@ -738,6 +751,18 @@ public class GameInfo {
             if(card instanceof FollowCard followCard)
                 detail.append(followCard.getAtk()).append("➹")
                     .append(followCard.getHp()).append("♥");
+            if (card instanceof EquipmentCard equipmentCard) {
+                detail.append(equipmentCard.getAddAtk()).append("➹")
+                    .append(equipmentCard.getAddHp()).append("♥");
+                if (equipmentCard.getCountdown() > 0) {
+                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
+                }
+            }
+            if (card instanceof AmuletCard amuletCard) {
+                if (amuletCard.getCountDown() > 0) {
+                    detail.append(amuletCard.getCountDown()).append("⌛︎");
+                }
+            }
             detail.append("<div style='text-align:right;float:right;'>")
                 .append(String.join("/",card.getRace())).append("</div>\n");
             if(!card.getKeywords().isEmpty())
@@ -751,7 +776,7 @@ public class GameInfo {
 
             sb.append("""
             <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto left"
+                    title="%s" data-content="%s" data-placement="auto"
                     data-container="body" data-toggle="popover"
                       data-trigger="hover" data-html="true"/>
             """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));

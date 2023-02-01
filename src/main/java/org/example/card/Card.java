@@ -264,6 +264,7 @@ public abstract class Card extends GameObj {
         enemyPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.WhenEnemyPlay,this));
         // endregion 在使用卡牌造成任何影响前，先计算使用时
 
+        ownerPlayer().getHand().remove(this);
         // region 驻场卡召唤到场上(装备卡装备给随从)，法术卡丢到墓地
         if(this instanceof AreaCard areaCard){
             if(this instanceof EquipmentCard equipmentCard){
@@ -279,7 +280,6 @@ public abstract class Card extends GameObj {
             ownerPlayer().getGraveyard().add(this);
             ownerPlayer().countToGraveyard(1);
         }
-        ownerPlayer().getHand().remove(this);
         // endregion
 
         // region 发动卡牌效果
