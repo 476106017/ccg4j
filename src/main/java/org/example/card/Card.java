@@ -29,6 +29,14 @@ public abstract class Card extends GameObj {
 
     private List<String> keywords = new ArrayList<>();
 
+
+    private boolean upgrade = false;
+
+    public void upgrade(){
+        info.msg(getNameWithOwner() + "进化了！");
+        setUpgrade(true);
+    }
+
     public boolean hasRace(String k){
         return getRace().contains(k);
     }

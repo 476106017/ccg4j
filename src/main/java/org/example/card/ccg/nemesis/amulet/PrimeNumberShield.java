@@ -22,25 +22,24 @@ public class PrimeNumberShield extends AmuletCard {
     public int countDown = 3;
     private List<String> race = Lists.ofStr();
     public String mark = """
-        战吼：如果手牌有创造物卡片，则随机舍弃其中1张，升级此卡
+        战吼：如果手牌有创造物卡片，则随机舍弃其中1张，进化此卡
         
         只要这张卡片在场上，主战者受到的伤害只能是质数：
         若伤害小于2，则受到2点伤害；
         若伤害大于2且伤害值非质数，则受到与小于伤害值的最大质数等量的伤害
-        升级后，去除【且伤害值非质数】的限制
+        如果已进化，去除【且伤害值非质数】的限制
         """;
 
     public String subMark = "";
 
-    private boolean upgrade = false;
-
     public PrimeNumberShield() {
-        setPlay(new Play(() -> {
-            List<Card> artifact = ownerPlayer().getHandBy(card -> card.getRace().contains("创造物"));
-            if(!artifact.isEmpty()){
-                ownerPlayer().abandon(Lists.randOf(artifact));
-                setUpgrade(true);
-            }
+        setPlay(new Play(
+            () -> {
+                List<Card> artifact = ownerPlayer().getHandBy(card -> card.getRace().contains("创造物"));
+                if(!artifact.isEmpty()){
+                    ownerPlayer().abandon(Lists.randOf(artifact));
+                    upgrade();
+                }
         }));
 
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, ()->{
@@ -49,7 +48,7 @@ public class PrimeNumberShield extends AmuletCard {
                     Damage damage = (Damage) obj;
 
                     int damagei = damage.getDamage();
-                    return damagei<2 || (damagei>2 && upgrade) || damagei > MyMath.maxPrimeNum(damagei);
+                    return damagei<2 || (damagei>2 && isUpgrade()) || damagei > MyMath.maxPrimeNum(damagei);
                 },
                 obj->{
                     Damage damage = (Damage) obj;
@@ -61,7 +60,7 @@ public class PrimeNumberShield extends AmuletCard {
                         return;
                     }
 
-                    int i = MyMath.maxPrimeNum(upgrade?damagei-1:damagei);
+                    int i = MyMath.maxPrimeNum(isUpgrade()?damagei-1:damagei);
                     int reduce = damagei - i;
 
                     info.msg("质数盾为主战者抵挡了"+reduce+"点伤害");
