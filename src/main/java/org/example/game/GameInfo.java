@@ -708,7 +708,7 @@ public class GameInfo {
             sb.append("</p>");
         }
         sb.append("\n我方战场：\n");
-        for (int i = 0; i < player.getArea().size(); i++) {
+        for (int i = 0; i < player.getAreaMax(); i++) {
             sb.append("<p>");
             if(i >= player.getArea().size()){
                 sb.append("【").append(i+1).append("】\t")
