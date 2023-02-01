@@ -635,8 +635,14 @@ public class GameInfo {
 
         sb.append("【战场信息】\n");
         sb.append("敌方战场：\n");
-        for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
+        for (int i = 0; i < oppositePlayer.getAreaMax(); i++) {
             sb.append("<p>");
+            if(i >= oppositePlayer.getArea().size()){
+                sb.append("【").append(i+1).append("】\t")
+                    .append("（空）").append("\t");
+                sb.append("</p>");
+                continue;
+            }
             Card card = oppositePlayer.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
@@ -694,6 +700,12 @@ public class GameInfo {
         sb.append("\n我方战场：\n");
         for (int i = 0; i < player.getArea().size(); i++) {
             sb.append("<p>");
+            if(i >= oppositePlayer.getArea().size()){
+                sb.append("【").append(i+1).append("】\t")
+                    .append("（空）").append("\t");
+                sb.append("</p>");
+                continue;
+            }
             Card card = player.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
