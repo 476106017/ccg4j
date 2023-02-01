@@ -710,7 +710,7 @@ public class GameInfo {
         sb.append("\n我方战场：\n");
         for (int i = 0; i < player.getArea().size(); i++) {
             sb.append("<p>");
-            if(i >= oppositePlayer.getArea().size()){
+            if(i >= player.getArea().size()){
                 sb.append("【").append(i+1).append("】\t")
                     .append("（空）").append("\t");
                 sb.append("</p>");
