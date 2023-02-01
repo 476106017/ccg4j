@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card._derivant.Derivant;
 import org.example.game.Play;
 import org.example.system.Lists;
 

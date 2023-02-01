@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.example.card.EquipmentCard;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
-import org.example.game.Damage;
 import org.example.game.Effect;
 import org.example.game.Play;
 

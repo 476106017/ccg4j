@@ -2,19 +2,15 @@ package org.example.card.genshin.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.genshin.LittlePrincess;
 import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.card.genshin.system.Elemental;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
-import org.example.game.PlayerInfo;
 import org.example.system.Lists;
 
 import java.util.List;
-
-import static org.example.constant.CounterKey.ALL_COST;
 
 @Getter
 @Setter

@@ -7,7 +7,6 @@ import org.example.card.genshin.system.ElementBaseFollowCard;
 import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.card.genshin.system.Elemental;
 import org.example.card.genshin.system.ElementalDamage;
-import org.example.game.Damage;
 import org.example.game.GameObj;
 import org.example.game.Play;
 import org.example.system.Lists;

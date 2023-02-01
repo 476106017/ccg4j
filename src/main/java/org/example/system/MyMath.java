@@ -1,7 +1,5 @@
 package org.example.system;
 
-import java.util.UUID;
-
 public class MyMath {
     public static void main(String[] args) {
         System.out.println(maxPrimeNum(0));

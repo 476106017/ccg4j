@@ -1,11 +1,6 @@
 package org.example.card.genshin.system;
 
 import lombok.Getter;
-import org.example.system.Lists;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 元素骰

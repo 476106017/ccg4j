@@ -2,12 +2,14 @@ package org.example.card.ccg.necromancer.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.*;
+import org.example.card.AmuletCard;
+import org.example.card.EquipmentCard;
+import org.example.card.FollowCard;
+import org.example.card.SpellCard;
 import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter

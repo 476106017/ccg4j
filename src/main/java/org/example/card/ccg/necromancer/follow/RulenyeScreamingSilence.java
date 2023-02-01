@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.DEATH_PREFIX;
-import static org.example.constant.CounterKey.PLAY_NUM;
 
 @Getter
 @Setter

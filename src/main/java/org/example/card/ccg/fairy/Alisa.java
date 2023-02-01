@@ -33,7 +33,7 @@ public class Alisa extends Leader {
     private boolean needTarget = false;
 
     private String overDrawMark =  """
-        从墓地里抽1张妖精并获得【游魂】，若墓地没有妖精，则输掉游戏
+        从墓地里抽1张妖精并获得【游魂】【疾驰】，若墓地没有妖精，则输掉游戏
         """;
 
     private Consumer<Integer> overDraw = integer -> {
@@ -43,6 +43,7 @@ public class Alisa extends Leader {
         if(any.isPresent()){
             Card fairy = any.get();
             fairy.addKeyword("游魂");
+            fairy.addKeyword("疾驰");
             player.getGraveyard().remove(fairy);
             player.addHand(fairy);
         }else

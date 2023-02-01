@@ -2,7 +2,6 @@ package org.example.card.ccg.rogue.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.SpellCard;
 import org.example.game.Play;
 import org.example.system.Lists;

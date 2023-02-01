@@ -8,7 +8,8 @@ import org.example.system.Lists;
 
 import java.util.List;
 
-import static org.example.constant.CounterKey.*;
+import static org.example.constant.CounterKey.ALL_COST;
+import static org.example.constant.CounterKey.PLAY_NUM_ALL;
 
 
 @Getter

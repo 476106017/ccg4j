@@ -8,7 +8,6 @@ import org.example.game.Effect;
 import org.example.system.Lists;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 
 @Getter

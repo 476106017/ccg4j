@@ -12,23 +12,22 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CursedCoin extends AmuletCard {
+public class GloamingTombs extends AmuletCard {
 
-    public Integer cost = 1;
+    public Integer cost = 2;
 
-    public String name = "诅咒的硬币";
+    public String name = "林立的墓地";
     public String job = "死灵术士";
     private List<String> race = Lists.ofStr();
-    public int countDown = 3;
 
     public String mark = """
-        回合结束时：死灵术 2：抽1张牌
+        我方召唤时：墓地+1
         """;
     public String subMark = "";
 
-    public CursedCoin() {
-        addEffects((new Effect(this,this, EffectTiming.EndTurn,
-            ()-> ownerPlayer().draw(1))));
+    public GloamingTombs() {
+        addEffects((new Effect(this,this,
+            EffectTiming.WhenSummon, obj -> ownerPlayer().countToGraveyard(1))));
     }
 
 }

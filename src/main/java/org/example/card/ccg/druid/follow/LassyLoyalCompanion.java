@@ -9,7 +9,6 @@ import org.example.game.Damage;
 import org.example.game.Effect;
 import org.example.system.Lists;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 

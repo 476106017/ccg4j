@@ -8,32 +8,20 @@ import org.example.card.anime.chainsawman.follow.Makima;
 import org.example.card.anime.deathnote.equipment.DeathNote;
 import org.example.card.anime.deathnote.follow.Lawliet;
 import org.example.card.anime.deathnote.follow.YagamiLight;
-import org.example.card.ccg.druid.follow.LassyLoyalCompanion;
+import org.example.card.anime.jojo.follow.EnricoPucci;
+import org.example.card.anime.jojo.follow.JolyneCujoh;
+import org.example.card.anime.jojo.follow.KujoJotaro;
 import org.example.card.ccg.fairy.Alisa;
-import org.example.card.ccg.rogue.follow.TheOneWhoLurks;
-import org.example.card.ccg.rogue.spell.Haggle;
-import org.example.card.ccg.warlock.spell.BlackDeath;
-import org.example.card.ccg.warrior.follow.AssaultCatapult;
-import org.example.card.ccg.warrior.spell.Chew;
-import org.example.card.dota.equipment.*;
-import org.example.card.dota.follow.*;
-import org.example.card.dota.spell.RoosterCrow;
-import org.example.card.dota.spell.TeleportToBattleGround;
 import org.example.card.ccg.fairy.amulet.FirespriteGrove;
 import org.example.card.ccg.fairy.amulet.FlowerOfFairies;
 import org.example.card.ccg.fairy.amulet.ForestSymphony;
 import org.example.card.ccg.fairy.amulet.WoodOfBrambles;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
-import org.example.card.genshin.LittlePrincess;
-import org.example.card.genshin.amulet.FakeSky;
-import org.example.card.genshin.follow.Diluc;
-import org.example.card.genshin.follow.Keaya;
-import org.example.card.genshin.follow.Sucrose;
-import org.example.card.genshin.spell.*;
-import org.example.card.anime.jojo.follow.EnricoPucci;
-import org.example.card.anime.jojo.follow.JolyneCujoh;
-import org.example.card.anime.jojo.follow.KujoJotaro;
+import org.example.card.ccg.necromancer.Luna;
+import org.example.card.ccg.necromancer.amulet.*;
+import org.example.card.ccg.necromancer.follow.*;
+import org.example.card.ccg.necromancer.spell.*;
 import org.example.card.ccg.nemesis.Yuwan;
 import org.example.card.ccg.nemesis.follow.ImmortalAegis;
 import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
@@ -42,10 +30,24 @@ import org.example.card.ccg.neutral.follow.*;
 import org.example.card.ccg.neutral.spell.DarkSnare;
 import org.example.card.ccg.neutral.spell.MysticRing;
 import org.example.card.ccg.neutral.spell.PlanetaryFracture;
-import org.example.card.other.rule.amulet.MahjongTable;
 import org.example.card.ccg.rogue.follow.LabRecruiter;
+import org.example.card.ccg.rogue.follow.TheOneWhoLurks;
+import org.example.card.ccg.rogue.spell.Haggle;
 import org.example.card.ccg.rogue.spell.Preparation;
 import org.example.card.ccg.rogue.spell.Shadowstep;
+import org.example.card.ccg.warrior.follow.AssaultCatapult;
+import org.example.card.ccg.warrior.spell.Chew;
+import org.example.card.dota.equipment.*;
+import org.example.card.dota.follow.*;
+import org.example.card.dota.spell.RoosterCrow;
+import org.example.card.dota.spell.TeleportToBattleGround;
+import org.example.card.genshin.LittlePrincess;
+import org.example.card.genshin.amulet.FakeSky;
+import org.example.card.genshin.follow.Diluc;
+import org.example.card.genshin.follow.Keaya;
+import org.example.card.genshin.follow.Sucrose;
+import org.example.card.genshin.spell.*;
+import org.example.card.other.rule.amulet.MahjongTable;
 import org.example.card.other.test.folow.TestFollow;
 import org.example.game.Leader;
 
@@ -88,6 +90,17 @@ public class DeckPreset {
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
         ));
         deckLeader.put("妖精", Alisa.class);
+        decks.put("死灵法师",List.of(
+            CoffinOfTheUnknownSoul.class, CursedCoin.class, DiedParty.class, GloamingTombs.class, HauntedHouse.class,
+            BoneFanatic.class, CorpseBride.class, DarkfallenNeophyte.class, Deathmolder.class, HuginnMuninn.class,
+
+            InnGhosthound.class, MalignantHorror.class, MeatGrinder.class, MinoDaydreamingReaper.class,MinoDaydreamingReaper.class,
+            NerubianSwarmguard.class, RulenyeScreamingSilence.class, SoulStealer.class, Thoth.class, BloodTap.class,
+
+            BoneAshBibimbap.class, CorralSouls.class, DeathlyTyrantsFeast.class, HearseDrift.class, PlaguedGrain.class,
+            SoulConversion.class,TombGuardians.class, TributeSummon.class,Zelgenea.class,MintheOfUnderworld.class
+        ));
+        deckLeader.put("死灵法师", Luna.class);
         decks.put("dota",List.of(
             Roshan.class, Nevermore.class,Nevermore.class, FacelessVoid.class,FacelessVoid.class,
             DefenceTower.class,DefenceTower.class,DefenceTower.class,Slark.class,Slark.class,

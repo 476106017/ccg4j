@@ -9,7 +9,10 @@ import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.card.genshin.system.Elemental;
 import org.example.card.genshin.system.ElementalDamage;
 import org.example.constant.EffectTiming;
-import org.example.game.*;
+import org.example.game.Effect;
+import org.example.game.GameObj;
+import org.example.game.Leader;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.ArrayList;

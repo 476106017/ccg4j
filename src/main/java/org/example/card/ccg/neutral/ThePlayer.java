@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.game.GameObj;
 import org.example.game.Leader;
-import org.example.game.PlayerInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,15 +2,11 @@ package org.example.card.dota.equipment;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
-import org.example.card.Card;
 import org.example.card.EquipmentCard;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
 import org.example.game.Play;
-
-import java.util.List;
 
 @Getter
 @Setter

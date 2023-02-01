@@ -15,8 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.example.constant.CounterKey.*;
-import static org.example.constant.EffectTiming.*;
+import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
 @Getter
 @Setter
@@ -308,6 +307,12 @@ public class PlayerInfo {
     }
     public List<GameObj> getAreaAsGameObj(){
         return getArea().stream()
+            .map(areaCard -> (GameObj)areaCard)
+            .toList();
+    }
+    public List<GameObj> getAreaAsGameObjBy(Predicate<AreaCard> p){
+        return getArea().stream()
+            .filter(p)
             .map(areaCard -> (GameObj)areaCard)
             .toList();
     }
