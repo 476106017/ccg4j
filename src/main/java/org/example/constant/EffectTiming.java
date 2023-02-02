@@ -58,6 +58,7 @@ public enum EffectTiming {
     Exile("除外时",Card.class),
     DeathRattle("亡语"),
     WhenCostGraveyard("发动死灵术时",Integer.class),
+    WhenCostPartyHot("发动派对狂欢时",Integer.class),
     Transmigration("轮回时"),
     Charge("注能",List.class,true),
     WhenKill("击杀时",FollowCard.class),

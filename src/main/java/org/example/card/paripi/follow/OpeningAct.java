@@ -1,4 +1,4 @@
-package org.example.card.ccg.neutral.follow;
+package org.example.card.paripi.follow;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class OpeningAct extends FollowCard {
     private Integer cost = 2;
     private int atk = 2;
     private int hp = 2;
-    private String job = "中立";
+    private String job = "派对咖";
     private List<String> race = Lists.ofStr();
     private String mark = """
         战吼：搜索1张费用等于当前PP数的卡牌

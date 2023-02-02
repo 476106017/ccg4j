@@ -49,6 +49,11 @@ import org.example.card.genshin.follow.Sucrose;
 import org.example.card.genshin.spell.*;
 import org.example.card.other.rule.amulet.MahjongTable;
 import org.example.card.other.test.folow.TestFollow;
+import org.example.card.paripi.Kongming;
+import org.example.card.paripi.follow.CallingOtaku;
+import org.example.card.paripi.follow.DiscoZombie;
+import org.example.card.paripi.follow.LowKeyTalentScouts;
+import org.example.card.paripi.follow.OpeningAct;
 import org.example.game.Leader;
 
 import java.util.HashMap;
@@ -116,6 +121,13 @@ public class DeckPreset {
             DawnOfWinery.class, ForgeSummon.class, Kokomi.class, Kokomi.class, LuckyDay.class
         ));
         deckLeader.put("原神", LittlePrincess.class);
+        decks.put("派对咖",List.of(
+            CallingOtaku.class, CallingOtaku.class, CallingOtaku.class,
+            DiscoZombie.class, DiscoZombie.class,DiscoZombie.class,
+            LowKeyTalentScouts.class, LowKeyTalentScouts.class, LowKeyTalentScouts.class,
+            OpeningAct.class, OpeningAct.class, OpeningAct.class
+        ));
+        deckLeader.put("派对咖", Kongming.class);
         decks.put("jojo",List.of(
             EnricoPucci.class, EnricoPucci.class, EnricoPucci.class,
             JolyneCujoh.class,JolyneCujoh.class,JolyneCujoh.class,

@@ -438,9 +438,8 @@ public class GameHandler {
                 card.play(new ArrayList<>(),0);// 没有任何使用效果，直接召唤
                 return;
             }
-            // 所有效果都指定第一个
-            List<GameObj> targets = play.canTargets().get().stream().map(gameObjs -> gameObjs.get(0)).toList();
-            card.play(targets,1);
+
+            card.autoPlay();
         });
     }
 }

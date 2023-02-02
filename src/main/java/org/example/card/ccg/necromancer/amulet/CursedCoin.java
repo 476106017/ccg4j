@@ -28,7 +28,7 @@ public class CursedCoin extends AmuletCard {
 
     public CursedCoin() {
         addEffects((new Effect(this,this, EffectTiming.EndTurn,
-            ()-> ownerPlayer().draw(1))));
+            ()->  ownerPlayer().costGraveyardCountTo(2,()-> ownerPlayer().draw(1)))));
     }
 
 }

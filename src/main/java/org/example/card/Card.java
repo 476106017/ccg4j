@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 import org.example.game.Play;
+import org.example.system.Lists;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -122,6 +124,18 @@ public abstract class Card extends GameObj {
 
     private Play play = null;
 
+    // 自动打出
+    public void autoPlay(){
+        Integer randChoice = (int) (play.choiceNum()* Math.random()+1);
+
+        List<GameObj> randTarget = play.canTargets().get().stream().map(list -> {
+            if (CollectionUtils.isEmpty(list)) return null;
+            return Lists.randOf(list);
+        }).toList();
+        if(play.mustTarget() && randTarget.contains(null))return;
+
+        play.effect().accept(randChoice,randTarget);
+    }
 
     public abstract String getType();
     public abstract void setCost(Integer cost);

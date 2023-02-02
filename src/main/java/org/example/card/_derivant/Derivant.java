@@ -42,7 +42,7 @@ public class Derivant {
         private int atk = 1;
         private int hp = 1;
         private String job = "死灵术士";
-        private List<String> race = Lists.ofStr();
+        private List<String> race = Lists.ofStr("灵体");
         private String mark = """
         回合结束时：死亡
         """;
@@ -67,7 +67,7 @@ public class Derivant {
         private int atk = 2;
         private int hp = 2;
         private String job = "死灵术士";
-        private List<String> race = Lists.ofStr();
+        private List<String> race = Lists.ofStr("不死生物");
         private String mark = """
         """;
         private String subMark = "";
@@ -85,7 +85,7 @@ public class Derivant {
         private int atk = 1;
         private int hp = 1;
         private String job = "死灵术士";
-        private List<String> race = Lists.ofStr();
+        private List<String> race = Lists.ofStr("不死生物");
         private String mark = """
         """;
         private String subMark = "";
