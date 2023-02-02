@@ -124,19 +124,6 @@ public abstract class Card extends GameObj {
 
     private Play play = null;
 
-    // 自动打出
-    public void autoPlay(){
-        Integer randChoice = (int) (play.choiceNum()* Math.random()+1);
-
-        List<GameObj> randTarget = play.canTargets().get().stream().map(list -> {
-            if (CollectionUtils.isEmpty(list)) return null;
-            return Lists.randOf(list);
-        }).toList();
-        if(play.mustTarget() && randTarget.contains(null))return;
-
-        play.effect().accept(randChoice,randTarget);
-    }
-
     public abstract String getType();
     public abstract void setCost(Integer cost);
     public abstract Integer getCost();

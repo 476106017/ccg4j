@@ -5,6 +5,10 @@ import lombok.Setter;
 import org.example.constant.EffectTiming;
 import org.example.game.EventType;
 import org.example.game.GameObj;
+import org.example.system.Lists;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 import static org.example.constant.CounterKey.DEATH_PREFIX;
 
@@ -14,6 +18,17 @@ import static org.example.constant.CounterKey.DEATH_PREFIX;
 public abstract class AreaCard extends Card{
     private int leaveIndex = -1;// 离场时所在的下标
     public abstract String getType();
+    public void fanfare(){
+        Integer randChoice = (int) (getPlay().choiceNum()* Math.random()+1);
+
+        List<GameObj> randTarget = getPlay().canTargets().get().stream().map(list -> {
+            if (CollectionUtils.isEmpty(list)) return null;
+            return Lists.randOf(list);
+        }).toList();
+        if(getPlay().mustTarget() && randTarget.contains(null))return;
+
+        getPlay().effect().accept(randChoice,randTarget);
+    }
 
     // 准备破坏
     public GameObj destroyedBy = null;

@@ -33,7 +33,7 @@ public class LowKeyTalentScouts extends FollowCard {
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
             List<AreaCard> areaCards = info.getAreaFollowsCopy();
             if(!CollectionUtils.isEmpty(areaCards))
-                Lists.randOf(areaCards).autoPlay();
+                Lists.randOf(areaCards).fanfare();
         })));
     }
 }

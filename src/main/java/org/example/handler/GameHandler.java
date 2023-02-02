@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.example.card.*;
 import org.example.game.*;
+import org.example.system.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
@@ -438,8 +439,10 @@ public class GameHandler {
                 card.play(new ArrayList<>(),0);// 没有任何使用效果，直接召唤
                 return;
             }
-
-            card.autoPlay();
+            // 所有效果都随机指定
+            List<GameObj> targets = play.canTargets().get().stream().map(Lists::randOf).toList();
+            int randChoice = (int) (play.choiceNum()* Math.random()+1);
+            card.play(targets,randChoice);
         });
     }
 }
