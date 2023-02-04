@@ -3,7 +3,8 @@ package org.example.card.ccg.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.ccg.fairy.follow.Fairy;
+
+import org.example.card._derivant.Derivant;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
@@ -34,10 +35,10 @@ public class FlowerOfFairies extends AmuletCard {
             ownerPlayer().draw(1);
         }));
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
-            ownerPlayer().addHand(createCard(Fairy.class))
+            ownerPlayer().addHand(createCard(Derivant.Fairy.class))
         )));
         addEffects((new Effect(this,this, EffectTiming.WhenBackToHand, obj->
-            ownerPlayer().addHand(createCard(Fairy.class))
+            ownerPlayer().addHand(createCard(Derivant.Fairy.class))
         )));
     }
 

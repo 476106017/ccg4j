@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
 import org.example.card.FollowCard;
+import org.example.card._derivant.Derivant;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -35,7 +36,7 @@ public class FairyWhisperer extends FollowCard {
         setPlay(new Play(()->{
             List<Card> fairies = new ArrayList<>();
             for (int i = 0; i < getCost(); i++) {
-                Fairy fairy = createCard(Fairy.class);
+                Derivant.Fairy fairy = createCard(Derivant.Fairy.class);
                 fairies.add(fairy);
             }
             ownerPlayer().addHand(fairies);

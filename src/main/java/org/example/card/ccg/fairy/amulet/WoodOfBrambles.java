@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
-import org.example.card.ccg.fairy.follow.Fairy;
+
+import org.example.card._derivant.Derivant;
 import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
@@ -33,8 +34,8 @@ public class WoodOfBrambles extends AmuletCard {
 
     public WoodOfBrambles() {
         setPlay(new Play(()->{
-            ownerPlayer().addHand(createCard(Fairy.class));
-            ownerPlayer().addHand(createCard(Fairy.class));
+            ownerPlayer().addHand(createCard(Derivant.Fairy.class));
+            ownerPlayer().addHand(createCard(Derivant.Fairy.class));
         }));
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, ignored->
             ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {

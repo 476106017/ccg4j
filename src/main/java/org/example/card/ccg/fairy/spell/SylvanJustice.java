@@ -3,7 +3,8 @@ package org.example.card.ccg.fairy.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
-import org.example.card.ccg.fairy.follow.Fairy;
+
+import org.example.card._derivant.Derivant;
 import org.example.game.Play;
 import org.example.system.Lists;
 
@@ -28,7 +29,7 @@ public class SylvanJustice extends SpellCard {
             ()->enemyPlayer().getAreaFollowsAsGameObj(), true,
             target->{
                 info.damageEffect(this,target,3);
-                ownerPlayer().addHand(createCard(Fairy.class));
+                ownerPlayer().addHand(createCard(Derivant.Fairy.class));
             }));
     }
 }

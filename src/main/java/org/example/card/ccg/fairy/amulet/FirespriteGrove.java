@@ -3,7 +3,8 @@ package org.example.card.ccg.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.ccg.fairy.follow.Fairy;
+
+import org.example.card._derivant.Derivant;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.system.Lists;
@@ -30,7 +31,7 @@ public class FirespriteGrove extends AmuletCard {
 
     public FirespriteGrove() {
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->
-            ownerPlayer().addHand(createCard(Fairy.class))
+            ownerPlayer().addHand(createCard(Derivant.Fairy.class))
         )));
 
         addEffects((new Effect(this,this, EffectTiming.Leaving, obj->

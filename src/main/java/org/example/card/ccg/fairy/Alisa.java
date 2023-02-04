@@ -3,7 +3,8 @@ package org.example.card.ccg.fairy;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
-import org.example.card.ccg.fairy.follow.Fairy;
+import org.example.card._derivant.Derivant;
+
 import org.example.constant.CounterKey;
 import org.example.game.GameObj;
 import org.example.game.Leader;
@@ -39,7 +40,7 @@ public class Alisa extends Leader {
     private Consumer<Integer> overDraw = integer -> {
 
         PlayerInfo player = ownerPlayer();
-        Optional<Card> any = player.getGraveyard().stream().filter(card -> card instanceof Fairy).findAny();
+        Optional<Card> any = player.getGraveyard().stream().filter(card -> card instanceof Derivant.Fairy).findAny();
         if(any.isPresent()){
             Card fairy = any.get();
             fairy.addKeyword("游魂");
@@ -59,20 +60,20 @@ public class Alisa extends Leader {
         playerInfo.count(CounterKey.PLAY_NUM);
 
         if(Math.random()*3 < 1){
-            playerInfo.summon(createCard(Fairy.class));
+            playerInfo.summon(createCard(Derivant.Fairy.class));
             return;
         }
         if(Math.random()*3 < 2){
             List<Card> addList = new ArrayList<>();
-            addList.add(createCard(Fairy.class));
-            addList.add(createCard(Fairy.class));
+            addList.add(createCard(Derivant.Fairy.class));
+            addList.add(createCard(Derivant.Fairy.class));
             playerInfo.addHand(addList);
             return;
         }
         List<Card> addList = new ArrayList<>();
-        addList.add(createCard(Fairy.class));
-        addList.add(createCard(Fairy.class));
-        addList.add(createCard(Fairy.class));
+        addList.add(createCard(Derivant.Fairy.class));
+        addList.add(createCard(Derivant.Fairy.class));
+        addList.add(createCard(Derivant.Fairy.class));
         playerInfo.addGraveyard(addList);
     }
 }
