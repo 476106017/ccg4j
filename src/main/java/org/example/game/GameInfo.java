@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import static org.example.game.PlayerInfo.cardDetail;
 import static org.example.system.Database.*;
 
 @Getter
@@ -668,44 +669,7 @@ public class GameInfo {
 
             if(!card.getKeywords().isEmpty())
                 sb.append(card.getKeywords());
-
-
-            // region 显示详情
-            StringBuilder detail = new StringBuilder();
-            if(card instanceof FollowCard followCard)
-                detail.append(followCard.getAtk()).append("➹")
-                    .append(followCard.getHp()).append("♥");
-            if (card instanceof EquipmentCard equipmentCard) {
-                detail.append(equipmentCard.getAddAtk()).append("➹")
-                    .append(equipmentCard.getAddHp()).append("♥");
-                if (equipmentCard.getCountdown() > 0) {
-                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
-                }
-            }
-            if (card instanceof AmuletCard amuletCard) {
-                if (amuletCard.getCountDown() > 0) {
-                    detail.append(amuletCard.getCountDown()).append("⌛︎");
-                }
-            }
-            detail.append("<div style='text-align:right;float:right;'>")
-                .append(String.join("/",card.getRace())).append("</div>\n");
-            if(!card.getKeywords().isEmpty())
-                detail.append("<b>")
-                    .append(card.getKeywordStr())
-                    .append("</b>\n");
-            detail.append(card.getMark()).append("\n");
-            if(!card.getSubMark().isBlank())
-                detail.append("\n").append(card.getSubMark());
-            detail.append("\n\n职业：").append(card.getJob());
-
-            sb.append("""
-            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto"
-                    data-container="body" data-toggle="popover"
-                      data-trigger="hover" data-html="true"/>
-            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
-            // endregion
-            sb.append("</p>");
+            sb.append(cardDetail(card)).append("</p>");
         }
         sb.append("\n我方战场：\n");
         for (int i = 0; i < player.getAreaMax(); i++) {
@@ -743,42 +707,7 @@ public class GameInfo {
 
             if(!card.getKeywords().isEmpty())
                 sb.append(card.getKeywords());
-            // region 显示详情
-            StringBuilder detail = new StringBuilder();
-            if(card instanceof FollowCard followCard)
-                detail.append(followCard.getAtk()).append("➹")
-                    .append(followCard.getHp()).append("♥");
-            if (card instanceof EquipmentCard equipmentCard) {
-                detail.append(equipmentCard.getAddAtk()).append("➹")
-                    .append(equipmentCard.getAddHp()).append("♥");
-                if (equipmentCard.getCountdown() > 0) {
-                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
-                }
-            }
-            if (card instanceof AmuletCard amuletCard) {
-                if (amuletCard.getCountDown() > 0) {
-                    detail.append(amuletCard.getCountDown()).append("⌛︎");
-                }
-            }
-            detail.append("<div style='text-align:right;float:right;'>")
-                .append(String.join("/",card.getRace())).append("</div>\n");
-            if(!card.getKeywords().isEmpty())
-                detail.append("<b>")
-                    .append(card.getKeywordStr())
-                    .append("</b>\n");
-            detail.append(card.getMark()).append("\n");
-            if(!card.getSubMark().isBlank())
-                detail.append("\n").append(card.getSubMark());
-            detail.append("\n\n职业：").append(card.getJob());
-
-            sb.append("""
-            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto"
-                    data-container="body" data-toggle="popover"
-                      data-trigger="hover" data-html="true"/>
-            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
-            // endregion
-            sb.append("</p>");
+            sb.append(cardDetail(card)).append("</p>");
         }
         sb.append("\n");
 

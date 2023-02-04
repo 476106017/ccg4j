@@ -6,6 +6,7 @@ import org.example.card.AmuletCard;
 import org.example.card.Card;
 import org.example.card.EquipmentCard;
 import org.example.card.FollowCard;
+import org.example.card.genshin.system.ElementCostSpellCard;
 import org.example.system.Database;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.example.game.PlayerInfo.cardDetail;
 
 @Getter
 @Setter
@@ -82,44 +85,8 @@ public class PlayerDeck {
                 .append(card.getCost()).append("\t")
                 .append(card.getType()).append("\t")
                 .append(card.getName()).append("\t")
-                .append(String.join("/", card.getRace())).append("\t");
-            if(card instanceof EquipmentCard equipmentCard && equipmentCard.getCountdown()>0){
-                sb.append("可用次数：").append(equipmentCard.getCountdown()).append("\t");
-            }
-            // region 显示详情
-            StringBuilder detail = new StringBuilder();
-            if(card instanceof FollowCard followCard)
-                detail.append(followCard.getAtk()).append("➹")
-                    .append(followCard.getHp()).append("♥");
-            if (card instanceof EquipmentCard equipmentCard) {
-                detail.append(equipmentCard.getAddAtk()).append("➹")
-                    .append(equipmentCard.getAddHp()).append("♥");
-                if (equipmentCard.getCountdown() > 0) {
-                    detail.append(equipmentCard.getCountdown()).append("⌛︎");
-                }
-            }
-            if (card instanceof AmuletCard amuletCard) {
-                if (amuletCard.getCountDown() > 0) {
-                    detail.append(amuletCard.getCountDown()).append("⌛︎");
-                }
-            }
-            detail.append("<div style='text-align:right;float:right;'>")
-                .append(String.join("/",card.getRace())).append("</div>\n");
-            if(!card.getKeywords().isEmpty())
-                detail.append("<b>")
-                    .append(card.getKeywordStr())
-                    .append("</b>\n");
-            detail.append(card.getMark()).append("\n\n");
-            detail.append("职业：").append(card.getJob());
-
-            sb.append("""
-            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto"
-                    data-container="body" data-toggle="popover"
-                      data-trigger="hover" data-html="true"/>
-            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>")));
-            // endregion
-            sb.append("</p>");
+                .append(String.join("/", card.getRace())).append("\t")
+                .append(cardDetail(card)).append("</p>");
         });
         return sb.toString();
     }

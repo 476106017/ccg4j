@@ -22,6 +22,7 @@
         .popover {
             word-break: break-all;
         }
+        img {max-width:100%; height:auto; }
     </style>
 
 </head>
@@ -70,15 +71,20 @@
             userName = prompt("请输入用户名进入游戏大厅");
             // userName = "zdm";
             if ($.trim(userName)) {
-                socket = io.connect("localhost:18089", {
-                    'query': 'name=' + userName
-                });
-                // 上线请用nginx代理
-                // socket = io.connect(document.domain, {
-                //    'query': 'name=' + userName
-                // });
+                if(true)
+                    // 本地运行
+                    socket = io.connect("localhost:18089", {
+                        'query': 'name=' + userName
+                    });
+                else
+                    // 上线请用nginx代理
+                    socket = io.connect(document.domain, {
+                       'query': 'name=' + userName
+                    });
 
                 $("#name").html("你好，"+userName);
+                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
+                    "&nbsp;&nbsp;&nbsp;【站长的话】征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（NGA）42798172（小红书）5628177244 （Bilibili）漆黑Ganker</li>");
 
                 // 成功连接事件
                 socket.on('connect', function () {});

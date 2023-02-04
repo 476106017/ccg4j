@@ -86,7 +86,7 @@ public class DeckPreset {
             TravelerGoblin.class, TravelerGoblin.class, TravelerGoblin.class, Zelgenea.class, Zelgenea.class,
 
             MysticRing.class, PlanetaryFracture.class, FirespriteGrove.class, HeroicResolve.class,HeroicResolve.class,
-            FlowerOfFairies.class, FlowerOfFairies.class, FlowerOfFairies.class, ForestSymphony.class, Chronos.class,
+            Rhinoceroach.class, FlowerOfFairies.class, FlowerOfFairies.class, ForestSymphony.class, Chronos.class,
 
             WoodOfBrambles.class, WoodOfBrambles.class, PixieMischief.class, AncientElf.class, AncientElf.class,
             FairyWhisperer.class,FairyWhisperer.class, InsectLord.class,InsectLord.class, ErosiveAnnihilation.class,
