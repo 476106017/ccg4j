@@ -128,7 +128,7 @@ public abstract class FollowCard extends AreaCard{
         int finalAtk = this.getAtk()+atk;
         int finalHp = this.getHp()+hp;
         int finalMaxHp = this.getMaxHp()+hp;
-        setAtk(finalAtk);
+        setAtk(Math.max(0,finalAtk));
         setHp(finalHp);
         setMaxHp(finalMaxHp);
         if(getHp()<=0){

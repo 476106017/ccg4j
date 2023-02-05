@@ -66,6 +66,7 @@ public class GameInfo {
         msg("游戏重启！");
         roomSchedule.get(getRoom()).shutdown();
         roomSchedule.remove(getRoom());
+        rope.cancel(true);
         this.turn = 1;
         this.turnPlayer = 0;
         UUID thisUUid = thisPlayer().uuid;
@@ -156,6 +157,7 @@ public class GameInfo {
                 client.sendEvent("receiveMsg","离开房间成功");
             }catch (Exception ignored){}
 
+            rope.cancel(true);
             ScheduledExecutorService ses = roomSchedule.get(getRoom());
             ses.shutdown();
             ses.close();

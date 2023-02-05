@@ -13,12 +13,12 @@ import java.util.List;
 @Getter
 @Setter
 public class Haggle extends SpellCard {
-    public Integer cost = 6;
-    public String name = "消失";
+    public Integer cost = 1;
+    public String name = "讨价还价";
     public String job = "潜行者";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        返回场上全部随从
+        手牌较少的玩家抽2张牌，另一位玩家增加5点生命上限并回复5点生命
         """;
 
     public String subMark = "";
@@ -26,9 +26,17 @@ public class Haggle extends SpellCard {
     public Haggle() {
         setPlay(new Play(
             () -> {
-                ownerPlayer().getAreaCopy().forEach(AreaCard::backToHand);
-                enemyPlayer().getAreaCopy().forEach(AreaCard::backToHand);
-                info.startEffect();
+                int size1 = ownerPlayer().getHand().size();
+                int size2 = enemyPlayer().getHand().size();
+                if(size1>=size2){
+                    ownerPlayer().addHpMax(5);
+                    ownerPlayer().heal(5);
+                    enemyPlayer().draw(2);
+                }else {
+                    enemyPlayer().addHpMax(5);
+                    enemyPlayer().heal(5);
+                    ownerPlayer().draw(2);
+                }
             }));
     }
 }

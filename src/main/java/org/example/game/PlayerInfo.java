@@ -151,7 +151,7 @@ public class PlayerInfo {
         getEnemy().setDeck(enemyDeck.subList(finalNum,enemyDeck.size()));
         addHand(cards);
     }
-    public void draw(int num){
+    public List<Card> draw(int num){
         info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
         int overDraw = num - deck.size();
         int finalNum = num;// 真正抽到的牌数
@@ -170,6 +170,8 @@ public class PlayerInfo {
             info.tempEffectBatch(getAreaAsGameObj(),EffectTiming.WhenDraw,cards);
             info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
         }
+
+        return cards;
     }
     public Card draw(Predicate<? super Card> condition){
         List<Card> draws = draw(condition, 1);
@@ -293,6 +295,9 @@ public class PlayerInfo {
     }
     public List<Card> getHandBy(Predicate<Card> p){
         return getHand().stream().filter(p).toList();
+    }
+    public List<Card> getDeckBy(Predicate<Card> p){
+        return getDeck().stream().filter(p).toList();
     }
     public List<GameObj> getHandAsGameObjBy(Predicate<Card> p){
         return getHand().stream().filter(p).map(i->(GameObj)i).toList();

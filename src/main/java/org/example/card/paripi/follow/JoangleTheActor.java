@@ -11,33 +11,35 @@ import org.example.game.Play;
 import org.example.system.Lists;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 
 @Getter
 @Setter
-public class LowKeyTalentScouts extends FollowCard {
-    private String name = "低调的星探";
+public class JoangleTheActor extends FollowCard {
+    private String name = "演员乔安格";
     private Integer cost = 3;
-    private int atk = 2;
-    private int hp = 2;
+    private int atk = 1;
+    private int hp = 4;
     private String job = "派对咖";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        回合结束时：派对狂欢 3：发动场上随机1名随从的战吼
+        受伤时：触发该随从全部亡语
+        亡语：派对热度+1
         """;
     private String subMark = "";
 
-    public LowKeyTalentScouts() {
+    public JoangleTheActor() {
         setMaxHp(getHp());
-        addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
-            List<AreaCard> areaCards = info.getAreaFollowsCopy();
+        setPlay(new Play(()->
+            ownerPlayer().draw(card -> card.getCost().equals(ownerPlayer().getPpNum()))));
+
+        addEffects((new Effect(this,this, EffectTiming.AfterDamaged, ()->{
+            getEffects(EffectTiming.DeathRattle).forEach(effect -> effect.getEffect().accept(null));
+        })));
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, ()->{
             if(ownerLeader() instanceof Kongming kongming)
-                kongming.costPartyHotTo(3,()->{
-                    if(!CollectionUtils.isEmpty(areaCards))
-                        Lists.randOf(areaCards).fanfare();
-                });
+                kongming.addPartyHot(1);
         })));
     }
 }

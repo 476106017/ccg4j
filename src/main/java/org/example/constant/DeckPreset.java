@@ -18,6 +18,7 @@ import org.example.card.ccg.fairy.amulet.ForestSymphony;
 import org.example.card.ccg.fairy.amulet.WoodOfBrambles;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
+import org.example.card.ccg.mage.spell.RimefireBolt;
 import org.example.card.ccg.necromancer.Luna;
 import org.example.card.ccg.necromancer.amulet.*;
 import org.example.card.ccg.necromancer.follow.*;
@@ -33,9 +34,12 @@ import org.example.card.ccg.neutral.spell.PlanetaryFracture;
 import org.example.card.ccg.rogue.follow.LabRecruiter;
 import org.example.card.ccg.rogue.follow.TheOneWhoLurks;
 import org.example.card.ccg.rogue.spell.Haggle;
+import org.example.card.ccg.rogue.spell.PickLock;
 import org.example.card.ccg.rogue.spell.Preparation;
 import org.example.card.ccg.rogue.spell.Shadowstep;
+import org.example.card.ccg.warlock.spell.CursedContract;
 import org.example.card.ccg.warrior.follow.AssaultCatapult;
+import org.example.card.ccg.warrior.follow.DarkIronEnforcer;
 import org.example.card.ccg.warrior.spell.Chew;
 import org.example.card.dota.equipment.*;
 import org.example.card.dota.follow.*;
@@ -50,10 +54,7 @@ import org.example.card.genshin.spell.*;
 import org.example.card.other.rule.amulet.MahjongTable;
 import org.example.card.other.test.folow.TestFollow;
 import org.example.card.paripi.Kongming;
-import org.example.card.paripi.follow.CallingOtaku;
-import org.example.card.paripi.follow.DiscoZombie;
-import org.example.card.paripi.follow.LowKeyTalentScouts;
-import org.example.card.paripi.follow.OpeningAct;
+import org.example.card.paripi.follow.*;
 import org.example.game.Leader;
 
 import java.util.HashMap;
@@ -134,10 +135,8 @@ public class DeckPreset {
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
-            TestFollow.class,TestFollow.class, TheOneWhoLurks.class,TheOneWhoLurks.class,TheOneWhoLurks.class,TheOneWhoLurks.class,
-            TestFollow.class,TestFollow.class, AssaultCatapult.class,AssaultCatapult.class,AssaultCatapult.class,AssaultCatapult.class,
-            TestFollow.class,TestFollow.class, Chew.class,Chew.class,Chew.class,Chew.class,
-            TestFollow.class,TestFollow.class, Haggle.class,Haggle.class,Haggle.class,Haggle.class
+            TestFollow.class,TestFollow.class, DarkIronEnforcer.class,DarkIronEnforcer.class,DarkIronEnforcer.class,DarkIronEnforcer.class,
+            TestFollow.class,TestFollow.class, DarkIronEnforcer.class,DarkIronEnforcer.class,DarkIronEnforcer.class,DarkIronEnforcer.class
         ));
     }
 

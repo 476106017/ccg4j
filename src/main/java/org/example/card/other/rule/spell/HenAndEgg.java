@@ -17,7 +17,7 @@ public class HenAndEgg extends SpellCard {
     public String job = "游戏规则";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        召唤1只2/2的愤怒母鸡、和1只0/1的鸡蛋
+        召唤1只2/2的孵蛋机366型、和1只0/1的鸡蛋
         他们是由互相创造的
         """;
 
@@ -25,7 +25,7 @@ public class HenAndEgg extends SpellCard {
 
     public HenAndEgg() {
         setPlay(new Play(()->{
-            AngryHen angryHen = createCard(AngryHen.class);
+            HatchBot366 angryHen = createCard(HatchBot366.class);
             Egg egg = createCard(Egg.class);
             angryHen.changeParent(egg);
             egg.changeParent(angryHen);
@@ -36,19 +36,24 @@ public class HenAndEgg extends SpellCard {
 
     @Getter
     @Setter
-    public static class AngryHen extends FollowCard {
-        private String name = "愤怒母鸡";
-        private Integer cost = 1;
+    public static class HatchBot366 extends FollowCard {
+        private String name = "孵蛋机366型";
+        private Integer cost = 2;
         private int atk = 2;
         private int hp = 2;
         private String job = "游戏规则";
-        private List<String> race = Lists.ofStr();
+        private List<String> race = Lists.ofStr("机械");
         private String mark = """
+            战吼：使战场的全部鸡蛋变成孵蛋机366型
             """;
         private String subMark = "";
 
-        public AngryHen() {
+        public HatchBot366() {
             setMaxHp(getHp());
+            setPlay(new Play(() -> {
+                ownerPlayer().getAreaFollowsBy(followCard -> followCard instanceof Egg)
+                    .forEach(areaCard -> info.transform(areaCard,createCard(HatchBot366.class)));
+            }));
         }
     }
     @Getter
@@ -59,7 +64,7 @@ public class HenAndEgg extends SpellCard {
         private int atk = 0;
         private int hp = 1;
         private String job = "游戏规则";
-        private List<String> race = Lists.ofStr();
+        private List<String> race = Lists.ofStr("机械");
         private String mark = "";
         private String subMark = "";
 

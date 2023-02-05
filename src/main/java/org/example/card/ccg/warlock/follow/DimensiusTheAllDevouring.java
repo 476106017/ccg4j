@@ -24,6 +24,8 @@ public class DimensiusTheAllDevouring extends FollowCard {
         """;
     private String subMark = "";
 
+    private boolean canSummon = true;
+
     public DimensiusTheAllDevouring() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
@@ -32,7 +34,10 @@ public class DimensiusTheAllDevouring extends FollowCard {
                 info.exile(this);
                 Leader leader = ownerLeader();
                 leader.addEffect(new Effect(this,leader, EffectTiming.WhenOverDraw,damage->{
-                    ownerPlayer().summon(this);
+                    if(canSummon){
+                        ownerPlayer().summon(this);
+                        canSummon = false;
+                    }
                 }), true);
             })));
     }

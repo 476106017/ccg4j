@@ -25,7 +25,7 @@ public class ChainsawMan extends FollowCard {
     private String mark = """
         战吼：增加1张链锯形态到手牌
         击杀时：如果对象是恶魔，则将其沉默并除外；
-        如果超杀，则当前装备中的链锯形态可使用次数+1
+        超杀:当前装备中的链锯形态可使用次数+1
         """;
     private String subMark = "";
 

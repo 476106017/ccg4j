@@ -13,7 +13,7 @@ public class TestFollow extends FollowCard {
     private String name = "测试随从";
     private Integer cost = 1;
     private int atk = 1;
-    private int hp = 3;
+    private int hp = 2;
     private String job = "测试";
     private List<String> race = Lists.ofStr();
     private String mark = """
@@ -23,7 +23,7 @@ public class TestFollow extends FollowCard {
 
     public TestFollow() {
         setMaxHp(getHp());
-        getKeywords().add("剧毒");
+//        getKeywords().add("剧毒");
 //        setPlay(new Play(() -> getInfo().msg(getNameWithOwner() + "战吼")));
 //        addEffects((new Effect(this,this, EffectTiming.Entering, obj->
 //            getInfo().msg(getNameWithOwner() + "入场时"))));
