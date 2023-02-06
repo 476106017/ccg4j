@@ -27,6 +27,8 @@ public enum EffectTiming {
     WhenEnemyPlay("敌方出牌时",Card.class),
     Boost("增幅",Card.class,true),
 
+    WhenOtherAttack("友方随从攻击时",Damage.class),// TODO
+
     WhenAttack("攻击时",Damage.class),
     WhenBattle("交战时",Damage.class),
     WhenLeaderSkill("激励时"),

@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 @Setter
 public class Luna extends Leader {
     private String name = "露娜·死亡骑士";
-    private String job = "死灵法师";
+    private String job = "死灵术士";
 
     private String skillName = "露娜今天是巫妖王";
     private String skillMark =  """
