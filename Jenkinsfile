@@ -3,7 +3,10 @@ pipeline {
   stages {
     stage('run') {
       steps {
-        sh 'gradle bootRun'
+        withGradle() {
+          sh 'gradle bootRun'
+        }
+
       }
     }
 
