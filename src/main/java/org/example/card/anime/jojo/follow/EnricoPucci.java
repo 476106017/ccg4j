@@ -20,25 +20,29 @@ public class EnricoPucci extends FollowCard {
     private String name = "普奇·白蛇";
     private Integer cost = 3;
     private int atk = 2;
-    private int hp = 7;
+    private int hp = 5;
     private String job = "jojo";
     private List<String> race = Lists.ofStr("替身使者");
     private String mark = """
-        击杀时：将被击杀随从制作成【DISC】
+        超杀：将被击杀随从制作成【DISC】
         抽牌时：如果抽到的是乔斯达家族随从卡，则变身成【普奇·新月】
+        回合开始时：变身成【普奇·新月】
         """;
     private String subMark = "";
 
     public EnricoPucci() {
         setMaxHp(getHp());
+        addKeyword("突进");
         setPlay(new Play(()->
             info.msg("普奇神父：2,3,5,7,11,13,17...")
         ));
-        addEffects(new Effect(this,this, EffectTiming.WhenKill,obj->{
-            FollowCard follow = (FollowCard)obj;
-            follow.setName(follow.getName() + "的DISC");
-            follow.setOwner(getOwner());
-            addKeyword("被控制");
+        addEffects(new Effect(this,this, EffectTiming.WhenKill,
+            obj -> ((FollowCard) obj).getHp() < 0,
+            obj -> {
+                FollowCard follow = (FollowCard)obj;
+                follow.setName(follow.getName() + "的DISC");
+                follow.setOwner(getOwner());
+                addKeyword("被控制");
         }));
         addEffects(new Effect(this,this, EffectTiming.WhenDraw,obj->{
             List<Card> cards = (List<Card>) obj;
@@ -46,6 +50,9 @@ public class EnricoPucci extends FollowCard {
                 .anyMatch(card -> card.hasRace("乔斯达家族"))){
                 info.transform(this,createCard(EnricoPucciCMoon.class));
             }
+        }));
+        addEffects(new Effect(this,this, EffectTiming.BeginTurn,obj->{
+            info.transform(this,createCard(EnricoPucciCMoon.class));
         }));
 
     }
@@ -63,6 +70,7 @@ public class EnricoPucci extends FollowCard {
         private String mark = """
             回合结束时：将敌方战场最后排的1张牌洗入牌堆
             抽牌时：如果抽到的是乔斯达家族随从卡，则变身成【普奇·天堂制造】
+            回合开始时：变身成【普奇·天堂制造】
             """;
         private String subMark = "";
 
@@ -88,6 +96,9 @@ public class EnricoPucci extends FollowCard {
                     .anyMatch(card -> card.hasRace("乔斯达家族"))){
                     info.transform(this,createCard(EnricoPucciMadeInHeaven.class));
                 }
+            }));
+            addEffects(new Effect(this,this, EffectTiming.BeginTurn,obj->{
+                info.transform(this,createCard(EnricoPucciMadeInHeaven.class));
             }));
         }
     }
