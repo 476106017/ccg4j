@@ -1,12 +1,12 @@
-package org.example.card.genshin.follow;
+package org.example.morecard.genshin.follow;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
-import org.example.card.genshin.system.ElementBaseFollowCard;
-import org.example.card.genshin.system.ElementCostSpellCard;
-import org.example.card.genshin.system.Elemental;
-import org.example.card.genshin.system.ElementalDamage;
+import org.example.morecard.genshin.system.ElementBaseFollowCard;
+import org.example.morecard.genshin.system.ElementCostSpellCard;
+import org.example.morecard.genshin.system.Elemental;
+import org.example.morecard.genshin.system.ElementalDamage;
 import org.example.game.GameObj;
 import org.example.game.Play;
 import org.example.system.Lists;

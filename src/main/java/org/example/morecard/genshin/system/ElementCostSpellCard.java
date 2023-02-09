@@ -1,10 +1,10 @@
-package org.example.card.genshin.system;
+package org.example.morecard.genshin.system;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.SpellCard;
-import org.example.card.genshin.LittlePrincess;
+import org.example.morecard.genshin.LittlePrincess;
 import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 

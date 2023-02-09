@@ -129,6 +129,10 @@ public class GameHandler {
             info.msgTo(me,"当前不是你的回合！");
             return;
         }
+        if(player.getStep() == 2){
+            info.msgTo(me,"请先发现卡牌！（输入discover <序号>）");
+            return;
+        }
 
         if(msg.isBlank()){
             info.msgToThisPlayer("打出卡牌：play <手牌序号> <目标序号> s<抉择序号>；");
@@ -244,6 +248,11 @@ public class GameHandler {
             return;
         }
 
+        if(player.getStep() == 2){
+            info.msgTo(me,"请先发现卡牌！（输入discover <序号>）");
+            return;
+        }
+
         String[] split = msg.split("\\s+");
 
         if(msg.isBlank() || split.length!=2){
@@ -326,6 +335,35 @@ public class GameHandler {
 
 
     }
+    @OnEvent(value = "discover")
+    public void discover(SocketIOClient client, String msg){
+
+        // region 获取游戏对象
+        UUID me = client.getSessionId();
+        String name = userNames.get(me);
+        String room = userRoom.get(me);
+        if(room==null)return;
+        GameInfo info = roomGame.get(room);
+        PlayerInfo player = info.thisPlayer();
+        PlayerInfo enemy = info.oppositePlayer();
+        // endregion
+        if(!me.equals(player.getUuid())){
+            info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
+        if(player.getStep() != 2){
+            info.msgTo(me,"当前状态无法发现卡牌！");
+            return;
+        }
+
+        try {
+            int indexI = Integer.parseInt(msg);
+            player.setDiscoverNum(indexI);
+            player.getDiscoverThread().start();
+        }catch (Exception e){
+            info.msgToThisPlayer("输入discover <序号>以发现一张卡牌");
+        }
+    }
 
     @OnEvent(value = "skill")
     public void skill(SocketIOClient client, String msg){
@@ -341,6 +379,10 @@ public class GameHandler {
 
         if(!me.equals(player.getUuid())){
             info.msgTo(me,"当前不是你的回合！");
+            return;
+        }
+        if(player.getStep() == 2){
+            info.msgTo(me,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -442,7 +484,11 @@ public class GameHandler {
             // 所有效果都随机指定
             List<GameObj> targets = play.canTargets().get().stream().map(Lists::randOf).toList();
             int randChoice = (int) (play.choiceNum()* Math.random()+1);
+
+            int temp = player.getDiscoverMax();
+            player.setDiscoverMax(1);// 发现效果取随机1张
             card.play(targets,randChoice);
+            player.setDiscoverMax(temp);
         });
     }
 }

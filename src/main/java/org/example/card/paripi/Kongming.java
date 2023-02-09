@@ -3,24 +3,11 @@ package org.example.card.paripi;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
-import org.example.card.Card;
-import org.example.card.FollowCard;
-import org.example.card.genshin.LittlePrincess;
-import org.example.card.genshin.system.ElementBaseFollowCard;
-import org.example.card.genshin.system.ElementCostSpellCard;
-import org.example.card.genshin.system.Elemental;
-import org.example.card.genshin.system.ElementalDamage;
 import org.example.constant.EffectTiming;
 import org.example.game.*;
-import org.example.system.Lists;
 import org.example.system.function.FunctionN;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -50,7 +37,7 @@ public class Kongming extends Leader {
 
     private String skillName = "切克闹！";
     private String skillMark =  """
-        增加3点派对热度，结束回合
+        派对热度+3，结束回合
         """;
     private int skillCost = 2;
 

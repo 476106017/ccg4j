@@ -1,9 +1,9 @@
-package org.example.card.genshin.spell;
+package org.example.morecard.genshin.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.genshin.system.ElementCostSpellCard;
-import org.example.card.genshin.system.Elemental;
+import org.example.morecard.genshin.system.ElementCostSpellCard;
+import org.example.morecard.genshin.system.Elemental;
 import org.example.game.Play;
 import org.example.system.Lists;
 

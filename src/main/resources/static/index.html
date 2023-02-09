@@ -45,7 +45,7 @@
     <input type="button" onclick="cleanMsg()" value="清空"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('deck');sendMsg();" value="使用中的牌组"/>
-    <input type="button" onclick="$('#msgContent').val('usedeck');sendMsg();" value="选择牌组"/>
+    <input type="button" onclick="$('#msgContent').val('usedeck');sendMsg();$('#msgContent').val('usedeck ');" value="选择牌组"/>
     <br/>
     <input type="button" onclick="$('#msgContent').val('jr');sendMsg();" value="匹配"/>
     <input type="button" onclick="$('#msgContent').val('leave');sendMsg();" value="退出房间"/>
@@ -54,6 +54,8 @@
     <br/>
     <input type="button" onclick="$('#msgContent').val('play');sendMsg();" value="出牌"/>
     <input type="button" onclick="$('#msgContent').val('attack');sendMsg();" value="攻击"/>
+    <input type="button" onclick="$('#msgContent').val('discover');sendMsg();" value="发现"/>
+    <br/>
     <input type="button" onclick="$('#msgContent').val('skill');sendMsg();" value="主战者技能"/>
     <input type="button" onclick="$('#msgContent').val('end');sendMsg();" value="结束回合"/>
     <br/>
@@ -87,9 +89,7 @@
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
                     "&nbsp;&nbsp;&nbsp;【站长的话】征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（NGA）42798172（小红书）5628177244 （Bilibili）漆黑Ganker</li>");
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
-                    "&nbsp;&nbsp;&nbsp;【站长的话】如果你是软件开发人员，欢迎你贡献代码（写几张卡都行）！项目地址：https://github.com/476106017/ccg4j</li>");
-                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
-                    "&nbsp;&nbsp;&nbsp;【站长的话】目前需要完成的事项：漂亮的UI交互、适合手机端访问的web页/app、商业化方案（用来维持ccg4j长期运营）</li>");
+                    "&nbsp;&nbsp;&nbsp;【站长的话】如果你是软件开发人员，欢迎你贡献代码！项目地址：https://github.com/476106017/ccg4j</li>");
 
                 // 成功连接事件
                 socket.on('connect', function () {});

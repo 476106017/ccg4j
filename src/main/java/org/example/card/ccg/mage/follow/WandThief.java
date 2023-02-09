@@ -1,0 +1,36 @@
+package org.example.card.ccg.mage.follow;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.example.card.FollowCard;
+import org.example.card.SpellCard;
+import org.example.game.Play;
+import org.example.system.Lists;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class WandThief extends FollowCard {
+    private String name = "魔杖窃贼";
+    private Integer cost = 1;
+    private int atk = 1;
+    private int hp = 1;
+    private String job = "法师";
+    private List<String> race = Lists.ofStr();
+    private String mark = """
+        战吼：如果本回合使用的卡牌数高于1,则发现1张法术牌
+        """;
+    private String subMark = "";
+
+    public WandThief() {
+        setMaxHp(getHp());
+        setPlay(new Play(()->{
+            if(ownerPlayer().getDeck().isEmpty()){
+                ownerPlayer().transmigration(card ->
+                    card instanceof SpellCard spellCard && "法师".equals(spellCard.getJob()),1);
+            }
+        }));
+
+    }
+}

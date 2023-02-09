@@ -3,14 +3,17 @@ package org.example.game;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
-import org.example.card.genshin.LittlePrincess;
-import org.example.card.genshin.system.ElementCostSpellCard;
+import org.example.morecard.genshin.LittlePrincess;
+import org.example.morecard.genshin.system.ElementCostSpellCard;
 import org.example.constant.EffectTiming;
+import org.example.system.Database;
 import org.example.system.Lists;
 import org.example.system.function.FunctionN;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -30,7 +33,10 @@ public class PlayerInfo {
     boolean canFanfare = true;
     int hp = 20;
     int hpMax = 20;
-    int step = -1; // 0换牌完成 1使用
+    int step = -1; // 0换牌完成 1使用 2发现
+    int discoverMax = 3; // 发现卡牌数量
+    Thread discoverThread = null;
+    int discoverNum = 0; // 发现卡牌序号
     int ppNum = 0;
     int ppMax = 0;
     int deckMax = 60;
@@ -73,6 +79,53 @@ public class PlayerInfo {
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
     Map<Integer,List<Card>> playedCard = new HashMap<>();// 使用卡牌计数器
     Leader leader;
+
+    // 自动发现并继续同步执行
+    public void autoDiscover(){
+        while(getStep()==2){// 连续发现的，全部自动完成
+            setDiscoverNum(0);
+            getDiscoverThread().run();// 就用run，不用有并发线程
+        }
+    }
+    // 发现1张牌并执行consumer
+    public void discoverCard(Predicate<Card> predicate,Consumer<Card> consumer){
+        List<Card> prototypes = new ArrayList<>(Database.getPrototypeBy(predicate, getDiscoverMax()));
+        if(prototypes.isEmpty()) return;
+        if(prototypes.size()==1){
+            consumer.accept(prototypes.get(0));
+            return;
+        }
+
+        // 让玩家选择
+        setStep(2);
+        StringBuilder sb = new StringBuilder("发现卡牌：");
+        AtomicInteger num = new AtomicInteger(1);
+
+        Collections.shuffle(prototypes);
+        prototypes.forEach(card -> {
+            sb.append("<p>");
+            sb.append("【").append(num.getAndIncrement()).append("】\t")
+                .append(card.getCost()).append("\t")
+                .append(card.getType()).append("\t")
+                .append(card.getName()).append("\t")
+                .append(String.join("/", card.getRace())).append("\t")
+                .append(cardDetail(card)).append("</p>");
+        });
+        sb.append("请输入discover <序号>来发现1张卡牌（输错了则任选1张）");
+
+        info.msgTo(getUuid(),sb.toString());
+        discoverThread = new Thread(()->{
+            Card discoverCard;
+            if(prototypes.size() <= discoverNum)
+                discoverCard= Lists.randOf(prototypes).copyCardOf(this);
+            else
+                discoverCard= prototypes.get(0).copyCardOf(this);
+
+            consumer.accept(discoverCard);
+            setStep(1);
+            discoverNum = 0;
+        });
+    }
 
     private int weary = 1;// 疲劳
 

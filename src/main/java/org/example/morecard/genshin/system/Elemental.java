@@ -1,4 +1,4 @@
-package org.example.card.genshin.system;
+package org.example.morecard.genshin.system;
 
 import lombok.Getter;
 

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 import org.example.game.Play;
+import org.example.game.PlayerInfo;
 import org.example.system.Lists;
 import org.springframework.util.CollectionUtils;
 
@@ -207,6 +208,26 @@ public abstract class Card extends GameObj {
         counter.merge(key, time, Integer::sum);
     }
 
+    public Card copyCardOf(PlayerInfo player){
+        try {
+            Card card = this.getClass().getDeclaredConstructor().newInstance();
+            card.parent = player.getLeader();
+            card.info = player.getInfo();
+            card.owner = player.getInfo().getPlayerInfos()[0]==player?0:1;
+            card.init();
+            if(card instanceof FollowCard f1 && this instanceof FollowCard f2){
+                f1.setAtk(f2.getAtk());
+                f1.setName(f2.getName());
+                f1.setKeywords(new ArrayList<>(f2.getKeywords()));
+                f1.setCost(f2.getCost());
+                f1.setMaxHp(f2.getMaxHp());
+                f1.setHp(f2.getHp());
+            }
+            return card;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     public Card copyCard(){
         try {
             Card card = this.getClass().getDeclaredConstructor().newInstance();

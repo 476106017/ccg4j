@@ -97,9 +97,6 @@ public class Effect{
         }
 
         public void consume() {
-            try {
-                Thread.sleep(100);
-            }catch (Exception ignored){}
             if(effect.getCanEffect().test(param)){
                 GameObj effectOwnerCard = effect.getOwnerObj();
                 PlayerInfo ownerPlayer = effectOwnerCard.ownerPlayer();

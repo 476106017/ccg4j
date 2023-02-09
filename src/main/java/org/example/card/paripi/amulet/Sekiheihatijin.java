@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.constant.EffectTiming;
+import org.example.game.Damage;
 import org.example.game.Effect;
 import org.example.system.Lists;
 
@@ -27,10 +28,14 @@ public class Sekiheihatijin extends AmuletCard {
 
     public Sekiheihatijin() {
 
-        addEffects((new Effect(this,this, EffectTiming.WhenOtherAttack, obj->
+        addEffects((new Effect(this,this, EffectTiming.WhenOtherAttack, obj->{
+            Damage damage = (Damage) obj;
+            int size = damage.getFrom().ownerPlayer().getAreaFollows().size();
 
-            // TODO
-        {}
+            if(Math.random()> 0.15*size)return;
+            getInfo().msg("丢失！");
+            damage.setMiss(true);
+        }
         )));
     }
 

@@ -488,6 +488,7 @@ public class GameInfo {
     }
 
     public void endTurn(){
+        thisPlayer().autoDiscover();
         msg(thisPlayer().getName()+"的回合结束");
         try {
             afterTurn();

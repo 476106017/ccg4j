@@ -4,10 +4,13 @@ import org.example.card.Card;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Predicate;
 
 public class Database {
 
@@ -33,5 +36,12 @@ public class Database {
         }catch (Exception e){
             throw new RuntimeException(e);
         }
+    }
+    public static Card getPrototypeBy(Predicate<Card> predicate){
+        List<Card> prototypeBy = getPrototypeBy(predicate, 1);
+        return prototypeBy.isEmpty()?null:prototypeBy.get(0);
+    }
+    public static List<Card> getPrototypeBy(Predicate<Card> predicate, int num){
+        return prototypes.values().stream().filter(predicate).limit(num).map(Card::prototype).toList();
     }
 }
