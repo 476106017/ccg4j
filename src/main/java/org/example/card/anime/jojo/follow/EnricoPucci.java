@@ -32,7 +32,7 @@ public class EnricoPucci extends FollowCard {
 
     public EnricoPucci() {
         setMaxHp(getHp());
-        addKeyword("突进");
+        getKeywords().add("突进");
         setPlay(new Play(()->
             info.msg("普奇神父：2,3,5,7,11,13,17...")
         ));

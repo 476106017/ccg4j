@@ -76,7 +76,7 @@ public class MatchHandler {
         socketIOServer.getClient(uuid).sendEvent("receiveMsg", name+"（"+uuid+"）登录成功！");
 
         socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
-            "【系统广播】"+name+"（"+ip+"）登录了游戏！" +
+            "【全体】"+name+"（"+ip+"）登录了游戏！" +
                 "当前在线："+socketIOServer.getAllClients().size()+"人");
     }
 
@@ -88,7 +88,7 @@ public class MatchHandler {
         String name = userNames.get(me);
         userNames.remove(me);
         socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
-            "【系统广播】"+name+"（"+ip+"）退出了游戏！");
+            "【全体】"+name+"（"+ip+"）退出了游戏！");
         String room = userRoom.get(me);
         if(room==null)return;
 
@@ -108,6 +108,8 @@ public class MatchHandler {
         if(me.equals(waitUser) || room.equals(waitRoom) ){
             waitRoom = "";
             waitUser = null;
+            socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
+                "【全体】匹配中的玩家已经退出了！");
         }
         // 退出房间
         log.info("客户端" + client.getSessionId() + "断开websocket连接成功");
@@ -131,6 +133,8 @@ public class MatchHandler {
             client.joinRoom(waitRoom);
             userRoom.put(me,waitRoom);
             socketIOServer.getClient(me).sendEvent("receiveMsg", "进入房间（"+waitRoom+"），等待对手");
+
+            socketIOServer.getBroadcastOperations().sendEvent("receiveMsg","【全体】有人正在匹配对战，点击匹配以尝试加入该对战！");
         }else {
             client.joinRoom(waitRoom);
             userRoom.put(me,waitRoom);
@@ -139,6 +143,9 @@ public class MatchHandler {
                 "匹配成功！ 【"+userNames.get(me)+"】vs【"+userNames.get(waitUser)+"】");
             socketIOServer.getClient(waitUser).sendEvent("receiveMsg",
                 "匹配成功！ 【"+userNames.get(waitUser)+"】vs【"+userNames.get(me)+"】");
+
+            socketIOServer.getBroadcastOperations().sendEvent("receiveMsg","【全体】一场对战已经匹配成功！");
+
 
             // region 不需要准备直接开始
             // 比赛开始
@@ -182,6 +189,8 @@ public class MatchHandler {
         if(me.equals(waitUser) || room.equals(waitRoom) ){
             waitRoom = "";
             waitUser = null;
+            socketIOServer.getBroadcastOperations().sendEvent("receiveMsg",
+                "【全体】匹配中的玩家已经退出了！");
         }
         // 退出房间
 

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="/common/common :: headJq('聊天室')">
+<head>
 
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <title>牌仙小站 Card4j</title>
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
@@ -29,7 +30,7 @@
 
 <body>
 
-<div id="app" style="margin-left: 100px;">
+<div id="app" style="margin: 0 50px 0 50px;">
     <button type="button" class="btn" style="right:0;position:fixed;z-index:999;color: blue;border:1px solid;border-color: blue;"
             data-toggle="collapse" data-target="#battleInfo">切换战场视窗</button>
     <div id="battleInfo" class="collapse"
@@ -43,18 +44,18 @@
     <input type="button" onclick="sendMsg()" value="发送"/>
     <input type="button" onclick="cleanMsg()" value="清空"/>
     <br/>
-    <input type="button" onclick="$('#msgContent').val('deck')" value="使用中的牌组"/>
-    <input type="button" onclick="$('#msgContent').val('usedeck')" value="选择牌组"/>
+    <input type="button" onclick="$('#msgContent').val('deck');sendMsg();" value="使用中的牌组"/>
+    <input type="button" onclick="$('#msgContent').val('usedeck');sendMsg();" value="选择牌组"/>
     <br/>
-    <input type="button" onclick="$('#msgContent').val('jr')" value="匹配"/>
-    <input type="button" onclick="$('#msgContent').val('leave')" value="退出房间"/>
-    <input type="button" onclick="$('#msgContent').val('swap')" value="换牌"/>
-    <input type="button" onclick="$('#msgContent').val('chat')" value="聊天"/>
+    <input type="button" onclick="$('#msgContent').val('jr');sendMsg();" value="匹配"/>
+    <input type="button" onclick="$('#msgContent').val('leave');sendMsg();" value="退出房间"/>
+    <input type="button" onclick="$('#msgContent').val('swap 1 2 3');" value="换牌"/>
+    <input type="button" onclick="$('#msgContent').val('chat');sendMsg();" value="聊天"/>
     <br/>
-    <input type="button" onclick="$('#msgContent').val('play')" value="出牌"/>
-    <input type="button" onclick="$('#msgContent').val('attack')" value="攻击"/>
-    <input type="button" onclick="$('#msgContent').val('skill')" value="主战者技能"/>
-    <input type="button" onclick="$('#msgContent').val('end')" value="结束回合"/>
+    <input type="button" onclick="$('#msgContent').val('play');sendMsg();" value="出牌"/>
+    <input type="button" onclick="$('#msgContent').val('attack');sendMsg();" value="攻击"/>
+    <input type="button" onclick="$('#msgContent').val('skill');sendMsg();" value="主战者技能"/>
+    <input type="button" onclick="$('#msgContent').val('end');sendMsg();" value="结束回合"/>
     <br/>
     <br/>
     <a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备2023000922号</a>
@@ -71,7 +72,7 @@
             userName = prompt("请输入用户名进入游戏大厅");
             // userName = "zdm";
             if ($.trim(userName)) {
-                if(true)
+                if(false)
                     // 本地运行
                     socket = io.connect("localhost:18089", {
                         'query': 'name=' + userName
@@ -85,6 +86,10 @@
                 $("#name").html("你好，"+userName);
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
                     "&nbsp;&nbsp;&nbsp;【站长的话】征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（NGA）42798172（小红书）5628177244 （Bilibili）漆黑Ganker</li>");
+                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
+                    "&nbsp;&nbsp;&nbsp;【站长的话】如果你是软件开发人员，欢迎你贡献代码（写几张卡都行）！项目地址：https://github.com/476106017/ccg4j</li>");
+                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
+                    "&nbsp;&nbsp;&nbsp;【站长的话】目前需要完成的事项：漂亮的UI交互、适合手机端访问的web页/app、商业化方案（用来维持ccg4j长期运营）</li>");
 
                 // 成功连接事件
                 socket.on('connect', function () {});
@@ -94,12 +99,24 @@
                 // 监听receiveMsg接收消息事件
                 socket.on('receiveMsg', function (data) {
                     $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
-                    $(function () { $("[data-toggle='popover']").popover(); });
+                    $(function () {
+                        $("[data-toggle='popover']").popover();
+
+                        $("[data-toggle='popover']").on("click",function(e){
+                            e.stopPropagation();
+                        });
+                    });
                     scrollToEnd();
                 });
                 socket.on('battleInfo', function (data) {
                     $('#battleInfo').html(data);
-                    $(function () { $("[data-toggle='popover']").popover(); });
+                    $(function () {
+                        $("[data-toggle='popover']").popover();
+
+                        $("[data-toggle='popover']").on("click",function(e){
+                            e.stopPropagation();
+                        });
+                    });
                 });
             } else {
                 alert("非法用户名");
