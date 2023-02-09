@@ -3,7 +3,12 @@ pipeline {
   stages {
     stage('run') {
       steps {
-        sh 'gradle bootRun'
+        withGradle() {
+          sh '''source /etc/profile
+gradle bootRun
+'''
+        }
+
       }
     }
 
