@@ -29,7 +29,7 @@ public class WandThief extends FollowCard {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getCount(PLAY_NUM)>0){
-                ownerPlayer().discoverCard(card -> card instanceof SpellCard && card.getCost() <= 2,
+                ownerPlayer().discoverCard(card -> card instanceof SpellCard,
                     discoverCard-> ownerPlayer().addHand(discoverCard));
             }
         }));
