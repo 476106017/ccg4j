@@ -9,6 +9,8 @@ import org.example.system.Lists;
 
 import java.util.List;
 
+import static org.example.constant.CounterKey.PLAY_NUM;
+
 @Getter
 @Setter
 public class WandThief extends FollowCard {
@@ -26,9 +28,9 @@ public class WandThief extends FollowCard {
     public WandThief() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
-            if(ownerPlayer().getDeck().isEmpty()){
-                ownerPlayer().transmigration(card ->
-                    card instanceof SpellCard spellCard && "法师".equals(spellCard.getJob()),1);
+            if(ownerPlayer().getCount(PLAY_NUM)>0){
+                ownerPlayer().discoverCard(card -> card instanceof SpellCard && card.getCost() <= 2,
+                    discoverCard-> ownerPlayer().addHand(discoverCard));
             }
         }));
 
