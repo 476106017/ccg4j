@@ -1,0 +1,34 @@
+package org.example.card.lol.follow;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Damage;
+import org.example.game.Effect;
+import org.example.system.Lists;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class MasterYi extends FollowCard {
+    private String name = "无极剑圣";
+    private Integer cost = 5;
+    private int atk = 4;
+    private int hp = 4;
+    private String job = "英雄联盟";
+    private List<String> race = Lists.ofStr();
+    private String mark = """
+    击杀时：重置攻击次数
+    """;
+    private String subMark = "";
+
+    public MasterYi() {
+        setMaxHp(getHp());
+        getKeywords().add("疾驰");
+        addEffects(new Effect(this,this, EffectTiming.WhenKill, obj->{
+            setTurnAttack(0);
+        }));
+    }
+}

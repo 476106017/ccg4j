@@ -276,6 +276,10 @@ public class GameHandler {
             info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getId());
             return;
         } else if (myCard instanceof FollowCard followCard) {
+            if(followCard.hasKeyword("冻结")){
+                info.msgToThisPlayer("被冻结的随从无法攻击！");
+                return;
+            }
             if(followCard.hasKeyword("缴械")){
                 info.msgToThisPlayer("被缴械的随从无法攻击！");
                 return;

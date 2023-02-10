@@ -38,7 +38,7 @@ public abstract class FollowCard extends AreaCard{
     public boolean notAttacked(){
         return info.thisPlayer()==ownerPlayer() && //是自己的回合
             getTurnAttack() < getTurnAttackMax() && // 回合可攻击数没有打满
-            !hasKeyword("缴械") && !hasKeyword("眩晕") &&
+            !hasKeyword("缴械") && !hasKeyword("眩晕") && !hasKeyword("冻结") &&
             (getTurnAge()>0 || hasKeyword("突进") || hasKeyword("疾驰"));
     }
 

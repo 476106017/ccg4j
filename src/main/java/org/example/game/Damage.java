@@ -29,6 +29,10 @@ public class Damage{
         this.isFromAtk = true;
     }
 
+    public void addDamage(int add){
+        damage += add;
+    }
+
     public GameObj another(GameObj obj){
         if(getFrom() == obj)
             return getTo();

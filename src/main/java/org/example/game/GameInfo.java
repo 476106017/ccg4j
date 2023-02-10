@@ -519,21 +519,22 @@ public class GameInfo {
         // 场上随从驻场回合+1、攻击次数清零
         // 发动回合开始效果
         // 场上护符倒数-1
-        oppositePlayer().getAreaCopy().forEach(areaCard -> {
-            if(!areaCard.atArea())return;
+        oppositePlayer().getAreaCopy().forEach(enemyAreaCard -> {
+            if(!enemyAreaCard.atArea())return;
 
-            areaCard.useEffects(EffectTiming.EnemyBeginTurn);
-            if(!areaCard.atArea())return;
+            enemyAreaCard.useEffects(EffectTiming.EnemyBeginTurn);
+            if(!enemyAreaCard.atArea())return;
 
 
-            if(areaCard instanceof FollowCard followCard && followCard.equipped()){
+            if(enemyAreaCard instanceof FollowCard followCard && followCard.equipped()){
                 EquipmentCard equipment = followCard.getEquipment();
                 equipment.useEffects(EffectTiming.EnemyBeginTurn);
             }
 
-            if(areaCard instanceof FollowCard followCard){
+            if(enemyAreaCard instanceof FollowCard followCard){
                 followCard.setTurnAttack(0);
                 followCard.removeKeyword("眩晕");
+                followCard.removeKeyword("冻结");
                 followCard.removeKeywordAll("格挡");
             }
         });

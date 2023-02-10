@@ -79,7 +79,7 @@ public class ElementalDamage extends Damage {
                             setDamage(getDamage() * 2);
                         }
                         case Cryo -> {
-                            getTo().getInfo().msg("冻结！");
+                            getTo().getInfo().msg("缴械！");
                             if (getTo() instanceof FollowCard toFollow)
                                 toFollow.addKeywordN("眩晕", 2);
                         }
@@ -114,7 +114,7 @@ public class ElementalDamage extends Damage {
                                 toFollow.removeKeywordAll("护甲");
                         }
                         case Hydro -> {
-                            getTo().getInfo().msg("冻结！");
+                            getTo().getInfo().msg("缴械！");
                             if (getTo() instanceof FollowCard toFollow)
                                 toFollow.addKeywordN("眩晕", 2);
                         }

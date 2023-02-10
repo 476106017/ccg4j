@@ -34,7 +34,7 @@ public class Preparation extends SpellCard {
             () -> {
                 ownerPlayer().getHand().forEach(card -> {
                     if(card instanceof SpellCard spellCard){
-                        Integer cutCost = Math.min(spellCard.getCost(),1);
+                        Integer cutCost = Math.min(spellCard.getCost(),2);
                         spellCard.setCost(spellCard.getCost() - cutCost);
                         cutCosts.put(spellCard,cutCost);
 
