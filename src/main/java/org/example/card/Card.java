@@ -17,7 +17,7 @@ import static org.example.system.Database.getPrototype;
 
 @Getter
 @Setter
-public abstract class Card extends GameObj {
+public abstract class Card extends GameObj implements Cloneable {
     public static final int SLOT = 1;
     public static final int APPOSITION = 3;
 
@@ -208,46 +208,29 @@ public abstract class Card extends GameObj {
         counter.merge(key, time, Integer::sum);
     }
 
-    public Card copyCardOf(PlayerInfo player){
+    public Card cloneOf(PlayerInfo player){
+        Card card = clone();
+        card.parent = player.getLeader();
+        card.info = player.getInfo();
+        card.owner = player.getInfo().getPlayerInfos()[0]==player?0:1;
+        return card;
+    }
+
+    @Override
+    public Card clone(){
+        Card clone = null;
         try {
-            Card card = this.getClass().getDeclaredConstructor().newInstance();
-            card.parent = player.getLeader();
-            card.info = player.getInfo();
-            card.owner = player.getInfo().getPlayerInfos()[0]==player?0:1;
-            card.init();
-            if(card instanceof FollowCard f1 && this instanceof FollowCard f2){
-                f1.setAtk(f2.getAtk());
-                f1.setName(f2.getName());
-                f1.setKeywords(new ArrayList<>(f2.getKeywords()));
-                f1.setCost(f2.getCost());
-                f1.setMaxHp(f2.getMaxHp());
-                f1.setHp(f2.getHp());
-            }
-            return card;
-        } catch (Exception e) {
+            clone = (Card) super.clone();
+        } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+        clone.setKeywords(new ArrayList<>(getKeywords()));
+        clone.setEffects(new ArrayList<>(getEffects()));
+        Object counter = ((HashMap) getCounter()).clone();
+        clone.setCounter((Map)counter);
+        return clone;
     }
-    public Card copyCard(){
-        try {
-            Card card = this.getClass().getDeclaredConstructor().newInstance();
-            card.parent = this;
-            card.owner = this.owner;
-            card.info = this.info;
-            card.init();
-            if(card instanceof FollowCard f1 && this instanceof FollowCard f2){
-                f1.setAtk(f2.getAtk());
-                f1.setName(f2.getName());
-                f1.setKeywords(new ArrayList<>(f2.getKeywords()));
-                f1.setCost(f2.getCost());
-                f1.setMaxHp(f2.getMaxHp());
-                f1.setHp(f2.getHp());
-            }
-            return card;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     public Card prototype(){
         try {

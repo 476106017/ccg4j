@@ -29,7 +29,7 @@ public class MalignantHorror extends FollowCard {
         getKeywords().add("复生");
         addEffects((new Effect(this,this,
             EffectTiming.EndTurn, obj -> {
-            ownerPlayer().costGraveyardCountTo(4,()-> ownerPlayer().summon((AreaCard) copyCard()));
+            ownerPlayer().costGraveyardCountTo(4,()-> ownerPlayer().summon((AreaCard) clone()));
         })));
     }
 }

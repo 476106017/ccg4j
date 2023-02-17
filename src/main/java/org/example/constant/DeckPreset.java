@@ -129,8 +129,8 @@ public class DeckPreset {
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
-            TestFollow.class,TestFollow.class, MagicTrick.class,MagicTrick.class,MagicTrick.class,MagicTrick.class,
-            TestFollow.class,TestFollow.class, MagicTrick.class,MagicTrick.class,MagicTrick.class, MagicTrick.class
+            TestFollow.class,TestFollow.class, TestFollow.class,TestFollow.class,TestFollow.class,
+            TestFollow.class,TestFollow.class, TestFollow.class,TestFollow.class,TestFollow.class
         ));
     }
 

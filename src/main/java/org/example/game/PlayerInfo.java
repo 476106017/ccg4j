@@ -117,9 +117,9 @@ public class PlayerInfo {
         discoverThread = new Thread(()->{
             Card discoverCard;
             if(prototypes.size() <= discoverNum)
-                discoverCard= Lists.randOf(prototypes).copyCardOf(this);
+                discoverCard= Lists.randOf(prototypes).cloneOf(this);
             else
-                discoverCard= prototypes.get(0).copyCardOf(this);
+                discoverCard= prototypes.get(0).cloneOf(this);
 
             consumer.accept(discoverCard);
             setStep(1);

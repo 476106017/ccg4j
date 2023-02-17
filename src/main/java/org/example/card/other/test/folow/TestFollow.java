@@ -3,6 +3,9 @@ package org.example.card.other.test.folow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
+import org.example.constant.EffectTiming;
+import org.example.game.Effect;
+import org.example.game.Play;
 import org.example.system.Lists;
 
 import java.util.List;
@@ -24,9 +27,12 @@ public class TestFollow extends FollowCard {
     public TestFollow() {
         setMaxHp(getHp());
 //        getKeywords().add("剧毒");
-//        setPlay(new Play(() -> getInfo().msg(getNameWithOwner() + "战吼")));
-//        addEffects((new Effect(this,this, EffectTiming.Entering, obj->
-//            getInfo().msg(getNameWithOwner() + "入场时"))));
+        setPlay(new Play(() -> {
+            getInfo().msg(hashCode() + "战吼");
+            ownerPlayer().summon((TestFollow)clone());
+        }));
+        addEffects((new Effect(this,this, EffectTiming.Entering, obj->
+            getInfo().msg(hashCode() + "入场时"))));
 //        addEffects((new Effect(this,this, EffectTiming.Leaving, obj->
 //            getInfo().msg(getNameWithOwner() + "离场时"))));
 //        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
