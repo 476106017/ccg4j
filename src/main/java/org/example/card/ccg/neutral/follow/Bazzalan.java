@@ -5,9 +5,8 @@ import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.game.Play;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

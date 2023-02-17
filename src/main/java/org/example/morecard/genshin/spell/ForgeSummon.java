@@ -9,7 +9,7 @@ import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
 import org.example.game.Play;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 
 import java.util.List;
 

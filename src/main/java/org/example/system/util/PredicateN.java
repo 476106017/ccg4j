@@ -1,4 +1,4 @@
-package org.example.system.function;
+package org.example.system.util;
 
 @FunctionalInterface
 public interface PredicateN {

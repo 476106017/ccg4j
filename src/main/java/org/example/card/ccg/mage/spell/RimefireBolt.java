@@ -2,16 +2,13 @@ package org.example.card.ccg.mage.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card.anime.chainsawman.follow.ChainsawMan;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
-import org.example.game.GameObj;
 import org.example.game.Play;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 

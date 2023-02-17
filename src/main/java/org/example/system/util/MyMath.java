@@ -1,4 +1,4 @@
-package org.example.system;
+package org.example.system.util;
 
 public class MyMath {
     public static void main(String[] args) {

@@ -2,13 +2,11 @@ package org.example.card.ccg.fairy.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.game.Play;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
 

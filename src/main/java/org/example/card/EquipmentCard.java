@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.CardType;
 import org.example.constant.EffectTiming;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 
 import java.util.List;
 

@@ -2,14 +2,12 @@ package org.example.card.paripi.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
 import org.example.card.paripi.Kongming;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
-import org.example.system.Lists;
-import org.springframework.util.CollectionUtils;
+import org.example.system.util.Lists;
 
 import java.util.List;
 

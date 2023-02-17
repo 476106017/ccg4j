@@ -3,7 +3,7 @@ package org.example.game;
 import org.example.card.AmuletCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.system.function.FunctionN;
+import org.example.system.util.FunctionN;
 
 import java.util.ArrayList;
 import java.util.List;

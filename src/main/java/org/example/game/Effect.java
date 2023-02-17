@@ -7,8 +7,8 @@ import org.example.card.Card;
 import org.example.card.EquipmentCard;
 import org.example.card.SpellCard;
 import org.example.constant.EffectTiming;
-import org.example.system.function.FunctionN;
-import org.example.system.function.PredicateN;
+import org.example.system.util.FunctionN;
+import org.example.system.util.PredicateN;
 
 import java.util.List;
 import java.util.function.Consumer;

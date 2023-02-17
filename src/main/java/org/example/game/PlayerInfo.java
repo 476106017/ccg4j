@@ -7,12 +7,11 @@ import org.example.morecard.genshin.LittlePrincess;
 import org.example.morecard.genshin.system.ElementCostSpellCard;
 import org.example.constant.EffectTiming;
 import org.example.system.Database;
-import org.example.system.Lists;
-import org.example.system.function.FunctionN;
+import org.example.system.util.Lists;
+import org.example.system.util.FunctionN;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;

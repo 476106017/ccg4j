@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.example.morecard.genshin.system.ElementCostSpellCard;
 import org.example.morecard.genshin.system.Elemental;
 import org.example.game.Play;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 
 import java.util.List;
 

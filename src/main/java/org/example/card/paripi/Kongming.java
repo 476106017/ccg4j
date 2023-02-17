@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.constant.EffectTiming;
 import org.example.game.*;
-import org.example.system.function.FunctionN;
+import org.example.system.util.FunctionN;
 
 import java.util.function.Consumer;
 

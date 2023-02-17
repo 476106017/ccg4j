@@ -11,7 +11,7 @@ import org.example.morecard.genshin.system.Elemental;
 import org.example.morecard.genshin.system.ElementalDamage;
 import org.example.constant.EffectTiming;
 import org.example.game.*;
-import org.example.system.Lists;
+import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.Arrays;
