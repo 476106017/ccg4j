@@ -36,7 +36,7 @@ public class RulenyeScreamingSilence extends FollowCard {
     }
     public RulenyeScreamingSilence() {
         setMaxHp(getHp());
-        getKeywords().add("突袭");
+        getKeywords().add("突进");
         setPlay(new Play(
             () -> {
                 int x = ownerPlayer().getCount(DEATH_PREFIX+getName());

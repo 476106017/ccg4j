@@ -564,11 +564,7 @@ public class GameInfo {
             if(areaCard instanceof AmuletCard amuletCard){
                 int countDown = amuletCard.getCountDown();
                 if(countDown > 0){
-                    amuletCard.setCountDown(countDown - 1);
-                    msg(amuletCard.getNameWithOwner() + "的倒数-1");
-                    if(amuletCard.getCountDown() == 0){
-                        amuletCard.death();
-                    }
+                    amuletCard.countDown();
                 }
             }
         });

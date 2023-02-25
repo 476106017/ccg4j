@@ -32,7 +32,7 @@ public class Slark extends FollowCard {
 
     public Slark() {
         setMaxHp(getHp());
-        getKeywords().add("突袭");
+        getKeywords().add("突进");
         setPlay(new Play(() -> ownerPlayer().addHand(createCard(DarkPact.class))));
 
         addEffects(new Effect(this,this,EffectTiming.WhenAttack,obj->{

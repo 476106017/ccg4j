@@ -18,6 +18,10 @@ import org.example.card.ccg.fairy.amulet.ForestSymphony;
 import org.example.card.ccg.fairy.amulet.WoodOfBrambles;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
+import org.example.card.ccg.hunter.Rexxar;
+import org.example.card.ccg.hunter.equipment.HarpoonGun;
+import org.example.card.ccg.hunter.follow.*;
+import org.example.card.ccg.hunter.spell.*;
 import org.example.card.ccg.mage.spell.MagicTrick;
 import org.example.card.ccg.necromancer.Luna;
 import org.example.card.ccg.necromancer.amulet.*;
@@ -123,14 +127,26 @@ public class DeckPreset {
             OpeningAct.class, OpeningAct.class, OpeningAct.class
         ));
         deckLeader.put("派对咖", Kongming.class);
+
+        decks.put("野兽猎",List.of(
+            InsatiableDevourer.class, InsatiableDevourer.class, IrondeepTrogg.class,IrondeepTrogg.class,Peasant.class,Peasant.class,
+            PrinceRenathal.class, SireDenathrius.class, HarpoonGun.class,HarpoonGun.class, BeaststalkerTavish.class, AzsharanSaber.class,
+            BarakKodobane.class, HuntsmanAltimor.class, BattyGuest.class,BattyGuest.class,Hydralodon.class,KingKrush.class,
+            K90tron.class, K90tron.class, MountainBear.class,MountainBear.class,PetCollector.class,PetCollector.class,
+            SpiritPoacher.class, SpiritPoacher.class, TheRatKing.class,WingCommanderIchman.class, DoggieBiscuit.class,DoggieBiscuit.class,
+            FrenziedFangs.class, FrenziedFangs.class, RammingMount.class,RammingMount.class, Tracking.class,Tracking.class,
+            Aralon.class,Aralon.class, WildSpirits.class, WildSpirits.class
+        ));
+        deckLeader.put("野兽猎", Rexxar.class);
+
         decks.put("jojo",List.of(
             EnricoPucci.class, EnricoPucci.class, EnricoPucci.class,
             JolyneCujoh.class,JolyneCujoh.class,JolyneCujoh.class,
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
-            TestFollow.class,TestFollow.class, TestFollow.class,TestFollow.class,TestFollow.class,
-            TestFollow.class,TestFollow.class, TestFollow.class,TestFollow.class,TestFollow.class
+            TestFollow.class,TestFollow.class, TestFollow.class,InsatiableDevourer.class,InsatiableDevourer.class,
+            TestFollow.class,TestFollow.class, TestFollow.class,InsatiableDevourer.class,InsatiableDevourer.class
         ));
     }
 

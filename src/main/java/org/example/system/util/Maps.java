@@ -7,7 +7,13 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class MapUtil {
+public class Maps {
+
+    public static <K, V> K randomKey(Map<K,V> x){
+        Random random = new Random();
+        List<K> keys = new ArrayList<K>(x.keySet());
+        return keys.get(random.nextInt(keys.size()));
+    }
     /**
      * 将成对的参数组装成hashmap的方法
      *

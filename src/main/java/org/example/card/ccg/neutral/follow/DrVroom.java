@@ -20,7 +20,7 @@ public class DrVroom extends FollowCard {
     private String job = "中立";
     private List<String> race = Lists.ofStr();
     private String mark = """
-        战吼：如果你的牌堆没有卡牌，则获得【护甲】【魔抗】【圣盾】【无视守护】【吸血】【突袭】【守护】
+        战吼：如果你的牌堆没有卡牌，则获得【护甲】【魔抗】【圣盾】【无视守护】【吸血】【突进】【守护】
         """;
     private String subMark = "";
 
@@ -34,7 +34,7 @@ public class DrVroom extends FollowCard {
                 keywords.add("圣盾");
                 keywords.add("无视守护");
                 keywords.add("吸血");
-                keywords.add("突袭");
+                keywords.add("突进");
                 keywords.add("守护");
                 addKeywords(keywords);
             }

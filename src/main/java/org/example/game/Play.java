@@ -86,6 +86,7 @@ public record Play(Supplier<List<List<GameObj>>> canTargets, int targetNum, bool
                         sb.append("护符\t").append("倒数：").append(amuletCard.getCountDown());
                     }
                 }
+                sb.append("\n");
             }
             sb.append("\n");
         }

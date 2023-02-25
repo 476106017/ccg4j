@@ -168,17 +168,13 @@ public class GameHandler {
         }
 
         // region 获取选择目标
-        int choice = 0;
+        int choice = 1;
         List<GameObj> targets = new ArrayList<>();
         for (int i = 0; i < split.length; i++) {
             String targetS = split[i];
             if (targetS.startsWith("s")) {
                 if(play.choiceNum()==0){
                     info.msgToThisPlayer("此卡不需要抉择！");
-                    return;
-                }
-                if(choice!=0){
-                    info.msgToThisPlayer("输入了多个抉择序号:"+choice);
                     return;
                 }
                 try {
@@ -363,7 +359,9 @@ public class GameHandler {
         try {
             int indexI = Integer.parseInt(msg);
             player.setDiscoverNum(indexI);
-            player.getDiscoverThread().start();
+            player.getDiscoverThread().run();
+            info.startEffect();
+            info.pushInfo();
         }catch (Exception e){
             info.msgToThisPlayer("输入discover <序号>以发现一张卡牌");
         }

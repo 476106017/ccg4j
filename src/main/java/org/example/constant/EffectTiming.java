@@ -1,10 +1,12 @@
 package org.example.constant;
 
 import lombok.Getter;
+import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.Damage;
 
+import java.awt.geom.Area;
 import java.util.List;
 
 @Getter
@@ -62,7 +64,7 @@ public enum EffectTiming {
     WhenCostGraveyard("发动死灵术时",Integer.class),
     WhenCostPartyHot("发动派对狂欢时",Integer.class),
     Transmigration("轮回时"),
-    Charge("注能",List.class,true),
+    Charge("注能", AreaCard.class,true),
     WhenKill("击杀时",FollowCard.class),
 
     // 特殊规则事件

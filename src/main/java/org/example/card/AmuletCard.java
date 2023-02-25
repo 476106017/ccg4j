@@ -17,4 +17,12 @@ public abstract class AmuletCard extends AreaCard{
         return TYPE.getName();
     }
 
+    public void countDown(){
+        setCountDown(getCountDown() - 1);
+        info.msg(getNameWithOwner() + "的倒数-1（剩余"+getCountDown()+"）");
+        if(getCountDown() <= 0){
+            death();
+        }
+    }
+
 }

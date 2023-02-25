@@ -10,6 +10,7 @@ import org.example.system.Database;
 import org.example.system.util.Lists;
 import org.example.system.util.FunctionN;
 
+import java.awt.geom.Area;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,8 +31,8 @@ public class PlayerInfo {
     boolean shortRope = false;
     // 战吼
     boolean canFanfare = true;
-    int hp = 20;
-    int hpMax = 20;
+    int hp = 30;
+    int hpMax = 30;
     int step = -1; // 0换牌完成 1使用 2发现
     int discoverMax = 3; // 发现卡牌数量
     Thread discoverThread = null;
@@ -40,7 +41,7 @@ public class PlayerInfo {
     int ppMax = 0;
     int deckMax = 60;
     int handMax = 9;
-    int areaMax = 5;
+    int areaMax = 7;
     List<Card> deck = new ArrayList<>();
     List<Card> hand = new ArrayList<>();
     Predicate<Card> handPlayable = card -> true;
@@ -79,6 +80,11 @@ public class PlayerInfo {
     Map<Integer,List<Card>> playedCard = new HashMap<>();// 使用卡牌计数器
     Leader leader;
 
+    public void setLeader(Leader leader) {
+        this.leader = leader;
+        info.msg(getName()+"的主战者变成了"+leader.getName());
+    }
+
     // 自动发现并继续同步执行
     public void autoDiscover(){
         while(getStep()==2){// 连续发现的，全部自动完成
@@ -89,9 +95,13 @@ public class PlayerInfo {
     // 发现1张牌并执行consumer
     public void discoverCard(Predicate<Card> predicate,Consumer<Card> consumer){
         List<Card> prototypes = new ArrayList<>(Database.getPrototypeBy(predicate, getDiscoverMax()));
-        if(prototypes.isEmpty()) return;
-        if(prototypes.size()==1){
-            consumer.accept(prototypes.get(0));
+        // 发现的是原型卡，所以回调时要先创造一张它的克隆
+        discoverCard(prototypes,card -> consumer.accept(card.cloneOf(this)));
+    }
+    public void discoverCard(List<Card> cards,Consumer<Card> consumer){
+        if(cards.isEmpty()) return;
+        if(cards.size()==1){
+            consumer.accept(cards.get(0));
             return;
         }
 
@@ -100,8 +110,9 @@ public class PlayerInfo {
         StringBuilder sb = new StringBuilder("发现卡牌：");
         AtomicInteger num = new AtomicInteger(1);
 
-        Collections.shuffle(prototypes);
-        prototypes.forEach(card -> {
+        ArrayList<Card> cardsCopy = new ArrayList<>(cards);
+        Collections.shuffle(cardsCopy);
+        cardsCopy.forEach(card -> {
             sb.append("<p>");
             sb.append("【").append(num.getAndIncrement()).append("】\t")
                 .append(card.getCost()).append("\t")
@@ -115,15 +126,16 @@ public class PlayerInfo {
         info.msgTo(getUuid(),sb.toString());
         discoverThread = new Thread(()->{
             Card discoverCard;
-            if(prototypes.size() <= discoverNum)
-                discoverCard= Lists.randOf(prototypes).cloneOf(this);
+            if(cardsCopy.size() <= discoverNum)
+                discoverCard= Lists.randOf(cardsCopy);
             else
-                discoverCard= prototypes.get(0).cloneOf(this);
+                discoverCard= cardsCopy.get(discoverNum-1);
 
             consumer.accept(discoverCard);
             setStep(1);
             discoverNum = 0;
         });
+
     }
 
     private int weary = 1;// 疲劳
@@ -253,6 +265,12 @@ public class PlayerInfo {
         hand.removeAll(cards);
     }
 
+    public void addDeckBottom(Card card){
+        if(getDeck().size()==deckMax)return;
+        info.msgTo(getEnemy().getUuid(),"对手将1张卡放到牌堆底部");
+        info.msgTo(getUuid(),card.getName() + "被放到牌堆底部");
+        getDeck().add(card);
+    }
     public void addDeck(Card card){
         addDeck(List.of(card));
     }
@@ -456,6 +474,9 @@ public class PlayerInfo {
     }
 
     public void recall(int n){
+        recall(n,follow->{});
+    }
+    public void recall(int n, Consumer<FollowCard> callback){
         info.msg(getName() + "发动亡灵召还（"+n+"）！");
         Optional<FollowCard> follow = getGraveyard().stream()
             .filter(card -> card instanceof FollowCard && card.getCost()<=n)
@@ -465,8 +486,9 @@ public class PlayerInfo {
         follow.ifPresent(this::recall);
         if (follow.isEmpty()) {
             info.msg(getName() + "发动亡灵召还（"+n+"）失败了，没有召唤任何随从！");
+        }else {
+            callback.accept(follow.get());
         }
-
     }
     public void recall(List<AreaCard> recalledCards){
         info.msg(getName() + "发动亡灵召还！");
@@ -491,6 +513,38 @@ public class PlayerInfo {
         getHand().removeAll(cards);
         addGraveyard(cards);
         abandon.addAll(cards);
+    }
+
+    public void hire(Predicate<AreaCard> predicate){
+        hire(predicate,1);
+    }
+    public void hire(Predicate<AreaCard> predicate, int n){
+
+        List<AreaCard> cards = getDeckBy(card ->
+            card instanceof AreaCard areaCard && predicate.test(areaCard))
+            .stream().map(p->(AreaCard)p).toList();
+        if(!cards.isEmpty()){
+            List<AreaCard> prepareToHire = cards.subList(0, Math.min(cards.size(), n));
+
+            prepareToHire.forEach(Card::removeWhenNotAtArea);
+            summon(prepareToHire);
+        }else {
+            info.msg("招募失败！");
+        }
+    }
+    public void hire(Predicate<AreaCard> predicate, Consumer<AreaCard> consumer){
+        List<AreaCard> cards = getDeckBy(card ->
+            card instanceof AreaCard areaCard && predicate.test(areaCard))
+            .stream().map(p->(AreaCard)p).toList();
+        if(!cards.isEmpty()){
+            AreaCard hireCard = cards.get(0);
+
+            hireCard.removeWhenNotAtArea();
+            summon(hireCard);
+            consumer.accept(hireCard);
+        }else {
+            info.msg("招募失败！");
+        }
     }
 
     public void summon(AreaCard summonedCard){

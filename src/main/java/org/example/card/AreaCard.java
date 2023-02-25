@@ -117,6 +117,7 @@ public abstract class AreaCard extends Card{
         ownerPlayer().count(DEATH_PREFIX+getName());
         tempEffects(EffectTiming.Leaving);
         tempEffects(EffectTiming.DeathRattle);
+        ownerLeader().tempEffects(EffectTiming.Charge,this);
 
         // 复生时，保留装备，不进墓地，原地重新召唤
         if(hasKeyword("复生")){
