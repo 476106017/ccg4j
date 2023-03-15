@@ -12,10 +12,7 @@ import org.example.card.anime.jojo.follow.EnricoPucci;
 import org.example.card.anime.jojo.follow.JolyneCujoh;
 import org.example.card.anime.jojo.follow.KujoJotaro;
 import org.example.card.ccg.fairy.Alisa;
-import org.example.card.ccg.fairy.amulet.FirespriteGrove;
-import org.example.card.ccg.fairy.amulet.FlowerOfFairies;
-import org.example.card.ccg.fairy.amulet.ForestSymphony;
-import org.example.card.ccg.fairy.amulet.WoodOfBrambles;
+import org.example.card.ccg.fairy.amulet.*;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
 import org.example.card.ccg.hunter.Rexxar;
@@ -32,6 +29,7 @@ import org.example.card.ccg.nemesis.follow.ImmortalAegis;
 import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
 import org.example.card.ccg.neutral.amulet.TestOfStrength;
 import org.example.card.ccg.neutral.follow.*;
+import org.example.card.ccg.neutral.spell.AngelicSnipe;
 import org.example.card.ccg.neutral.spell.DarkSnare;
 import org.example.card.ccg.neutral.spell.MysticRing;
 import org.example.card.ccg.neutral.spell.PlanetaryFracture;
@@ -94,6 +92,15 @@ public class DeckPreset {
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class, ForestGenesis.class, ForestGenesis.class
         ));
         deckLeader.put("妖精", Alisa.class);
+        decks.put("虫妖",List.of(
+            Rhinoceroach.class, Rhinoceroach.class, Rhinoceroach.class,QueenOfTheForest.class, QueenOfTheForest.class,
+            GoblinMage.class, GoblinMage.class, GoblinMage.class,AncientElf.class, AncientElf.class,
+            AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class,FirespriteGrove.class, FirespriteGrove.class,
+            FairyCircle.class, FairyCircle.class, FairyCircle.class,AriasWhirlwind.class, AriasWhirlwind.class,
+            NaturesGuidance.class, NaturesGuidance.class, NaturesGuidance.class, AngelicSnipe.class, AngelicSnipe.class,
+            FlowerOfFairies.class, FlowerOfFairies.class, FlowerOfFairies.class, ArborealCore.class, ArborealCore.class
+            ));
+        deckLeader.put("虫妖", Alisa.class);
         decks.put("死灵法师",List.of(
             CoffinOfTheUnknownSoul.class, CursedCoin.class, DiedParty.class, GloamingTombs.class, HauntedHouse.class,
             BoneFanatic.class, CorpseBride.class, DarkfallenNeophyte.class, Deathmolder.class, HuginnMuninn.class,

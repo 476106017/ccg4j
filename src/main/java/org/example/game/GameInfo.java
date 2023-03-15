@@ -160,7 +160,6 @@ public class GameInfo {
             rope.cancel(true);
             ScheduledExecutorService ses = roomSchedule.get(getRoom());
             ses.shutdown();
-            ses.close();
             roomSchedule.remove(getRoom());
         }catch (Exception e){e.printStackTrace();}
         throw new RuntimeException("Game Set");

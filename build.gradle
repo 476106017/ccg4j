@@ -6,8 +6,11 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '19'
+sourceCompatibility = '17'
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 repositories {
     mavenLocal()
     mavenCentral()
