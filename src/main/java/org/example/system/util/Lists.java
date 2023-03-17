@@ -20,4 +20,14 @@ public class Lists {
         return list.get(index);
 
     }
+
+    public static  <T> List<T> randOf(List<T> list,int num){
+        final ArrayList<T> copy = new ArrayList<>(list);
+        int size = list.size();
+        if(size<=num) return copy;
+
+        Collections.shuffle(copy);
+        return copy.subList(0, num);
+
+    }
 }

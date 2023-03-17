@@ -48,6 +48,8 @@ public enum EffectTiming {
     WhenOverDraw("我方超抽时",Integer.class),
     WhenEnemyDraw("敌方抽牌时",List.class),
     WhenEnemyOverDraw("敌方超抽时",Integer.class),
+    WhenAbandoned("被弃牌时"),
+    WhenAbandon("弃牌时",List.class),
     WhenSummon("我方召唤时",List.class),
     WhenEnemySummon("敌方召唤时",List.class),
     WhenDestroy("我方破坏时",List.class),

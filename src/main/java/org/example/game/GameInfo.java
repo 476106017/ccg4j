@@ -216,6 +216,10 @@ public class GameInfo {
     public void tempCardEffectBatch(List<Card> objs, EffectTiming timing){
         objs.forEach(obj -> obj.tempEffects(timing));
     }
+    public void tempCardEffectBatch(List<Card> objs, EffectTiming timing, Object param) {
+        objs.forEach(obj -> obj.tempEffects(timing,param));
+    }
+
     public void tempAreaCardEffectBatch(List<AreaCard> objs, EffectTiming timing){
         objs.forEach(obj -> obj.tempEffects(timing));
     }
@@ -431,10 +435,11 @@ public class GameInfo {
         Collections.shuffle(p0.getDeck());
 
         PlayerInfo p1 = oppositePlayer();
+        PlayerDeck playerDeck1 = userDecks.get(u1);
         p1.setUuid(u1);
         p1.setName(userNames.get(u1));
-        p1.setLeader(playerDeck0.getLeader(1, this));
-        p1.setDeck(userDecks.get(u1).getActiveDeckInstance(1, this));
+        p1.setLeader(playerDeck1.getLeader(1, this));
+        p1.setDeck(playerDeck1.getActiveDeckInstance(1, this));
         Collections.shuffle(p1.getDeck());
 
         p0.draw(3);

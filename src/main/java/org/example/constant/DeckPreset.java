@@ -29,13 +29,17 @@ import org.example.card.ccg.nemesis.follow.ImmortalAegis;
 import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
 import org.example.card.ccg.neutral.amulet.TestOfStrength;
 import org.example.card.ccg.neutral.follow.*;
-import org.example.card.ccg.neutral.spell.AngelicSnipe;
-import org.example.card.ccg.neutral.spell.DarkSnare;
-import org.example.card.ccg.neutral.spell.MysticRing;
-import org.example.card.ccg.neutral.spell.PlanetaryFracture;
+import org.example.card.ccg.neutral.spell.*;
 import org.example.card.ccg.rogue.follow.LabRecruiter;
 import org.example.card.ccg.rogue.spell.Preparation;
 import org.example.card.ccg.rogue.spell.Shadowstep;
+import org.example.card.ccg.vampire.amulet.BloodfedFlowerbed;
+import org.example.card.ccg.vampire.amulet.RestlessParish;
+import org.example.card.ccg.vampire.follow.AmblingWraith;
+import org.example.card.ccg.vampire.follow.BriaredVampire;
+import org.example.card.ccg.vampire.follow.ParaceliseDemonOfGreed;
+import org.example.card.ccg.vampire.follow.ShowdownDemon;
+import org.example.card.ccg.vampire.spell.*;
 import org.example.card.ccg.warrior.follow.DarkIronEnforcer;
 import org.example.card.dota.equipment.*;
 import org.example.card.dota.follow.*;
@@ -93,7 +97,9 @@ public class DeckPreset {
         ));
         deckLeader.put("妖精", Alisa.class);
         decks.put("虫妖",List.of(
-            Rhinoceroach.class, Rhinoceroach.class, Rhinoceroach.class,QueenOfTheForest.class, QueenOfTheForest.class,
+            SpringGreenProtection.class, SpringGreenProtection.class, SpringGreenProtection.class,WoodOfBrambles.class, WoodOfBrambles.class,
+            QueenOfTheForest.class, QueenOfTheForest.class, QueenOfTheForest.class,PredatoryMight.class, PredatoryMight.class,
+            Rhinoceroach.class, Rhinoceroach.class, Rhinoceroach.class,PixieMischief.class, PixieMischief.class,
             GoblinMage.class, GoblinMage.class, GoblinMage.class,AncientElf.class, AncientElf.class,
             AirboundBarrage.class, AirboundBarrage.class, AirboundBarrage.class,FirespriteGrove.class, FirespriteGrove.class,
             FairyCircle.class, FairyCircle.class, FairyCircle.class,AriasWhirlwind.class, AriasWhirlwind.class,
@@ -101,6 +107,15 @@ public class DeckPreset {
             FlowerOfFairies.class, FlowerOfFairies.class, FlowerOfFairies.class, ArborealCore.class, ArborealCore.class
             ));
         deckLeader.put("虫妖", Alisa.class);
+        decks.put("弃牌鬼",List.of(
+            BloodfedFlowerbed.class, BloodfedFlowerbed.class, BloodfedFlowerbed.class,RestlessParish.class, RestlessParish.class,RestlessParish.class,
+            AmblingWraith.class, AmblingWraith.class, AmblingWraith.class,BriaredVampire.class, BriaredVampire.class,BriaredVampire.class,
+            ParaceliseDemonOfGreed.class, ParaceliseDemonOfGreed.class, ParaceliseDemonOfGreed.class,ShowdownDemon.class, ShowdownDemon.class,ShowdownDemon.class,
+            EternalContract.class, EternalContract.class, EternalContract.class,FullMoonLeap.class, FullMoonLeap.class,FullMoonLeap.class,
+            GiftForBloodkin.class, GiftForBloodkin.class, GiftForBloodkin.class, RazoryClaw.class, RazoryClaw.class,RazoryClaw.class,
+            RoomServiceDemon.class, RoomServiceDemon.class, RoomServiceDemon.class,AngelicSnipe.class, AngelicSnipe.class,AngelicSnipe.class,
+            AlteredFate.class, AlteredFate.class, MurderousApplication.class,MurderousApplication.class
+        ));
         decks.put("死灵法师",List.of(
             CoffinOfTheUnknownSoul.class, CursedCoin.class, DiedParty.class, GloamingTombs.class, HauntedHouse.class,
             BoneFanatic.class, CorpseBride.class, DarkfallenNeophyte.class, Deathmolder.class, HuginnMuninn.class,

@@ -505,6 +505,10 @@ public class PlayerInfo {
     public void recall(AreaCard areaCard){
         recall(List.of(areaCard));
     }
+
+    public void abandon(int num){
+        abandon(Lists.randOf(getHandCopy(),num));
+    }
     public void abandon(Card card){
         abandon(List.of(card));
     }
@@ -513,6 +517,8 @@ public class PlayerInfo {
         getHand().removeAll(cards);
         addGraveyard(cards);
         abandon.addAll(cards);
+        info.tempCardEffectBatch(cards,EffectTiming.WhenAbandoned);
+        info.tempAreaCardEffectBatch(getAreaCopy(),EffectTiming.WhenAbandon,cards);
     }
 
     public void hire(Predicate<AreaCard> predicate){
