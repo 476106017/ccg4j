@@ -47,10 +47,15 @@ public class ParaceliseDemonOfGreed extends FollowCard {
         )));
         addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->ownerPlayer().getHand().isEmpty(),
-            ()->{}
+            ()->{
+                // 有bug。手动触发入场时
+                info.damageEffect(this,enemyLeader(),2);
+                ownerPlayer().heal(2);
+                ownerPlayer().draw(1);
+        }
         )));
 
-        addEffects((new Effect(this,this, EffectTiming.Entering, obj->{
+        addEffects((new Effect(this,this, EffectTiming.Entering, ()->{
             info.damageEffect(this,enemyLeader(),2);
             ownerPlayer().heal(2);
             ownerPlayer().draw(1);

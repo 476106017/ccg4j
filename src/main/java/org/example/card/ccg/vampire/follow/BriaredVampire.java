@@ -35,7 +35,7 @@ public class BriaredVampire extends FollowCard {
             target->{
                 if(target==null)return;
                 ownerPlayer().abandon((Card) target);
-                ownerLeader().addEffect(new Effect(this,this, EffectTiming.BeginTurn,2,
+                ownerLeader().addEffect(new Effect(this,this, EffectTiming.BeginTurn,3,
                     ()->ownerPlayer().draw(1)),false);
 
             }));

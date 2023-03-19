@@ -560,14 +560,13 @@ public class PlayerInfo {
     public void summon(List<AreaCard> summonedCards){
         info.msg(getName() + "召唤了" + summonedCards.stream().map(AreaCard::getId).collect(Collectors.joining("、")));
         addArea(summonedCards);
-        info.tempAreaCardEffectBatch(summonedCards,EffectTiming.Entering);
+        info.useAreaCardEffectBatch(summonedCards,EffectTiming.Entering);
 
         List<AreaCard> areaCards = getAreaBy(areaCard -> !summonedCards.contains(areaCard));
-        info.tempAreaCardEffectBatch(areaCards,EffectTiming.WhenSummon,summonedCards);
+        info.useAreaCardEffectBatch(areaCards,EffectTiming.WhenSummon,summonedCards);
 
         List<AreaCard> enemyAreaCards = getEnemy().getAreaBy(areaCard -> !summonedCards.contains(areaCard));
-        info.tempAreaCardEffectBatch(enemyAreaCards,EffectTiming.WhenEnemySummon,summonedCards);
-        info.startEffect();
+        info.useAreaCardEffectBatch(enemyAreaCards,EffectTiming.WhenEnemySummon,summonedCards);
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){

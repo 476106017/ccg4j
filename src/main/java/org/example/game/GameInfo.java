@@ -197,9 +197,14 @@ public class GameInfo {
         events.put(card,type);
         return true;
     }
-    public void useCardEffectBatch(List<Card> cards, EffectTiming timing){
+    public void useAreaCardEffectBatch(List<AreaCard> cards, EffectTiming timing){
         List<GameObj> gameObjs = cards.stream().map(p -> (GameObj) p).toList();
         tempEffectBatch(gameObjs,timing);
+        startEffect();
+    }
+    public void useAreaCardEffectBatch(List<AreaCard> cards, EffectTiming timing,Object param){
+        List<GameObj> gameObjs = cards.stream().map(p -> (GameObj) p).toList();
+        tempEffectBatch(gameObjs,timing,param);
         startEffect();
     }
     public void useEffectBatch(List<GameObj> objs, EffectTiming timing){
@@ -465,9 +470,9 @@ public class GameInfo {
                 thisPlayer().ppMax++;
         }
         thisPlayer().ppNum = thisPlayer().ppMax;
-        thisPlayer().draw(1);
         msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
         beforeTurn();
+        thisPlayer().draw(1);
 
         if(thisPlayer().isShortRope()){
             rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
@@ -509,15 +514,6 @@ public class GameInfo {
     }
 
     public void beforeTurn(){
-        // 主战者技能重置、发动主战者效果和手牌效果
-        Leader leader = thisPlayer().getLeader();
-        leader.setCanUseSkill(true);
-        leader.useEffects(EffectTiming.BeginTurn);
-        thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.BeginTurnAtHand));
-
-        Leader enemyLeader = oppositePlayer().getLeader();
-        enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
-        oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyBeginTurnAtHand));
 
 
         // 场上随从驻场回合+1、攻击次数清零
@@ -580,19 +576,17 @@ public class GameInfo {
         // 瞬召卡牌
         useEffectBatch(new ArrayList<>(nameCard.values()),EffectTiming.InvocationBegin);
 
-    }
-    public void afterTurn(){
-        // 发动主战者效果
+        // 主战者技能重置、发动主战者效果和手牌效果
         Leader leader = thisPlayer().getLeader();
-        leader.useEffects(EffectTiming.EndTurn);
-        leader.expireEffect();
-        thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EndTurnAtHand));
-        thisPlayer().setHandPlayable(card -> true);
+        leader.setCanUseSkill(true);
+        leader.useEffects(EffectTiming.BeginTurn);
+        thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.BeginTurnAtHand));
 
         Leader enemyLeader = oppositePlayer().getLeader();
-        enemyLeader.useEffects(EffectTiming.EnemyEndTurn);
-        enemyLeader.expireEffect();
-        oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyEndTurnAtHand));
+        enemyLeader.useEffects(EffectTiming.EnemyBeginTurn);
+        oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyBeginTurnAtHand));
+    }
+    public void afterTurn(){
 
         // 发动回合结束效果
         oppositePlayer().getAreaCopy().forEach(areaCard -> {
@@ -626,6 +620,18 @@ public class GameInfo {
 
         // 瞬召卡牌
         useEffectBatch(new ArrayList<>(nameCard.values()),EffectTiming.InvocationEnd);
+
+        // 发动主战者效果
+        Leader leader = thisPlayer().getLeader();
+        leader.useEffects(EffectTiming.EndTurn);
+        leader.expireEffect();
+        thisPlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EndTurnAtHand));
+        thisPlayer().setHandPlayable(card -> true);
+
+        Leader enemyLeader = oppositePlayer().getLeader();
+        enemyLeader.useEffects(EffectTiming.EnemyEndTurn);
+        enemyLeader.expireEffect();
+        oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyEndTurnAtHand));
     }
 
     // endregion turn
@@ -638,14 +644,8 @@ public class GameInfo {
 
         sb.append("【战场信息】\n");
         sb.append("敌方战场：\n");
-        for (int i = 0; i < oppositePlayer.getAreaMax(); i++) {
+        for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
             sb.append("<p>");
-            if(i >= oppositePlayer.getArea().size()){
-                sb.append("【").append(i+1).append("】\t")
-                    .append("（空）").append("\t");
-                sb.append("</p>");
-                continue;
-            }
             Card card = oppositePlayer.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")
@@ -676,14 +676,8 @@ public class GameInfo {
             sb.append(cardDetail(card)).append("</p>");
         }
         sb.append("\n我方战场：\n");
-        for (int i = 0; i < player.getAreaMax(); i++) {
+        for (int i = 0; i < player.getArea().size(); i++) {
             sb.append("<p>");
-            if(i >= player.getArea().size()){
-                sb.append("【").append(i+1).append("】\t")
-                    .append("（空）").append("\t");
-                sb.append("</p>");
-                continue;
-            }
             Card card = player.getArea().get(i);
             sb.append("【").append(i+1).append("】\t")
                 .append(card.getType()).append("\t")

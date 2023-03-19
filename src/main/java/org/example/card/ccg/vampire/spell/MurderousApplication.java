@@ -31,7 +31,7 @@ public class MurderousApplication extends SpellCard {
 
     public MurderousApplication() {
         addEffects((new Effect(this,this, EffectTiming.WhenAbandoned,
-            ()-> ownerLeader().addEffect(new Effect(this,this, EffectTiming.BeginTurn,2,
+            ()-> ownerLeader().addEffect(new Effect(this,this, EffectTiming.BeginTurn,3,
                 ()->ownerPlayer().draw(1)),false)
         )));
         setPlay(new Play(()-> ownerPlayer().getAreaFollowsAsGameObjBy(p->p.getJob().equals("吸血鬼")),
