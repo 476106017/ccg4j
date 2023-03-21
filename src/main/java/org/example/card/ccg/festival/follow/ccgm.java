@@ -35,8 +35,8 @@ public class ccgm extends FollowCard {
         setPlay(new Play(
             ()->enemyPlayer().getAreaFollowsAsGameObj(), false,
             targets->{
-                targetFollow = (FollowCard) targets;
-                targetFollow.addKeyword("缴械");
+                if(targets!=null)
+                    ((FollowCard) targets).addKeyword("缴械");
             }));
 
         addEffects((new Effect(this,this, EffectTiming.WhenNoLongerAtArea, obj->{

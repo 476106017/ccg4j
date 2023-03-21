@@ -2,12 +2,14 @@ package org.example.card.ccg.festival.follow;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,6 +22,7 @@ public class sysfze extends FollowCard {
     private List<String> race = Lists.ofStr();
     public String mark = """
         战吼：拍摄你的手牌，并将照片洗入牌库
+        压轴：然后自拍一张！
         """;
     public String subMark = "";
 
@@ -30,7 +33,15 @@ public class sysfze extends FollowCard {
 
     public sysfze() {
         setMaxHp(getHp());
-        // TODO
+
+        setPlay(new Play(()->{
+            List<Card> copy = new ArrayList<>();
+            ownerPlayer().getHand().forEach(card -> copy.add(card.cloneOf(ownerPlayer())));
+            ownerPlayer().addDeck(copy);
+            if(ownerPlayer().getPpNum()==0){
+                ownerPlayer().addDeck(cloneOf(ownerPlayer()));
+            }
+        }));
     }
 
 }
