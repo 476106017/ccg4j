@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
+import org.example.card.FollowCard;
 import org.example.morecard.genshin.system.Elemental;
 import org.example.constant.EffectTiming;
 
@@ -122,6 +123,15 @@ public abstract class GameObj {
         T card = createCard(clazz);
         for (String keyword : keywords) {
             card.addKeyword(keyword);
+        }
+        return card;
+    }
+    public <T extends Card> T createCard(Class<T> clazz, int atk,int hp){
+        T card = createCard(clazz);
+        if(card instanceof FollowCard followCard){
+            followCard.setAtk(atk);
+            followCard.setMaxHp(hp);
+            followCard.setHp(hp);
         }
         return card;
     }

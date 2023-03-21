@@ -116,7 +116,7 @@ public class DeckPreset {
             RoomServiceDemon.class, RoomServiceDemon.class, RoomServiceDemon.class,AngelicSnipe.class, AngelicSnipe.class,AngelicSnipe.class,
             AlteredFate.class, AlteredFate.class, MurderousApplication.class,MurderousApplication.class
         ));
-        decks.put("死灵法师",List.of(
+        decks.put("死灵术士",List.of(
             CoffinOfTheUnknownSoul.class, CursedCoin.class, DiedParty.class, GloamingTombs.class, HauntedHouse.class,
             BoneFanatic.class, CorpseBride.class, DarkfallenNeophyte.class, Deathmolder.class, HuginnMuninn.class,
 
@@ -126,7 +126,7 @@ public class DeckPreset {
             BoneAshBibimbap.class, CorralSouls.class, DeathlyTyrantsFeast.class, HearseDrift.class, PlaguedGrain.class,
             SoulConversion.class,TombGuardians.class, TributeSummon.class,Zelgenea.class,MintheOfUnderworld.class
         ));
-        deckLeader.put("死灵法师", Luna.class);
+        deckLeader.put("死灵术士", Luna.class);
         decks.put("dota",List.of(
             Roshan.class, Nevermore.class,Nevermore.class, FacelessVoid.class,FacelessVoid.class,
             DefenceTower.class,DefenceTower.class,DefenceTower.class,Slark.class,Slark.class,

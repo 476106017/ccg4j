@@ -3,6 +3,7 @@ package org.example.game;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
+import org.example.constant.CounterKey;
 import org.example.morecard.genshin.LittlePrincess;
 import org.example.morecard.genshin.system.ElementCostSpellCard;
 import org.example.constant.EffectTiming;
@@ -39,6 +40,7 @@ public class PlayerInfo {
     int discoverNum = 0; // 发现卡牌序号
     int ppNum = 0;
     int ppMax = 0;
+    int ppLimit = 10;
     int deckMax = 60;
     int handMax = 9;
     int areaMax = 7;
@@ -58,6 +60,7 @@ public class PlayerInfo {
             return false;
         }
         countToGraveyard(-cost);
+        count(CounterKey.NECROMANCY_NUM,cost);
         info.tempEffectBatch(getAreaFollowsAsGameObj(),EffectTiming.WhenCostGraveyard, cost);
         info.startEffect();
         function.apply();
@@ -70,6 +73,7 @@ public class PlayerInfo {
         }
         int cost = Math.min(graveyardCount,costMax);
         countToGraveyard(-cost);
+        count(CounterKey.NECROMANCY_NUM,cost);
         info.tempEffectBatch(getAreaFollowsAsGameObj(),EffectTiming.WhenCostGraveyard, cost);
         info.startEffect();
         consumer.accept(cost);

@@ -466,7 +466,7 @@ public class GameInfo {
 
     public void startTurn(){
         thisPlayer().clearCount(PLAY_NUM);
-        if(thisPlayer().ppMax<10){
+        if(thisPlayer().ppMax<thisPlayer().getPpLimit()){
                 thisPlayer().ppMax++;
         }
         thisPlayer().ppNum = thisPlayer().ppMax;
