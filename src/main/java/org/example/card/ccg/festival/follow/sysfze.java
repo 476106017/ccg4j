@@ -20,6 +20,7 @@ public class sysfze extends FollowCard {
     private List<String> race = Lists.ofStr();
     public String mark = """
         战吼：拍摄你的手牌，并将照片洗入牌库
+        压轴：然后自拍
         """;
     public String subMark = "";
 

@@ -26,9 +26,18 @@ public class rcclz extends FollowCard {
     public int atk = 1;
     public int hp = 1;
 
+    private Effect deathRattle;
+
     public rcclz() {
         setMaxHp(getHp());
-        // TODO
+        deathRattle = new Effect(this, this, EffectTiming.DeathRattle, obj -> {
+            final FollowCard randomFollow = ownerPlayer().getDeckRandomFollow();
+            if(randomFollow!=null){
+                randomFollow.addStatus(1,1);
+                randomFollow.addEffects(deathRattle);
+            }
+        });
+        addEffects(deathRattle);
     }
 
 }
