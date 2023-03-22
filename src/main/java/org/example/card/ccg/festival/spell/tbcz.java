@@ -63,6 +63,9 @@ public class tbcz extends SpellCard {
 
         public String subMark = "";
 
+        public int atk = 8;
+        public int hp = 8;
+
         public ymzw() {
             setMaxHp(getHp());
             getKeywords().add("缴械");
