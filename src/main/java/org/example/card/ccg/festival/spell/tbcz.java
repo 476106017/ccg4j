@@ -52,7 +52,7 @@ public class tbcz extends SpellCard {
 
     @Getter
     @Setter
-    public class ymzw extends FollowCard {
+    public static class ymzw extends FollowCard {
         public Integer cost = 8;
         public String name = "炎魔之王拉格纳罗斯";
         public String job = "中立";
