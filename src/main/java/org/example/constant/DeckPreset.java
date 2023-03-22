@@ -15,6 +15,10 @@ import org.example.card.ccg.fairy.Alisa;
 import org.example.card.ccg.fairy.amulet.*;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
+import org.example.card.ccg.festival.follow.*;
+import org.example.card.ccg.festival.spell.tlzqy;
+import org.example.card.ccg.festival.spell.yejs;
+import org.example.card.ccg.festival.spell.zxsh;
 import org.example.card.ccg.hunter.Rexxar;
 import org.example.card.ccg.hunter.equipment.HarpoonGun;
 import org.example.card.ccg.hunter.follow.*;
@@ -169,6 +173,13 @@ public class DeckPreset {
         decks.put("test",List.of(
             TestFollow.class,TestFollow.class, TestFollow.class,InsatiableDevourer.class,InsatiableDevourer.class,
             TestFollow.class,TestFollow.class, TestFollow.class,InsatiableDevourer.class,InsatiableDevourer.class
+        ));
+        decks.put("传奇音乐节",List.of(
+            ccgm.class,ccgm.class,  dbzwtn.class, fzcf.class,fzcf.class,
+            gjdyz.class,jpzr.class, kyj.class, ltstt.class,rcclz.class,
+            jzgz.class, kyj.class, ltstt.class, rcclz.class,sysfze.class,
+            ygjs.class, ylxs.class, yyjba.class, yyzls.class, zyfn.class,
+             yejs.class, zxsh.class, zyfn.class, yejs.class,zxsh.class
         ));
     }
 

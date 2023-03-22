@@ -20,7 +20,7 @@ public class ygjs extends FollowCard {
     public String job = "中立";
     private List<String> race = Lists.ofStr("元素");
     public String mark = """
-        增幅：费用为1的牌，获得+1/+1
+        增幅：费用为1的牌，使本随从获得+1/+1
         """;
     public String subMark = "";
 

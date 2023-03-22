@@ -414,6 +414,13 @@ public class PlayerInfo {
             .toList();
         return Lists.randOf(areaCards);
     }
+    public FollowCard getHandRandomFollow(){
+        List<FollowCard> areaCards = getHand().stream()
+            .filter(card -> card instanceof FollowCard)
+            .map(card -> (FollowCard)card)
+            .toList();
+        return Lists.randOf(areaCards);
+    }
 
     public AreaCard getAreaRandomGuardFollow(){
         List<AreaCard> areaCards = getArea().stream()
