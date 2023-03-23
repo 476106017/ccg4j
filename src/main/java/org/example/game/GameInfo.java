@@ -79,9 +79,7 @@ public class GameInfo {
         try {
             thisPlayer().getSession().getBasicRemote().sendText(msg);
             oppositePlayer().getSession().getBasicRemote().sendText(msg);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (Exception ignored) {}
     }
 
     public void msgTo(Session Session, String msg){

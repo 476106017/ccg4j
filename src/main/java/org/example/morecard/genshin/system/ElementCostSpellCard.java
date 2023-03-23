@@ -19,7 +19,7 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 @Setter
 public abstract class ElementCostSpellCard extends SpellCard {
     Integer cost = 0;
-    List<Elemental> elementCost;
+    transient List<Elemental> elementCost;
 
     public ElementBaseFollowCard activeFollow(){
         List<AreaCard> guards = ownerPlayer().getAreaFollowsBy(followCard ->
