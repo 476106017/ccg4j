@@ -122,21 +122,26 @@ public class WebSocketConfig  {
             final String[] split = msg.split("::");
             try {
 
+                String param;
+                if(split.length<2 || Strings.isBlank(split[1]))
+                    param = "";
+                else param = split[1];
+
                 switch (split[0]){
                     case "joinRoom" -> matchHandler.joinRoom(session);
                     case "leave" -> matchHandler.leave(session);
 
                     case "deck" -> deckEditHandler.deck(session);
-                    case "usedeck" -> deckEditHandler.usedeck(session,split[1]);
-                    case "roomPresetChat" -> chatHandler.roomPresetChat(session,split[1]);
+                    case "usedeck" -> deckEditHandler.usedeck(session, param);
+                    case "roomPresetChat" -> chatHandler.roomPresetChat(session, param);
 
-                    case "swap" -> gameHandler.swap(session,split[1]);
-                    case "play" -> gameHandler.play(session,split[1]);
-                    case "attack" -> gameHandler.attack(session,split[1]);
-                    case "discover" -> gameHandler.discover(session,split[1]);
-                    case "skill" -> gameHandler.skill(session,split[1]);
+                    case "swap" -> gameHandler.swap(session, param);
+                    case "play" -> gameHandler.play(session, param);
+                    case "attack" -> gameHandler.attack(session, param);
+                    case "discover" -> gameHandler.discover(session, param);
+                    case "skill" -> gameHandler.skill(session, param);
 
-                    case "turnEnd" -> gameHandler.turnEnd(session,split[1]);
+                    case "turnEnd" -> gameHandler.turnEnd(session, param);
                     case "test" -> gameHandler.test(session);
                 }
             }catch (Exception e){

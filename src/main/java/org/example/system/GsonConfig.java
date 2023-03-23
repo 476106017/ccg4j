@@ -4,15 +4,17 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.Encoder;
+import org.example.card.Card;
 import org.example.system.util.Func;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 @Configuration
 public class GsonConfig {
@@ -47,5 +49,6 @@ public class GsonConfig {
             return "";
         }
     }
+
 
 }

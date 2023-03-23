@@ -10,12 +10,18 @@ import org.example.card.ccg.neutral.ThePlayer;
 import org.example.constant.DeckPreset;
 import org.example.game.Leader;
 import org.example.game.PlayerDeck;
+import org.example.system.Database;
+import org.example.system.util.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import jakarta.websocket.Session;
 
 import static org.example.system.Database.userDecks;
@@ -35,13 +41,32 @@ public class DeckEditHandler {
     }
 
 
-    public void usedeck(Session client, String data) throws IOException {
+    public void usedeck(Session client, String data) throws IOException, EncodeException {
 
+        final Map<String, List<Class<? extends Card>>> decks = DeckPreset.decks;
         if(Strings.isBlank(data)){
-            client.getBasicRemote().sendText( DeckPreset.describe());
+            // region 如果不输入选择牌组，则返回全部牌组
+            List<Map<String,Object>> deckInfo = new ArrayList<>();
+            decks.forEach((name,cardClassList)-> {
+                final List<? extends Card> prototypes = cardClassList.stream().map(Database::getPrototype).toList();
+                Leader leader;
+                try {
+                    Class<? extends Leader> leaderClass = DeckPreset.deckLeader.get(name);
+                    if(leaderClass==null){
+                        leaderClass = ThePlayer.class;
+                    }
+                    leader = leaderClass.getDeclaredConstructor().newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+                deckInfo.add(Maps.newMap("name", name, "leader", leader,"deck", prototypes));
+            });
+            client.getBasicRemote().sendObject(deckInfo);
             return;
+            // endregion 如果不输入选择牌组，则返回全部牌组
         }
-        List<Class<? extends Card>> deck = DeckPreset.decks.get(data);
+        List<Class<? extends Card>> deck = decks.get(data);
         Class<? extends Leader> leader = DeckPreset.deckLeader.get(data);
         if(deck==null){
             client.getBasicRemote().sendText( "不存在的牌组名字");

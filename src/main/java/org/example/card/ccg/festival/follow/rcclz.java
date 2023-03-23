@@ -28,7 +28,7 @@ public class rcclz extends FollowCard {
     public int atk = 1;
     public int hp = 1;
 
-    private Effect deathRattle;
+    private transient Effect deathRattle;
 
     public rcclz() {
         setMaxHp(getHp());

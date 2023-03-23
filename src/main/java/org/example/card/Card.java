@@ -119,7 +119,7 @@ public abstract class Card extends GameObj implements Cloneable {
         else place="被除外";
 
         return ownerPlayer().getName()+place+"的"+getName();
-    };
+    }
 
     private Play play = null;
 
