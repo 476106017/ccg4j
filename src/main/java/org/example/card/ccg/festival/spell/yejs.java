@@ -26,7 +26,7 @@ public class yejs extends SpellCard {
     public String subMark = "";
 
     public yejs() {
-        addEffects(new Effect(this,this, EffectTiming.BeginTurn, obj->{
+        addEffects(new Effect(this,this, EffectTiming.BeginTurnAtHand, obj->{
             info.exile(this);
             ownerPlayer().addHand(createCard(cejs.class));
         }));
@@ -54,7 +54,7 @@ public class yejs extends SpellCard {
         public String subMark = "";
 
         public cejs() {
-            addEffects(new Effect(this,this, EffectTiming.BeginTurn, obj->{
+            addEffects(new Effect(this,this, EffectTiming.BeginTurnAtHand, obj->{
                 info.exile(this);
                 ownerPlayer().addHand(createCard(yejs.class));
             }));

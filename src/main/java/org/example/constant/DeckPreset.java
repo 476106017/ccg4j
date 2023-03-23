@@ -16,9 +16,7 @@ import org.example.card.ccg.fairy.amulet.*;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
 import org.example.card.ccg.festival.follow.*;
-import org.example.card.ccg.festival.spell.tlzqy;
-import org.example.card.ccg.festival.spell.yejs;
-import org.example.card.ccg.festival.spell.zxsh;
+import org.example.card.ccg.festival.spell.*;
 import org.example.card.ccg.hunter.Rexxar;
 import org.example.card.ccg.hunter.equipment.HarpoonGun;
 import org.example.card.ccg.hunter.follow.*;
@@ -179,7 +177,8 @@ public class DeckPreset {
             gjdyz.class,jpzr.class, kyj.class, ltstt.class,rcclz.class,
             jzgz.class, kyj.class, ltstt.class, rcclz.class,sysfze.class,
             ygjs.class, ylxs.class, yyjba.class, yyzls.class, zyfn.class,
-             yejs.class, zxsh.class, zyfn.class, yejs.class,zxsh.class
+             yejs.class, zxsh.class, zyfn.class, yejs.class,zxsh.class,
+            ccyyt.class, hsyg.class, tbcz.class
         ));
     }
 
