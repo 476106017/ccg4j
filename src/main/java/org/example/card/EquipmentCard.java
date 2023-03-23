@@ -19,15 +19,15 @@ public abstract class EquipmentCard extends AreaCard{
 
     private List<String> race = Lists.ofStr("装备");
 
-    private FollowCard target;
+    private transient FollowCard target;
 
-    private boolean control = false;
+    private transient boolean control = false;
 
-    private int addAtk = 0;
+    private transient int addAtk = 0;
 
-    private int addHp = 0;
+    private transient int addHp = 0;
 
-    private int countdown = -1;// 耐久
+    private transient int countdown = -1;// 耐久
 
     public void addCountdown(int i){
         if(getCountdown() == -1)return;

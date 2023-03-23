@@ -130,7 +130,7 @@ public class Effect{
                 // endregion 判断结算时是否在场
 
                 if(effect.getTiming().isSecret())
-                    info.msgTo(ownerPlayer.getUuid(),effectOwnerCard.getNameWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
+                    info.msgTo(ownerPlayer.getSession(),effectOwnerCard.getNameWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
                 else
                     info.msg(effectOwnerCard.getNameWithOwner() + "发动【"+ effect.getTiming().getName() +"】效果");
                 // region 瞬召卡片要在发动效果前召唤/揭示

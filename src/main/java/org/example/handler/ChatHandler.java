@@ -1,26 +1,21 @@
 package org.example.handler;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
+import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.example.constant.ChatPreset;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
 
 import static org.example.system.Database.userNames;
+import static org.example.system.Database.userRoom;
 
 @Service
-@ConditionalOnClass(SocketIOServer.class)
 @Slf4j
 public class ChatHandler {
-    @Autowired
-    SocketIOServer socketIOServer;
 
     @Autowired
     Gson gson;
@@ -28,12 +23,11 @@ public class ChatHandler {
     /**
      * 发送房间预置消息
      * */
-    @OnEvent(value = "chat")
-    public void roomPresetChat(SocketIOClient client, String data) {
-        UUID me = client.getSessionId();
-        Optional<String> room = client.getAllRooms().stream().filter(p -> !p.isEmpty()).findFirst();
-        if (room.isEmpty()) {
-            socketIOServer.getClient(me).sendEvent("receiveMsg", "请先加入房间！");
+
+    public void roomPresetChat(Session client, String data) throws IOException {
+        final String room = userRoom.get(client);
+        if (Strings.isBlank(room)) {
+            client.getBasicRemote().sendText("请先加入房间！");
             return;
         }
         if(data.isEmpty()){
@@ -43,10 +37,10 @@ public class ChatHandler {
                 sb.append(preset.getId()).append("\t")
                     .append(preset.getCh()).append("\n");
             }
-            socketIOServer.getClient(me).sendEvent("receiveMsg", sb.toString());
+            client.getBasicRemote().sendText(sb.toString());
             return;
         }
-        String name = userNames.get(me);
+        String name = userNames.get(client);
 
         Integer id = -1;
         try {
@@ -55,33 +49,20 @@ public class ChatHandler {
 
         for (ChatPreset preset : ChatPreset.values()) {
             if(id.equals(preset.getId())){
-                socketIOServer.getRoomOperations(room.get()).sendEvent(
-                    "receiveMsg", "【房间】" +name+ "："+ preset.getCh());
+                userRoom.forEach((k,v)->{if(v==room) {
+                    try {
+                        k.getBasicRemote().sendText("【房间】" +name+ "："+ preset.getCh());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                });
                 return;
             }
         }
 
-        socketIOServer.getClient(me).sendEvent("receiveMsg", "输入序号错误！");
+        client.getBasicRemote().sendText("输入序号错误！");
     }
 
-    /**
-     * 发送广播消息
-     * */
-    @OnEvent(value = "broadcastChat")
-    public void broadcastChat(SocketIOClient client, String data) {
-        String name = userNames.get(client.getSessionId());
-        socketIOServer.getBroadcastOperations().sendEvent("broadcastChat", "【全体】" +name+ "："+ data);
-    }
-
-    /**
-     * 发送房间消息
-     * */
-    @OnEvent(value = "roomChat")
-    public void roomChat(SocketIOClient client, String data) {
-        String name = userNames.get(client.getSessionId());
-        for (String room : client.getAllRooms()) {
-            socketIOServer.getRoomOperations(room).sendEvent("roomChat", "【房间】" +name+ "："+ data);
-        }
-    }
 
 }

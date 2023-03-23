@@ -20,8 +20,8 @@ repositories {
 
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter:3.0.1-SNAPSHOT'
-    implementation group: 'com.corundumstudio.socketio', name: 'netty-socketio', version: '1.7.22'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10'

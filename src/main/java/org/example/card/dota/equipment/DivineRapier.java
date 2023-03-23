@@ -16,7 +16,6 @@ public class DivineRapier extends EquipmentCard {
     public int addAtk = 30;
     public int addHp = 0;
     public String job = "dota";
-    private List<String> race = Lists.ofStr("圣遗物");
     public String mark = """
         圣剑在法师之战中，由神亲自交予反叛军之手
         """;

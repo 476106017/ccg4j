@@ -1,9 +1,8 @@
 package org.example.handler;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
+import jakarta.websocket.EncodeException;
+import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
@@ -15,50 +14,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+import jakarta.websocket.Session;
 
 import static org.example.system.Database.userDecks;
 
 @Service
-@ConditionalOnClass(SocketIOServer.class)
 @Slf4j
 public class DeckEditHandler {
     @Autowired
-    SocketIOServer socketIOServer;
-
-    @Autowired
     Gson gson;
 
-    @OnEvent(value = "deck") // 选择预设牌组
-    public void deck(SocketIOClient client, String data) {
-        UUID me = client.getSessionId();
-        PlayerDeck myDeck = userDecks.get(me);
 
-        client.sendEvent("receiveMsg",myDeck.describe());
+    public void deck(Session client) throws IOException, EncodeException {
+        PlayerDeck myDeck = userDecks.get(client);
+
+        client.getBasicRemote().sendObject(myDeck.describeJson());
+//        client.getBasicRemote().sendText(myDeck.describe());
     }
 
-    @OnEvent(value = "usedeck") // 选择预设牌组
-    public void usedeck(SocketIOClient client, String data) {
-        UUID me = client.getSessionId();
+
+    public void usedeck(Session client, String data) throws IOException {
 
         if(Strings.isBlank(data)){
-            client.sendEvent("receiveMsg", DeckPreset.describe());
+            client.getBasicRemote().sendText( DeckPreset.describe());
             return;
         }
         List<Class<? extends Card>> deck = DeckPreset.decks.get(data);
         Class<? extends Leader> leader = DeckPreset.deckLeader.get(data);
         if(deck==null){
-            client.sendEvent("receiveMsg", "不存在的牌组名字");
+            client.getBasicRemote().sendText( "不存在的牌组名字");
             return;
         }
         if(leader==null){
             leader = ThePlayer.class;
         }
 
-        PlayerDeck playerDeck = userDecks.get(me);
+        PlayerDeck playerDeck = userDecks.get(client);
         if(playerDeck==null){
-            client.sendEvent("receiveMsg", "不存在的用户，请刷新页面重新登录");
+            client.getBasicRemote().sendText( "不存在的用户，请刷新页面重新登录");
             return;
         }
 
@@ -67,7 +62,7 @@ public class DeckEditHandler {
         activeDeck.addAll(deck);
         playerDeck.setLeaderClass(leader);
 
-        client.sendEvent("receiveMsg", "成功使用预设牌组：" + data);
+        client.getBasicRemote().sendText( "成功使用预设牌组：" + data);
     }
 
 }

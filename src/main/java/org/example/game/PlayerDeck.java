@@ -1,14 +1,15 @@
 package org.example.game;
 
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.Card;
+import org.example.handler.ChatHandler;
 import org.example.system.Database;
+import org.example.system.util.SpringContext;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.example.game.PlayerInfo.cardDetail;
@@ -67,6 +68,19 @@ public class PlayerDeck {
         sb.append("【使用中的牌组】\n");
         sb.append(describeDeck(activeDeck));
         return sb.toString();
+    }
+
+    public Map describeJson() {
+        Map<String,Object> _return = new HashMap<>();
+        try {
+            Leader leader = leaderClass.getDeclaredConstructor().newInstance();
+            _return.put("leader", leader);
+        }catch (Exception ignored){}
+
+        List<? extends Card> deckCards = activeDeck.stream()
+            .map(Database::getPrototype).sorted(Comparator.comparing(Card::getCost)).toList();
+        _return.put("deck", deckCards);
+        return _return;
     }
 
     public static String describeDeck(List<Class<? extends Card>> deck){

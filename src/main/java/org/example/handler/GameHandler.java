@@ -1,15 +1,12 @@
 package org.example.handler;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.annotation.OnEvent;
 import com.google.gson.Gson;
+import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.example.card.*;
 import org.example.game.*;
 import org.example.system.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,25 +15,21 @@ import java.util.concurrent.Executors;
 import static org.example.system.Database.*;
 
 @Service
-@ConditionalOnClass(SocketIOServer.class)
 @Slf4j
 public class GameHandler {
-    @Autowired
-    SocketIOServer socketIOServer;
 
     @Autowired
     Gson gson;
 
-    @OnEvent(value = "swap")
-    public void swap(SocketIOClient client, String msg) {
-        // region 获取游戏对象
-        UUID me = client.getSessionId();
-        String name = userNames.get(me);
 
-        String room = userRoom.get(me);
+    public void swap(Session client, String msg) {
+        // region 获取游戏对象
+        String name = userNames.get(client);
+
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo player = info.playerBySession(client);
         // endregion
 
         // region 交换
@@ -50,13 +43,13 @@ public class GameHandler {
                 indexI = -1;
             }
             if(indexI<1 || indexI>3){
-                info.msgTo(me,"输入序号错误:"+index);
+                info.msgTo(client,"输入序号错误:"+index);
                 return;
             }
             indexs.add(indexI-1);//这里转成下标
         }
         if(player.getStep()!=-1){
-            info.msgTo(me,"已经过了换牌步骤!");
+            info.msgTo(client,"已经过了换牌步骤!");
             return;
         }
         if(indexs.isEmpty()){
@@ -74,7 +67,7 @@ public class GameHandler {
         // endregion
 
         player.setStep(0);
-        if(info.anotherPlayerByUuid(me).getStep()==0){
+        if(info.anotherPlayerBySession(client).getStep()==0){
             String turnPlayerName = info.getPlayerInfos()[info.getTurnPlayer()].getName();
             // 两名玩家都换完了，开始游戏
             info.msg("双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
@@ -82,29 +75,28 @@ public class GameHandler {
             roomSchedule.put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
             info.startTurn();
         }else {
-            info.msgTo(me,"请等待对方换牌");
+            info.msgTo(client,"请等待对方换牌");
         }
     }
 
     /* 回合结束 */
-    @OnEvent(value = "end")
-    public void turnEnd(SocketIOClient client, String msg){
+
+    public void turnEnd(Session client, String msg){
 
         // region 获取游戏对象
-        UUID me = client.getSessionId();
-        String name = userNames.get(me);
-        String room = userRoom.get(me);
+        String name = userNames.get(client);
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         // endregion
 
-        if(!me.equals(player.getUuid())){
+        if(!client.equals(player.getSession())){
             if("f".equals(msg)){
-                info.msgTo(me,"强制结束对手回合！");
+                info.msgTo(client,"强制结束对手回合！");
                 info.endTurnOfCommand();
             }else {
-                info.msgTo(me,"当前不是你的回合！");
+                info.msgTo(client,"当前不是你的回合！");
             }
             return;
         }
@@ -113,24 +105,23 @@ public class GameHandler {
     }
 
     /* 出牌 */
-    @OnEvent(value = "play")
-    public void play(SocketIOClient client, String msg) {
-        // region 获取游戏对象
-        UUID me = client.getSessionId();
-        String name = userNames.get(me);
 
-        String room = userRoom.get(me);
+    public void play(Session client, String msg) {
+        // region 获取游戏对象
+        String name = userNames.get(client);
+
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         // endregion
 
-        if(!me.equals(player.getUuid())){
-            info.msgTo(me,"当前不是你的回合！");
+        if(!client.equals(player.getSession())){
+            info.msgTo(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() == 2){
-            info.msgTo(me,"请先发现卡牌！（输入discover <序号>）");
+            info.msgTo(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -226,26 +217,25 @@ public class GameHandler {
 
         }
     }
-    @OnEvent(value = "attack")
-    public void attack(SocketIOClient client, String msg){
+
+    public void attack(Session client, String msg){
 
         // region 获取游戏对象
-        UUID me = client.getSessionId();
-        String name = userNames.get(me);
-        String room = userRoom.get(me);
+        String name = userNames.get(client);
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
 
-        if(!me.equals(player.getUuid())){
-            info.msgTo(me,"当前不是你的回合！");
+        if(!client.equals(player.getSession())){
+            info.msgTo(client,"当前不是你的回合！");
             return;
         }
 
         if(player.getStep() == 2){
-            info.msgTo(me,"请先发现卡牌！（输入discover <序号>）");
+            info.msgTo(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -335,24 +325,23 @@ public class GameHandler {
 
 
     }
-    @OnEvent(value = "discover")
-    public void discover(SocketIOClient client, String msg){
+
+    public void discover(Session client, String msg){
 
         // region 获取游戏对象
-        UUID me = client.getSessionId();
-        String name = userNames.get(me);
-        String room = userRoom.get(me);
+        String name = userNames.get(client);
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
-        if(!me.equals(player.getUuid())){
-            info.msgTo(me,"当前不是你的回合！");
+        if(!client.equals(player.getSession())){
+            info.msgTo(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() != 2){
-            info.msgTo(me,"当前状态无法发现卡牌！");
+            info.msgTo(client,"当前状态无法发现卡牌！");
             return;
         }
 
@@ -367,24 +356,23 @@ public class GameHandler {
         }
     }
 
-    @OnEvent(value = "skill")
-    public void skill(SocketIOClient client, String msg){
+
+    public void skill(Session client, String msg){
         // region 获取游戏对象
-        UUID me = client.getSessionId();
-        String name = userNames.get(me);
-        String room = userRoom.get(me);
+        String name = userNames.get(client);
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
 
-        if(!me.equals(player.getUuid())){
-            info.msgTo(me,"当前不是你的回合！");
+        if(!client.equals(player.getSession())){
+            info.msgTo(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() == 2){
-            info.msgTo(me,"请先发现卡牌！（输入discover <序号>）");
+            info.msgTo(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -439,25 +427,23 @@ public class GameHandler {
         info.pushInfo();
     }
 
-    @OnEvent(value = "grave")
-    public void grave(SocketIOClient client, String msg){
 
-        UUID me = client.getSessionId();
+    public void grave(Session client, String msg){
 
-        String room = userRoom.get(me);
+
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerByUuid(me);
+        PlayerInfo player = info.playerBySession(client);
 
-        info.msgTo(me, player.describeGraveyard());
+        info.msgTo(client, player.describeGraveyard());
     }
 
     // TODO 测试用，顺序出牌
-    @OnEvent(value = "test")
-    public void test(SocketIOClient client, String msg){
-        UUID me = client.getSessionId();
 
-        String room = userRoom.get(me);
+    public void test(Session client){
+
+        String room = userRoom.get(client);
         if(room==null)return;
         GameInfo info = roomGame.get(room);
         PlayerInfo player = info.thisPlayer();
@@ -474,7 +460,7 @@ public class GameHandler {
             .findAny().ifPresent(card -> {
             if(card instanceof AreaCard &&
                 player.getArea().size()==player.getAreaMax()){
-                info.msgTo(me,"场上放不下卡牌了！");
+                info.msgTo(client,"场上放不下卡牌了！");
                 return;
             }
             Play play = card.getPlay();

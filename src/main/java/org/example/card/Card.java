@@ -19,7 +19,7 @@ public abstract class Card extends GameObj implements Cloneable {
     public static final int SLOT = 1;
     public static final int APPOSITION = 3;
 
-    private GameObj parent = null;
+    private transient GameObj parent = null;
 
     public void changeParent(GameObj obj){
         info.msg(getNameWithOwner()+"的创造者被变更为："+obj.getName());

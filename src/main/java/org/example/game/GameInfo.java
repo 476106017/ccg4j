@@ -1,13 +1,13 @@
 package org.example.game;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
+import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.util.Lists;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -21,7 +21,6 @@ import static org.example.system.Database.*;
 @Getter
 @Setter
 public class GameInfo {
-    SocketIOServer server;
     String room;
 
     // 连锁
@@ -51,9 +50,8 @@ public class GameInfo {
 
     PlayerInfo[] playerInfos;
 
-    public GameInfo(SocketIOServer server, String room) {
+    public GameInfo(String room) {
         this.room = room;
-        this.server = server;
         this.turn = 1;
         this.turnPlayer = 0;
         this.playerInfos = new PlayerInfo[2];
@@ -69,39 +67,49 @@ public class GameInfo {
         rope.cancel(true);
         this.turn = 1;
         this.turnPlayer = 0;
-        UUID thisUUid = thisPlayer().uuid;
-        UUID oppoUUid = oppositePlayer().uuid;
+        Session thisSession = thisPlayer().session;
+        Session oppoSession = oppositePlayer().session;
         this.playerInfos = new PlayerInfo[2];
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
-        zeroTurn(thisUUid,oppoUUid);
+        zeroTurn(thisSession,oppoSession);
     }
 
     public void msg(String msg){
-        server.getRoomOperations(room).sendEvent("receiveMsg", msg);
+        try {
+            thisPlayer().getSession().getBasicRemote().sendText(msg);
+            oppositePlayer().getSession().getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void msgTo(UUID uuid, String msg){
-        server.getClient(uuid).sendEvent("receiveMsg", msg);
+    public void msgTo(Session Session, String msg){
+        try {
+            Session.getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void pushInfo(){
-        //
-        try {
-            server.getClient(thisPlayer().getUuid())
-                .sendEvent("battleInfo", describeGame(thisPlayer().getUuid()));
-        }catch (Exception ignored){}
-        try {
-            server.getClient(oppositePlayer().getUuid())
-            .sendEvent("battleInfo", describeGame(oppositePlayer().getUuid()));
-        }catch (Exception ignored){}
+        msgToThisPlayer("battleInfo::"+describeGame(thisPlayer().getSession()));
+        msgToOppositePlayer("battleInfo::"+describeGame(oppositePlayer().getSession()));
     }
 
     public void msgToThisPlayer(String msg){
-        server.getClient(thisPlayer().getUuid()).sendEvent("receiveMsg", msg);
+        try {
+            thisPlayer().getSession().getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void msgToOppositePlayer(String msg){
-        server.getClient(oppositePlayer().getUuid()).sendEvent("receiveMsg", msg);
+        try {
+            oppositePlayer().getSession().getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void measureLeader(){
@@ -139,23 +147,13 @@ public class GameInfo {
         pushInfo();
 
         // 释放资源
-        roomReadyMatch.remove(getRoom());
         roomGame.remove(getRoom());
         // 退出房间
         try {
-            // 如果找不到玩家，就算了
-            try {
-                userRoom.remove(thisPlayer().getUuid());
-                SocketIOClient client = server.getClient(thisPlayer().getUuid());
-                client.leaveRoom(getRoom());
-                client.sendEvent("receiveMsg","离开房间成功");
-            }catch (Exception ignored){}
-            try {
-                userRoom.remove(oppositePlayer().getUuid());
-                SocketIOClient client = server.getClient(oppositePlayer().getUuid());
-                client.leaveRoom(getRoom());
-                client.sendEvent("receiveMsg","离开房间成功");
-            }catch (Exception ignored){}
+            userRoom.remove(thisPlayer().getSession());
+            msgToThisPlayer("离开房间成功");
+            userRoom.remove(oppositePlayer().getSession());
+            msgToOppositePlayer("离开房间成功");
 
             rope.cancel(true);
             ScheduledExecutorService ses = roomSchedule.get(getRoom());
@@ -171,15 +169,15 @@ public class GameInfo {
     public PlayerInfo oppositePlayer(){
         return playerInfos[1-turnPlayer];
     }
-    public PlayerInfo playerByUuid(UUID uuid){
-        if(playerInfos[0].uuid == uuid){
+    public PlayerInfo playerBySession(Session Session){
+        if(playerInfos[0].session == Session){
             return playerInfos[0];
         }else {
             return playerInfos[1];
         }
     }
-    public PlayerInfo anotherPlayerByUuid(UUID uuid){
-        if(playerInfos[0].uuid == uuid){
+    public PlayerInfo anotherPlayerBySession(Session Session){
+        if(playerInfos[0].session == Session){
             return playerInfos[1];
         }else {
             return playerInfos[0];
@@ -429,11 +427,11 @@ public class GameInfo {
         return _result;
     }
 
-    public void zeroTurn(UUID u0, UUID u1){
+    public void zeroTurn(Session u0, Session u1){
 
         PlayerInfo p0 = thisPlayer();
         PlayerDeck playerDeck0 = userDecks.get(u0);
-        p0.setUuid(u0);
+        p0.setSession(u0);
         p0.setName(userNames.get(u0));
         p0.setLeader(playerDeck0.getLeader(0, this));
         p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
@@ -441,7 +439,7 @@ public class GameInfo {
 
         PlayerInfo p1 = oppositePlayer();
         PlayerDeck playerDeck1 = userDecks.get(u1);
-        p1.setUuid(u1);
+        p1.setSession(u1);
         p1.setName(userNames.get(u1));
         p1.setLeader(playerDeck1.getLeader(1, this));
         p1.setDeck(playerDeck1.getActiveDeckInstance(1, this));
@@ -637,10 +635,10 @@ public class GameInfo {
     // endregion turn
 
     // region describe
-    public String describeArea(UUID uuid){
+    public String describeArea(Session Session){
         StringBuilder sb = new StringBuilder();
-        PlayerInfo player = playerByUuid(uuid);
-        PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
+        PlayerInfo player = playerBySession(Session);
+        PlayerInfo oppositePlayer = anotherPlayerBySession(Session);
 
         sb.append("【战场信息】\n");
         sb.append("敌方战场：\n");
@@ -713,12 +711,12 @@ public class GameInfo {
     }
 
 
-    public String describeGame(UUID uuid){
+    public String describeGame(Session Session){
         if(gameset)return "无法获取游戏信息";
 
         StringBuilder sb = new StringBuilder();
-        PlayerInfo player = playerByUuid(uuid);
-        PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
+        PlayerInfo player = playerBySession(Session);
+        PlayerInfo oppositePlayer = anotherPlayerBySession(Session);
 
         sb.append("【主战者信息】\n");
         sb.append("玩家【").append(oppositePlayer.name)
@@ -736,7 +734,7 @@ public class GameInfo {
 
         sb.append("\n");
 
-        sb.append(describeArea(uuid));
+        sb.append(describeArea(Session));
 
         sb.append("我的手牌：\n").append(player.describeHand());
 

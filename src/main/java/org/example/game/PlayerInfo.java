@@ -1,5 +1,7 @@
 package org.example.game;
 
+import com.google.gson.Gson;
+import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
@@ -10,8 +12,8 @@ import org.example.constant.EffectTiming;
 import org.example.system.Database;
 import org.example.system.util.Lists;
 import org.example.system.util.FunctionN;
+import org.example.system.util.SpringContext;
 
-import java.awt.geom.Area;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +29,7 @@ public class PlayerInfo {
     GameInfo info;
 
     String name;
-    UUID uuid;
+    Session session;
     boolean initative;// 先攻
     boolean shortRope = false;
     // 战吼
@@ -127,7 +129,7 @@ public class PlayerInfo {
         });
         sb.append("请输入discover <序号>来发现1张卡牌（输错了则任选1张）");
 
-        info.msgTo(getUuid(),sb.toString());
+        info.msgTo(getSession(),sb.toString());
         discoverThread = new Thread(()->{
             Card discoverCard;
             if(cardsCopy.size() <= discoverNum)
@@ -158,7 +160,7 @@ public class PlayerInfo {
     }
 
     public PlayerInfo getEnemy(){
-        return info.anotherPlayerByUuid(getUuid());
+        return info.anotherPlayerBySession(getSession());
     }
 
     public Integer getCount(String key){
@@ -271,8 +273,8 @@ public class PlayerInfo {
 
     public void addDeckBottom(Card card){
         if(getDeck().size()==deckMax)return;
-        info.msgTo(getEnemy().getUuid(),"对手将1张卡放到牌堆底部");
-        info.msgTo(getUuid(),card.getName() + "被放到牌堆底部");
+        info.msgTo(getEnemy().getSession(),"对手将1张卡放到牌堆底部");
+        info.msgTo(getSession(),card.getName() + "被放到牌堆底部");
         getDeck().add(card);
     }
     public void addDeck(Card card){
@@ -284,8 +286,8 @@ public class PlayerInfo {
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
-        info.msgTo(getEnemy().getUuid(),"对手将" + cards.size() + "张卡洗入牌堆中");
-        info.msgTo(getUuid(),
+        info.msgTo(getEnemy().getSession(),"对手将" + cards.size() + "张卡洗入牌堆中");
+        info.msgTo(getSession(),
             cards.stream().map(GameObj::getName).collect(Collectors.joining("、")) + "被洗入牌堆");
         cards.forEach(card -> {
             int index = (int)(Math.random() * getDeck().size());
@@ -299,8 +301,8 @@ public class PlayerInfo {
 
 
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
-        info.msgTo(getUuid(),cardNames.isBlank()?"没有牌":cardNames + "加入了手牌");
-        info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手手牌");
+        info.msgTo(getSession(),cardNames.isBlank()?"没有牌":cardNames + "加入了手牌");
+        info.msgTo(getEnemy().getSession(),cards.size() + "张牌加入了对手手牌");
         int cardsSize = cards.size();
         int handSize = hand.size();
         int handTotal = handSize + cardsSize;
@@ -342,10 +344,10 @@ public class PlayerInfo {
     public void addGraveyard(List<Card> cards){
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
         if(cards.size()<10)
-            info.msgTo(getUuid(),cardNames + "加入了墓地");
+            info.msgTo(getSession(),cardNames + "加入了墓地");
         else
-            info.msgTo(getUuid(),cards.size() + "张牌加入了墓地");
-        info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手墓地");
+            info.msgTo(getSession(),cards.size() + "张牌加入了墓地");
+        info.msgTo(getEnemy().getSession(),cards.size() + "张牌加入了对手墓地");
         graveyardCount+=cards.size();
         graveyard.addAll(cards);
     }
@@ -589,7 +591,7 @@ public class PlayerInfo {
         }
         getGraveyard().removeAll(cards);
         addDeck(cards);
-        info.msgTo(getUuid(),cards.stream().map(GameObj::getName).collect(Collectors.joining("、"))+"轮回到了牌堆中");
+        info.msgTo(getSession(),cards.stream().map(GameObj::getName).collect(Collectors.joining("、"))+"轮回到了牌堆中");
         info.msg(getName() + "的"+cards.size()+"张牌轮回了");
         info.tempCardEffectBatch(cards,EffectTiming.Transmigration);
         count(TRANSMIGRATION_NUM,cards.size());

@@ -19,11 +19,11 @@ public abstract class GameObj {
     private static int id_iter=10000; //共用的静态变量
     public final int id;
 
-    protected GameInfo info = null;
+    protected transient GameInfo info = null;
 
-    public Elemental elementalCling = Elemental.Void;
+    public transient Elemental elementalCling = Elemental.Void;
 
-    protected int owner = 0;
+    protected transient int owner = 0;
     public void changeOwner(){
         owner = 1-owner;
     }
@@ -57,7 +57,7 @@ public abstract class GameObj {
 
 
     // region 效果操作
-    private List<Effect> effects = new ArrayList<>();
+    private transient List<Effect> effects = new ArrayList<>();
 
     public void addEffects(Effect effect){
         effects.add(effect);

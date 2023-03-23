@@ -1,12 +1,13 @@
 package org.example.game;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.EffectTiming;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import jakarta.websocket.Session;
 import java.util.function.Consumer;
 
 
@@ -15,15 +16,17 @@ import java.util.function.Consumer;
 public abstract class Leader extends GameObj {
 
 
-    private boolean needTarget = true;
-    private boolean canUseSkill = true;
-    private String Mark = "";// 能力介绍
+    private transient boolean needTarget = true;
+    private transient boolean canUseSkill = true;
+    private transient String Mark = "";// 能力介绍
 
-    private String overDrawMark = """
+    private transient String overDrawMark = """
         输掉游戏
         """;
     // 默认超抽效果（输掉游戏）
-    private Consumer<Integer> overDraw = integer -> info.gameset(enemyPlayer());
+    private transient Consumer<Integer> overDraw = integer -> info.gameset(enemyPlayer());
+
+    private transient List<Effect> effects = new ArrayList<>();
 
     public abstract String getJob();
     public abstract String getSkillName();
@@ -36,13 +39,12 @@ public abstract class Leader extends GameObj {
         return ownerPlayer().getHp();
     };
 
-    private List<Effect> effects = new ArrayList<>();
 
     public List<GameObj> targetable(){return new ArrayList<>();}
 
     public void skill(GameObj target){
         GameInfo info = ownerPlayer().getInfo();
-        UUID me = ownerPlayer().getUuid();
+        Session me = ownerPlayer().getSession();
 
         if(!isCanUseSkill()){
             info.msgToThisPlayer("现在无法使用主战者技能！");
@@ -103,4 +105,5 @@ public abstract class Leader extends GameObj {
             });
         getEffects().removeAll(usedUpEffects);
     }
+
 }
