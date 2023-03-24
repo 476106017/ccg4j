@@ -16,7 +16,6 @@
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.20.1/moment.min.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.20.1/locale/zh-cn.js"></script>
     <style>
@@ -66,7 +65,7 @@
 </div>
 
 <script type="text/javascript" th:inline="javascript">
-        var userName, socket;
+        var userName, websocket;
         var historyIndex = 0;
         var historyStack=[];
         // Socket连接
@@ -76,14 +75,10 @@
             if ($.trim(userName)) {
                 if(true)
                     // 本地运行
-                    socket = io.connect("localhost:18089", {
-                        'query': 'name=' + userName
-                    });
+                    websocket = new WebSocket("ws://localhost:18081/socket/"+userName);
                 else
                     // 上线请用nginx代理
-                    socket = io.connect(document.domain, {
-                       'query': 'name=' + userName
-                    });
+                    websocket = new WebSocket("ws://www.card4j.top:18081/socket/"+userName);
 
                 $("#name").html("你好，"+userName);
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
@@ -91,10 +86,25 @@
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
                     "&nbsp;&nbsp;&nbsp;【站长的话】如果你是软件开发人员，欢迎你贡献代码！项目地址：https://github.com/476106017/ccg4j</li>");
 
-                // 成功连接事件
-                socket.on('connect', function () {});
-                // 断开连接事件
-                socket.on('disconnect', function () {});
+
+                //        连接发生错误的时候回调方法；
+                websocket.onerror = function () {
+                    alert("连接错误");
+                }
+                //       连接成功时建立回调方法
+                websocket.onopen = function () {
+                    //WebSocket已连接上，使用send()方法发送数据
+                    alert("连接成功");
+                };
+                //      收到消息的回调方法
+                websocket.onmessage = function (msg) {
+                    setdivInnerHTML(msg.data);
+                };
+                //      连接关闭的回调方法
+                websocket.onclose = function () {
+                    closed();
+                    alert("关闭成功");
+                };
 
                 // 监听receiveMsg接收消息事件
                 socket.on('receiveMsg', function (data) {
