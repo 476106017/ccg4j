@@ -6,7 +6,6 @@ import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.game.Damage;
 
-import java.awt.geom.Area;
 import java.util.List;
 
 @Getter

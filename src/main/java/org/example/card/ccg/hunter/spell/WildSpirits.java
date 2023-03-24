@@ -3,7 +3,6 @@ package org.example.card.ccg.hunter.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.card.ccg.hunter.Rexxar;
 import org.example.game.Play;

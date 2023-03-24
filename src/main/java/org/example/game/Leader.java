@@ -1,13 +1,12 @@
 package org.example.game;
 
-import com.google.gson.annotations.SerializedName;
+import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.EffectTiming;
 
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.websocket.Session;
 import java.util.function.Consumer;
 
 

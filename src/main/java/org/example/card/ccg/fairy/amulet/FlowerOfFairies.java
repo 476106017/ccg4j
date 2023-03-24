@@ -3,7 +3,6 @@ package org.example.card.ccg.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-
 import org.example.card._derivant.Derivant;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;

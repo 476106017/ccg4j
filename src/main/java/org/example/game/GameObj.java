@@ -6,8 +6,8 @@ import lombok.Setter;
 import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
-import org.example.morecard.genshin.system.Elemental;
 import org.example.constant.EffectTiming;
+import org.example.morecard.genshin.system.Elemental;
 
 import java.util.ArrayList;
 import java.util.List;

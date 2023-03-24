@@ -3,13 +3,13 @@ package org.example.morecard.genshin.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.morecard.genshin.LittlePrincess;
-import org.example.morecard.genshin.system.ElementCostSpellCard;
-import org.example.morecard.genshin.system.Elemental;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Leader;
 import org.example.game.Play;
+import org.example.morecard.genshin.LittlePrincess;
+import org.example.morecard.genshin.system.ElementCostSpellCard;
+import org.example.morecard.genshin.system.Elemental;
 import org.example.system.util.Lists;
 
 import java.util.List;

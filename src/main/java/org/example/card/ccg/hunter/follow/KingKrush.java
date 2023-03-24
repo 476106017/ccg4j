@@ -3,8 +3,6 @@ package org.example.card.ccg.hunter.follow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
-import org.example.constant.EffectTiming;
-import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;

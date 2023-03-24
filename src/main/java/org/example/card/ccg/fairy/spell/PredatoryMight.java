@@ -4,16 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.game.Damage;
-import org.example.game.DamageMulti;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static org.example.constant.CounterKey.PLAY_NUM;
 
 
 @Getter

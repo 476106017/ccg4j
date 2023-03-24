@@ -3,7 +3,6 @@ package org.example.card.ccg.festival.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
-import org.example.card.anime.jojo.follow.EnricoPucci;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;

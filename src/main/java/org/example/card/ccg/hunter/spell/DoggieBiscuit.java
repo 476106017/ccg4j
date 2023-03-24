@@ -2,15 +2,12 @@ package org.example.card.ccg.hunter.spell;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Getter

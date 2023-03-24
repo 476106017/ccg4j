@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.UUID;
 
-import jakarta.websocket.Session;
-
 import static org.example.system.Database.*;
 
 @Service

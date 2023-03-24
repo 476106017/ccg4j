@@ -3,13 +3,9 @@ package org.example.card.ccg.nemesis.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
-import org.example.card.Card;
 import org.example.constant.EffectTiming;
-import org.example.game.Damage;
 import org.example.game.Effect;
-import org.example.game.Play;
 import org.example.system.util.Lists;
-import org.example.system.util.MyMath;
 
 import java.util.List;
 
