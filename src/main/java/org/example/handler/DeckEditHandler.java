@@ -36,8 +36,8 @@ public class DeckEditHandler {
     public void deck(Session client) throws IOException, EncodeException {
         PlayerDeck myDeck = userDecks.get(client);
 
-        client.getBasicRemote().sendObject(myDeck.describeJson());
-//        client.getBasicRemote().sendText(myDeck.describe());
+//        client.getBasicRemote().sendObject(myDeck.describeJson());
+        client.getBasicRemote().sendText(myDeck.describe());
     }
 
 
@@ -46,23 +46,8 @@ public class DeckEditHandler {
         final Map<String, List<Class<? extends Card>>> decks = DeckPreset.decks;
         if(Strings.isBlank(data)){
             // region 如果不输入选择牌组，则返回全部牌组
-            List<Map<String,Object>> deckInfo = new ArrayList<>();
-            decks.forEach((name,cardClassList)-> {
-                final List<? extends Card> prototypes = cardClassList.stream().map(Database::getPrototype).toList();
-                Leader leader;
-                try {
-                    Class<? extends Leader> leaderClass = DeckPreset.deckLeader.get(name);
-                    if(leaderClass==null){
-                        leaderClass = ThePlayer.class;
-                    }
-                    leader = leaderClass.getDeclaredConstructor().newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-                deckInfo.add(Maps.newMap("name", name, "leader", leader,"deck", prototypes));
-            });
-            client.getBasicRemote().sendObject(deckInfo);
+            client.getBasicRemote().sendText(DeckPreset.describe());
+//            client.getBasicRemote().sendObject(DeckPreset.describeJson());
             return;
             // endregion 如果不输入选择牌组，则返回全部牌组
         }

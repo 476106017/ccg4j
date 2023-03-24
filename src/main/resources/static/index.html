@@ -82,54 +82,51 @@
 
                 $("#name").html("你好，"+userName);
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
-                    "&nbsp;&nbsp;&nbsp;【站长的话】征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（NGA）42798172（小红书）5628177244 （Bilibili）漆黑Ganker</li>");
+                    "&nbsp;&nbsp;&nbsp;【站长的话】征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（Bilibili）漆黑Ganker</li>");
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
                     "&nbsp;&nbsp;&nbsp;【站长的话】如果你是软件开发人员，欢迎你贡献代码！项目地址：https://github.com/476106017/ccg4j</li>");
 
 
                 //        连接发生错误的时候回调方法；
                 websocket.onerror = function () {
-                    alert("连接错误");
+                    log.console("连接错误");
                 }
                 //       连接成功时建立回调方法
                 websocket.onopen = function () {
                     //WebSocket已连接上，使用send()方法发送数据
-                    alert("连接成功");
+                    $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;<b style='color:red'>连接服务器成功</b></li>");
                 };
                 //      收到消息的回调方法
                 websocket.onmessage = function (msg) {
-                    setdivInnerHTML(msg.data);
+                    let data = msg.data;
+                    if(data.startsWith("battleInfo::")){
+                        data = data.slice(12)
+
+                        $('#battleInfo').html(data);
+                        $(function () {
+                            $("[data-toggle='popover']").popover();
+
+                            $("[data-toggle='popover']").on("click",function(e){
+                                e.stopPropagation();
+                            });
+                        });
+                    }else{
+                        $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
+                        $(function () {
+                            $("[data-toggle='popover']").popover();
+
+                            $("[data-toggle='popover']").on("click",function(e){
+                                e.stopPropagation();
+                            });
+                        });
+                        scrollToEnd();
+                    }
                 };
                 //      连接关闭的回调方法
                 websocket.onclose = function () {
-                    closed();
-                    alert("关闭成功");
+                    //WebSocket已连接上，使用send()方法发送数据
+                    $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;<b style='color:red'>已断开连接</b></li>");
                 };
-
-                // 监听receiveMsg接收消息事件
-                socket.on('receiveMsg', function (data) {
-                    $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + data+  "</li>");
-                    $(function () {
-                        $("[data-toggle='popover']").popover();
-
-                        $("[data-toggle='popover']").on("click",function(e){
-                            e.stopPropagation();
-                        });
-                    });
-                    scrollToEnd();
-                });
-                socket.on('battleInfo', function (data) {
-                    $('#battleInfo').html(data);
-                    $(function () {
-                        $("[data-toggle='popover']").popover();
-
-                        $("[data-toggle='popover']").on("click",function(e){
-                            e.stopPropagation();
-                        });
-                    });
-                });
-            } else {
-                alert("非法用户名");
             }
         }
 
@@ -164,7 +161,7 @@
             if(index==-1) index=input.length;
             let msgEvent = input.substring(0,index);
             let msgContent = input.substring(index+1,input.length);
-            socket.emit(msgEvent, msgContent);
+            websocket.send(msgEvent+"::"+msgContent);
             historyStack.push(input);
             historyIndex = 0;
             $("#msgContent").val('');

@@ -29,6 +29,7 @@ import org.example.card.ccg.necromancer.spell.*;
 import org.example.card.ccg.nemesis.Yuwan;
 import org.example.card.ccg.nemesis.follow.ImmortalAegis;
 import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
+import org.example.card.ccg.neutral.ThePlayer;
 import org.example.card.ccg.neutral.amulet.TestOfStrength;
 import org.example.card.ccg.neutral.follow.*;
 import org.example.card.ccg.neutral.spell.*;
@@ -58,7 +59,10 @@ import org.example.card.other.test.folow.TestFollow;
 import org.example.card.paripi.Kongming;
 import org.example.card.paripi.follow.*;
 import org.example.game.Leader;
+import org.example.system.Database;
+import org.example.system.util.Maps;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,5 +198,24 @@ public class DeckPreset {
         sb.append("输入 usedeck <牌组名字> 使用预设牌组\n");
 
         return sb.toString();
+    }
+    public static List describeJson(){
+        List<Map<String,Object>> deckInfo = new ArrayList<>();
+        decks.forEach((name,cardClassList)-> {
+            final List<? extends Card> prototypes = cardClassList.stream().map(Database::getPrototype).toList();
+            Leader leader;
+            try {
+                Class<? extends Leader> leaderClass = DeckPreset.deckLeader.get(name);
+                if(leaderClass==null){
+                    leaderClass = ThePlayer.class;
+                }
+                leader = leaderClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            deckInfo.add(Maps.newMap("name", name, "leader", leader,"deck", prototypes));
+        });
+        return deckInfo;
     }
 }
