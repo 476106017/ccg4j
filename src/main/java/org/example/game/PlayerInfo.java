@@ -1,17 +1,22 @@
 package org.example.game;
 
+import jakarta.websocket.EncodeException;
+import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.*;
+import org.example.card.AreaCard;
+import org.example.card.Card;
+import org.example.card.FollowCard;
 import org.example.constant.CounterKey;
-import org.example.morecard.genshin.LittlePrincess;
-import org.example.morecard.genshin.system.ElementCostSpellCard;
+import org.example.constant.DeckPreset;
 import org.example.constant.EffectTiming;
 import org.example.system.Database;
-import org.example.system.util.Lists;
 import org.example.system.util.FunctionN;
+import org.example.system.util.Lists;
+import org.example.system.util.Msg;
 
-import java.awt.geom.Area;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,11 +28,11 @@ import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 
 @Getter
 @Setter
-public class PlayerInfo {
-    GameInfo info;
+public class PlayerInfo implements Serializable {
+    transient GameInfo info;
 
     String name;
-    UUID uuid;
+    transient Session session;
     boolean initative;// 先攻
     boolean shortRope = false;
     // 战吼
@@ -36,7 +41,7 @@ public class PlayerInfo {
     int hpMax = 30;
     int step = -1; // 0换牌完成 1使用 2发现
     int discoverMax = 3; // 发现卡牌数量
-    Thread discoverThread = null;
+    transient Thread discoverThread = null;
     int discoverNum = 0; // 发现卡牌序号
     int ppNum = 0;
     int ppMax = 0;
@@ -44,12 +49,12 @@ public class PlayerInfo {
     int deckMax = 60;
     int handMax = 9;
     int areaMax = 7;
-    List<Card> deck = new ArrayList<>();
+    transient List<Card> deck = new ArrayList<>();
     List<Card> hand = new ArrayList<>();
     Predicate<Card> handPlayable = card -> true;
     List<AreaCard> area = new ArrayList<>();
-    List<Card> graveyard = new ArrayList<>();
-    Set<Card> abandon = new HashSet<>();
+    transient List<Card> graveyard = new ArrayList<>();
+    transient Set<Card> abandon = new HashSet<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
     public void countToGraveyard(int count){
         graveyardCount = Math.max(0, graveyardCount + count);
@@ -116,18 +121,9 @@ public class PlayerInfo {
 
         ArrayList<Card> cardsCopy = new ArrayList<>(cards);
         Collections.shuffle(cardsCopy);
-        cardsCopy.forEach(card -> {
-            sb.append("<p>");
-            sb.append("【").append(num.getAndIncrement()).append("】\t")
-                .append(card.getCost()).append("\t")
-                .append(card.getType()).append("\t")
-                .append(card.getName()).append("\t")
-                .append(String.join("/", card.getRace())).append("\t")
-                .append(cardDetail(card)).append("</p>");
-        });
-        sb.append("请输入discover <序号>来发现1张卡牌（输错了则任选1张）");
 
-        info.msgTo(getUuid(),sb.toString());
+        Msg.send(getSession(),"discover", cardsCopy);
+
         discoverThread = new Thread(()->{
             Card discoverCard;
             if(cardsCopy.size() <= discoverNum)
@@ -158,7 +154,7 @@ public class PlayerInfo {
     }
 
     public PlayerInfo getEnemy(){
-        return info.anotherPlayerByUuid(getUuid());
+        return info.anotherPlayerBySession(getSession());
     }
 
     public Integer getCount(String key){
@@ -271,8 +267,8 @@ public class PlayerInfo {
 
     public void addDeckBottom(Card card){
         if(getDeck().size()==deckMax)return;
-        info.msgTo(getEnemy().getUuid(),"对手将1张卡放到牌堆底部");
-        info.msgTo(getUuid(),card.getName() + "被放到牌堆底部");
+        info.msgTo(getEnemy().getSession(),"对手将1张卡放到牌堆底部");
+        info.msgTo(getSession(),card.getName() + "被放到牌堆底部");
         getDeck().add(card);
     }
     public void addDeck(Card card){
@@ -284,8 +280,8 @@ public class PlayerInfo {
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
-        info.msgTo(getEnemy().getUuid(),"对手将" + cards.size() + "张卡洗入牌堆中");
-        info.msgTo(getUuid(),
+        info.msgTo(getEnemy().getSession(),"对手将" + cards.size() + "张卡洗入牌堆中");
+        info.msgTo(getSession(),
             cards.stream().map(GameObj::getName).collect(Collectors.joining("、")) + "被洗入牌堆");
         cards.forEach(card -> {
             int index = (int)(Math.random() * getDeck().size());
@@ -299,8 +295,8 @@ public class PlayerInfo {
 
 
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
-        info.msgTo(getUuid(),cardNames.isBlank()?"没有牌":cardNames + "加入了手牌");
-        info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手手牌");
+        info.msgTo(getSession(),cardNames.isBlank()?"没有牌":cardNames + "加入了手牌");
+        info.msgTo(getEnemy().getSession(),cards.size() + "张牌加入了对手手牌");
         int cardsSize = cards.size();
         int handSize = hand.size();
         int handTotal = handSize + cardsSize;
@@ -342,10 +338,10 @@ public class PlayerInfo {
     public void addGraveyard(List<Card> cards){
         String cardNames = cards.stream().map(Card::getName).collect(Collectors.joining("、"));
         if(cards.size()<10)
-            info.msgTo(getUuid(),cardNames + "加入了墓地");
+            info.msgTo(getSession(),cardNames + "加入了墓地");
         else
-            info.msgTo(getUuid(),cards.size() + "张牌加入了墓地");
-        info.msgTo(getEnemy().getUuid(),cards.size() + "张牌加入了对手墓地");
+            info.msgTo(getSession(),cards.size() + "张牌加入了墓地");
+        info.msgTo(getEnemy().getSession(),cards.size() + "张牌加入了对手墓地");
         graveyardCount+=cards.size();
         graveyard.addAll(cards);
     }
@@ -589,110 +585,10 @@ public class PlayerInfo {
         }
         getGraveyard().removeAll(cards);
         addDeck(cards);
-        info.msgTo(getUuid(),cards.stream().map(GameObj::getName).collect(Collectors.joining("、"))+"轮回到了牌堆中");
+        info.msgTo(getSession(),cards.stream().map(GameObj::getName).collect(Collectors.joining("、"))+"轮回到了牌堆中");
         info.msg(getName() + "的"+cards.size()+"张牌轮回了");
         info.tempCardEffectBatch(cards,EffectTiming.Transmigration);
         count(TRANSMIGRATION_NUM,cards.size());
-    }
-
-    public String describePPNum(){
-        if(getLeader() instanceof LittlePrincess littlePrincess)
-            return "剩余pp：【"+getPpNum()+"】\n"+littlePrincess.showDices();
-        else
-            return "剩余pp：【"+getPpNum()+"】\n";
-    }
-
-    public String describeGraveyard(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("【墓地】\n");
-        for (int i = 0; i < graveyard.size(); i++) {
-            Card card = graveyard.get(i);
-            sb.append("【").append(i+1).append("】\t")
-                .append(card.getType()).append("\t")
-                .append(card.getId()).append("\t")
-                .append(card.getCost()).append("\t")
-                .append(String.join("/", card.getRace())).append("\t")
-                .append(cardDetail(card)).append("</p>");
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-    public String describeHand(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("【手牌信息】\n");
-        for (int i = 0; i < hand.size(); i++) {
-            Card card = hand.get(i);
-            sb.append("<p>");
-            sb.append("【").append(i+1).append("】\t")
-                .append(card.getCost()).append("\t")
-                .append(card.getType()).append("\t")
-                .append(card.getId()).append("\t")
-                .append(String.join("/", card.getRace())).append("\t")
-                .append(cardDetail(card)).append("</p>");
-        }
-        sb.append("<br/>");
-        if(getStep()!=-1){// 不是换牌阶段
-            if(info.thisPlayer()==this){
-                if (getLeader().isCanUseSkill())
-                    sb.append("<p>可使用主战者技能：").append(getLeader().getSkillName())
-                        .append("（").append(getLeader().getSkillCost()).append("）")
-                        .append("""
-                   <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                            title="%s" data-content="%s" data-placement="auto top"
-                            data-container="body" data-toggle="popover"
-                              data-trigger="hover" data-html="true"/></p>
-                    """.formatted(getLeader().getSkillName(),getLeader().getSkillMark().replaceAll("\\n","<br/>")));
-                else
-                    sb.append("不可使用主战者技能<br/>");
-                sb.append(describePPNum());
-            }else {
-                sb.append("等待对手的回合结束......");
-            }
-        }
-        return sb.toString();
-    }
-
-
-    public static String cardDetail(Card card){
-
-        StringBuilder detail = new StringBuilder();
-        if(card instanceof FollowCard followCard)
-            detail.append(followCard.getAtk()).append("➹")
-                .append(followCard.getHp()).append("♥");
-        if (card instanceof EquipmentCard equipmentCard) {
-            detail.append(equipmentCard.getAddAtk()).append("➹")
-                .append(equipmentCard.getAddHp()).append("♥");
-            if (equipmentCard.getCountdown() > 0) {
-                detail.append(equipmentCard.getCountdown()).append("⌛︎");
-            }
-        }
-        if (card instanceof AmuletCard amuletCard) {
-            if (amuletCard.getCountDown() > 0) {
-                detail.append(amuletCard.getCountDown()).append("⌛︎");
-            }
-        }
-        if (card instanceof ElementCostSpellCard elementCostSpellCard) {
-            elementCostSpellCard.getElementCost().forEach(elemental -> {
-                detail.append("【").append(elemental.getStr().replaceAll("元素","")).append("】︎");
-            });
-        }
-        detail.append("<div style='text-align:right;float:right;'>")
-            .append(String.join("/",card.getRace())).append("</div>\n");
-        if(!card.getKeywords().isEmpty())
-            detail.append("<b>").append(card.getKeywordStr()).append("</b>\n");
-
-        detail.append("<img src='/"+card.getName()+".jpg'>").append("<br/>");
-        detail.append(card.getMark()).append("\n");
-        if(card.info!=null && !card.getSubMark().isBlank())
-            detail.append("\n").append(card.getSubMark());
-        detail.append("\n\n职业：").append(card.getJob());
-
-        return """
-            <icon class="glyphicon glyphicon-eye-open" style="font-size:18px;"
-                    title="%s" data-content="%s" data-placement="auto top"
-                    data-container="body" data-toggle="popover"
-                      data-trigger="hover" data-html="true"/>
-            """.formatted(card.getName(),detail.toString().replaceAll("\\n","<br/>"));
     }
 
     @Getter

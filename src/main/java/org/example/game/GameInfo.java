@@ -1,13 +1,16 @@
 package org.example.game;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
+import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.util.Lists;
+import org.example.system.util.Maps;
+import org.example.system.util.Msg;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -15,13 +18,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
-import static org.example.game.PlayerInfo.cardDetail;
 import static org.example.system.Database.*;
 
 @Getter
 @Setter
-public class GameInfo {
-    SocketIOServer server;
+public class GameInfo implements Serializable {
     String room;
 
     // 连锁
@@ -51,9 +52,8 @@ public class GameInfo {
 
     PlayerInfo[] playerInfos;
 
-    public GameInfo(SocketIOServer server, String room) {
+    public GameInfo(String room) {
         this.room = room;
-        this.server = server;
         this.turn = 1;
         this.turnPlayer = 0;
         this.playerInfos = new PlayerInfo[2];
@@ -69,39 +69,37 @@ public class GameInfo {
         rope.cancel(true);
         this.turn = 1;
         this.turnPlayer = 0;
-        UUID thisUUid = thisPlayer().uuid;
-        UUID oppoUUid = oppositePlayer().uuid;
+        Session thisSession = thisPlayer().session;
+        Session oppoSession = oppositePlayer().session;
         this.playerInfos = new PlayerInfo[2];
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
-        zeroTurn(thisUUid,oppoUUid);
+        zeroTurn(thisSession,oppoSession);
     }
 
     public void msg(String msg){
-        server.getRoomOperations(room).sendEvent("receiveMsg", msg);
+        try {
+Msg.send(thisPlayer().getSession(),msg);
+Msg.send(oppositePlayer().getSession(),msg);
+        } catch (Exception ignored) {}
     }
 
-    public void msgTo(UUID uuid, String msg){
-        server.getClient(uuid).sendEvent("receiveMsg", msg);
+    public void msgTo(Session session, String msg){
+        Msg.send(session,msg);
     }
 
     public void pushInfo(){
-        //
-        try {
-            server.getClient(thisPlayer().getUuid())
-                .sendEvent("battleInfo", describeGame(thisPlayer().getUuid()));
-        }catch (Exception ignored){}
-        try {
-            server.getClient(oppositePlayer().getUuid())
-            .sendEvent("battleInfo", describeGame(oppositePlayer().getUuid()));
-        }catch (Exception ignored){}
+        Msg.send(thisPlayer().getSession(),"battleInfo",
+            Maps.newMap("me",thisPlayer(),"enemy",oppositePlayer()));
+        Msg.send(oppositePlayer().getSession(),"battleInfo",
+            Maps.newMap("me",oppositePlayer(),"enemy",thisPlayer()));
     }
 
     public void msgToThisPlayer(String msg){
-        server.getClient(thisPlayer().getUuid()).sendEvent("receiveMsg", msg);
+        Msg.send(thisPlayer().getSession(),msg);
     }
     public void msgToOppositePlayer(String msg){
-        server.getClient(oppositePlayer().getUuid()).sendEvent("receiveMsg", msg);
+        Msg.send(oppositePlayer().getSession(),msg);
     }
 
     public void measureLeader(){
@@ -139,23 +137,13 @@ public class GameInfo {
         pushInfo();
 
         // 释放资源
-        roomReadyMatch.remove(getRoom());
         roomGame.remove(getRoom());
         // 退出房间
         try {
-            // 如果找不到玩家，就算了
-            try {
-                userRoom.remove(thisPlayer().getUuid());
-                SocketIOClient client = server.getClient(thisPlayer().getUuid());
-                client.leaveRoom(getRoom());
-                client.sendEvent("receiveMsg","离开房间成功");
-            }catch (Exception ignored){}
-            try {
-                userRoom.remove(oppositePlayer().getUuid());
-                SocketIOClient client = server.getClient(oppositePlayer().getUuid());
-                client.leaveRoom(getRoom());
-                client.sendEvent("receiveMsg","离开房间成功");
-            }catch (Exception ignored){}
+            userRoom.remove(thisPlayer().getSession());
+            msgToThisPlayer("离开房间成功");
+            userRoom.remove(oppositePlayer().getSession());
+            msgToOppositePlayer("离开房间成功");
 
             rope.cancel(true);
             ScheduledExecutorService ses = roomSchedule.get(getRoom());
@@ -171,15 +159,15 @@ public class GameInfo {
     public PlayerInfo oppositePlayer(){
         return playerInfos[1-turnPlayer];
     }
-    public PlayerInfo playerByUuid(UUID uuid){
-        if(playerInfos[0].uuid == uuid){
+    public PlayerInfo playerBySession(Session session){
+        if(playerInfos[0].session == session){
             return playerInfos[0];
         }else {
             return playerInfos[1];
         }
     }
-    public PlayerInfo anotherPlayerByUuid(UUID uuid){
-        if(playerInfos[0].uuid == uuid){
+    public PlayerInfo anotherPlayerBySession(Session session){
+        if(playerInfos[0].session == session){
             return playerInfos[1];
         }else {
             return playerInfos[0];
@@ -429,11 +417,11 @@ public class GameInfo {
         return _result;
     }
 
-    public void zeroTurn(UUID u0, UUID u1){
+    public void zeroTurn(Session u0, Session u1){
 
         PlayerInfo p0 = thisPlayer();
         PlayerDeck playerDeck0 = userDecks.get(u0);
-        p0.setUuid(u0);
+        p0.setSession(u0);
         p0.setName(userNames.get(u0));
         p0.setLeader(playerDeck0.getLeader(0, this));
         p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
@@ -441,7 +429,7 @@ public class GameInfo {
 
         PlayerInfo p1 = oppositePlayer();
         PlayerDeck playerDeck1 = userDecks.get(u1);
-        p1.setUuid(u1);
+        p1.setSession(u1);
         p1.setName(userNames.get(u1));
         p1.setLeader(playerDeck1.getLeader(1, this));
         p1.setDeck(playerDeck1.getActiveDeckInstance(1, this));
@@ -449,9 +437,8 @@ public class GameInfo {
 
         p0.draw(3);
         p1.draw(3);
-        msgToThisPlayer("你的手牌:\n"+p0.describeHand());
-        msgToOppositePlayer("你的手牌:\n"+p1.describeHand());
         msg("游戏开始，请选择3张手牌交换");
+        pushInfo();
     }
 
     // region turn
@@ -635,112 +622,4 @@ public class GameInfo {
     }
 
     // endregion turn
-
-    // region describe
-    public String describeArea(UUID uuid){
-        StringBuilder sb = new StringBuilder();
-        PlayerInfo player = playerByUuid(uuid);
-        PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
-
-        sb.append("【战场信息】\n");
-        sb.append("敌方战场：\n");
-        for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
-            sb.append("<p>");
-            Card card = oppositePlayer.getArea().get(i);
-            sb.append("【").append(i+1).append("】\t")
-                .append(card.getType()).append("\t")
-                .append(card.getId()).append("\t");
-            if("随从".equals(card.getType())){
-                FollowCard follow = (FollowCard) card;
-                if(follow.notAttacked()){
-                    sb.append("未攻击").append("\t");
-                }
-                sb.append(follow.getAtk()).append("/").append(follow.getHp())
-                    .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
-                if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getId());
-                    if(follow.getEquipment().getCountdown()!=-1)
-                        sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
-                    sb.append("\t");
-                }
-            }
-            if("护符".equals(card.getType())){
-                AmuletCard amulet = (AmuletCard) card;
-                if(amulet.getCountDown()>0){
-                    sb.append("倒数：").append(amulet.getCountDown()).append("\t");
-                }
-            }
-
-            if(!card.getKeywords().isEmpty())
-                sb.append(card.getKeywords());
-            sb.append(cardDetail(card)).append("</p>");
-        }
-        sb.append("\n我方战场：\n");
-        for (int i = 0; i < player.getArea().size(); i++) {
-            sb.append("<p>");
-            Card card = player.getArea().get(i);
-            sb.append("【").append(i+1).append("】\t")
-                .append(card.getType()).append("\t")
-                .append(card.getId()).append("\t");
-            if("随从".equals(card.getType())){
-                FollowCard follow = (FollowCard) card;
-                if(follow.notAttacked()){
-                    sb.append("未攻击").append("\t");
-                }
-                sb.append(follow.getAtk()).append("/").append(follow.getHp())
-                    .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
-                if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getId());
-                    if(follow.getEquipment().getCountdown()!=-1)
-                        sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
-                    sb.append("\t");
-                }
-            }
-            if("护符".equals(card.getType())){
-                AmuletCard amulet = (AmuletCard) card;
-                if(amulet.getCountDown()>0){
-                    sb.append("倒数：").append(amulet.getCountDown()).append("\t");
-                }
-            }
-
-            if(!card.getKeywords().isEmpty())
-                sb.append(card.getKeywords());
-            sb.append(cardDetail(card)).append("</p>");
-        }
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-
-    public String describeGame(UUID uuid){
-        if(gameset)return "无法获取游戏信息";
-
-        StringBuilder sb = new StringBuilder();
-        PlayerInfo player = playerByUuid(uuid);
-        PlayerInfo oppositePlayer = anotherPlayerByUuid(uuid);
-
-        sb.append("【主战者信息】\n");
-        sb.append("玩家【").append(oppositePlayer.name)
-            .append("】\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
-            .append("\n牌：").append(oppositePlayer.deck.size())
-            .append("\t墓：").append(oppositePlayer.graveyardCount)
-            .append("\t手：").append(oppositePlayer.hand.size())
-            .append("\n");
-        sb.append("玩家【").append(player.name)
-            .append("】\t血：").append(player.getHp()).append("/").append(player.getHpMax())
-            .append("\n牌：").append(player.deck.size())
-            .append("\t墓：").append(player.graveyardCount)
-            .append("\t手：").append(player.hand.size())
-            .append("\n");
-
-        sb.append("\n");
-
-        sb.append(describeArea(uuid));
-
-        sb.append("我的手牌：\n").append(player.describeHand());
-
-        return sb.toString();
-    }
-    // endregion describe
 }

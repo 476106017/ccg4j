@@ -3,7 +3,6 @@ package org.example.card.ccg.hunter.follow;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
-import org.example.card.ccg.hunter.Rexxar;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 

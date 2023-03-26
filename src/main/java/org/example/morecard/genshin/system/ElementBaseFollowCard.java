@@ -8,9 +8,9 @@ import org.example.card.FollowCard;
 @Setter
 public abstract class ElementBaseFollowCard extends FollowCard {
     public Integer cost = 0;
-    private Elemental element = Elemental.Universal;
-    private Elemental attackElement = Elemental.Void;// 普攻附魔
-    private int burstNeedCharge = 3;
+    private transient Elemental element = Elemental.Universal;
+    private transient Elemental attackElement = Elemental.Void;// 普攻附魔
+    private transient int burstNeedCharge = 3;
 
     public abstract void elementalBurst();
     @Override

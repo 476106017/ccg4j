@@ -2,10 +2,11 @@ package org.example.system;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import jakarta.websocket.Encoder;
+import org.example.system.util.Func;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -18,23 +19,31 @@ public class GsonConfig {
         return new GsonBuilder()
         .setDateFormat("yyyy-MM-dd HH:mm:ss")
         .registerTypeAdapter(
-            new TypeToken<TreeMap<String, Object>>() {
-            }.getType(),
-            new JsonDeserializer<TreeMap<String, Object>>() {
-                @Override
-                public TreeMap<String, Object> deserialize(
-                    JsonElement json, Type typeOft,
-                    JsonDeserializationContext context) throws JsonParseException {
+            new TypeToken<TreeMap<String, Object>>() {}.getType(),
+            (JsonDeserializer<TreeMap<String, Object>>) (json, typeOft, context) -> {
 
-                    TreeMap<String, Object> treeMap = new TreeMap<>();
-                    JsonObject jsonObject = json.getAsJsonObject();
-                    Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
-                    for (Map.Entry<String, JsonElement> entry : entrySet) {
-                        treeMap.put(entry.getKey(), entry.getValue());
-                    }
-                    return treeMap;
+                TreeMap<String, Object> treeMap = new TreeMap<>();
+                JsonObject jsonObject = json.getAsJsonObject();
+                Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
+                for (Map.Entry<String, JsonElement> entry : entrySet) {
+                    treeMap.put(entry.getKey(), entry.getValue());
                 }
-            }).create();
+                return treeMap;
+            })
+        .create();
     }
+    public static class MyEncoder implements Encoder.Text<Object> {
+        @Override
+        public String encode(Object object) {
+            try {
+
+                return Func.toJson(object);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return "";
+        }
+    }
+
 
 }

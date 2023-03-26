@@ -23,7 +23,7 @@ public class Blightbearer extends FollowCard {
         亡语：使场上1个随机随从获得该亡语，并且-2/-2
         """;
     private String subMark = "";
-    private Effect theDeathRattle;
+    private transient Effect theDeathRattle;
 
     public Blightbearer() {
         setMaxHp(getHp());

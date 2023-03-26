@@ -125,7 +125,7 @@ public class EnricoPucci extends FollowCard {
         private String subMark = "当前回合可攻击数：{T}\t当前闪避几率：{R}";
 
         private Integer rate = 17;
-        private Effect endTurnEffect;
+        private transient Effect endTurnEffect;
 
         public String getSubMark() {
             return subMark.replaceAll("\\{T}", getTurnAttackMax()+"")

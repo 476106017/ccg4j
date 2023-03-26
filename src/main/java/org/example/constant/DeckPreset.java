@@ -16,12 +16,14 @@ import org.example.card.ccg.fairy.amulet.*;
 import org.example.card.ccg.fairy.follow.*;
 import org.example.card.ccg.fairy.spell.*;
 import org.example.card.ccg.festival.follow.*;
-import org.example.card.ccg.festival.spell.*;
+import org.example.card.ccg.festival.spell.hsyg;
+import org.example.card.ccg.festival.spell.tbcz;
+import org.example.card.ccg.festival.spell.yejs;
+import org.example.card.ccg.festival.spell.zxsh;
 import org.example.card.ccg.hunter.Rexxar;
 import org.example.card.ccg.hunter.equipment.HarpoonGun;
 import org.example.card.ccg.hunter.follow.*;
 import org.example.card.ccg.hunter.spell.*;
-import org.example.card.ccg.mage.spell.MagicTrick;
 import org.example.card.ccg.necromancer.Luna;
 import org.example.card.ccg.necromancer.amulet.*;
 import org.example.card.ccg.necromancer.follow.*;
@@ -29,6 +31,7 @@ import org.example.card.ccg.necromancer.spell.*;
 import org.example.card.ccg.nemesis.Yuwan;
 import org.example.card.ccg.nemesis.follow.ImmortalAegis;
 import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
+import org.example.card.ccg.neutral.ThePlayer;
 import org.example.card.ccg.neutral.amulet.TestOfStrength;
 import org.example.card.ccg.neutral.follow.*;
 import org.example.card.ccg.neutral.spell.*;
@@ -42,23 +45,28 @@ import org.example.card.ccg.vampire.follow.BriaredVampire;
 import org.example.card.ccg.vampire.follow.ParaceliseDemonOfGreed;
 import org.example.card.ccg.vampire.follow.ShowdownDemon;
 import org.example.card.ccg.vampire.spell.*;
-import org.example.card.ccg.warrior.follow.DarkIronEnforcer;
 import org.example.card.dota.equipment.*;
 import org.example.card.dota.follow.*;
 import org.example.card.dota.spell.RoosterCrow;
 import org.example.card.dota.spell.TeleportToBattleGround;
+import org.example.card.other.rule.amulet.MahjongTable;
+import org.example.card.other.test.folow.TestFollow;
+import org.example.card.paripi.Kongming;
+import org.example.card.paripi.follow.CallingOtaku;
+import org.example.card.paripi.follow.DiscoZombie;
+import org.example.card.paripi.follow.LowKeyTalentScouts;
+import org.example.card.paripi.follow.OpeningAct;
+import org.example.game.Leader;
 import org.example.morecard.genshin.LittlePrincess;
 import org.example.morecard.genshin.amulet.FakeSky;
 import org.example.morecard.genshin.follow.Diluc;
 import org.example.morecard.genshin.follow.Keaya;
 import org.example.morecard.genshin.follow.Sucrose;
 import org.example.morecard.genshin.spell.*;
-import org.example.card.other.rule.amulet.MahjongTable;
-import org.example.card.other.test.folow.TestFollow;
-import org.example.card.paripi.Kongming;
-import org.example.card.paripi.follow.*;
-import org.example.game.Leader;
+import org.example.system.Database;
+import org.example.system.util.Maps;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -181,18 +189,23 @@ public class DeckPreset {
             ccyyt.class, hsyg.class, tbcz.class
         ));
     }
-
-    public static String describe(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("预设牌组列表：\n");
-
-        decks.forEach((k,v)->{
-            sb.append("【" + k + "】\n");
-//            sb.append(PlayerDeck.describeDeck(v));
-            sb.append("\n");
+    public static List describe(){
+        List<Map<String,Object>> deckInfo = new ArrayList<>();
+        decks.forEach((name,cardClassList)-> {
+            final List<? extends Card> prototypes = cardClassList.stream().map(Database::getPrototype).toList();
+            Leader leader;
+            try {
+                Class<? extends Leader> leaderClass = DeckPreset.deckLeader.get(name);
+                if(leaderClass==null){
+                    leaderClass = ThePlayer.class;
+                }
+                leader = leaderClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            deckInfo.add(Maps.newMap("name", name, "leader", leader,"deck", prototypes));
         });
-        sb.append("输入 usedeck <牌组名字> 使用预设牌组\n");
-
-        return sb.toString();
+        return deckInfo;
     }
 }

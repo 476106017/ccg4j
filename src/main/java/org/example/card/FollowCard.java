@@ -16,15 +16,15 @@ import java.util.List;
 @Setter
 public abstract class FollowCard extends AreaCard{
     public final CardType TYPE = CardType.FOLLOW;
-    private int atk = 0;
-    private int hp = 0;
+    private transient int atk = 0;
+    private transient int hp = 0;
     private int maxHp = 0;
-    private boolean needSettle = false; // 是否需要结算
-    private int turnAge = 0;
-    private int turnAttackMax = 1;
-    private int turnAttack = 0;
-    private EquipmentCard equipment;
-    private Damage incommingDamage = null;
+    private transient boolean needSettle = false; // 是否需要结算
+    private transient int turnAge = 0;
+    private transient int turnAttackMax = 1;
+    private transient int turnAttack = 0;
+    private transient EquipmentCard equipment;
+    private transient Damage incommingDamage = null;
 
     public void setIncommingDamage(Damage incommingDamage) {
 //        info.msg(incommingDamage.getFrom().getId()+"对"+incommingDamage.getTo().getId()+"造成的伤害效果已被记录");

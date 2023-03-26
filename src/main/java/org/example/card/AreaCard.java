@@ -31,7 +31,7 @@ public abstract class AreaCard extends Card{
     }
 
     // 准备破坏
-    public GameObj destroyedBy = null;
+    public transient GameObj destroyedBy = null;
 
     public void setDestroyedBy(GameObj destroyedBy) {
         if(info.addEvent(this,EventType.Destroy))

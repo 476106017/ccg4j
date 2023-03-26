@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
-import org.example.card.ccg.hunter.follow.BattyGuest;
 import org.example.game.GameObj;
 import org.example.game.Leader;
 import org.example.game.Play;

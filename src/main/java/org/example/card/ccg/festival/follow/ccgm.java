@@ -10,8 +10,6 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 
-import static org.example.constant.CounterKey.PLAY_NUM;
-
 
 @Getter
 @Setter
@@ -36,15 +34,14 @@ public class ccgm extends FollowCard {
             ()->enemyPlayer().getAreaFollowsAsGameObj(), false,
             targets->{
                 if(targets!=null){
-                    FollowCard followCard = (FollowCard) targets;
+                    final FollowCard followCard = (FollowCard) targets;
                     followCard.addKeyword("缴械");
                     targetFollow = followCard;
                 }
             }));
 
         addEffects((new Effect(this,this, EffectTiming.WhenNoLongerAtArea, obj->{
-            if(targetFollow!=null && targetFollow.atArea())
-                targetFollow.removeKeyword("缴械");
+            if(targetFollow!=null && targetFollow.atArea())targetFollow.removeKeyword("缴械");
         })));
     }
 

@@ -1,25 +1,23 @@
 package org.example.system;
 
+import jakarta.websocket.Session;
 import org.example.card.Card;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Predicate;
 
 public class Database {
 
-    public static Map<UUID,String> userNames = new ConcurrentHashMap<>();
-    public static Map<UUID, PlayerDeck> userDecks = new ConcurrentHashMap<>();
-    public static Map<UUID, String > userRoom = new ConcurrentHashMap<>();
+    public static Map<Session,String> userNames = new ConcurrentHashMap<>();
+    public static Map<Session, PlayerDeck> userDecks = new ConcurrentHashMap<>();
+    public static Map<Session, String > userRoom = new ConcurrentHashMap<>();
     public static String waitRoom = "";// 匹配中的房间
-    public static UUID waitUser;// 匹配中的人
-    public static Map<String,  UUID> roomReadyMatch = new ConcurrentHashMap<>();
+    public static Session waitUser;// 匹配中的人
     public static Map<String, GameInfo> roomGame = new ConcurrentHashMap<>();
 
     public static  Map<String,ScheduledExecutorService> roomSchedule = new ConcurrentHashMap<>();

@@ -2,7 +2,6 @@ package org.example.card.ccg.hunter.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.game.Play;

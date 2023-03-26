@@ -2,12 +2,9 @@ package org.example.card.ccg.festival.follow;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.card.AreaCard;
 import org.example.card.FollowCard;
-import org.example.card.ccg.hunter.follow.BattyGuest;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
-import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
@@ -28,7 +25,7 @@ public class rcclz extends FollowCard {
     public int atk = 1;
     public int hp = 1;
 
-    private Effect deathRattle;
+    private transient Effect deathRattle;
 
     public rcclz() {
         setMaxHp(getHp());

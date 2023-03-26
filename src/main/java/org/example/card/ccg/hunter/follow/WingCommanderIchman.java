@@ -24,7 +24,7 @@ public class WingCommanderIchman extends FollowCard {
         战吼：招募1个野兽并拥有【突进】，它在击杀时会重复此效果
         """;
     private String subMark = "";
-    private FunctionN effect = ()->{};
+    private transient FunctionN effect = ()->{};
 
     public WingCommanderIchman() {
         setMaxHp(getHp());

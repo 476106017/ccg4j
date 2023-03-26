@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.card.FollowCard;
-import org.example.card._derivant.Derivant;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.system.util.Lists;

@@ -7,6 +7,7 @@ import org.example.game.GameObj;
 import org.example.game.Play;
 import org.example.game.PlayerInfo;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,11 +16,11 @@ import static org.example.system.Database.getPrototype;
 
 @Getter
 @Setter
-public abstract class Card extends GameObj implements Cloneable {
+public abstract class Card extends GameObj implements Cloneable, Serializable {
     public static final int SLOT = 1;
     public static final int APPOSITION = 3;
 
-    private GameObj parent = null;
+    private transient GameObj parent = null;
 
     public void changeParent(GameObj obj){
         info.msg(getNameWithOwner()+"的创造者被变更为："+obj.getName());
@@ -119,7 +120,7 @@ public abstract class Card extends GameObj implements Cloneable {
         else place="被除外";
 
         return ownerPlayer().getName()+place+"的"+getName();
-    };
+    }
 
     private Play play = null;
 
