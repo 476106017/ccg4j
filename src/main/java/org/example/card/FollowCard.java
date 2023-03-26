@@ -18,7 +18,7 @@ public abstract class FollowCard extends AreaCard{
     public final CardType TYPE = CardType.FOLLOW;
     private transient int atk = 0;
     private transient int hp = 0;
-    private transient int maxHp = 0;
+    private int maxHp = 0;
     private transient boolean needSettle = false; // 是否需要结算
     private transient int turnAge = 0;
     private transient int turnAttackMax = 1;

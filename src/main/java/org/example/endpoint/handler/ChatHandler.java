@@ -1,10 +1,11 @@
-package org.example.handler;
+package org.example.endpoint.handler;
 
 import com.google.gson.Gson;
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.constant.ChatPreset;
+import org.example.system.util.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +25,10 @@ public class ChatHandler {
      * 发送房间预置消息
      * */
 
-    public void roomPresetChat(Session client, String data) throws IOException {
+    public void chat(Session client, String data) throws IOException {
         final String room = userRoom.get(client);
         if (Strings.isBlank(room)) {
-            client.getBasicRemote().sendText("请先加入房间！");
+            Msg.send(client,"请先加入房间！");
             return;
         }
         if(data.isEmpty()){
@@ -37,7 +38,7 @@ public class ChatHandler {
                 sb.append(preset.getId()).append("\t")
                     .append(preset.getCh()).append("\n");
             }
-            client.getBasicRemote().sendText(sb.toString());
+Msg.send(client,sb.toString());
             return;
         }
         String name = userNames.get(client);
@@ -49,19 +50,15 @@ public class ChatHandler {
 
         for (ChatPreset preset : ChatPreset.values()) {
             if(id.equals(preset.getId())){
-                userRoom.forEach((k,v)->{if(v==room) {
-                    try {
-                        k.getBasicRemote().sendText("【房间】" +name+ "："+ preset.getCh());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                userRoom.forEach((k,v)->{if(room.equals(v)) {
+                    Msg.send(k,"【房间】" +name+ "："+ preset.getCh());
                 }
                 });
                 return;
             }
         }
 
-        client.getBasicRemote().sendText("输入序号错误！");
+        Msg.send(client,"输入序号错误！");
     }
 
 

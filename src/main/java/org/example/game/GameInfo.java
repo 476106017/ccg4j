@@ -6,8 +6,11 @@ import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
 import org.example.system.util.Lists;
+import org.example.system.util.Maps;
+import org.example.system.util.Msg;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -15,12 +18,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
-import static org.example.game.PlayerInfo.cardDetail;
 import static org.example.system.Database.*;
 
 @Getter
 @Setter
-public class GameInfo {
+public class GameInfo implements Serializable {
     String room;
 
     // 连锁
@@ -77,37 +79,27 @@ public class GameInfo {
 
     public void msg(String msg){
         try {
-            thisPlayer().getSession().getBasicRemote().sendText(msg);
-            oppositePlayer().getSession().getBasicRemote().sendText(msg);
+Msg.send(thisPlayer().getSession(),msg);
+Msg.send(oppositePlayer().getSession(),msg);
         } catch (Exception ignored) {}
     }
 
-    public void msgTo(Session Session, String msg){
-        try {
-            Session.getBasicRemote().sendText(msg);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void msgTo(Session session, String msg){
+        Msg.send(session,msg);
     }
 
     public void pushInfo(){
-        msgToThisPlayer("battleInfo::"+describeGame(thisPlayer().getSession()));
-        msgToOppositePlayer("battleInfo::"+describeGame(oppositePlayer().getSession()));
+        Msg.send(thisPlayer().getSession(),"battleInfo",
+            Maps.newMap("me",thisPlayer(),"enemy",oppositePlayer()));
+        Msg.send(oppositePlayer().getSession(),"battleInfo",
+            Maps.newMap("me",oppositePlayer(),"enemy",thisPlayer()));
     }
 
     public void msgToThisPlayer(String msg){
-        try {
-            thisPlayer().getSession().getBasicRemote().sendText(msg);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Msg.send(thisPlayer().getSession(),msg);
     }
     public void msgToOppositePlayer(String msg){
-        try {
-            oppositePlayer().getSession().getBasicRemote().sendText(msg);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Msg.send(oppositePlayer().getSession(),msg);
     }
 
     public void measureLeader(){
@@ -167,15 +159,15 @@ public class GameInfo {
     public PlayerInfo oppositePlayer(){
         return playerInfos[1-turnPlayer];
     }
-    public PlayerInfo playerBySession(Session Session){
-        if(playerInfos[0].session == Session){
+    public PlayerInfo playerBySession(Session session){
+        if(playerInfos[0].session == session){
             return playerInfos[0];
         }else {
             return playerInfos[1];
         }
     }
-    public PlayerInfo anotherPlayerBySession(Session Session){
-        if(playerInfos[0].session == Session){
+    public PlayerInfo anotherPlayerBySession(Session session){
+        if(playerInfos[0].session == session){
             return playerInfos[1];
         }else {
             return playerInfos[0];
@@ -445,9 +437,8 @@ public class GameInfo {
 
         p0.draw(3);
         p1.draw(3);
-        msgToThisPlayer("你的手牌:\n"+p0.describeHand());
-        msgToOppositePlayer("你的手牌:\n"+p1.describeHand());
         msg("游戏开始，请选择3张手牌交换");
+        pushInfo();
     }
 
     // region turn
@@ -631,112 +622,4 @@ public class GameInfo {
     }
 
     // endregion turn
-
-    // region describe
-    public String describeArea(Session Session){
-        StringBuilder sb = new StringBuilder();
-        PlayerInfo player = playerBySession(Session);
-        PlayerInfo oppositePlayer = anotherPlayerBySession(Session);
-
-        sb.append("【战场信息】\n");
-        sb.append("敌方战场：\n");
-        for (int i = 0; i < oppositePlayer.getArea().size(); i++) {
-            sb.append("<p>");
-            Card card = oppositePlayer.getArea().get(i);
-            sb.append("【").append(i+1).append("】\t")
-                .append(card.getType()).append("\t")
-                .append(card.getId()).append("\t");
-            if("随从".equals(card.getType())){
-                FollowCard follow = (FollowCard) card;
-                if(follow.notAttacked()){
-                    sb.append("未攻击").append("\t");
-                }
-                sb.append(follow.getAtk()).append("/").append(follow.getHp())
-                    .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
-                if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getId());
-                    if(follow.getEquipment().getCountdown()!=-1)
-                        sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
-                    sb.append("\t");
-                }
-            }
-            if("护符".equals(card.getType())){
-                AmuletCard amulet = (AmuletCard) card;
-                if(amulet.getCountDown()>0){
-                    sb.append("倒数：").append(amulet.getCountDown()).append("\t");
-                }
-            }
-
-            if(!card.getKeywords().isEmpty())
-                sb.append(card.getKeywords());
-            sb.append(cardDetail(card)).append("</p>");
-        }
-        sb.append("\n我方战场：\n");
-        for (int i = 0; i < player.getArea().size(); i++) {
-            sb.append("<p>");
-            Card card = player.getArea().get(i);
-            sb.append("【").append(i+1).append("】\t")
-                .append(card.getType()).append("\t")
-                .append(card.getId()).append("\t");
-            if("随从".equals(card.getType())){
-                FollowCard follow = (FollowCard) card;
-                if(follow.notAttacked()){
-                    sb.append("未攻击").append("\t");
-                }
-                sb.append(follow.getAtk()).append("/").append(follow.getHp())
-                    .append("\t").append(follow.getMaxHp()==follow.getHp()?"满":"残").append("\t");
-                if(follow.getEquipment()!=null){
-                    sb.append("装备中：").append(follow.getEquipment().getId());
-                    if(follow.getEquipment().getCountdown()!=-1)
-                        sb.append("（").append(follow.getEquipment().getCountdown()).append("）");
-                    sb.append("\t");
-                }
-            }
-            if("护符".equals(card.getType())){
-                AmuletCard amulet = (AmuletCard) card;
-                if(amulet.getCountDown()>0){
-                    sb.append("倒数：").append(amulet.getCountDown()).append("\t");
-                }
-            }
-
-            if(!card.getKeywords().isEmpty())
-                sb.append(card.getKeywords());
-            sb.append(cardDetail(card)).append("</p>");
-        }
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-
-    public String describeGame(Session Session){
-        if(gameset)return "无法获取游戏信息";
-
-        StringBuilder sb = new StringBuilder();
-        PlayerInfo player = playerBySession(Session);
-        PlayerInfo oppositePlayer = anotherPlayerBySession(Session);
-
-        sb.append("【主战者信息】\n");
-        sb.append("玩家【").append(oppositePlayer.name)
-            .append("】\t血：").append(oppositePlayer.getHp()).append("/").append(oppositePlayer.getHpMax())
-            .append("\n牌：").append(oppositePlayer.deck.size())
-            .append("\t墓：").append(oppositePlayer.graveyardCount)
-            .append("\t手：").append(oppositePlayer.hand.size())
-            .append("\n");
-        sb.append("玩家【").append(player.name)
-            .append("】\t血：").append(player.getHp()).append("/").append(player.getHpMax())
-            .append("\n牌：").append(player.deck.size())
-            .append("\t墓：").append(player.graveyardCount)
-            .append("\t手：").append(player.hand.size())
-            .append("\n");
-
-        sb.append("\n");
-
-        sb.append(describeArea(Session));
-
-        sb.append("我的手牌：\n").append(player.describeHand());
-
-        return sb.toString();
-    }
-    // endregion describe
 }

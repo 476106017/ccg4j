@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>牌仙小站 Card4j</title>
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.bootcss.com/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.20.1/locale/zh-cn.js"></script>
+    <style>
+        .popover {
+            word-break: break-all;
+        }
+        img {max-width:100%; height:auto; }
+    </style>
+
+</head>
+
+<body>
+
+<div id="app" style="margin: 0 50px 0 50px;">
+    <button type="button" class="btn" style="right:0;position:fixed;z-index:999;color: blue;border:1px solid;border-color: blue;"
+            data-toggle="collapse" data-target="#battleInfo">切换战场视窗</button>
+    <div id="battleInfo" class="collapse"
+         style="background-color: aliceblue; border:1px solid; right:0;position:fixed; z-index:1;white-space: pre-line;
+    max-height:80% ;overflow:auto;margin: 50px; padding: 50px;">无法获取游戏信息，请先匹配</div>
+
+    <ul id="msgList" style="margin-left: -50px;"></ul>
+    <b id="name"></b>
+    <br/>
+    <input id="msgContent" name="msgContent" onkeydown="keyDown(event)" placeholder="请输入消息" autofocus>
+    <input type="button" onclick="sendMsg()" value="发送"/>
+    <input type="button" onclick="cleanMsg()" value="清空"/>
+    <br/>
+    <input type="button" onclick="$('#msgContent').val('deck');sendMsg();" value="使用中的牌组"/>
+    <input type="button" onclick="$('#msgContent').val('usedeck');sendMsg();$('#msgContent').val('usedeck ');" value="选择牌组"/>
+    <br/>
+    <input type="button" onclick="$('#msgContent').val('jr');sendMsg();" value="匹配"/>
+    <input type="button" onclick="$('#msgContent').val('leave');sendMsg();" value="退出房间"/>
+    <input type="button" onclick="$('#msgContent').val('swap 1 2 3');" value="换牌"/>
+    <input type="button" onclick="$('#msgContent').val('chat');sendMsg();" value="聊天"/>
+    <br/>
+    <input type="button" onclick="$('#msgContent').val('play');sendMsg();" value="出牌"/>
+    <input type="button" onclick="$('#msgContent').val('attack');sendMsg();" value="攻击"/>
+    <input type="button" onclick="$('#msgContent').val('discover');sendMsg();" value="发现"/>
+    <br/>
+    <input type="button" onclick="$('#msgContent').val('skill');sendMsg();" value="主战者技能"/>
+    <input type="button" onclick="$('#msgContent').val('end');sendMsg();" value="结束回合"/>
+    <br/>
+    <br/>
+    <a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备2023000922号</a>
+    <!-- <input type="button" onclick="$('#msgContent').val('grave')" value="墓地信息"/> -->
+    <!-- <br/> -->
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+        var userName, websocket;
+        var historyIndex = 0;
+        var historyStack=[];
+        // Socket连接
+        function initIm() {
+            userName = prompt("请输入用户名进入游戏大厅");
+            // userName = "zdm";
+            if ($.trim(userName)) {
+                if(true)
+                    // 本地运行
+                    websocket = new WebSocket("ws://localhost:18081/socket/"+userName);
+                else
+                    // 上线请用nginx代理
+                    websocket = new WebSocket("ws://www.card4j.top:18081/socket/"+userName);
+
+                $("#name").html("你好，"+userName);
+                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
+                    "&nbsp;&nbsp;&nbsp;【站长的话】征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（Bilibili）漆黑Ganker</li>");
+                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +
+                    "&nbsp;&nbsp;&nbsp;【站长的话】如果你是软件开发人员，欢迎你贡献代码！项目地址：https://github.com/476106017/ccg4j</li>");
+
+
+                //        连接发生错误的时候回调方法；
+                websocket.onerror = function () {
+                    log.console("连接错误");
+                }
+                //       连接成功时建立回调方法
+                websocket.onopen = function () {
+                    //WebSocket已连接上，使用send()方法发送数据
+                    $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;<b style='color:red'>连接服务器成功</b></li>");
+                };
+                //      收到消息的回调方法
+                websocket.onmessage = function (msg) {
+                    let data = msg.data;
+                    let obj = data.data;
+
+                    switch(data.channel){
+                        case "msg":  
+                            $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + obj+  "</li>");
+                            break;
+                        case "battleInfo":  
+                            $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + obj+  "</li>");
+                            break;
+                    }
+                        
+                    $(function () {
+                        $("[data-toggle='popover']").popover();
+
+                        $("[data-toggle='popover']").on("click",function(e){
+                            e.stopPropagation();
+                        });
+                    });
+                    scrollToEnd();
+                };
+                //      连接关闭的回调方法
+                websocket.onclose = function () {
+                    //WebSocket已连接上，使用send()方法发送数据
+                    $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;<b style='color:red'>已断开连接</b></li>");
+                };
+            }
+        }
+
+        initIm();
+
+        // 输入框键盘输入
+        function keyDown(event) {
+
+            if(event.keyCode==13){sendMsg();}
+            if(event.keyCode==38){// up arrow
+                historyIndex--;
+                historyContent = historyStack.slice(historyIndex)[0];
+                if(historyContent){
+                    $('#msgContent').val(historyContent);
+                }
+            }
+            if(event.keyCode==40){// dw arrow
+                historyIndex++;
+                historyContent = historyStack.slice(historyIndex)[0];
+                if(historyIndex<0 && historyContent){
+                    $('#msgContent').val(historyContent);
+                }
+            }
+
+        }
+
+
+        // 发送消息
+        function sendMsg() {
+            let input = $("#msgContent").val()
+            let index = input.indexOf(" ")
+            if(index==-1) index=input.length;
+            let msgEvent = input.substring(0,index);
+            let msgContent = input.substring(index+1,input.length);
+            websocket.send(msgEvent+"::"+msgContent);
+            historyStack.push(input);
+            historyIndex = 0;
+            $("#msgContent").val('');
+            $('#msgList').append("<li style=\"background-color: #ccc;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + input+  "</li>");
+            scrollToEnd();
+        }
+        // 清空消息
+        function cleanMsg() {
+            $('#msgList').html('');
+            $('#battleInfo').html('无法获取游戏信息');
+        }
+        function scrollToEnd(){//滚动到底部
+            var h = $(document).height()-$(window).height();
+            $(document).scrollTop(h);
+        }
+        $(document).click(function () {
+            $("[data-toggle='popover']").popover("hide");
+        });
+	</script>
+
+</body>
+
+</html>

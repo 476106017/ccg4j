@@ -1,0 +1,245 @@
+.container {
+    width: 100%; /* 宽度可以根据需要进行调整 */
+    max-width: 1200px; /* 可选：设置最大宽度，以确保容器不会太宽 */
+    margin: 0 auto; /* 使容器居中对齐 */
+    padding: 20px; /* 可选：设置内边距以增加内容和容器之间的空白 */
+    border: 1px solid #ccc; /* 可选：添加边框样式 */
+    box-sizing: border-box; /* 将 padding 和 border 计算在内，避免盒模型的问题 */
+  }
+  
+  .card {
+    position: relative;
+    width: 250px;
+    height: 350px;
+    min-height: 350px;
+    margin: 20px;
+    border-radius: 5px;
+    border: 1px solid #4b4b4b;
+    box-shadow: 0 0 20px #4b4b4b;
+    background-color: #f7f7f7;
+    overflow: hidden;
+  }
+  
+  .card .image {
+    
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    object-fit: contain;
+    transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
+    overflow: hidden;
+  }
+  
+  .card .image:hover {
+    z-index: 3;
+    height: 100%;
+    transform: scale(1.1);
+  }
+  
+  .card .type {
+    z-index: 4;
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 3px #000;
+  }
+  
+  .card .name {
+    z-index: 5;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px -1px 0 #0ff,  
+                    1px 1px 0 #f00,
+                    0 0 3px #000;
+  }
+  
+  .card .cost {
+    z-index: 5;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 1.7rem;
+    text-shadow: 0px 0px 4px #000000;
+    text-align: center;
+    border: 2px solid #ffffff;
+    background: radial-gradient(#9f0, #000);
+    transition: color 0.3s ease-in-out;
+  }
+  .card:hover .cost {
+    animation: blink 1s infinite;
+
+  }
+  
+@keyframes blink {
+    0% {
+      color: #f00;
+    }
+    50% {
+      color: #fcc;
+    }
+    100% {
+      color: #f00;
+    }
+  }
+  
+  .card:hover .name {
+    animation: tiktok 1s infinite;
+    transform: scale(1.5);
+    margin-right: 10px;
+  }
+@keyframes tiktok {
+    0% {
+        text-shadow: -1px -1px 0 #0ff,  
+                    1px 1px 0 #f00 ;
+    }
+    25% {
+        text-shadow: 1px -1px 0 #0ff,  
+                    -1px 1px 0 #f00 ;
+    }
+    50% {
+        text-shadow: 1px 1px 0 #0ff,  
+                    -1px -1px 0 #f00 ;
+    }
+    75% {
+        text-shadow: -1px 1px 0 #0ff,  
+                    1px -1px 0 #f00 ;
+    }
+    100% {
+        text-shadow: -1px -1px 0 #0ff,  
+                    1px 1px 0 #f00 ;
+    }
+  }
+  
+  
+  .card .attack {
+    z-index: 5;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: #fff;
+    text-shadow: 0px 0px 4px #000000;
+    text-align: center;
+    border: 2px solid #ffffff;
+    background: radial-gradient(#33f, #003);
+    border: 1px solid #4b4b4b;
+    font-weight: bold;
+    line-height: 30px;
+  }
+
+
+  .card .description {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    padding: 10px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #4b4b4b;
+    background: linear-gradient(to bottom, #fff, #ccc,#fff);
+    transition: height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+    z-index: 1;
+    }
+    
+    .card .description:hover {
+    z-index: 9;
+    background: linear-gradient(to bottom, #fff, #ffe,#fff);
+    height: 80%;
+    margin-bottom: 0px;
+    }
+    
+    .card .description p {
+    margin: 15px;
+    text-align: left;
+    }
+    
+    .card .description p:first-child {
+    font-weight: bold;
+    text-align: center;
+    }
+    
+    .card .description p:last-child {
+    margin-bottom: 0;
+    }
+
+
+    .health-bar {
+        z-index: 5;
+        width: 120px;
+        height: 20px;
+        background-color: #333333;
+        border-radius: 10px;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        overflow: hidden;
+      }
+      
+      .health-bar-inner {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, #f7c7c7, #900, #ff4c3c);
+        transition: width 0.3s ease-in-out;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      
+      .health-bar-text {
+        color: white;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-shadow: 0px 0px 3px #600;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+      }
+      
+      .health-bar:hover .health-bar-inner {
+        width: 100%;
+        background-color: #c0392b;
+      }
+      
+      .health-bar:hover .health-bar-text {
+        font-size: 14px;
+        transform: scale(1.2);
+      }
+      
+
+.footer {
+    z-index: 999;
+    text-align: right;
+    bottom: 10px;
+    right: 10px;
+    background-color: #fff;
+}
+
+
+.mny-alert-position{
+  position:absolute;
+  top:5%;
+  left:50%;
+  width: 62%;
+  /*margin-left: -81px;*/
+  z-index: 999999;
+}

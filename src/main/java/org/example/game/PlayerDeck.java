@@ -7,9 +7,6 @@ import org.example.system.Database;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.example.game.PlayerInfo.cardDetail;
 
 @Getter
 @Setter
@@ -48,26 +45,7 @@ public class PlayerDeck {
         return _return;
     }
 
-    public String describe() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("【我的收藏】\n暂未开放！\n");
-        sb.append("【使用中的主战者】\n");
-        try {
-            Leader leader = leaderClass.getDeclaredConstructor().newInstance();
-            sb.append(leader.getName()).append("\t");
-            sb.append("技能：").append(leader.getSkillName())
-                .append("（").append(leader.getSkillCost()).append("）\n");
-            sb.append(leader.getSkillMark()).append("\n\n");
-            if(!leader.getMark().isEmpty())
-                sb.append(leader.getMark()).append("\n");
-            sb.append("超抽效果：").append(leader.getOverDrawMark()).append("\n");
-        }catch (Exception ignored){}
-        sb.append("【使用中的牌组】\n");
-        sb.append(describeDeck(activeDeck));
-        return sb.toString();
-    }
-
-    public Map describeJson() {
+    public Map describe() {
         Map<String,Object> _return = new HashMap<>();
         try {
             Leader leader = leaderClass.getDeclaredConstructor().newInstance();
@@ -79,23 +57,4 @@ public class PlayerDeck {
         _return.put("deck", deckCards);
         return _return;
     }
-
-    public static String describeDeck(List<Class<? extends Card>> deck){
-        StringBuilder sb = new StringBuilder();
-
-        AtomicInteger num = new AtomicInteger(1);
-        List<? extends Card> deckCards = deck.stream()
-            .map(Database::getPrototype).sorted(Comparator.comparing(Card::getCost)).toList();
-        deckCards.forEach(card -> {
-            sb.append("<p>");
-            sb.append("【").append(num.getAndIncrement()).append("】\t")
-                .append(card.getCost()).append("\t")
-                .append(card.getType()).append("\t")
-                .append(card.getName()).append("\t")
-                .append(String.join("/", card.getRace())).append("\t")
-                .append(cardDetail(card)).append("</p>");
-        });
-        return sb.toString();
-    }
-
 }

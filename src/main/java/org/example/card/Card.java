@@ -7,6 +7,7 @@ import org.example.game.GameObj;
 import org.example.game.Play;
 import org.example.game.PlayerInfo;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ import static org.example.system.Database.getPrototype;
 
 @Getter
 @Setter
-public abstract class Card extends GameObj implements Cloneable {
+public abstract class Card extends GameObj implements Cloneable, Serializable {
     public static final int SLOT = 1;
     public static final int APPOSITION = 3;
 

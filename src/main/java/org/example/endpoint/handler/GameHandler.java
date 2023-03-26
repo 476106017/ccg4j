@@ -1,4 +1,4 @@
-package org.example.handler;
+package org.example.endpoint.handler;
 
 import com.google.gson.Gson;
 import jakarta.websocket.Session;
@@ -81,7 +81,7 @@ public class GameHandler {
 
     /* 回合结束 */
 
-    public void turnEnd(Session client, String msg){
+    public void end(Session client, String msg){
 
         // region 获取游戏对象
         String name = userNames.get(client);
@@ -427,17 +427,6 @@ public class GameHandler {
         info.pushInfo();
     }
 
-
-    public void grave(Session client, String msg){
-
-
-        String room = userRoom.get(client);
-        if(room==null)return;
-        GameInfo info = roomGame.get(room);
-        PlayerInfo player = info.playerBySession(client);
-
-        info.msgTo(client, player.describeGraveyard());
-    }
 
     // TODO 测试用，顺序出牌
 

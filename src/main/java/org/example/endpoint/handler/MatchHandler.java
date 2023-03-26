@@ -1,10 +1,11 @@
-package org.example.handler;
+package org.example.endpoint.handler;
 
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.example.game.GameInfo;
 import org.example.game.PlayerInfo;
 import org.example.system.WebSocketConfig;
+import org.example.system.util.Msg;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class MatchHandler {
     public void joinRoom(Session client) throws IOException {
         String room = userRoom.get(client);
         if(room != null){
-            client.getBasicRemote().sendText("请不要重复进入房间！");
+            Msg.send(client,"请不要重复进入房间！");
             return;
         }
 
@@ -31,16 +32,14 @@ public class MatchHandler {
             waitUser = client;
             waitRoom = UUID.randomUUID().toString();
             userRoom.put(client,waitRoom);
-            client.getBasicRemote().sendText("进入房间（"+waitRoom+"），等待对手");
+            Msg.send(client,"进入房间（"+waitRoom+"），等待对手");
 
             WebSocketConfig.broadcast("【全体】有人正在匹配对战，点击匹配以尝试加入该对战！");
         }else {
             userRoom.put(client,waitRoom);
-            client.getBasicRemote().sendText( "进入房间（"+waitRoom+"）");
-            client.getBasicRemote().sendText(
-                "匹配成功！ 【"+userNames.get(client)+"】vs【"+userNames.get(waitUser)+"】");
-            waitUser.getBasicRemote().sendText(
-                "匹配成功！ 【"+userNames.get(waitUser)+"】vs【"+userNames.get(client)+"】");
+            Msg.send(client,"进入房间（"+waitRoom+"）");
+            Msg.send(client,"匹配成功！ 【"+userNames.get(client)+"】vs【"+userNames.get(waitUser)+"】");
+            Msg.send(waitUser,"匹配成功！ 【"+userNames.get(waitUser)+"】vs【"+userNames.get(client)+"】");
 
             WebSocketConfig.broadcast("【全体】一场对战已经匹配成功！");
 
@@ -65,7 +64,7 @@ public class MatchHandler {
     public void leave(Session client) throws IOException {
         String room = userRoom.get(client);
         if(room==null){
-            client.getBasicRemote().sendText("你不在任何房间中");
+            Msg.send(client,"你不在任何房间中");
             return;
         }
         GameInfo info = roomGame.get(room);
@@ -77,7 +76,7 @@ public class MatchHandler {
             return;
         }
         userRoom.remove(client);
-        client.getBasicRemote().sendText("离开房间成功");
+        Msg.send(client,"离开房间成功");
         // 释放资源
         roomGame.remove(room);
         if(client.equals(waitUser) || room.equals(waitRoom) ){

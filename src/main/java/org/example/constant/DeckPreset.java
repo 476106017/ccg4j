@@ -189,21 +189,7 @@ public class DeckPreset {
             ccyyt.class, hsyg.class, tbcz.class
         ));
     }
-
-    public static String describe(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("预设牌组列表：\n");
-
-        decks.forEach((k,v)->{
-            sb.append("【" + k + "】\n");
-//            sb.append(PlayerDeck.describeDeck(v));
-            sb.append("\n");
-        });
-        sb.append("输入 usedeck <牌组名字> 使用预设牌组\n");
-
-        return sb.toString();
-    }
-    public static List describeJson(){
+    public static List describe(){
         List<Map<String,Object>> deckInfo = new ArrayList<>();
         decks.forEach((name,cardClassList)-> {
             final List<? extends Card> prototypes = cardClassList.stream().map(Database::getPrototype).toList();
