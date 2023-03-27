@@ -20,7 +20,6 @@ public class HauntedHouse extends AmuletCard {
     public String name = "幽灵宅邸";
     public String job = "死灵术士";
     private List<String> race = Lists.ofStr();
-    public transient int countDown = 3;
 
     public String mark = """
         发动死灵术时：召唤1个怨灵
@@ -28,6 +27,7 @@ public class HauntedHouse extends AmuletCard {
     public String subMark = "";
 
     public HauntedHouse() {
+        setCountDown(3);
         addEffects((new Effect(this,this,
             EffectTiming.WhenCostGraveyard, obj -> ownerPlayer().summon(createCard(Derivant.Ghost.class)))));
     }

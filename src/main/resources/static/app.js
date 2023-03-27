@@ -4,12 +4,11 @@ var cardHtml = function(card){
             <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name">${card.name}</div>
             <div class="type">${card.TYPE}</div>
-            ${card.race.length>0?'<p class="race">'+card.race+'</p>':""}
+            ${card.race.length>0?'<p class="race">'+card.race.join(' ')+'</p>':""}
             <div class="cost">${card.cost}</div>
             <div class="description">
-                ${card.keywords.length>0?'<p class="keyword">'+card.keywords+'</p>':""}
-                <p>${card.mark}</p>
-                <p>${card.subMark}</p>
+                <p>${card.keywords.length>0?'<b class="keyword">'+card.keywords.join(' ')+'</b>\n':""}${card.mark}${card.subMark}</p>
+                <div class="job">${card.job}</div>
             </div>
             <div ${card.TYPE!="AMULET"?"hidden":""}>
                 <div class="countDown">倒数：${card.countDown>0?card.countDown:"∞"}</div>
@@ -86,22 +85,27 @@ if ($.trim(userName)) {
     //      收到消息的回调方法
     websocket.onmessage = function (msg) {
         let data = JSON.parse(msg.data);
-        console.log(data);
         let obj = data.data;
+        console.log(data);
+        console.log(obj);
 
         switch(data.channel){
             case "msg":  
-                console.log(obj)
-                console.log(obj.deck)
                 mnyAlert(1,obj);
                 break;
             case "myDeck":  
                 $('#card-gridview').html("");
                 obj.deck.forEach(card => {
-                    console.log(card)
-                    console.log(cardHtml(card))
                     $('#card-gridview').append(cardHtml(card));
                 });
+                break;
+            case "presetDeck":
+                $('#deck-preset').html("");
+                obj.forEach(deck => {
+                    $('#deck-preset').append('<button type="button" class="btn btn-outline-dark" data-dismiss="modal" onclick="websocket.send(\'usedeck::'+deck.name+'\');">'+deck.name+'</button>');
+                });
+                $('#deck-preset-modal').modal('show');
+                break;
             case "battleInfo":  
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + obj+  "</li>");
                 break;

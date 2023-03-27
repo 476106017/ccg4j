@@ -27,7 +27,7 @@ public class yyzls extends FollowCard {
 
     public yyzls() {
         setMaxHp(getHp());
-        getKeywords().add("突袭");
+        getKeywords().add("突进");
 
         setPlay(new Play(()->{
             if(ownerPlayer().getPpNum()==0)

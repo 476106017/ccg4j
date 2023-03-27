@@ -43,7 +43,7 @@ public class UnoPlus4 extends SpellCard {
         private List<String> race = Lists.ofStr();
         public String mark = """
         在手牌上回合结束时：舍弃此卡
-        —————————————
+        ——
         质疑对手手牌有费用小于等于4的牌：
         若成功，自己可以使用卡牌，对手抽4张牌、并在下个回合无法使用卡牌；
         若失败，再抽2张牌；

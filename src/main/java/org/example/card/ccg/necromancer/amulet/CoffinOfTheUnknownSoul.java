@@ -21,7 +21,6 @@ public class CoffinOfTheUnknownSoul extends AmuletCard {
     public String name = "幽魂之棺";
     public String job = "死灵术士";
     private List<String> race = Lists.ofStr();
-    public transient int countDown = 1;
 
     public String mark = """
         战吼：如果葬送发动，则抽1张牌，且使该护符倒数增加被葬送卡费用的一半
@@ -32,6 +31,7 @@ public class CoffinOfTheUnknownSoul extends AmuletCard {
     public FollowCard followCard;
 
     public CoffinOfTheUnknownSoul() {
+        setCountDown(1);
         setPlay(new Play(()->ownerPlayer().getHandAsGameObjBy(card -> card instanceof FollowCard),
             false,
             obj->{

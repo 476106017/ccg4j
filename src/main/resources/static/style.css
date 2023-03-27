@@ -90,8 +90,8 @@
     font-size: 1.7rem;
     text-shadow: 0px 0px 4px #000000;
     text-align: center;
-    border: 2px solid #ffffff;
-    background: radial-gradient(#9f0, #000);
+    border: 2px solid #f0fff0;
+    background: radial-gradient(#adff2f, #2f4f4f9f);
     transition: color 0.3s ease-in-out;
   }
   .card:hover .cost {
@@ -144,15 +144,15 @@
     z-index: 5;
     position: absolute;
     bottom: 0px;
-    left: 90px;
+    left: 80px;
     width: 70px;
     height: 30px;
     font-size: 0.6rem;
     color: #fff;
-    text-shadow: 0px 0px 4px #000000;
+    text-shadow: 0px 0px 3px #000080;
     text-align: center;
     border: 2px solid #ffffff;
-    background: linear-gradient(to bottom, #ffc, #cc0, #000);
+    background: linear-gradient(to bottom, #fffacd, #ffd700, #b8860b);
     border: 1px solid #4b4b4b;
     font-weight: bold;
     line-height: 30px;
@@ -167,18 +167,19 @@
     width: 30px;
     height: 30px;
     font-size: 1rem;
-    color: #fff;
-    text-shadow: 0px 0px 4px #000000;
+    color: #f0ffff;
+    text-shadow: 0px 0px 2px #000080;
     text-align: center;
     border-radius: 50%;
-    border: 2px solid #ffffff;
-    background: radial-gradient(#33f, #003);
+    border: 2px solid #f0ffff;
+    background: radial-gradient(#0000cd, #333333);
     font-weight: bold;
     line-height: 30px;
   }
 
 
   .card .description {
+    display: flex;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -188,34 +189,52 @@
     margin: 0 10px 40px 10px;
     box-sizing: border-box;
     font-size: 16px;
+    font-weight: bold;
+    color: #8b4513;
     border-radius: 5%;
-    color: #4b4b4b;
-    background: linear-gradient(to bottom, #cc9, #ff9,#fff);
-    transition: height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+    background: linear-gradient(to bottom, #faebd7, #bdb76b,#fdf5e6);
+    transition: width 0.3s ease-in-out,height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
     z-index: 1;
     white-space: pre-line;
-    overflow: auto;
+    overflow: hidden;
     }
     
     .card .description:hover {
     z-index: 9;
-    background: linear-gradient(to bottom, #fff, #ffe,#fff);
+    background: linear-gradient(to bottom, #ffd700, #ff0,#eee8aa);
+    margin: 0;
+    width: 100%;
     height: 80%;
+    font-size: 14px;
     margin-bottom: 0px;
+    }
+    .card .description:hover .job {
+      display: block;
     }
     
     .card .description p {
-      margin-top: -25px;
+      margin: 5px;
       text-align: left;
     }
     
-    .keyword {
-      font-weight: bold;
+    .job {
+      z-index: 5;
+      display: none;
+      position: absolute;
+      bottom: 0px;
+      left: 80px;
+      width: 70px;
+      height: 30px;
+      font-size: 0.6rem;
+      color: #cd853f;
       text-align: center;
+      font-weight: bold;
+      line-height: 30px;
     }
-    
-    .card .description p:last-child {
-    margin-bottom: 0;
+
+    .keyword {
+      color: #8b0000;
+      text-shadow: 0px 0px 1px #500000;
     }
 
 
@@ -234,7 +253,7 @@
       .health-bar-inner {
         width: 100%;
         height: 100%;
-        background: linear-gradient(to bottom, #f7c7c7, #900, #ff4c3c);
+        background: linear-gradient(to bottom, #f00, #8b0000, #dc143c);
         transition: width 0.3s ease-in-out;
         position: absolute;
         top: 0;
@@ -278,9 +297,11 @@
 
 .mny-alert-position{
   position:absolute;
+  float: left;
   top:5%;
   left:50%;
   width: 62%;
   /*margin-left: -81px;*/
   z-index: 999999;
+  opacity: 0.618;
 }

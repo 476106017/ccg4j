@@ -23,7 +23,6 @@ public class FakeSky extends AmuletCard {
     public String name = "虚假的星空";
     public String job = "原神";
     private List<String> race = Lists.ofStr();
-    public transient int countDown = 3;
 
     public String mark = """
         回合开始时：+X个万能元素骰子（X是己方场上元素随从个数）
@@ -32,6 +31,7 @@ public class FakeSky extends AmuletCard {
     public String subMark = "";
 
     public FakeSky() {
+        setCountDown(3);
         addEffects((new Effect(this,this, EffectTiming.BeginTurn, ()->{
             long count = ownerPlayer()
                 .getAreaFollowsBy(followCard -> followCard instanceof ElementBaseFollowCard).size();

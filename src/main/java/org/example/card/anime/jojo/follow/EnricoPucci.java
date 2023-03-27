@@ -113,7 +113,7 @@ public class EnricoPucci extends FollowCard {
         private List<String> race = Lists.ofStr("替身使者");
         private String mark = """
             受伤前：有17%的几率闪避受到的普攻伤害(包含反击伤害)
-            —————————————
+            ——
             回合结束时，发动以下全部效果：
             1.双方PP最大值减半
             2.普奇的回合可攻击数+1

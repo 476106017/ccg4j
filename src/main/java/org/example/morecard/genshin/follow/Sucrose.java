@@ -132,7 +132,6 @@ public class Sucrose extends ElementBaseFollowCard {
             public String name = "大型风灵";
             public String job = "原神";
             private List<String> race = Lists.ofStr("召唤物");
-            public transient int countDown = 3;
 
             private Elemental damageType = Elemental.Anemo;
 
@@ -146,6 +145,7 @@ public class Sucrose extends ElementBaseFollowCard {
             }
 
             public LargeWindSpirit() {
+                setCountDown(3);
                 addEffects(new Effect(this,this,EffectTiming.EndTurn,()->{
                     AreaCard areaRandomFollow = enemyPlayer().getAreaRandomGuardFollow();
                     if(areaRandomFollow == null)

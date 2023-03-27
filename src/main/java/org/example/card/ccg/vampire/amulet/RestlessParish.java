@@ -22,7 +22,6 @@ public class RestlessParish extends AmuletCard {
     public String name = "诡谲的幽暗街道";
     public String job = "吸血鬼";
     private List<String> race = Lists.ofStr();
-    public transient int countDown = 1;
 
     public String mark = """
         战吼：给予自己的主战者1点伤害。
@@ -33,6 +32,7 @@ public class RestlessParish extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
     public RestlessParish() {
+        setCountDown(1);
         setPlay(new Play(()->info.damageEffect(this,ownerLeader(),1)));
         addEffects((new Effect(this,this,
             EffectTiming.DeathRattle, obj -> ownerPlayer().draw(1))));

@@ -28,7 +28,7 @@ public class DarkSnare extends SpellCard {
     public String mark = """
         腐蚀：对随机1个敌方随从造成X点伤害
         击杀时：X+1
-        —————————————
+        ——
         对1个敌方随从或敌方玩家造成X点伤害
         """;
 

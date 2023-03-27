@@ -23,9 +23,7 @@ import static org.example.system.Database.userDecks;
 public class DeckEditHandler {
 
     public void deck(Session client) throws IOException, EncodeException {
-        PlayerDeck myDeck = userDecks.get(client);
-
-        Msg.send(client,"myDeck",myDeck.describe());
+        Msg.send(client,"myDeck",userDecks.get(client).describe());
     }
 
 
@@ -34,7 +32,7 @@ public class DeckEditHandler {
         final Map<String, List<Class<? extends Card>>> decks = DeckPreset.decks;
         if(Strings.isBlank(data)){
             // region 如果不输入选择牌组，则返回全部牌组
-            Msg.send(client,"myDeck",DeckPreset.describe());
+            Msg.send(client,"presetDeck",DeckPreset.describe());
             return;
             // endregion 如果不输入选择牌组，则返回全部牌组
         }
@@ -59,7 +57,8 @@ public class DeckEditHandler {
         activeDeck.addAll(deck);
         playerDeck.setLeaderClass(leader);
 
-Msg.send(client, "成功使用预设牌组：" + data);
+        Msg.send(client, "成功使用预设牌组：" + data);
+        Msg.send(client,"myDeck",userDecks.get(client).describe());
     }
 
 }

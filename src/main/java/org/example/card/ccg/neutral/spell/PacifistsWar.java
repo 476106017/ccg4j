@@ -21,7 +21,7 @@ public class PacifistsWar extends SpellCard {
     private List<String> race = Lists.ofStr("任务");
     public String mark = """
         揭示：对战开始时，我方主战者获得【随从攻击时：输掉游戏】
-        —————————————
+        ——
         使超抽效果变成：赢得游戏胜利
         """;
 

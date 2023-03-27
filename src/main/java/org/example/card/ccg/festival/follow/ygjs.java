@@ -30,7 +30,7 @@ public class ygjs extends FollowCard {
 
     public ygjs() {
         setMaxHp(getHp());
-        getKeywords().add("突袭");
+        getKeywords().add("突进");
 
         addEffects((new Effect(this,this, EffectTiming.Boost,
             card-> ((Card)card).getCost()==1,

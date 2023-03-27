@@ -54,7 +54,6 @@ public class Rexxar extends Leader {
         public String name = "狐灵之种";
         public String job = "猎人";
         private List<String> race = Lists.ofStr("灵种");
-        public transient int countDown = 1;
 
         public String mark = """
         亡语：召唤1个3/1且拥有【突进】的狐灵
@@ -62,6 +61,7 @@ public class Rexxar extends Leader {
         public String subMark = "";
 
         public FoxSpiritWildseed() {
+            setCountDown(1);
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
                 ownerPlayer().summon(createCard(FoxSpirit.class))
             )));
@@ -93,7 +93,6 @@ public class Rexxar extends Leader {
         public String name = "熊灵之种";
         public String job = "猎人";
         private List<String> race = Lists.ofStr("灵种");
-        public transient int countDown = 2;
 
         public String mark = """
         亡语：召唤1个2/4且拥有【守护】的熊灵
@@ -101,6 +100,7 @@ public class Rexxar extends Leader {
         public String subMark = "";
 
         public BearSpiritWildseed() {
+            setCountDown(2);
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
                 ownerPlayer().summon(createCard(BearSpirit.class))
             )));
@@ -132,7 +132,6 @@ public class Rexxar extends Leader {
         public String name = "鹿灵之种";
         public String job = "猎人";
         private List<String> race = Lists.ofStr("灵种");
-        public transient int countDown = 3;
 
         public String mark = """
         亡语：召唤1个4/3的鹿灵，对敌方主战者造成3点伤害
@@ -140,6 +139,7 @@ public class Rexxar extends Leader {
         public String subMark = "";
 
         public StagSpiritWildseed() {
+            setCountDown(3);
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
                 ownerPlayer().summon(createCard(StagSpirit.class));
                 info.damageEffect(this,enemyLeader(),3);
