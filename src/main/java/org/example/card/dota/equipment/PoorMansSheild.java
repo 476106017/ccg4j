@@ -10,8 +10,8 @@ import org.example.game.Play;
 public class PoorMansSheild extends EquipmentCard {
     public Integer cost = 1;
     public String name = "穷鬼盾";
-    public int addAtk = 0;
-    public int addHp = 0;
+    public transient int addAtk = 0;
+    public transient int addHp = 0;
     public String job = "dota";
     public String mark = """
         

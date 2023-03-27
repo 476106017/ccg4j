@@ -132,7 +132,7 @@ public class Sucrose extends ElementBaseFollowCard {
             public String name = "大型风灵";
             public String job = "原神";
             private List<String> race = Lists.ofStr("召唤物");
-            public int countDown = 3;
+            public transient int countDown = 3;
 
             private Elemental damageType = Elemental.Anemo;
 

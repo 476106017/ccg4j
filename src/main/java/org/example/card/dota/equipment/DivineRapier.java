@@ -10,8 +10,8 @@ import org.example.game.Play;
 public class DivineRapier extends EquipmentCard {
     public Integer cost = 10;
     public String name = "圣剑";
-    public int addAtk = 30;
-    public int addHp = 0;
+    public transient int addAtk = 30;
+    public transient int addHp = 0;
     public String job = "dota";
     public String mark = """
         圣剑在法师之战中，由神亲自交予反叛军之手

@@ -59,8 +59,8 @@ public class ChainsawMan extends FollowCard {
         public Integer cost = 3;
         public String name = "链锯模式";
         private int countdown = 1;
-        public int addAtk = 2;
-        public int addHp = 2;
+        public transient int addAtk = 2;
+        public transient int addHp = 2;
 
         public String job = "链锯人";
         public String mark = """

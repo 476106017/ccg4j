@@ -22,7 +22,7 @@ public class TestOfStrength extends AmuletCard {
     public String name = "阿秋霸";
     public String job = "中立";
     private List<String> race = Lists.ofStr();
-    public int countDown = 2;
+    public transient int countDown = 2;
 
     public String mark = """
         若此卡在场上，双方全部随从获得【守护】

@@ -17,8 +17,8 @@ public class DeathNote extends EquipmentCard {
     private int apposition = 3;
     public Integer cost = 4;
     public String name = "死亡笔记";
-    public int addAtk = 0;
-    public int addHp = 0;
+    public transient int addAtk = 0;
+    public transient int addHp = 0;
     public String job = "死亡笔记";
     public String mark = """
         战吼：抉择：

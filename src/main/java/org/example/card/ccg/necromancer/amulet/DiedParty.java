@@ -20,7 +20,7 @@ public class DiedParty extends AmuletCard {
     public String name = "坟头蹦迪";
     public String job = "死灵术士";
     private List<String> race = Lists.ofStr();
-    public int countDown = 3;
+    public transient int countDown = 3;
 
     public String mark = """
         其他卡牌召还时：召还墓地里和该卡牌同名的全部随从

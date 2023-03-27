@@ -45,6 +45,16 @@
 	}
 
   .card .type {
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 32px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.618);
+    text-shadow: 0 0 3px #000;
+  }
+  .card .race {
     z-index: 4;
     position: absolute;
     top: 30px;
@@ -130,6 +140,24 @@
     }
   }
   
+  .card .countDown {
+    z-index: 5;
+    position: absolute;
+    bottom: 0px;
+    left: 90px;
+    width: 70px;
+    height: 30px;
+    font-size: 0.6rem;
+    color: #fff;
+    text-shadow: 0px 0px 4px #000000;
+    text-align: center;
+    border: 2px solid #ffffff;
+    background: linear-gradient(to bottom, #ffc, #cc0, #000);
+    border: 1px solid #4b4b4b;
+    font-weight: bold;
+    line-height: 30px;
+  }
+
   
   .card .attack {
     z-index: 5;
@@ -138,14 +166,13 @@
     left: 10px;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
     font-size: 1rem;
     color: #fff;
     text-shadow: 0px 0px 4px #000000;
     text-align: center;
+    border-radius: 50%;
     border: 2px solid #ffffff;
     background: radial-gradient(#33f, #003);
-    border: 1px solid #4b4b4b;
     font-weight: bold;
     line-height: 30px;
   }
@@ -155,14 +182,15 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
+    width: 90%;
     height: 40%;
     padding: 0 10px 0 10px;
-    margin-bottom: 40px;
+    margin: 0 10px 40px 10px;
     box-sizing: border-box;
     font-size: 16px;
+    border-radius: 5%;
     color: #4b4b4b;
-    background: linear-gradient(to bottom, #fff, #ccc,#fff);
+    background: linear-gradient(to bottom, #cc9, #ff9,#fff);
     transition: height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
     z-index: 1;
     white-space: pre-line;

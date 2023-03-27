@@ -4,11 +4,15 @@ var cardHtml = function(card){
             <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name">${card.name}</div>
             <div class="type">${card.TYPE}</div>
+            ${card.race.length>0?'<p class="race">'+card.race+'</p>':""}
             <div class="cost">${card.cost}</div>
             <div class="description">
                 ${card.keywords.length>0?'<p class="keyword">'+card.keywords+'</p>':""}
                 <p>${card.mark}</p>
                 <p>${card.subMark}</p>
+            </div>
+            <div ${card.TYPE!="AMULET"?"hidden":""}>
+                <div class="countDown">倒数：${card.countDown>0?card.countDown:"∞"}</div>
             </div>
             <div ${card.TYPE!="FOLLOW"?"hidden":""}>
                 <div class="attack">${card.atk}</div>

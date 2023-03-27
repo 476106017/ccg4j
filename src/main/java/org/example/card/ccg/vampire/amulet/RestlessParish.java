@@ -22,7 +22,7 @@ public class RestlessParish extends AmuletCard {
     public String name = "诡谲的幽暗街道";
     public String job = "吸血鬼";
     private List<String> race = Lists.ofStr();
-    public int countDown = 1;
+    public transient int countDown = 1;
 
     public String mark = """
         战吼：给予自己的主战者1点伤害。

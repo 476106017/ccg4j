@@ -20,7 +20,7 @@ public class FirespriteGrove extends AmuletCard {
     public String name = "炎精之森";
     public String job = "妖精";
     private List<String> race = Lists.ofStr("自然");
-    public int countDown = 2;
+    public transient int countDown = 2;
 
     public String mark = """
         回合结束时：增加1张妖精到手牌

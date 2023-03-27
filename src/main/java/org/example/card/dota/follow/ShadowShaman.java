@@ -204,7 +204,7 @@ public class ShadowShaman extends FollowCard {
             public String name = "蛇棒";
             public String job = "dota";
             private List<String> race = Lists.ofStr();
-            public int countDown = 2;
+            public transient int countDown = 2;
 
             public String mark = """
             敌方回合结束时：对我方主战者造成1点伤害

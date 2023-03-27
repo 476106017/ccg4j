@@ -16,7 +16,7 @@ import static org.example.constant.CounterKey.DEATH_PREFIX;
 @Getter
 @Setter
 public abstract class AreaCard extends Card{
-    private int leaveIndex = -1;// 离场时所在的下标
+    private transient int leaveIndex = -1;// 离场时所在的下标
     public abstract String getType();
     public void fanfare(){
         Integer randChoice = (int) (getPlay().choiceNum()* Math.random()+1);

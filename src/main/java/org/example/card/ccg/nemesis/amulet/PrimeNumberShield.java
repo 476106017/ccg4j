@@ -19,7 +19,7 @@ public class PrimeNumberShield extends AmuletCard {
     public Integer cost = 1;
     public String name = "质数盾";
     public String job = "复仇者";
-    public int countDown = 3;
+    public transient int countDown = 3;
     private List<String> race = Lists.ofStr();
     public String mark = """
         战吼：如果手牌有创造物卡片，则随机舍弃其中1张，进化此卡

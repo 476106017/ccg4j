@@ -21,7 +21,7 @@ public class BloodfedFlowerbed extends AmuletCard {
     public String name = "鲜血花园";
     public String job = "吸血鬼";
     private List<String> race = Lists.ofStr();
-    public int countDown = 4;
+    public transient int countDown = 4;
 
     public String mark = """
         回合结束时：给予双方的主战者各1点伤害。

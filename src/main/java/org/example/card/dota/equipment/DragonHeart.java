@@ -15,8 +15,8 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 public class DragonHeart extends EquipmentCard {
     public Integer cost = 4;
     public String name = "魔龙之心";
-    public int addAtk = 0;
-    public int addHp = 6;
+    public transient int addAtk = 0;
+    public transient int addHp = 6;
     public String job = "dota";
     public String mark = """
         战吼：装备对象获得【在己方回合结束时，回复X点生命（X是本回合使用的卡牌数）】

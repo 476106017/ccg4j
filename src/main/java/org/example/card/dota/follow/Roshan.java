@@ -41,8 +41,8 @@ public class Roshan extends FollowCard {
     public static class ImmortalGuard extends EquipmentCard {
         public Integer cost = 2;
         public String name = "不朽之守护";
-        public int addAtk = 0;
-        public int addHp = 0;
+        public transient int addAtk = 0;
+        public transient int addHp = 0;
         public String job = "dota";
         private List<String> race = Lists.ofStr("圣遗物");
         public String mark = """

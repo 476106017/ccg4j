@@ -23,7 +23,7 @@ public class WoodOfBrambles extends AmuletCard {
     public String name = "荆棘之森";
     public String job = "妖精";
     private List<String> race = Lists.ofStr("自然");
-    public int countDown = 2;
+    public transient int countDown = 2;
 
     public String mark = """
         战吼：增加2张妖精到手牌

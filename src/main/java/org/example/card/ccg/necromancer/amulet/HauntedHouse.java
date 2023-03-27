@@ -20,7 +20,7 @@ public class HauntedHouse extends AmuletCard {
     public String name = "幽灵宅邸";
     public String job = "死灵术士";
     private List<String> race = Lists.ofStr();
-    public int countDown = 3;
+    public transient int countDown = 3;
 
     public String mark = """
         发动死灵术时：召唤1个怨灵

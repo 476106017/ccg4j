@@ -22,7 +22,7 @@ public class Mythcleaver extends AmuletCard {
     public String name = "神话战剑";
     public String job = "中立";
     private List<String> race = Lists.ofStr();
-    public int countDown = 3;
+    public transient int countDown = 3;
 
     public String mark = """
         战吼：除外敌方的1个护符

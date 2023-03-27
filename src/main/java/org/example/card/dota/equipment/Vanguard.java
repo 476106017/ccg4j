@@ -10,8 +10,8 @@ import org.example.game.Play;
 public class Vanguard extends EquipmentCard {
     public Integer cost = 3;
     public String name = "先锋盾";
-    public int addAtk = 0;
-    public int addHp = 2;
+    public transient int addAtk = 0;
+    public transient int addHp = 2;
     public String job = "dota";
     public String mark = """
         

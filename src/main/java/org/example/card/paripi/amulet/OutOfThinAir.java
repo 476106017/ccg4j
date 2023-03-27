@@ -31,7 +31,7 @@ public class OutOfThinAir extends AmuletCard {
         亡语：随机获得3张卡
         """;
     public String subMark = "";
-    public int countDown = 3;
+    public transient int countDown = 3;
 
 
     public OutOfThinAir() {
