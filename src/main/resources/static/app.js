@@ -1,12 +1,12 @@
 var cardHtml = function(card){
     return `
         <div class="card col-sm-6 col-md-4 col-lg-2">
-            <img src="${card.name}.jpg" alt="" class="image">
+            <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name">${card.name}</div>
             <div class="type">${card.TYPE}</div>
             <div class="cost">${card.cost}</div>
             <div class="description">
-                <p>${card.keywords}</p>
+                ${card.keywords.length>0?'<p class="keyword">'+card.keywords+'</p>':""}
                 <p>${card.mark}</p>
                 <p>${card.subMark}</p>
             </div>
@@ -60,9 +60,9 @@ function  mnyAlert(type,msg,time=2000){
 
 
 // var userName = prompt("请问牌友如何称呼？");
-userName = "玩家"+Math.floor(Math.random()*1000000);
+userName = "Player"+Math.floor(Math.random()*1000000);
 if ($.trim(userName)) {
-    if(true)
+    if(window.location.host.indexOf("card4j") <= 0)
         // 本地运行
         websocket = new WebSocket("ws://localhost:18081/api/"+userName);
     else
