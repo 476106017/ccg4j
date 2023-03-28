@@ -35,7 +35,7 @@ public enum EffectTiming {
     WhenLeaderSkill("激励时"),
     BeforeDamaged("受伤前",Damage.class),
 
-    // ———————————————————— 以下是可以通过连锁触发的效果 ————————————————————//
+    // ————————— 以下是可以通过连锁触发的效果 —————————//
 
 
     AfterDamaged("受伤时",Damage.class),

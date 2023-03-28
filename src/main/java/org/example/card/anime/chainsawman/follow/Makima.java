@@ -95,8 +95,8 @@ public class Makima extends FollowCard {
         public Integer cost = 2;
         public String name = "支配之线";
         public boolean control = true;
-        public int addAtk = 0;
-        public int addHp = 0;
+        public transient int addAtk = 0;
+        public transient int addHp = 0;
         public String job = "链锯人";
         public String mark = """
         获得随从的控制权

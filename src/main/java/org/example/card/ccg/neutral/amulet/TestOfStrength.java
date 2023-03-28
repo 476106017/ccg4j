@@ -22,7 +22,6 @@ public class TestOfStrength extends AmuletCard {
     public String name = "阿秋霸";
     public String job = "中立";
     private List<String> race = Lists.ofStr();
-    public int countDown = 2;
 
     public String mark = """
         若此卡在场上，双方全部随从获得【守护】
@@ -32,6 +31,7 @@ public class TestOfStrength extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
     public TestOfStrength() {
+        setCountDown(2);
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
             ownerPlayer().getAreaFollowsAsFollow().forEach(this::sh);
             enemyPlayer().getAreaFollowsAsFollow().forEach(this::sh);

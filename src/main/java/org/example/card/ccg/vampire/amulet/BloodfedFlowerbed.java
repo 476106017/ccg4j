@@ -21,7 +21,6 @@ public class BloodfedFlowerbed extends AmuletCard {
     public String name = "鲜血花园";
     public String job = "吸血鬼";
     private List<String> race = Lists.ofStr();
-    public int countDown = 4;
 
     public String mark = """
         回合结束时：给予双方的主战者各1点伤害。
@@ -31,6 +30,7 @@ public class BloodfedFlowerbed extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
     public BloodfedFlowerbed() {
+        setCountDown(4);
         addEffects((new Effect(this,this,
             EffectTiming.EndTurn, obj -> info.damageMulti(this,List.of(ownerLeader(),enemyLeader()),1))));
     }

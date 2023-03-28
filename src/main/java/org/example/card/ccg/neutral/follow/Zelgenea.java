@@ -25,7 +25,7 @@ public class Zelgenea extends FollowCard {
     private List<String> race = Lists.ofStr("神");
     public String mark = """
         瞬念召唤：第10回合开始时，获得+5/+5、突进、攻击时：主战者获得唯一效果【回合结束时，对双方主战者和所有随从造成4点伤害】
-        —————————————
+        ——
         战吼：回复主战者5点生命。如果回复前血量在15以下，则抽2张牌、破坏对手场上攻击力最高的1张牌。
         """;
     public String subMark = "当前是第{}回合";

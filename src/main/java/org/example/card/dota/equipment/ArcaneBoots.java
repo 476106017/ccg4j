@@ -12,8 +12,8 @@ import org.example.game.Play;
 public class ArcaneBoots extends EquipmentCard {
     public Integer cost = 3;
     public String name = "秘法鞋";
-    public int addAtk = 0;
-    public int addHp = 0;
+    public transient int addAtk = 0;
+    public transient int addHp = 0;
     public String job = "dota";
     public String mark = """
         战吼：PP最大值+1

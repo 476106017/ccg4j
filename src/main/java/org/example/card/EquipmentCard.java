@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public abstract class EquipmentCard extends AreaCard{
-    public final CardType TYPE = CardType.EQUIPMENT;
+    public final CardType TYPE = CardType.EQUIP;
     @Override
     public String getType() {
         return TYPE.getName();
@@ -21,13 +21,13 @@ public abstract class EquipmentCard extends AreaCard{
 
     private transient FollowCard target;
 
-    private transient boolean control = false;
+    private boolean control = false;
 
-    private transient int addAtk = 0;
+    private int addAtk = 0;
 
-    private transient int addHp = 0;
+    private int addHp = 0;
 
-    private transient int countdown = -1;// 耐久
+    private int countdown = -1;// 耐久
 
     public void addCountdown(int i){
         if(getCountdown() == -1)return;

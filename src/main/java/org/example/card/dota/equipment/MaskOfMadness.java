@@ -13,8 +13,8 @@ import org.example.game.Play;
 public class MaskOfMadness extends EquipmentCard {
     public Integer cost = 2;
     public String name = "疯狂面具";
-    public int addAtk = 0;
-    public int addHp = 0;
+    public transient int addAtk = 0;
+    public transient int addHp = 0;
     public String job = "dota";
     public String mark = """
         战吼：装备对象受到2倍的伤害

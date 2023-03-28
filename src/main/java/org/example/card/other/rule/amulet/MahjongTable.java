@@ -28,7 +28,7 @@ public class MahjongTable extends AmuletCard {
     public String mark = """
         双方抽牌时：
         如果手牌费用符合门清自摸和，则获得游戏胜利
-        —————————————
+        ——
         双方使用卡牌时：
         如果使用的是随从或者护符、且场上还有空间，对方以召唤牌的费用为参考，从手牌进行鸣牌并召唤到场上
         """;

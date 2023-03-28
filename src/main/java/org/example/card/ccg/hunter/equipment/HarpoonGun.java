@@ -15,9 +15,8 @@ import java.util.List;
 public class HarpoonGun extends EquipmentCard {
     public Integer cost = 3;
     public String name = "鱼叉炮";
-    public int addAtk = 3;
-    public int addHp = 0;
-    public int countdown = 2;
+    public transient int addAtk = 3;
+    public transient int addHp = 0;
     public String job = "猎人";
     public String mark = """
         攻击时：检查牌堆底部的牌并放到顶部，如果是野兽卡，则费用-2
@@ -26,6 +25,7 @@ public class HarpoonGun extends EquipmentCard {
     public String subMark = "";
 
     public HarpoonGun() {
+        setCountdown(2);
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));
         addEffects(new Effect(this,this, EffectTiming.WhenAttack,()->{
             List<Card> deck = ownerPlayer().getDeck();

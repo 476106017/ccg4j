@@ -20,7 +20,6 @@ public class SpringGreenProtection extends AmuletCard {
     public String name = "新绿的加护";
     public String job = "妖精";
     private List<String> race = Lists.ofStr();
-    public int countDown = 3;
 
     public String mark = """
         回合结束时：随机给予1个自己的从者+1/+0效果。
@@ -29,6 +28,7 @@ public class SpringGreenProtection extends AmuletCard {
     public String subMark = "";
 
     public SpringGreenProtection() {
+        setCountDown(3);
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj-> {
             final FollowCard follow = (FollowCard) ownerPlayer().getAreaRandomFollow();
             if(follow!=null)follow.addStatus(1,0);

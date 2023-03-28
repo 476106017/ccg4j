@@ -21,7 +21,6 @@ public class FlowerOfFairies extends AmuletCard {
     public String name = "妖精之花";
     public String job = "妖精";
     private List<String> race = Lists.ofStr("自然");
-    public int countDown = 2;
 
     public String mark = """
         战吼：抽1张牌
@@ -30,6 +29,7 @@ public class FlowerOfFairies extends AmuletCard {
     public String subMark = "";
 
     public FlowerOfFairies() {
+        setCountDown(2);
         setPlay(new Play(()->{
             ownerPlayer().draw(1);
         }));

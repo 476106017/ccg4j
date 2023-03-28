@@ -22,7 +22,6 @@ public class Mythcleaver extends AmuletCard {
     public String name = "神话战剑";
     public String job = "中立";
     private List<String> race = Lists.ofStr();
-    public int countDown = 3;
 
     public String mark = """
         战吼：除外敌方的1个护符
@@ -33,6 +32,7 @@ public class Mythcleaver extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
     public Mythcleaver() {
+        setCountDown(3);
         setPlay(new Play(()->enemyPlayer().getAreaAsGameObjBy(card -> card instanceof AmuletCard),
             false,
             obj-> info.exile((AmuletCard) obj)));

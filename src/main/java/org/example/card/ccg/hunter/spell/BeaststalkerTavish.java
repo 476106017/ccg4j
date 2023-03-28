@@ -60,7 +60,6 @@ public class BeaststalkerTavish extends SpellCard {
         public String name = "强化狐灵之种";
         public String job = "猎人";
         private List<String> race = Lists.ofStr("灵种");
-        public int countDown = 1;
 
         public String mark = """
             亡语：召唤2个3/1且拥有【突进】的狐灵
@@ -68,6 +67,7 @@ public class BeaststalkerTavish extends SpellCard {
         public String subMark = "";
 
         public SuperFoxSpiritWildseed() {
+            setCountDown(1);
             addEffects((new Effect(this, this, EffectTiming.DeathRattle, obj ->
             {
                 ownerPlayer().summon(createCard(Rexxar.FoxSpiritWildseed.FoxSpirit.class));
@@ -85,7 +85,6 @@ public class BeaststalkerTavish extends SpellCard {
         public String name = "强化熊灵之种";
         public String job = "猎人";
         private List<String> race = Lists.ofStr("灵种");
-        public int countDown = 2;
 
         public String mark = """
             亡语：召唤2个2/4且拥有【守护】的熊灵
@@ -93,6 +92,7 @@ public class BeaststalkerTavish extends SpellCard {
         public String subMark = "";
 
         public SuperBearSpiritWildseed() {
+            setCountDown(2);
             addEffects((new Effect(this, this, EffectTiming.DeathRattle, obj ->
             {
                 ownerPlayer().summon(createCard(Rexxar.BearSpiritWildseed.BearSpirit.class));
@@ -111,7 +111,6 @@ public class BeaststalkerTavish extends SpellCard {
         public String name = "强化鹿灵之种";
         public String job = "猎人";
         private List<String> race = Lists.ofStr("灵种");
-        public int countDown = 3;
 
         public String mark = """
             亡语：召唤2个4/3的鹿灵，对敌方主战者造成6点伤害
@@ -119,6 +118,7 @@ public class BeaststalkerTavish extends SpellCard {
         public String subMark = "";
 
         public SuperStagSpiritWildseed() {
+            setCountDown(3);
             addEffects((new Effect(this, this, EffectTiming.DeathRattle, obj -> {
                 ownerPlayer().summon(createCard(Rexxar.StagSpiritWildseed.StagSpirit.class));
                 ownerPlayer().summon(createCard(Rexxar.StagSpiritWildseed.StagSpirit.class));
