@@ -438,7 +438,8 @@ Msg.send(oppositePlayer().getSession(),msg);
         p0.draw(3);
         p1.draw(3);
         msg("游戏开始，请选择3张手牌交换");
-        pushInfo();
+        Msg.send(p0.getSession(),"swap",p0.getHand());
+        Msg.send(p1.getSession(),"swap",p1.getHand());
     }
 
     // region turn
