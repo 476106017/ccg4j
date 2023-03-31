@@ -27,6 +27,7 @@ var cardHtml = function(card){
 }
 
 var interval;		//定时器变量
+
 function  mnyAlert(type,msg,time=2000){
     //判断页面中是否有#mny-width的dom元素，有的话将其去除
     if($('#mny-width').length > 0){
@@ -58,6 +59,16 @@ function  mnyAlert(type,msg,time=2000){
     interval = window.setInterval(function () {
         $('#mny-width').remove();
     }, time);
+}
+
+function swap(){
+    let swapArr = [];
+    $("#swap-card .card").each((i,card)=>{
+        if($(card).hasClass("swapped")){
+            swapArr.push(i+1);
+        }
+    })
+    websocket.send('swap::'+swapArr.join(' '));
 }
 
 
@@ -93,6 +104,9 @@ if ($.trim(userName)) {
             case "msg":  
                 mnyAlert(1,obj);
                 break;
+            case "alert":  
+                mnyAlert(2,obj);
+                break;
             case "myDeck":  
                 $('#card-gridview').html("");
                 obj.deck.forEach(card => {
@@ -105,6 +119,26 @@ if ($.trim(userName)) {
                     $('#deck-preset').append('<button type="button" class="btn btn-outline-dark" data-dismiss="modal" onclick="websocket.send(\'usedeck::'+deck.name+'\');">'+deck.name+'</button>');
                 });
                 $('#deck-preset-modal').modal('show');
+                break;
+            case "waitRoom":  
+                $('#roomCode').html(obj);
+                $('#wait-room-modal').modal('show');
+                break;
+            case "swap":  
+                $('#wait-room-modal').modal('hide');
+                $('#swap-card-modal').modal('show');
+                $('#swap-card').html("");
+                obj.forEach(card => {
+                    $('#swap-card').append(cardHtml(card));
+                });
+                $("#swap-card .card").each((k,card)=>{
+                    $(card).click(()=>{
+                        if($(card).hasClass("swapped"))
+                            $(card).removeClass("swapped");
+                        else
+                            $(card).addClass("swapped");
+                    });
+                })
                 break;
             case "battleInfo":  
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + obj+  "</li>");

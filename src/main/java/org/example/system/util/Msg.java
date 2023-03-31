@@ -31,6 +31,13 @@ public class Msg<T> {
             throw new RuntimeException(e);
         }
     }
+    public static void alert(Session session,String msg){
+        try {
+            session.getBasicRemote().sendObject(new Msg<>("alert",msg));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void send(Session session,String channel,Object data){
         try {
             session.getBasicRemote().sendObject(new Msg<>(channel,data));

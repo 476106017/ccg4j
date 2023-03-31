@@ -24,7 +24,7 @@ public class MatchHandler {
     public void joinRoom(Session client) throws IOException {
         String room = userRoom.get(client);
         if(room != null){
-            Msg.send(client,"请不要重复进入房间！");
+            Msg.alert(client,"请不要重复进入房间！");
             return;
         }
 
@@ -32,7 +32,7 @@ public class MatchHandler {
             waitUser = client;
             waitRoom = UUID.randomUUID().toString();
             userRoom.put(client,waitRoom);
-            Msg.send(client,"进入房间（"+waitRoom+"），等待对手");
+            Msg.send(client,"waitRoom",waitRoom);
 
             WebSocketConfig.broadcast("【全体】有人正在匹配对战，点击匹配以尝试加入该对战！");
         }else {

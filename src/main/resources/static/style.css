@@ -9,8 +9,8 @@
   
   .card {
     position: relative;
-    width: 250px;
-    height: 350px;
+    width: 220px !important;
+    height: 356px !important;
     min-height: 350px;
     margin: 20px;
     border-radius: 5px;
@@ -116,6 +116,10 @@
     animation: tiktok 1s infinite;
     transform: scale(1.5);
     margin-right: 10px;
+  }
+  .tiktok {
+    z-index: 9;
+    animation: tiktok 1s infinite;
   }
 @keyframes tiktok {
     0% {
@@ -304,4 +308,26 @@
   /*margin-left: -81px;*/
   z-index: 999999;
   opacity: 0.618;
+}
+
+
+.swapped{
+  border: 1px solid #f00;
+  box-shadow: 0 0 20px #f00;
+  text-shadow: 0 0 3px #f00;
+}
+
+.swapped .name{
+  color: #000;
+}
+.swapped .cost{
+  color: #000;
+}
+.swapped .description{
+  color: #000;
+}
+
+
+#swap-card .card{
+  margin: 5px;
 }

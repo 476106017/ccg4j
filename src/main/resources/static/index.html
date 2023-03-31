@@ -14,7 +14,7 @@
 		<h1>Card4j 卡牌游戏资料站（重构中）</h1>
 		<div class="row mt-5">
 			<div class="col-md-3">
-				<a href="#" class="btn btn-primary btn-lg btn-block">匹配对战</a>
+				<a href="#" class="btn btn-primary btn-lg btn-block" onclick="websocket.send('joinRoom');">匹配对战</a>
 			</div>
 			<div class="col-md-3">
 				<a href="#" class="btn btn-danger btn-lg btn-block">词条百科</a>
@@ -42,14 +42,59 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel">选择预设牌组</h4>
+					<h4 class="modal-title" id="myModalLabel1">选择预设牌组</h4>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">选择预设牌组：
 					<p id="deck-preset"></p></div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="wait-room-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel2">匹配中</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p id="roomCode" class="tiktok"></p></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="websocket.send('leave');">取消</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade"  id="swap-card-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel3">换牌</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">选择任意张牌交换：<br/><br/>
+					<div class="row" id="swap-card"></div></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="swap()">确认选择</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade"  id="senjou-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-fullscreen">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel4">战场</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="websocket.send('leave');">离开对局</button>
+				</div>
+				<div class="modal-body">
+					<div class="row" id="swap-card"></div>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
