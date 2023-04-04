@@ -89,10 +89,15 @@ Msg.send(oppositePlayer().getSession(),msg);
     }
 
     public void pushInfo(){
-        Msg.send(thisPlayer().getSession(),"battleInfo",
-            Maps.newMap("me",thisPlayer(),"enemy",oppositePlayer()));
-        Msg.send(oppositePlayer().getSession(),"battleInfo",
-            Maps.newMap("me",oppositePlayer(),"enemy",thisPlayer()));
+        final PlayerInfo thisPlayer = thisPlayer();
+        thisPlayer.setDeckCount(thisPlayer.getDeck().size());
+        final PlayerInfo oppositePlayer = oppositePlayer();
+        oppositePlayer.setDeckCount(oppositePlayer.getDeck().size());
+
+        Msg.send(thisPlayer.getSession(),"battleInfo",
+            Maps.newMap("me", thisPlayer,"enemy", oppositePlayer));
+        Msg.send(oppositePlayer.getSession(),"battleInfo",
+            Maps.newMap("me", oppositePlayer,"enemy", thisPlayer));
     }
 
     public void msgToThisPlayer(String msg){
@@ -450,6 +455,10 @@ Msg.send(oppositePlayer().getSession(),msg);
 
         Leader enemyLeader = oppositePlayer().getLeader();
         enemyLeader.useEffects(EffectTiming.BeginGame);
+
+        Msg.send(thisPlayer().getSession(),"swapOver","");
+        Msg.send(oppositePlayer().getSession(),"swapOver","");
+
     }
 
     public void startTurn(){
@@ -472,6 +481,7 @@ Msg.send(oppositePlayer().getSession(),msg);
         pushInfo();
         msgToThisPlayer("请出牌！");
         msgToOppositePlayer("等待对手出牌......");
+        Msg.send(thisPlayer().getSession(),"yourTurn","");
     }
 
     public void endTurnOfTimeout(){

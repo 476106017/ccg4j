@@ -16,13 +16,12 @@ var cardHtml = function(card){
             <div ${card.TYPE!="FOLLOW"?"hidden":""}>
                 <div class="attack">${card.atk}</div>
                 <div class="health-bar">
-                    <div class="health-bar-inner" style="width: ${1/card.maxHp*100}%;"></div>
+                    <div class="health-bar-inner" style="width: ${card.hp/card.maxHp*100}%;"></div>
                     
                     <div class="health-bar-text">1/${card.maxHp}</div>
                 </div>
             </div>
         </div>
-    
     `
 }
 
@@ -65,13 +64,25 @@ function swap(){
     let swapArr = [];
     $("#swap-card .card").each((i,card)=>{
         if($(card).hasClass("swapped")){
+            $(card).hide();
             swapArr.push(i+1);
         }
     })
+    $("#swap-confirm").hide();
     websocket.send('swap::'+swapArr.join(' '));
 }
 
+function endTurn(){
+    $(".end-button").html("对方<br/>回合");
+    $(".end-button").css("background","radial-gradient(red, #2f4f4f9f)");
+    websocket.send('end');
+}
 
+function showMsg(){
+    $('#msg-log-div').toggle();
+}
+
+var msgLog = "";
 
 // var userName = prompt("请问牌友如何称呼？");
 userName = "Player"+Math.floor(Math.random()*1000000);
@@ -103,15 +114,18 @@ if ($.trim(userName)) {
         switch(data.channel){
             case "msg":  
                 mnyAlert(1,obj);
+                $('#msg-log-div').append(obj+'<br/>');
                 break;
             case "alert":  
                 mnyAlert(2,obj);
+                $('#msg-log-div').append(obj+'<br/>');
                 break;
             case "myDeck":  
                 $('#card-gridview').html("");
                 obj.deck.forEach(card => {
                     $('#card-gridview').append(cardHtml(card));
                 });
+                // websocket.send('joinRoom');// test
                 break;
             case "presetDeck":
                 $('#deck-preset').html("");
@@ -127,6 +141,7 @@ if ($.trim(userName)) {
             case "swap":  
                 $('#wait-room-modal').modal('hide');
                 $('#swap-card-modal').modal('show');
+                $("#swap-confirm").show();
                 $('#swap-card').html("");
                 obj.forEach(card => {
                     $('#swap-card').append(cardHtml(card));
@@ -139,9 +154,64 @@ if ($.trim(userName)) {
                             $(card).addClass("swapped");
                     });
                 })
+                // swap();// test
                 break;
-            case "battleInfo":  
-                $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') + "&nbsp;&nbsp;&nbsp;" + obj+  "</li>");
+            case "swapOver":  
+                $('#swap-card-modal').modal('hide');
+                $('#senjou-modal').modal('show');
+                break;
+            case "yourTurn":  
+                $(".end-button").html("结束<br/>回合");
+                $(".end-button").css("background","radial-gradient(blue, #2f4f4f9f)");
+                break;
+            case "battleInfo": 
+                $('#enemy-hero').empty();
+                $('#enemy-hand').empty();
+                $('#enemy-battlefield').empty();
+                $('#my-battlefield').empty();
+                $('#my-hand').empty();
+                $('#my-hero').empty();
+
+
+                $('#enemy-info').html("牌堆："+ obj.enemy.deckCount + "<br/>" + "墓地："+ obj.enemy.graveyardCount +
+                    "<br/>" + "血量："+ obj.enemy.hp + "/" + obj.enemy.hpMax);
+                $('#my-info').html("血量："+ obj.me.hp + "/" + obj.me.hpMax + "<br/>" + "墓地："+ obj.me.graveyardCount +
+                    "<br/>" + "牌堆："+ obj.me.deckCount);
+                $('.enemy-pp-num').html(obj.enemy.ppNum+"/"+obj.enemy.ppMax);
+                $('.my-pp-num').html(obj.me.ppNum+"/"+obj.me.ppMax);
+
+
+                obj.me.area.forEach(card => {
+                    $('#my-battlefield').append(cardHtml(card));
+                });
+                obj.me.hand.forEach(card => {
+                    $('#my-hand').append(cardHtml(card));
+                    $('#my-hand .card').click(function(){
+                        let select = $(this).index()+1;
+                        setTimeout(websocket.send('play::'+select),500);
+                    })
+                });
+                obj.enemy.area.forEach(card => {
+                    $('#enemy-battlefield').append(cardHtml(card));
+                });
+                obj.enemy.hand.forEach(card => {
+                    $('#enemy-hand').append(`
+                        <div class="card-back col-sm-6 col-md-4 col-lg-2"></div>
+                    `);
+                });
+                break;
+            case "discover":  
+                $('#discover-card-modal').modal('show');
+                $('#discover-card').html("");
+                obj.forEach(card => {
+                    $('#discover-card').append(cardHtml(card));
+                });
+                $("#discover-card .card").each((k,card)=>{
+                    $(card).click(()=>{
+                        $('#discover-card-modal').modal('hide');
+                        setTimeout(websocket.send('discover::'+(k+1)),500);
+                    });
+                })
                 break;
         }
     };

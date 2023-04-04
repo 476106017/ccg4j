@@ -56,6 +56,10 @@ public class PlayerInfo implements Serializable {
     transient List<Card> graveyard = new ArrayList<>();
     transient Set<Card> abandon = new HashSet<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
+
+    Integer deckCount; // 前端展示用
+
+
     public void countToGraveyard(int count){
         graveyardCount = Math.max(0, graveyardCount + count);
     }
@@ -216,11 +220,13 @@ public class PlayerInfo implements Serializable {
         addHand(cards);
     }
     public List<Card> draw(int num){
+        info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");
         Msg.send(getSession(),"draw",num);
         Msg.send(getEnemy().getSession(), "enemyDraw",num);
         int overDraw = num - deck.size();
         int finalNum = num;// 真正抽到的牌数
         if(overDraw>0){
+            info.msg(this.name+"从牌堆超抽了"+overDraw+"张卡牌");
             Msg.send(getSession(),"overdraw",overDraw);
             Msg.send(getEnemy().getSession(), "enemyOverdraw",overDraw);
             getLeader().getOverDraw().accept(overDraw);

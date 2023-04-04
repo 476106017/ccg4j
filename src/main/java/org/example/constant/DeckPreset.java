@@ -24,6 +24,8 @@ import org.example.card.ccg.hunter.Rexxar;
 import org.example.card.ccg.hunter.equipment.HarpoonGun;
 import org.example.card.ccg.hunter.follow.*;
 import org.example.card.ccg.hunter.spell.*;
+import org.example.card.ccg.mage.follow.WandThief;
+import org.example.card.ccg.mage.spell.MagicTrick;
 import org.example.card.ccg.necromancer.Luna;
 import org.example.card.ccg.necromancer.amulet.*;
 import org.example.card.ccg.necromancer.follow.*;
@@ -177,8 +179,8 @@ public class DeckPreset {
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
-            TestFollow.class,TestFollow.class, TestFollow.class,InsatiableDevourer.class,InsatiableDevourer.class,
-            TestFollow.class,TestFollow.class, TestFollow.class,InsatiableDevourer.class,InsatiableDevourer.class
+            Tracking.class,Tracking.class, Tracking.class,WandThief.class, WandThief.class,
+            MagicTrick.class, MagicTrick.class, MagicTrick.class,ylxs.class,ylxs.class
         ));
         decks.put("传奇音乐节",List.of(
             ccgm.class,ccgm.class,  dbzwtn.class, fzcf.class,fzcf.class,

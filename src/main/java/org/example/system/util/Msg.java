@@ -24,21 +24,21 @@ public class Msg<T> {
         this.data = data;
     }
 
-    public static void send(Session session,String msg){
+    public synchronized static void send(Session session,String msg){
         try {
             session.getBasicRemote().sendObject(new Msg<>(msg));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    public static void alert(Session session,String msg){
+    public synchronized static void alert(Session session,String msg){
         try {
             session.getBasicRemote().sendObject(new Msg<>("alert",msg));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    public static void send(Session session,String channel,Object data){
+    public synchronized static void send(Session session,String channel,Object data){
         try {
             session.getBasicRemote().sendObject(new Msg<>(channel,data));
         } catch (Exception e) {

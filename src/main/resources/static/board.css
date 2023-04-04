@@ -1,0 +1,181 @@
+#senjou-modal .modal-header {
+  height: 0;
+  background-color: green;
+  border: none;
+}
+#senjou-modal .modal-content {
+  overflow: hidden;
+}
+#senjou-modal .modal-body {
+  padding: 0;
+  overflow: visible;
+  border: none;
+}
+
+.board {
+  background-color: green;
+  margin: 0;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+}
+
+.enemy {
+  display: flex;
+  height: 40%;
+  flex-direction: column;
+}
+  
+.pp-num {
+  z-index: 5;
+  position: absolute;
+  right: 0;
+  width: 70px;
+  height: 30px;
+  font-size: 0.6rem;
+  color: #fff;
+  text-shadow: 0px 0px 3px #000080;
+  text-align: center;
+  border: 2px solid #ffffff;
+  border: 1px solid #4b4b4b;
+  font-weight: bold;
+  line-height: 30px;
+}
+.enemy-pp-num{
+  top: -30px;
+  width: 100px;
+  background: linear-gradient(to bottom, green, #ffd700,#fffacd );
+}
+.my-pp-num{
+  bottom: -30px;
+  width: 100px;
+  background: linear-gradient(to bottom, #fffacd, #ffd700, green);
+}
+.right-panel{
+  position: absolute;
+  top: 40%;
+  right: 5px;
+  background: radial-gradient(white, #fffacd);
+}
+.end-button {
+  z-index: 5;
+  width: 100px;
+  height: 100px;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 1.7rem;
+  text-shadow: 0px 0px 4px #000000;
+  text-align: center;
+  border: 2px solid #000000;
+  background: radial-gradient(red, #2f4f4f9f);
+  transition: color 0.3s ease-in-out;
+  padding-top: 16px;
+  line-height: 30px;
+}
+.end-button:hover {
+  z-index: 9;
+  animation: tiktok 1s infinite;
+}
+@keyframes tiktok {
+  0% {
+      text-shadow: -1px -1px 0 #0ff,  
+                  1px 1px 0 #f00 ;
+  }
+  25% {
+      text-shadow: 1px -1px 0 #0ff,  
+                  -1px 1px 0 #f00 ;
+  }
+  50% {
+      text-shadow: 1px 1px 0 #0ff,  
+                  -1px -1px 0 #f00 ;
+  }
+  75% {
+      text-shadow: -1px 1px 0 #0ff,  
+                  1px -1px 0 #f00 ;
+  }
+  100% {
+      text-shadow: -1px -1px 0 #0ff,  
+                  1px 1px 0 #f00 ;
+  }
+}
+
+.player {
+  display: flex;
+  height: 60%;
+  flex-direction: column;
+}
+
+.battlefield {
+  background-color: green;
+  height: 100%;
+  margin-bottom: -50px;
+}
+.enemy-hand {
+  background-color: green;
+}
+
+.board .card {
+  transform: scale(0.8);
+  margin: -60px -60px -60px -40px;
+}
+.board .card:hover{
+  z-index: 999;
+  transform: scale(1) ;
+}
+
+.card-back{
+  position: relative;
+  width: 61.8px !important;
+  height: 100px !important;
+  background-size: 100% 100%;
+  background-image: url('yugioh.webp');
+  background-repeat: no-repeat;
+  margin-left: -10px;
+  margin-top: -50px !important;
+}
+.card-back:hover{
+  z-index: 999;
+  transform: scale(1.5) ;
+}
+
+.hand {
+  background-color: green;
+  padding-left: 80px;
+}
+.hand .card{
+  margin-bottom: -130px !important;
+  transform:rotate(-15deg);
+}
+.hand .card:hover{
+  z-index: 999;
+  transform: scale(1) ;
+  margin-top: -190px !important;
+}
+
+.hero-power {
+  background-color: #555;
+}
+
+#msg-log{
+  z-index: 999;
+  overflow: auto;
+  position: absolute;
+  right: 10px;
+  top: 50px;
+
+}
+
+#msg-log-div{
+  z-index: 999;
+  overflow: auto;
+  max-height: 70%;
+  position: absolute;
+  right: 10px;
+  top: 80px;
+  color: white;
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.382);
+  padding: 5px;
+}
