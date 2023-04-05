@@ -30,7 +30,7 @@ public class WandThief extends FollowCard {
         setPlay(new Play(()->{
             if(ownerPlayer().getCount(PLAY_NUM)>0){
                 ownerPlayer().discoverCard(card -> card instanceof SpellCard,
-                    discoverCard-> ownerPlayer().addHand(discoverCard));
+                    prototype-> ownerPlayer().addHand(prototype.cloneOf(ownerPlayer())));
             }
         }));
 

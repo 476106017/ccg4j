@@ -475,7 +475,7 @@ Msg.send(oppositePlayer().getSession(),msg);
             rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
             msg("倒计时30秒！");
         }else{
-            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
+            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 3600, TimeUnit.SECONDS);
             msg("倒计时300秒！");
         }
         pushInfo();

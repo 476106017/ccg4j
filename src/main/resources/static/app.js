@@ -82,8 +82,6 @@ function showMsg(){
     $('#msg-log-div').toggle();
 }
 
-var msgLog = "";
-
 // var userName = prompt("请问牌友如何称呼？");
 userName = "Player"+Math.floor(Math.random()*1000000);
 if ($.trim(userName)) {
@@ -114,11 +112,11 @@ if ($.trim(userName)) {
         switch(data.channel){
             case "msg":  
                 mnyAlert(1,obj);
-                $('#msg-log-div').append(obj+'<br/>');
+                $('#msg-log-div').prepend(obj+'<br/>');
                 break;
             case "alert":  
                 mnyAlert(2,obj);
-                $('#msg-log-div').append(obj+'<br/>');
+                $('#msg-log-div').prepend(obj+'<br/>');
                 break;
             case "myDeck":  
                 $('#card-gridview').html("");

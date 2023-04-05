@@ -19,7 +19,7 @@ public abstract class GameObj {
     private static int id_iter=10000; //共用的静态变量
     public final int id;
 
-    protected transient GameInfo info = null;
+    protected transient GameInfo info;
 
     public transient Elemental elementalCling = Elemental.Void;
 

@@ -26,6 +26,7 @@ public class TributeSummon extends SpellCard {
 
 
     public TributeSummon() {
+
         setPlay(new Play(()->
             List.of(ownerPlayer().getAreaFollowsAsGameObjBy(followCard -> followCard.getCost()<5),
                 ownerPlayer().getHandAsGameObjBy(card -> card instanceof FollowCard && card.getCost()>=5)),

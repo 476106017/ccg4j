@@ -109,8 +109,10 @@ public class PlayerInfo implements Serializable {
     public void discoverCard(Predicate<Card> predicate,Consumer<Card> consumer){
         List<Card> prototypes = new ArrayList<>(Database.getPrototypeBy(predicate, getDiscoverMax()));
         // 发现的是原型卡，所以回调时要先创造一张它的克隆
-        discoverCard(prototypes,card -> consumer.accept(card.cloneOf(this)));
+        discoverCard(prototypes, consumer);
     }
+
+    // 发现并获得己方现有卡
     public void discoverCard(List<Card> cards,Consumer<Card> consumer){
         if(cards.isEmpty()) return;
         if(cards.size()==1){
@@ -130,7 +132,7 @@ public class PlayerInfo implements Serializable {
 
         discoverThread = new Thread(()->{
             Card discoverCard;
-            if(cardsCopy.size() <= discoverNum)
+            if(discoverNum==0 || cardsCopy.size() < discoverNum)
                 discoverCard= Lists.randOf(cardsCopy);
             else
                 discoverCard= cardsCopy.get(discoverNum-1);

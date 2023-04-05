@@ -179,8 +179,10 @@ public class DeckPreset {
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
         decks.put("test",List.of(
-            Tracking.class,Tracking.class, Tracking.class,WandThief.class, WandThief.class,
-            MagicTrick.class, MagicTrick.class, MagicTrick.class,ylxs.class,ylxs.class
+            MagicTrick.class,MagicTrick.class, MagicTrick.class,MagicTrick.class, MagicTrick.class,
+            MagicTrick.class, MagicTrick.class, MagicTrick.class,MagicTrick.class,MagicTrick.class,
+            MagicTrick.class, MagicTrick.class, MagicTrick.class,MagicTrick.class,MagicTrick.class,
+            MagicTrick.class, MagicTrick.class, MagicTrick.class,MagicTrick.class,MagicTrick.class
         ));
         decks.put("传奇音乐节",List.of(
             ccgm.class,ccgm.class,  dbzwtn.class, fzcf.class,fzcf.class,

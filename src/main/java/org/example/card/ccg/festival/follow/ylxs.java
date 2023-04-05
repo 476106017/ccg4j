@@ -2,6 +2,7 @@ package org.example.card.ccg.festival.follow;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.game.Play;
@@ -29,12 +30,12 @@ public class ylxs extends FollowCard {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             ownerPlayer().discoverCard(card -> card instanceof SpellCard,
-                discoverCard-> {
-                    ownerPlayer().addHand(discoverCard);
+                prototype-> {
+                    ownerPlayer().addHand(prototype.cloneOf(ownerPlayer()));
 
                     if(ownerPlayer().getPpNum()==0)
                         ownerPlayer().discoverCard(card -> card instanceof SpellCard,
-                            discoverCard2-> ownerPlayer().addHand(discoverCard2));
+                            prototype2-> ownerPlayer().addHand(prototype2.cloneOf(ownerPlayer())));
                 });
         }));
     }
