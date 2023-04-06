@@ -28,8 +28,8 @@ public class NerubianSwarmguard extends FollowCard {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<AreaCard> list = new ArrayList<>();
-            list.add((AreaCard) clone());
-            list.add((AreaCard) clone());
+            list.add((AreaCard) cloneOfMe());
+            list.add((AreaCard) cloneOfMe());
             ownerPlayer().summon(list);
         }));
     }

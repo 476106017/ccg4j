@@ -33,9 +33,9 @@ public class LabRecruiter extends FollowCard {
                 FollowCard followCard = (FollowCard) gameObjs;
                 List<Card> addCards = new ArrayList<>();
 
-                addCards.add(followCard.clone());
-                addCards.add(followCard.clone());
-                addCards.add(followCard.clone());
+                addCards.add(followCard.cloneOfMe());
+                addCards.add(followCard.cloneOfMe());
+                addCards.add(followCard.cloneOfMe());
 
                 ownerPlayer().addDeck(addCards);
             }));

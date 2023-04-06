@@ -207,11 +207,21 @@ public abstract class Card extends GameObj implements Cloneable, Serializable {
         counter.merge(key, time, Integer::sum);
     }
 
+    public Card cloneOfMe(){
+        return cloneOf(ownerPlayer());
+    }
+
     public Card cloneOf(PlayerInfo player){
         Card card = clone();
         card.setParent(player.getLeader());
         card.setInfo(player.getInfo());
         card.setOwner(player.getInfo().getPlayerInfos()[0]==player?0:1);
+
+        card.setPlay(getPlay());
+        card.setKeywords(new ArrayList<>(getKeywords()));
+        card.setEffects(new ArrayList<>(getEffects()));
+        Object counter = ((HashMap) getCounter()).clone();
+        card.setCounter((Map)counter);
         return card;
     }
 
@@ -223,11 +233,6 @@ public abstract class Card extends GameObj implements Cloneable, Serializable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-        clone.setPlay(getPlay());
-        clone.setKeywords(new ArrayList<>(getKeywords()));
-        clone.setEffects(new ArrayList<>(getEffects()));
-        Object counter = ((HashMap) getCounter()).clone();
-        clone.setCounter((Map)counter);
         return clone;
     }
 

@@ -29,7 +29,7 @@ public class TestFollow extends FollowCard {
 //        getKeywords().add("剧毒");
         setPlay(new Play(() -> {
             getInfo().msg(hashCode() + "战吼");
-            ownerPlayer().summon((TestFollow)clone());
+            ownerPlayer().summon((TestFollow)cloneOfMe());
         }));
         addEffects((new Effect(this,this, EffectTiming.Entering, obj->
             getInfo().msg(hashCode() + "入场时"))));

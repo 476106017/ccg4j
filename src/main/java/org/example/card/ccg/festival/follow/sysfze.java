@@ -34,7 +34,7 @@ public class sysfze extends FollowCard {
 
         setPlay(new Play(()->{
             List<Card> copy = new ArrayList<>();
-            ownerPlayer().getHand().forEach(card -> copy.add(card.cloneOf(ownerPlayer())));
+            ownerPlayer().getHand().forEach(card -> copy.add(card.cloneOfMe()));
             ownerPlayer().addDeck(copy);
             if(ownerPlayer().getPpNum()==0){
                 ownerPlayer().addDeck(cloneOf(ownerPlayer()));
