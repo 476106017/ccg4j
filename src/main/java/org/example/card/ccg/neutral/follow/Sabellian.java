@@ -24,7 +24,7 @@ public class Sabellian extends FollowCard {
         """;
     private String subMark = "";
 
-    public Sabellian() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
             enemyPlayer().setCanFanfare(false);

@@ -23,7 +23,7 @@ public class Vanish extends SpellCard {
 
     public String subMark = "";
 
-    public Vanish() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 ownerPlayer().getAreaCopy().forEach(AreaCard::backToHand);

@@ -26,7 +26,7 @@ public class MurderousApplication extends SpellCard {
     public String subMark = "";
 
 
-    public MurderousApplication() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenAbandoned,
             ()-> ownerLeader().addEffect(new Effect(this,this, EffectTiming.BeginTurn,3,
                 ()->ownerPlayer().draw(1)),false)

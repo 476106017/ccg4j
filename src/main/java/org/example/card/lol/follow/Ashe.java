@@ -24,7 +24,7 @@ public class Ashe extends FollowCard {
     """;
     private String subMark = "";
 
-    public Ashe() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("远程");
         addEffects(new Effect(this,this, EffectTiming.WhenAttack, obj->{

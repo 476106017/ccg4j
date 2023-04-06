@@ -19,7 +19,7 @@ public class DivineRapier extends EquipmentCard {
 
     public String subMark = "";
 
-    public DivineRapier() {
+    public void init() {
         getKeywords().add("死亡掉落");
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));
     }

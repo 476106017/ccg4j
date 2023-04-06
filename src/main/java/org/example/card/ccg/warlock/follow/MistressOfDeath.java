@@ -24,7 +24,7 @@ public class MistressOfDeath extends FollowCard {
         """;
     private String subMark = "";
 
-    public MistressOfDeath() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()-> ownerPlayer().wearyDamaged()));
         addEffects((new Effect(this,this, EffectTiming.DeathRattle,

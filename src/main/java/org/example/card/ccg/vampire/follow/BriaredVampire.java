@@ -26,7 +26,7 @@ public class BriaredVampire extends FollowCard {
         """;
     private String subMark = "";
 
-    public BriaredVampire() {
+    public void init() {
         setMaxHp(getHp());
 
         setPlay(new Play(

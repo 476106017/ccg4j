@@ -27,7 +27,7 @@ public class Than0S extends FollowCard {
         """;
     private String subMark = "";
 
-    public Than0S() {
+    public void init() {
         setMaxHp(getHp());
         addEffects(new Effect(this,this, EffectTiming.BeginTurnAtHand,
             ()-> atHand() && enemyPlayer().getPpNum()>0,

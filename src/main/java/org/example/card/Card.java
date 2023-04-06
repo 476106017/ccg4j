@@ -16,7 +16,7 @@ import static org.example.system.Database.getPrototype;
 
 @Getter
 @Setter
-public abstract class Card extends GameObj implements Cloneable, Serializable {
+public abstract class Card extends GameObj implements Serializable {
     public static final int SLOT = 1;
     public static final int APPOSITION = 3;
 
@@ -207,35 +207,27 @@ public abstract class Card extends GameObj implements Cloneable, Serializable {
         counter.merge(key, time, Integer::sum);
     }
 
-    public Card cloneOfMe(){
-        return cloneOf(ownerPlayer());
+    public Card copy(){
+        return copyBy(ownerPlayer());
     }
 
-    public Card cloneOf(PlayerInfo player){
-        Card card = clone();
+    public Card copyBy(PlayerInfo player){
+        Card card = createCard(this.getClass());
+
         card.setParent(player.getLeader());
         card.setInfo(player.getInfo());
         card.setOwner(player.getInfo().getPlayerInfos()[0]==player?0:1);
 
-        card.setPlay(getPlay());
         card.setKeywords(new ArrayList<>(getKeywords()));
-        card.setEffects(new ArrayList<>(getEffects()));
+        if(this instanceof FollowCard followCard && card instanceof FollowCard followCardCopy){
+            followCardCopy.setAtk(followCard.getAtk());
+            followCardCopy.setMaxHp(followCard.getMaxHp());
+            followCardCopy.setHp(followCard.getHp());
+        }
         Object counter = ((HashMap) getCounter()).clone();
         card.setCounter((Map)counter);
         return card;
     }
-
-    @Override
-    public Card clone(){
-        Card clone = null;
-        try {
-            clone = (Card) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-        return clone;
-    }
-
 
     public Card prototype(){
         try {

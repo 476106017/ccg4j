@@ -22,7 +22,7 @@ public class TheBigger extends SpellCard {
     public String subMark = "";
 
 
-    public TheBigger() {
+    public void init() {
         setPlay(new Play(()->{
             ownerPlayer().draw(1);
             if(ownerPlayer().getDeck().size()>enemyPlayer().getDeck().size()){

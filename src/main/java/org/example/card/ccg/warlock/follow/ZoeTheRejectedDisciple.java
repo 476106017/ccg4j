@@ -22,7 +22,7 @@ public class ZoeTheRejectedDisciple extends FollowCard {
         """;
     private String subMark = "";
 
-    public ZoeTheRejectedDisciple() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             int weary = ownerPlayer().getWeary();

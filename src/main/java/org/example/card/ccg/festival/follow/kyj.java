@@ -25,7 +25,7 @@ public class kyj extends FollowCard {
     public int hp = 3;
 
 
-    public kyj() {
+    public void init() {
         setMaxHp(getHp());
 
         setPlay(new Play(()->{

@@ -25,7 +25,7 @@ public class HearseDrift extends SpellCard {
     public String subMark = "";
 
 
-    public HearseDrift() {
+    public void init() {
         setPlay(new Play(()->{
             while (ownerPlayer().getGraveyardCount()>=4 &&
                 ownerPlayer().getArea().size() < ownerPlayer().getAreaMax())

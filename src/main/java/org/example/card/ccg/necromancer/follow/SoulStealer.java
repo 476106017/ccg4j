@@ -26,7 +26,7 @@ public class SoulStealer extends FollowCard {
         """;
     private String subMark = "";
 
-    public SoulStealer() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<AreaCard> enemyFollows = enemyPlayer().getAreaFollows();

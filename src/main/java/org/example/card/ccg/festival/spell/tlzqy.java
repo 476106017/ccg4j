@@ -30,7 +30,7 @@ public class tlzqy extends SpellCard {
         return subMark.replaceAll("\\{}",ownerPlayer().getCount(NECROMANCY_NUM)+"");
     }
 
-    public tlzqy() {
+    public void init() {
         getKeywords().add("吸血");
         setPlay(new Play(()->{
             List<GameObj> targetable = new ArrayList<>();

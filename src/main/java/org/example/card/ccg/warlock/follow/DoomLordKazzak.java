@@ -22,7 +22,7 @@ public class DoomLordKazzak extends FollowCard {
         """;
     private String subMark = "";
 
-    public DoomLordKazzak() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getDeck().isEmpty()){

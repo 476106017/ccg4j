@@ -26,7 +26,7 @@ public class CorralSouls extends SpellCard {
     public String subMark = "";
 
 
-    public CorralSouls() {
+    public void init() {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),
             true,
             obj->{

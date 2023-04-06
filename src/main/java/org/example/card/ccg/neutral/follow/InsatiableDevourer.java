@@ -29,7 +29,7 @@ public class InsatiableDevourer extends FollowCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public InsatiableDevourer() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this,
             EffectTiming.Charge, obj -> count())));

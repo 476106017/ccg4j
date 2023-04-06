@@ -24,7 +24,7 @@ public class TimeEater extends AmuletCard {
 
     public String subMark = "";
 
-    public TimeEater() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenPlay,
             ()->ownerPlayer().getCount(PLAY_NUM)>=11,
             ()->{

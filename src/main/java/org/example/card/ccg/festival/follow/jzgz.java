@@ -26,7 +26,7 @@ public class jzgz extends FollowCard {
     public int atk = 3;
     public int hp = 3;
 
-    public jzgz() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("圣盾");
         setPlay(new Play(()->{

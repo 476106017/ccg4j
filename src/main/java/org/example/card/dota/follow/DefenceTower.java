@@ -26,7 +26,7 @@ public class DefenceTower extends FollowCard {
     public String subMark = "";
 
 
-    public DefenceTower() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("缴械");
         addEffects((new Effect(this,this, EffectTiming.EndTurn, ()->{

@@ -27,7 +27,7 @@ public class LassyLoyalCompanion extends FollowCard {
         """;
     private String subMark = "";
 
-    public LassyLoyalCompanion() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->ownerPlayer().getHp() < ownerPlayer().getHpMax(),

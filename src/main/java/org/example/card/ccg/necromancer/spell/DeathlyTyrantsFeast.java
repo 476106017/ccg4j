@@ -24,7 +24,7 @@ public class DeathlyTyrantsFeast extends SpellCard {
     public String subMark = "";
 
 
-    public DeathlyTyrantsFeast() {
+    public void init() {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),
             true,
             obj->{

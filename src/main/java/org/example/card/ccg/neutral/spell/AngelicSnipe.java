@@ -24,13 +24,7 @@ public class AngelicSnipe extends SpellCard {
 
     public String subMark = "";
     public int target = 1;
-
-    @Override
     public void init() {
-        this.count();
-    }
-
-    public AngelicSnipe() {
         setPlay(new Play(()->{
             List<GameObj> targetable = new ArrayList<>();
             targetable.add(info.oppositePlayer().getLeader());

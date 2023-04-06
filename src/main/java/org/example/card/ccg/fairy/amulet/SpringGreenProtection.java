@@ -27,7 +27,7 @@ public class SpringGreenProtection extends AmuletCard {
         """;
     public String subMark = "";
 
-    public SpringGreenProtection() {
+    public void init() {
         setCountDown(3);
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj-> {
             final FollowCard follow = (FollowCard) ownerPlayer().getAreaRandomFollow();

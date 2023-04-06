@@ -28,7 +28,7 @@ public class KingLeoric extends FollowCard {
     public String subMark = "";
 
 
-    public KingLeoric() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("自愈");
         getKeywords().add("吸血");
@@ -57,7 +57,7 @@ public class KingLeoric extends FollowCard {
         """;
         public String subMark = "";
 
-        public StormBolt() {
+        public void init() {
             setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),true,obj->{
                 if(obj instanceof FollowCard followCard){
                     new Damage(getParent(),followCard,2).apply();

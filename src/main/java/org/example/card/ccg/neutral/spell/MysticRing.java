@@ -25,12 +25,7 @@ public class MysticRing extends SpellCard {
     public String subMark = "";
     public int target = 1;
 
-    @Override
     public void init() {
-        this.count();
-    }
-
-    public MysticRing() {
         setPlay(new Play(()->
             ownerPlayer().getHandAsGameObjBy(card -> card!=this),
             true,

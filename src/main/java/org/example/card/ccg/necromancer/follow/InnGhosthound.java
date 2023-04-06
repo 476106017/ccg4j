@@ -22,7 +22,7 @@ public class InnGhosthound extends FollowCard {
         """;
     private String subMark = "";
 
-    public InnGhosthound() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->ownerPlayer().getHandAsGameObjBy(card -> card instanceof FollowCard),
             false,

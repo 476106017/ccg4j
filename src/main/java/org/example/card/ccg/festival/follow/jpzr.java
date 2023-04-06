@@ -31,7 +31,7 @@ public class jpzr extends FollowCard {
     public int atk = 2;
     public int hp = 4;
 
-    public jpzr() {
+    public void init() {
         setMaxHp(getHp());
         count();
         addEffects((new Effect(this,this, EffectTiming.WhenPlay,

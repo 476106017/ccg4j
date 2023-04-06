@@ -23,7 +23,7 @@ public class MirrorWorld extends AmuletCard {
 
     public String subMark = "";
 
-    public MirrorWorld() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenEnemyPlay, obj->{
             Card playCard = (Card) obj;
             ownerPlayer().getHandBy(card -> card.getName().equals(playCard.getName()))

@@ -23,12 +23,12 @@ public class zxsh extends SpellCard {
 
     public String subMark = "";
 
-    public zxsh() {
+    public void init() {
         setPlay(new Play(
             () -> ownerPlayer().getAreaFollowsAsGameObj(),true,
             gameObj -> {
                 FollowCard followCard = (FollowCard)gameObj;
-                FollowCard clone = (FollowCard)followCard.cloneOf(ownerPlayer());
+                FollowCard clone = (FollowCard)followCard.copyBy(ownerPlayer());
                 ownerPlayer().addHand(clone);
 
                 if(ownerPlayer().getPpNum()==0){

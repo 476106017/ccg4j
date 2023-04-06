@@ -24,7 +24,7 @@ public class AirboundBarrage extends SpellCard {
 
     public String subMark = "";
 
-    public AirboundBarrage() {
+    public void init() {
         setPlay(new Play(
             () -> ownerPlayer().getAreaBy(areaCard -> true).stream()
                 .map(areaCard -> (GameObj)areaCard).toList(),true,

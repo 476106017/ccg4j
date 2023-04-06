@@ -29,7 +29,7 @@ public class PhantomAssassin extends FollowCard {
     public String subMark = "";
 
 
-    public PhantomAssassin() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(() -> {
             ownerPlayer().addHand(createCard(StiflingDagger.class));
@@ -64,7 +64,7 @@ public class PhantomAssassin extends FollowCard {
         """;
         public String subMark = "";
 
-        public StiflingDagger() {
+        public void init() {
             setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),true,obj->{
                 if(obj instanceof FollowCard followCard){
                     new Damage(getParent(),followCard,1).apply();
@@ -85,7 +85,7 @@ public class PhantomAssassin extends FollowCard {
         """;
         public String subMark = "";
 
-        public PhantomStrike() {
+        public void init() {
             setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),true,obj->{
                 if(obj instanceof FollowCard followCard){
                     FollowCard parent = (FollowCard) getParent();

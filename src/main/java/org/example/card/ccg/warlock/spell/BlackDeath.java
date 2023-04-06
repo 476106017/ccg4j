@@ -29,7 +29,7 @@ public class BlackDeath extends SpellCard {
     public String subMark = "";
 
 
-    public BlackDeath() {
+    public void init() {
         Play play = new Play(() -> enemyPlayer().getAreaFollowsAsGameObj(), true, target -> {
             FollowCard targetFollow = (FollowCard) target;
 

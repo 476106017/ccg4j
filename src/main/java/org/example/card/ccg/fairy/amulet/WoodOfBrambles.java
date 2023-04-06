@@ -30,7 +30,7 @@ public class WoodOfBrambles extends AmuletCard {
         """;
     public String subMark = "";
 
-    public WoodOfBrambles() {
+    public void init() {
         setCountDown(2);
         setPlay(new Play(()->{
             ownerPlayer().addHand(createCard(Derivant.Fairy.class));

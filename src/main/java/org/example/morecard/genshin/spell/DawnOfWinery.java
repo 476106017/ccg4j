@@ -27,7 +27,7 @@ public class DawnOfWinery extends ElementCostSpellCard {
         """;
     public String subMark = "";
 
-    public DawnOfWinery() {
+    public void init() {
         setPlay(new Play(()-> ownerPlayer().summon(createCard(DawnOfWineryAmulet.class))));
     }
 
@@ -47,7 +47,7 @@ public class DawnOfWinery extends ElementCostSpellCard {
             """;
         public String subMark = "";
 
-        public DawnOfWineryAmulet() {
+        public void init() {
             addEffects(new Effect(this,this, EffectTiming.BeginTurn,()->{
                 clearCount();
             }));

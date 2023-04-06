@@ -32,7 +32,7 @@ public class Alchemist extends FollowCard {
     }
 
 
-    public Alchemist() {
+    public void init() {
         setMaxHp(getHp());
         addEffects(new Effect(this,this,EffectTiming.WhenKill,obj->{
             Card draw = ownerPlayer().draw(card -> card instanceof EquipmentCard);

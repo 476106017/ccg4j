@@ -26,7 +26,7 @@ public class HauntedHouse extends AmuletCard {
         """;
     public String subMark = "";
 
-    public HauntedHouse() {
+    public void init() {
         setCountDown(3);
         addEffects((new Effect(this,this,
             EffectTiming.WhenCostGraveyard, obj -> ownerPlayer().summon(createCard(Derivant.Ghost.class)))));

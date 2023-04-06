@@ -23,7 +23,7 @@ public class BarakKodobane extends FollowCard {
         """;
     private String subMark = "";
 
-    public BarakKodobane() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()-> {
             ownerPlayer().draw(card -> card instanceof SpellCard && card.getCost().equals(1));

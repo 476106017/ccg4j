@@ -22,7 +22,7 @@ public class Haggle extends SpellCard {
 
     public String subMark = "";
 
-    public Haggle() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 int size1 = ownerPlayer().getHand().size();

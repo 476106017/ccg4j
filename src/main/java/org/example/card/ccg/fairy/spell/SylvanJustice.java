@@ -23,7 +23,7 @@ public class SylvanJustice extends SpellCard {
 
     public String subMark = "";
 
-    public SylvanJustice() {
+    public void init() {
         setPlay(new Play(
             ()->enemyPlayer().getAreaFollowsAsGameObj(), true,
             target->{

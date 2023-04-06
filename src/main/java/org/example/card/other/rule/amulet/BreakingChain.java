@@ -22,7 +22,7 @@ public class BreakingChain extends AmuletCard {
 
     public String subMark = "连锁：由于触发能力而导致触发其他的能力";
 
-    public BreakingChain() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
             info.setCanChain(false);
         })));

@@ -35,7 +35,7 @@ public class Diluc extends ElementBaseFollowCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public Diluc() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("缴械");
         getKeywords().add("无法破坏");
@@ -64,7 +64,7 @@ public class Diluc extends ElementBaseFollowCard {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public SearingOnslaught() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -96,7 +96,7 @@ public class Diluc extends ElementBaseFollowCard {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public Dawn() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();

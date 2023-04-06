@@ -27,7 +27,7 @@ public class Roshan extends FollowCard {
     public String subMark = "";
 
 
-    public Roshan() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("魔法护盾");
         addEffects(new Effect(this,this,EffectTiming.Entering,()->
@@ -51,7 +51,7 @@ public class Roshan extends FollowCard {
 
         public String subMark = "信春哥，得永生";
 
-        public ImmortalGuard() {
+        public void init() {
             getKeywords().add("死亡掉落");
             setPlay(new Play(
                 ()->ownerPlayer().getAreaFollowsAsGameObj(),true,

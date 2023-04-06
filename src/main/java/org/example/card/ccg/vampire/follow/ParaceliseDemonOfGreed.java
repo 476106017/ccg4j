@@ -29,7 +29,7 @@ public class ParaceliseDemonOfGreed extends FollowCard {
         """;
     private String subMark = "";
 
-    public ParaceliseDemonOfGreed() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.WhenAbandoned,
             ()->{

@@ -29,7 +29,7 @@ public class Preparation extends SpellCard {
 
     public Map<SpellCard,Integer> cutCosts = new HashMap<>();
 
-    public Preparation() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 ownerPlayer().getHand().forEach(card -> {

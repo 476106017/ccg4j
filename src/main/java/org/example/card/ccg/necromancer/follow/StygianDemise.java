@@ -26,7 +26,7 @@ public class StygianDemise extends FollowCard {
         """;
     private String subMark = "";
 
-    public StygianDemise() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<Card> deckBy = ownerPlayer().getDeckBy(card -> card instanceof FollowCard followCard

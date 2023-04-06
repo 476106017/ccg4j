@@ -23,7 +23,7 @@ public class JolyneCujoh extends FollowCard {
         """;
     private String subMark = "";
 
-    public JolyneCujoh() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         getKeywords().add("远程");

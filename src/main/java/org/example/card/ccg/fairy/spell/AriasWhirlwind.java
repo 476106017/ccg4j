@@ -30,7 +30,7 @@ public class AriasWhirlwind extends SpellCard {
         return subMark.replaceAll("\\{}",ownerPlayer().getCount(PLAY_NUM)+"");
     }
 
-    public AriasWhirlwind() {
+    public void init() {
         setPlay(new Play(()->{
             List<Damage> damages = new ArrayList<>();
             Integer count = ownerPlayer().getCount(PLAY_NUM);

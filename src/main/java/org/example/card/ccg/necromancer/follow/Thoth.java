@@ -26,7 +26,7 @@ public class Thoth extends FollowCard {
         """;
     private String subMark = "";
 
-    public Thoth() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().draw(1);

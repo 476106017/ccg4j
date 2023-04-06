@@ -24,7 +24,7 @@ public class CowardlyKnight extends FollowCard {
         """;
     private String subMark = "";
 
-    public CowardlyKnight() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("守护");
         addEffects(new Effect(this,this, EffectTiming.AfterDamaged,obj->{

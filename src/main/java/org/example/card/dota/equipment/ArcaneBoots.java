@@ -22,7 +22,7 @@ public class ArcaneBoots extends EquipmentCard {
 
     public String subMark = "";
 
-    public ArcaneBoots() {
+    public void init() {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),true,obj -> {
             int ppMax = ownerPlayer().getPpMax();
             ownerPlayer().setPpMax(ppMax + 1);

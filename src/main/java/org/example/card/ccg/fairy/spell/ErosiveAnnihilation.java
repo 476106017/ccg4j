@@ -31,12 +31,8 @@ public class ErosiveAnnihilation extends SpellCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    @Override
     public void init() {
         this.count();
-    }
-
-    public ErosiveAnnihilation() {
         setPlay(new Play(()->
             // 创建主战者回合结束效果
             ownerLeader().addEffect(new Effect(

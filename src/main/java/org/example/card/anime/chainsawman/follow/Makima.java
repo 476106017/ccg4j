@@ -29,7 +29,7 @@ public class Makima extends FollowCard {
         亡语：破坏一个装备支配之线的我方随从，将此卡召还到场上
         """;
     private String subMark = "";
-    public Makima() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
         setPlay(new Play(() -> {
@@ -104,7 +104,7 @@ public class Makima extends FollowCard {
 
         public String subMark = "";
 
-        public DominatePipe() {
+        public void init() {
             setPlay(new Play(()->new ArrayList<>()));
 
         }

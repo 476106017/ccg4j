@@ -30,7 +30,7 @@ public class ImmortalAegis extends FollowCard {
     private int atk = 4;
     private int hp = 8;
 
-    public ImmortalAegis() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("无法破坏");
         getKeywords().add("效果伤害免疫");
@@ -57,7 +57,7 @@ public class ImmortalAegis extends FollowCard {
 
         public String subMark = "";
 
-        public MercurialMight() {
+        public void init() {
 
             setPlay(new Play(ArrayList::new, false,
                 gameObjs -> {

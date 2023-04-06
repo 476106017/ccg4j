@@ -36,7 +36,7 @@ public class Bahamut extends FollowCard {
     public int atk = 13;
     public int hp = 13;
 
-    public Bahamut() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(() -> {
                 List<AreaCard> area = enemyPlayer().getArea();

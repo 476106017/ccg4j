@@ -31,7 +31,7 @@ public class PrimeNumberShield extends AmuletCard {
 
     public String subMark = "";
 
-    public PrimeNumberShield() {
+    public void init() {
         setCountDown(3);
         setPlay(new Play(
             () -> {

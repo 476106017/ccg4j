@@ -27,7 +27,7 @@ public class JoangleTheActor extends FollowCard {
         """;
     private String subMark = "";
 
-    public JoangleTheActor() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->
             ownerPlayer().draw(card -> card.getCost().equals(ownerPlayer().getPpNum()))));

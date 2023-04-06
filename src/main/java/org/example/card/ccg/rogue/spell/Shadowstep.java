@@ -23,7 +23,7 @@ public class Shadowstep extends SpellCard {
 
     public String subMark = "";
 
-    public Shadowstep() {
+    public void init() {
         setPlay(new Play(
             () -> ownerPlayer().getAreaFollowsAsGameObj(),true,
             gameObj -> {

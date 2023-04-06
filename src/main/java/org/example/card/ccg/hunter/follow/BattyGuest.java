@@ -23,7 +23,7 @@ public class BattyGuest extends FollowCard {
         """;
     private String subMark = "";
 
-    public BattyGuest() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().summon(createCard(ThirstyBat.class));
@@ -44,7 +44,7 @@ public class BattyGuest extends FollowCard {
         """;
         private String subMark = "";
 
-        public ThirstyBat() {
+        public void init() {
             setMaxHp(getHp());
         }
     }

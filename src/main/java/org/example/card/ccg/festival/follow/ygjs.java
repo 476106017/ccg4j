@@ -28,7 +28,7 @@ public class ygjs extends FollowCard {
 
     private FollowCard targetFollow;
 
-    public ygjs() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
 

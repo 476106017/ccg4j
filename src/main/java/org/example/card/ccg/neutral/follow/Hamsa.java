@@ -24,7 +24,7 @@ public class Hamsa extends FollowCard {
         """;
     private String subMark = "";
 
-    public Hamsa() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->
             enemyPlayer().getAreaFollowsAsFollow().stream()

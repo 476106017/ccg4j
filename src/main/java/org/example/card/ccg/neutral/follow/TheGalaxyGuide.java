@@ -32,7 +32,7 @@ public class TheGalaxyGuide extends FollowCard {
             .replaceAll("\\{C}",ownerPlayer().getCount(PLAY_NUM_ALL)+"");
     }
 
-    public TheGalaxyGuide() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->
         {

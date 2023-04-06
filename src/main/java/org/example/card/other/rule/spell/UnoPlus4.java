@@ -25,7 +25,7 @@ public class UnoPlus4 extends SpellCard {
     public String subMark = "";
     public int target = 2;
 
-    public UnoPlus4() {
+    public void init() {
         setPlay(new Play(()->{
             enemyPlayer().addHand(createCard(UnoDoubt.class));
             enemyPlayer().draw(4);
@@ -52,7 +52,7 @@ public class UnoPlus4 extends SpellCard {
         public String subMark = "";
         public int target = 2;
 
-        public UnoDoubt() {
+        public void init() {
             addEffects(new Effect(this,this, EffectTiming.EndTurnAtHand,
                 ()-> ownerPlayer().abandon(this)));
             setPlay(new Play(()->{

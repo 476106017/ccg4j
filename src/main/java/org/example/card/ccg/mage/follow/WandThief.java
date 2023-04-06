@@ -25,12 +25,12 @@ public class WandThief extends FollowCard {
         """;
     private String subMark = "";
 
-    public WandThief() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getCount(PLAY_NUM)>0){
                 ownerPlayer().discoverCard(card -> card instanceof SpellCard,
-                    prototype-> ownerPlayer().addHand(prototype.cloneOf(ownerPlayer())));
+                    prototype-> ownerPlayer().addHand(prototype.copyBy(ownerPlayer())));
             }
         }));
 

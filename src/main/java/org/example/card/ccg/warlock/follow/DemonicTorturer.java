@@ -22,7 +22,7 @@ public class DemonicTorturer extends FollowCard {
         """;
     private String subMark = "";
 
-    public DemonicTorturer() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getDeck().isEmpty()){

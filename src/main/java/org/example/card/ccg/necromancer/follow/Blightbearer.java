@@ -25,7 +25,7 @@ public class Blightbearer extends FollowCard {
     private String subMark = "";
     private transient Effect theDeathRattle;
 
-    public Blightbearer() {
+    public void init() {
         setMaxHp(getHp());
 
         theDeathRattle = new Effect(this, this, EffectTiming.DeathRattle, () -> {

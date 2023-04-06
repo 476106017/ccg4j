@@ -21,7 +21,7 @@ public class KingKrush extends FollowCard {
     public String subMark = "";
 
 
-    public KingKrush() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("疾驰");
     }

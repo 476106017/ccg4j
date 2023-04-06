@@ -31,7 +31,7 @@ public class TeleportToBattleGround extends SpellCard {
 
     public Map<FollowCard,Integer> cutCosts = new HashMap<>();
 
-    public TeleportToBattleGround() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 ownerPlayer().getHand().forEach(card -> {

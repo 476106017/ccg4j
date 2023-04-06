@@ -25,7 +25,7 @@ public class FairyCircle extends SpellCard {
 
     public String subMark = "";
 
-    public FairyCircle() {
+    public void init() {
         setPlay(new Play(() -> {
             List<Card> addCards = new ArrayList<>();
             addCards.add(createCard(Derivant.Fairy.class));

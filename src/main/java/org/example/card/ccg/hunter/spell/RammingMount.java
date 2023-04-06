@@ -26,7 +26,7 @@ public class RammingMount extends SpellCard {
     public String subMark = "";
 
 
-    public RammingMount() {
+    public void init() {
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(), true,
             target->{
@@ -51,7 +51,7 @@ public class RammingMount extends SpellCard {
         private String mark = "";
         private String subMark = "";
 
-        public TavishsRam() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("远程");
         }

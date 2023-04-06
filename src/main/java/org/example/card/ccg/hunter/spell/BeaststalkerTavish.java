@@ -29,7 +29,7 @@ public class BeaststalkerTavish extends SpellCard {
 
     public String subMark = "";
 
-    public BeaststalkerTavish() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 switch ((int) (Math.random() * 3)) {
@@ -66,7 +66,7 @@ public class BeaststalkerTavish extends SpellCard {
             """;
         public String subMark = "";
 
-        public SuperFoxSpiritWildseed() {
+        public void init() {
             setCountDown(1);
             addEffects((new Effect(this, this, EffectTiming.DeathRattle, obj ->
             {
@@ -91,7 +91,7 @@ public class BeaststalkerTavish extends SpellCard {
             """;
         public String subMark = "";
 
-        public SuperBearSpiritWildseed() {
+        public void init() {
             setCountDown(2);
             addEffects((new Effect(this, this, EffectTiming.DeathRattle, obj ->
             {
@@ -117,7 +117,7 @@ public class BeaststalkerTavish extends SpellCard {
             """;
         public String subMark = "";
 
-        public SuperStagSpiritWildseed() {
+        public void init() {
             setCountDown(3);
             addEffects((new Effect(this, this, EffectTiming.DeathRattle, obj -> {
                 ownerPlayer().summon(createCard(Rexxar.StagSpiritWildseed.StagSpirit.class));

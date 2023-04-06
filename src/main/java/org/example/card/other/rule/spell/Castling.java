@@ -24,7 +24,7 @@ public class Castling extends SpellCard {
     public String subMark = "";
     public int target = 2;
 
-    public Castling() {
+    public void init() {
         setPlay(new Play(()->
             List.of(ownerPlayer().getAreaFollowsAsGameObj(),ownerPlayer().getAreaFollowsAsGameObj()),
             2,true,

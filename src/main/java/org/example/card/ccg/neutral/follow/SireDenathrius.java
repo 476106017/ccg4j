@@ -32,7 +32,7 @@ public class SireDenathrius extends FollowCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public SireDenathrius() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("吸血");
         addEffects((new Effect(this,this,

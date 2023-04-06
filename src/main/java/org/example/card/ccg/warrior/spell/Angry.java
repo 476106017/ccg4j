@@ -23,7 +23,7 @@ public class Angry extends SpellCard {
     public String subMark = "";
 
 
-    public Angry() {
+    public void init() {
         setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),
             true,
             target->{

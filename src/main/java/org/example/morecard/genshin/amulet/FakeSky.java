@@ -30,7 +30,7 @@ public class FakeSky extends AmuletCard {
         """;
     public String subMark = "";
 
-    public FakeSky() {
+    public void init() {
         setCountDown(3);
         addEffects((new Effect(this,this, EffectTiming.BeginTurn, ()->{
             long count = ownerPlayer()
@@ -72,7 +72,7 @@ public class FakeSky extends AmuletCard {
         """;
         private String subMark = "";
 
-        public Hei() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("守护");
             getKeywords().add("剧毒");

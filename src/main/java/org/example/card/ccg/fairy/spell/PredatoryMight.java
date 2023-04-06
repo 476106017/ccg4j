@@ -24,7 +24,7 @@ public class PredatoryMight extends SpellCard {
 
     public String subMark = "";
 
-    public PredatoryMight() {
+    public void init() {
         setPlay(new Play(()->{
             enemyPlayer().getAreaFollowsAsFollow().stream().min(Comparator.comparingInt(FollowCard::getAtk))
                 .ifPresent(followCard -> {

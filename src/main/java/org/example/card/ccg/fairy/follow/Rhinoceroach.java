@@ -30,7 +30,7 @@ public class Rhinoceroach extends FollowCard {
     public int atk = 1;
     public int hp = 1;
 
-    public Rhinoceroach() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("疾驰");
         setPlay(new Play(()->{

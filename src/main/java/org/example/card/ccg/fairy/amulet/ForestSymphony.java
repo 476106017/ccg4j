@@ -29,7 +29,7 @@ public class ForestSymphony extends AmuletCard {
         """;
     public String subMark = "";
 
-    public ForestSymphony() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
             if(ownerPlayer().isShortRope()) return;
 

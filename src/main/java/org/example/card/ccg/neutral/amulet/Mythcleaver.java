@@ -31,7 +31,7 @@ public class Mythcleaver extends AmuletCard {
 
     List<FollowCard> effectFollows = new ArrayList<>();
 
-    public Mythcleaver() {
+    public void init() {
         setCountDown(3);
         setPlay(new Play(()->enemyPlayer().getAreaAsGameObjBy(card -> card instanceof AmuletCard),
             false,

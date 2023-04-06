@@ -25,7 +25,7 @@ public class EternalContract extends SpellCard {
     public String subMark = "";
 
 
-    public EternalContract() {
+    public void init() {
         setPlay(new Play(()->{
             ownerPlayer().draw(2);
             ownerLeader().addEffect(new Effect(this,this, EffectTiming.EndTurn,2,

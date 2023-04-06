@@ -23,7 +23,7 @@ public class SpiritPoacher extends FollowCard {
         """;
     private String subMark = "";
 
-    public SpiritPoacher() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             switch ((int)(Math.random()*3)){

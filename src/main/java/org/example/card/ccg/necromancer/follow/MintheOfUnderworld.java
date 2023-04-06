@@ -25,7 +25,7 @@ public class MintheOfUnderworld extends FollowCard {
         """;
     private String subMark = "";
 
-    public MintheOfUnderworld() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this,
             EffectTiming.Entering, obj -> {

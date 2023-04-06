@@ -25,7 +25,7 @@ public class GoblinHotPotato extends SpellCard {
 
     public String subMark = "";
 
-    public GoblinHotPotato() {
+    public void init() {
         setPlay(new Play(()->{
             changeOwner();
             removeWhenNotAtArea();

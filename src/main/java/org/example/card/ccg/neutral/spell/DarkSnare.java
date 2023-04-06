@@ -39,12 +39,8 @@ public class DarkSnare extends SpellCard {
         return subMark.replaceAll("\\{damage}",getCount()+"");
     }
 
-    @Override
     public void init() {
         this.count();
-    }
-
-    public DarkSnare() {
         setPlay(new Play(()->{
                 List<GameObj> targetable = new ArrayList<>();
                 targetable.add(info.oppositePlayer().getLeader());

@@ -35,7 +35,7 @@ public class Zelgenea extends FollowCard {
     }
 
 
-    public Zelgenea() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(() -> {
             int oldHp = ownerPlayer().getHp();

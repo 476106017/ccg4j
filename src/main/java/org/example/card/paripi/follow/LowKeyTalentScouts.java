@@ -27,7 +27,7 @@ public class LowKeyTalentScouts extends FollowCard {
         """;
     private String subMark = "";
 
-    public LowKeyTalentScouts() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
             List<AreaCard> areaCards = info.getAreaFollowsCopy();

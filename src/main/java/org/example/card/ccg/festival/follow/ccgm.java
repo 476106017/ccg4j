@@ -28,7 +28,7 @@ public class ccgm extends FollowCard {
 
     private FollowCard targetFollow;
 
-    public ccgm() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->enemyPlayer().getAreaFollowsAsGameObj(), false,

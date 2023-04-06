@@ -24,7 +24,7 @@ public class HarpoonGun extends EquipmentCard {
 
     public String subMark = "";
 
-    public HarpoonGun() {
+    public void init() {
         setCountdown(2);
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));
         addEffects(new Effect(this,this, EffectTiming.WhenAttack,()->{

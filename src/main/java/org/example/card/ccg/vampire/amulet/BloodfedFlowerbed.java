@@ -29,7 +29,7 @@ public class BloodfedFlowerbed extends AmuletCard {
 
     List<FollowCard> effectFollows = new ArrayList<>();
 
-    public BloodfedFlowerbed() {
+    public void init() {
         setCountDown(4);
         addEffects((new Effect(this,this,
             EffectTiming.EndTurn, obj -> info.damageMulti(this,List.of(ownerLeader(),enemyLeader()),1))));

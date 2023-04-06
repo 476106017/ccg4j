@@ -28,7 +28,7 @@ public class RoosterCrow extends SpellCard {
 
     public String subMark = "";
 
-    public RoosterCrow() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 Leader leader = ownerLeader();
@@ -62,7 +62,7 @@ public class RoosterCrow extends SpellCard {
         """;
         private String subMark = "";
 
-        public SentinelCorps() {
+        public void init() {
             setMaxHp(getHp());
         }
     }
@@ -81,7 +81,7 @@ public class RoosterCrow extends SpellCard {
         """;
         private String subMark = "";
 
-        public ScourgeCorps() {
+        public void init() {
             setMaxHp(getHp());
         }
     }

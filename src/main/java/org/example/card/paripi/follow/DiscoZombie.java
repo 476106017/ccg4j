@@ -29,7 +29,7 @@ public class DiscoZombie extends FollowCard {
         """;
     private String subMark = "";
 
-    public DiscoZombie() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getArea().isEmpty()){

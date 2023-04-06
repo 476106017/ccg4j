@@ -22,7 +22,7 @@ public class PetCollector extends FollowCard {
         """;
     private String subMark = "";
 
-    public PetCollector() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()-> {
             ownerPlayer().hire(card -> card instanceof FollowCard && card.hasRace("野兽") && card.getCost()<=5);

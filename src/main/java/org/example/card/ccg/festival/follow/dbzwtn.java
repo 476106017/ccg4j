@@ -29,7 +29,7 @@ public class dbzwtn extends FollowCard {
     public int atk = 4;
     public int hp = 6;
 
-    public dbzwtn() {
+    public void init() {
         setMaxHp(getHp());
 
         Consumer<Object> reverseDeck = obj -> {

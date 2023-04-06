@@ -25,7 +25,7 @@ public class DoggieBiscuit extends SpellCard {
 
     public String subMark = "";
 
-    public DoggieBiscuit() {
+    public void init() {
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),2,
             (choice,gameObjs) -> {

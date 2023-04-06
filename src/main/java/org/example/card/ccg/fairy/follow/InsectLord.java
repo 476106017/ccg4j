@@ -29,7 +29,7 @@ public class InsectLord extends FollowCard {
         return subMark.replaceAll("\\{}",ownerPlayer().getCount(PLAY_NUM)+"");
     }
 
-    public InsectLord() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->enemyPlayer().getAreaFollowsAsGameObj(), false,

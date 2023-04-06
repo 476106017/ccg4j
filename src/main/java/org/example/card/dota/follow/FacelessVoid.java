@@ -28,7 +28,7 @@ public class FacelessVoid extends FollowCard {
     private String subMark = "";
 
 
-    public FacelessVoid() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         setPlay(new Play(() -> {
@@ -58,7 +58,7 @@ public class FacelessVoid extends FollowCard {
         """;
         public String subMark = "";
 
-        public Chronosphere() {
+        public void init() {
             setPlay(new Play(()->{
                 FollowCard faceless = (FollowCard) getParent();
                 faceless.addKeyword("疾驰");

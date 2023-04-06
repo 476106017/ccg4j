@@ -30,7 +30,7 @@ public class Slark extends FollowCard {
     public String subMark = "";
 
 
-    public Slark() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         setPlay(new Play(() -> ownerPlayer().addHand(createCard(DarkPact.class))));
@@ -57,7 +57,7 @@ public class Slark extends FollowCard {
         """;
         public String subMark = "";
 
-        public DarkPact() {
+        public void init() {
             setPlay(new Play(()->{
                 Slark slark = (Slark)getParent();
                 new Damage(this, slark, slark.getHp()>1?1:0).apply();

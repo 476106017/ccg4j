@@ -24,12 +24,12 @@ public class MalignantHorror extends FollowCard {
         """;
     private String subMark = "";
 
-    public MalignantHorror() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("复生");
         addEffects((new Effect(this,this,
             EffectTiming.EndTurn, obj -> {
-            ownerPlayer().costGraveyardCountTo(4,()-> ownerPlayer().summon((AreaCard) cloneOfMe()));
+            ownerPlayer().costGraveyardCountTo(4,()-> ownerPlayer().summon((AreaCard) copy()));
         })));
     }
 }

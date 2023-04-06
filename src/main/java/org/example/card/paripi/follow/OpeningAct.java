@@ -23,7 +23,7 @@ public class OpeningAct extends FollowCard {
         """;
     private String subMark = "";
 
-    public OpeningAct() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->
             ownerPlayer().draw(card -> card.getCost().equals(ownerPlayer().getPpNum()))));

@@ -25,7 +25,7 @@ public class DarkIronJustice extends FollowCard {
         """;
     private String subMark = "";
 
-    public DarkIronJustice() {
+    public void init() {
         setMaxHp(getHp());
         addEffects(new Effect(this,this, EffectTiming.WhenEnemySummon,
             obj-> {

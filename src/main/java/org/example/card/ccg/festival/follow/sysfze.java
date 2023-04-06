@@ -29,15 +29,15 @@ public class sysfze extends FollowCard {
 
     private FollowCard targetFollow;
 
-    public sysfze() {
+    public void init() {
         setMaxHp(getHp());
 
         setPlay(new Play(()->{
             List<Card> copy = new ArrayList<>();
-            ownerPlayer().getHand().forEach(card -> copy.add(card.cloneOfMe()));
+            ownerPlayer().getHand().forEach(card -> copy.add(card.copy()));
             ownerPlayer().addDeck(copy);
             if(ownerPlayer().getPpNum()==0){
-                ownerPlayer().addDeck(cloneOf(ownerPlayer()));
+                ownerPlayer().addDeck(copyBy(ownerPlayer()));
             }
         }));
     }

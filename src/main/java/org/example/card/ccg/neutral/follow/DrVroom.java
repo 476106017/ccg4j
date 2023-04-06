@@ -24,7 +24,7 @@ public class DrVroom extends FollowCard {
         """;
     private String subMark = "";
 
-    public DrVroom() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getDeck().isEmpty()) {

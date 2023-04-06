@@ -27,7 +27,7 @@ public class rcclz extends FollowCard {
 
     private transient Effect deathRattle;
 
-    public rcclz() {
+    public void init() {
         setMaxHp(getHp());
         deathRattle = new Effect(this,this, EffectTiming.DeathRattle, obj->{
             FollowCard follow = (FollowCard)ownerPlayer().getAreaRandomFollow();

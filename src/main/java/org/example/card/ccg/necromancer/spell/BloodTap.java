@@ -23,7 +23,7 @@ public class BloodTap extends SpellCard {
     public String subMark = "";
 
 
-    public BloodTap() {
+    public void init() {
         setPlay(new Play(()->{
                 ownerPlayer().getHandFollows().forEach(followCard ->
                     followCard.addStatus(1,1));

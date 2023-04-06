@@ -33,7 +33,7 @@ public class OutOfThinAir extends AmuletCard {
     public String subMark = "";
 
 
-    public OutOfThinAir() {
+    public void init() {
         setCountDown(3);
 
         addEffects((new Effect(this,this, EffectTiming.BeginTurn, obj->{

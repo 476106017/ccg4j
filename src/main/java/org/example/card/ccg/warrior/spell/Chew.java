@@ -28,7 +28,7 @@ public class Chew extends SpellCard {
     private FollowCard followCard = null;
 
 
-    public Chew() {
+    public void init() {
         setPlay(new Play(()->info.getAreaFollowsAsGameObj(),
             true,
             target->{

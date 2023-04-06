@@ -22,7 +22,7 @@ public class HighPriestesskilnara extends FollowCard {
         """;
     private String subMark = "";
 
-    public HighPriestesskilnara() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->info.getAreaFollowsAsGameObj(),false,
             obj->{

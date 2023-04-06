@@ -23,7 +23,7 @@ public class DesperateRewind extends SpellCard {
     public String subMark = "";
 
 
-    public DesperateRewind() {
+    public void init() {
         setPlay(new Play(()->{
             ownerPlayer().heal(40);
             ownerLeader().setOverDraw(integer -> getInfo().gameset(enemyPlayer()));

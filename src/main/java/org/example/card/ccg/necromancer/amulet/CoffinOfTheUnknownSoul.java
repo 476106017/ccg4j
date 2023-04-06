@@ -30,7 +30,7 @@ public class CoffinOfTheUnknownSoul extends AmuletCard {
 
     public FollowCard followCard;
 
-    public CoffinOfTheUnknownSoul() {
+    public void init() {
         setCountDown(1);
         setPlay(new Play(()->ownerPlayer().getHandAsGameObjBy(card -> card instanceof FollowCard),
             false,

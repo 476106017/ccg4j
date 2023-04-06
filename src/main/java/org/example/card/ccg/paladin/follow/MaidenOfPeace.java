@@ -24,7 +24,7 @@ public class MaidenOfPeace extends FollowCard {
         """;
     private String subMark = "";
 
-    public MaidenOfPeace() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("守护");
         addEffects(new Effect(this,this, EffectTiming.DeathRattle,()->{

@@ -25,7 +25,7 @@ public class ForgeSummon extends ElementCostSpellCard {
     """;
     public String subMark = "";
 
-    public ForgeSummon() {
+    public void init() {
         setPlay(new Play(
             ()->{
                 ownerPlayer().summon(createCard(ForgeSpirit.class));
@@ -46,7 +46,7 @@ public class ForgeSummon extends ElementCostSpellCard {
         """;
         private String subMark = "";
 
-        public ForgeSpirit() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("突进");
 

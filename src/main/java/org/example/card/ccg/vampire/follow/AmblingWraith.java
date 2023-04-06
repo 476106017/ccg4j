@@ -23,7 +23,7 @@ public class AmblingWraith extends FollowCard {
         """;
     private String subMark = "";
 
-    public AmblingWraith() {
+    public void init() {
         setMaxHp(getHp());
 
         setPlay(new Play(()-> info.damageMulti(this,List.of(ownerLeader(),enemyLeader()),1)));

@@ -26,7 +26,7 @@ public class CallingOtaku extends FollowCard {
         """;
     private String subMark = "";
 
-    public CallingOtaku() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             FollowCard followCard = (FollowCard)ownerPlayer().getAreaRandomFollow();

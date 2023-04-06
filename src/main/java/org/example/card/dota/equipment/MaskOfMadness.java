@@ -22,7 +22,7 @@ public class MaskOfMadness extends EquipmentCard {
 
     public String subMark = "";
 
-    public MaskOfMadness() {
+    public void init() {
         getKeywords().add("自愈");
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),true,

@@ -26,7 +26,7 @@ public class Peddlefeet extends FollowCard {
     public int atk = 3;
     public int hp = 3;
 
-    public Peddlefeet() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.WhenPlay,
             obj-> obj instanceof FollowCard,

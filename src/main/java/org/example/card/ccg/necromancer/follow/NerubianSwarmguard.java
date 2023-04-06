@@ -24,12 +24,12 @@ public class NerubianSwarmguard extends FollowCard {
         """;
     private String subMark = "";
 
-    public NerubianSwarmguard() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<AreaCard> list = new ArrayList<>();
-            list.add((AreaCard) cloneOfMe());
-            list.add((AreaCard) cloneOfMe());
+            list.add((AreaCard) copy());
+            list.add((AreaCard) copy());
             ownerPlayer().summon(list);
         }));
     }

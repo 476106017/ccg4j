@@ -28,7 +28,7 @@ public class CalamitysGenesis extends SpellCard {
 
     public String subMark = "";
 
-    public CalamitysGenesis() {
+    public void init() {
 
         setPlay(new Play(() -> {
                 List<Card> addCards = new ArrayList<>();
@@ -61,7 +61,7 @@ public class CalamitysGenesis extends SpellCard {
         private int atk = 5;
         private int hp = 5;
 
-        public MagisterialDreadnought() {
+        public void init() {
             setMaxHp(getHp());
             addEffects((new Effect(this,this, EffectTiming.Entering, obj->{
                 ownerPlayer().summon(createCard(WorldEliminator.class));
@@ -98,7 +98,7 @@ public class CalamitysGenesis extends SpellCard {
         private int atk = 5;
         private int hp = 5;
 
-        public RuinerOfEden() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("守护");
             getKeywords().add("剧毒");
@@ -138,7 +138,7 @@ public class CalamitysGenesis extends SpellCard {
         private int atk = 3;
         private int hp = 3;
 
-        public WorldEliminator() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("突进");
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
@@ -173,7 +173,7 @@ public class CalamitysGenesis extends SpellCard {
             return subMark.replaceAll("\\{count}",count+"");
         }
 
-        public CalamitysEnd() {
+        public void init() {
 
             setPlay(new Play(() -> {
                 destroy(enemyPlayer().getArea());

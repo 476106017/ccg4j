@@ -24,7 +24,7 @@ public class FullMoonLeap extends SpellCard {
     public String subMark = "";
 
 
-    public FullMoonLeap() {
+    public void init() {
         setPlay(new Play(()-> ownerPlayer().getAreaFollowsAsGameObjBy(p->p.getJob().equals("吸血鬼")),
             true,
             target->{

@@ -26,7 +26,7 @@ public class DarkDemon extends FollowCard {
         战吼：除外自己，永久失去己方战场的1格空间。主战者获得唯一效果【我方回合开始时，除外敌方墓地所有牌，并回复等量生命值】
         """;
     private String subMark = "";
-    public DarkDemon() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             info.exile(this);

@@ -24,7 +24,7 @@ public class EarthMagicians extends FollowCard {
         """;
     private String subMark = "";
 
-    public EarthMagicians() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             info.damageMulti(this,info.getAreaFollowsAsGameObj(),1);

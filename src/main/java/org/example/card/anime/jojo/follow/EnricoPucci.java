@@ -30,7 +30,7 @@ public class EnricoPucci extends FollowCard {
         """;
     private String subMark = "";
 
-    public EnricoPucci() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         setPlay(new Play(()->
@@ -74,7 +74,7 @@ public class EnricoPucci extends FollowCard {
             """;
         private String subMark = "";
 
-        public EnricoPucciCMoon() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("剧毒");
             setPlay(new Play(()->
@@ -132,7 +132,7 @@ public class EnricoPucci extends FollowCard {
                 .replaceAll("\\{R}", getRate()+"%");
         }
 
-        public EnricoPucciMadeInHeaven() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("无法破坏");
             setPlay(new Play(() ->

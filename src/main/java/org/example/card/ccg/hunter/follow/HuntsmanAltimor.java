@@ -30,7 +30,7 @@ public class HuntsmanAltimor extends FollowCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public HuntsmanAltimor() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this,
             EffectTiming.Charge, obj -> count())));

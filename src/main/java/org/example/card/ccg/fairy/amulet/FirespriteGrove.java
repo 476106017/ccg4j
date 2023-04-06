@@ -27,7 +27,7 @@ public class FirespriteGrove extends AmuletCard {
         """;
     public String subMark = "";
 
-    public FirespriteGrove() {
+    public void init() {
         setCountDown(2);
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->
             ownerPlayer().addHand(createCard(Derivant.Fairy.class))

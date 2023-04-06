@@ -31,7 +31,7 @@ public class FairyWhisperer extends FollowCard {
     public int atk = 1;
     public int hp = 1;
 
-    public FairyWhisperer() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<Card> fairies = new ArrayList<>();

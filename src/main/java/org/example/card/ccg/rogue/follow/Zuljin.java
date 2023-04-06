@@ -24,7 +24,7 @@ public class Zuljin extends FollowCard {
         """;
     private String subMark = "";
 
-    public Zuljin() {
+    public void init() {
         setMaxHp(getHp());
 
         addEffects((new Effect(this,this, EffectTiming.DeathRattle,

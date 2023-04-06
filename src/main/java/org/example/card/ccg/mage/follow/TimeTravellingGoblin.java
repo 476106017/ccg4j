@@ -23,7 +23,7 @@ public class TimeTravellingGoblin extends FollowCard {
         """;
     private String subMark = "";
 
-    public TimeTravellingGoblin() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getDeck().isEmpty()){

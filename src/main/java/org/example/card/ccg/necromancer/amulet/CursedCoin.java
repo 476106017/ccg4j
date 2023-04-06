@@ -25,7 +25,7 @@ public class CursedCoin extends AmuletCard {
         """;
     public String subMark = "";
 
-    public CursedCoin() {
+    public void init() {
         setCountDown(3);
         addEffects((new Effect(this,this, EffectTiming.EndTurn,
             ()->  ownerPlayer().costGraveyardCountTo(2,()-> ownerPlayer().draw(1)))));

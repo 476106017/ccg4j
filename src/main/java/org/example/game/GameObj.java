@@ -138,7 +138,9 @@ public abstract class GameObj {
     public <T extends Card> T createCard(Class<T> clazz){
         try {
             T card = clazz.getDeclaredConstructor().newInstance();
-            info.msg(getNameWithOwner()+"创造了"+card.getId());
+            try {
+                info.msg(getNameWithOwner()+"创造了"+card.getId());
+            }catch (Exception ignored){}
             card.setParent(this);
             card.setOwner(getOwner());
             card.setInfo(getInfo());

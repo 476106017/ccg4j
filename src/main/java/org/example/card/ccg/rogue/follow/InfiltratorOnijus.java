@@ -23,7 +23,7 @@ public class InfiltratorOnijus extends FollowCard {
         """;
     private String subMark = "";
 
-    public InfiltratorOnijus() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
                 if(ownerPlayer().getDeckBy(card -> card instanceof InfiltratorOnijus).size()>1

@@ -23,7 +23,7 @@ public class AlteredFate extends SpellCard {
     public String subMark = "";
 
 
-    public AlteredFate() {
+    public void init() {
         setPlay(new Play(()->{
             final int size = ownerPlayer().getHand().size();
             ownerPlayer().abandon(ownerPlayer().getHandCopy());

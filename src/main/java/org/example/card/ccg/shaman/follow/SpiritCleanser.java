@@ -23,7 +23,7 @@ public class SpiritCleanser extends FollowCard {
         """;
     private String subMark = "";
 
-    public SpiritCleanser() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->{

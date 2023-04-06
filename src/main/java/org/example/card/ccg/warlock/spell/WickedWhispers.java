@@ -25,7 +25,7 @@ public class WickedWhispers extends SpellCard {
     public String subMark = "";
 
 
-    public WickedWhispers() {
+    public void init() {
         setPlay(new Play(()->{
             final Optional<Card> first = ownerPlayer().getHand().stream()
                 .filter(card -> card!=this)

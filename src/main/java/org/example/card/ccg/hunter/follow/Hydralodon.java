@@ -24,7 +24,7 @@ public class Hydralodon extends FollowCard {
         """;
     private String subMark = "";
 
-    public Hydralodon() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()-> {
             ownerPlayer().summon(List.of(
@@ -46,7 +46,7 @@ public class Hydralodon extends FollowCard {
             """;
         private String subMark = "";
 
-        public HydralodonHead() {
+        public void init() {
             setMaxHp(getHp());
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
                 if(!ownerPlayer().getAreaBy(p->p instanceof Hydralodon).isEmpty()){

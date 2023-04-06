@@ -24,7 +24,7 @@ public class KujoJotaro extends FollowCard {
         """;
     private String subMark = "";
 
-    public KujoJotaro() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(() ->{
             info.msg("欧拉欧拉欧拉！");

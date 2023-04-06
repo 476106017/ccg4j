@@ -21,7 +21,7 @@ public class Kokomi extends ElementCostSpellCard {
     """;
     public String subMark = "";
 
-    public Kokomi() {
+    public void init() {
         setPlay(new Play(()-> ownerPlayer().draw(2)));
     }
 }

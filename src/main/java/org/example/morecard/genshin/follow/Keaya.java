@@ -40,7 +40,7 @@ public class Keaya extends ElementBaseFollowCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public Keaya() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("缴械");
         getKeywords().add("无法破坏");
@@ -69,7 +69,7 @@ public class Keaya extends ElementBaseFollowCard {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public Frostgnaw() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -101,7 +101,7 @@ public class Keaya extends ElementBaseFollowCard {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public GlacialWaltz() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();

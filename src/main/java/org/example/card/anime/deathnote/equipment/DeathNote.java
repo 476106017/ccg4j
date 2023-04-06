@@ -29,7 +29,7 @@ public class DeathNote extends EquipmentCard {
 
     public String subMark = "";
 
-    public DeathNote() {
+    public void init() {
         getKeywords().add("游魂");
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),2,

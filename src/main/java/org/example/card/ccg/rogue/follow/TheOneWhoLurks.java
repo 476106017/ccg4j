@@ -26,7 +26,7 @@ public class TheOneWhoLurks extends FollowCard {
 
     private boolean canEffect = true;
 
-    public TheOneWhoLurks() {
+    public void init() {
         setMaxHp(getHp());
 
         addEffects((new Effect(this,this, EffectTiming.WhenDrawn,

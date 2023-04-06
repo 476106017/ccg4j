@@ -26,7 +26,7 @@ public class HuginnMuninn extends FollowCard {
         """;
     private String subMark = "";
 
-    public HuginnMuninn() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             () -> {

@@ -27,7 +27,7 @@ public class Draven extends FollowCard {
 
     private int summonPosition;
 
-    public Draven() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("自愈");
         setPlay(new Play(()->{

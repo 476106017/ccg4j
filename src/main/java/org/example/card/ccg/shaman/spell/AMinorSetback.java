@@ -22,7 +22,7 @@ public class AMinorSetback extends SpellCard {
     public String subMark = "";
 
 
-    public AMinorSetback() {
+    public void init() {
         setPlay(new Play(()->{
                 ownerPlayer().setPpMax(ownerPlayer().getPpMax() - 1);
                 enemyPlayer().setPpMax(enemyPlayer().getPpMax() - 1);

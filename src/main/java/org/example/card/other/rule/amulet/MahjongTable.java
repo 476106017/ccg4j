@@ -35,7 +35,7 @@ public class MahjongTable extends AmuletCard {
     public String subMark = "";
 
 
-    public MahjongTable() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenPlay, areaCard -> checkSummon(enemyPlayer(),(Card)areaCard))));
         addEffects((new Effect(this,this, EffectTiming.WhenEnemyPlay,areaCard -> checkSummon(ownerPlayer(),(Card)areaCard))));
         addEffects((new Effect(this,this, EffectTiming.WhenDraw, obj -> checkWin(ownerPlayer()))));

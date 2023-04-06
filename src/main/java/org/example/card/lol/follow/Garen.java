@@ -29,7 +29,7 @@ public class Garen extends FollowCard {
     private boolean turnDamaged = false;
 
 
-    public Garen() {
+    public void init() {
         setMaxHp(getHp());
         addEffects(new Effect(this,this, EffectTiming.WhenAttack, obj->{
             Damage damage = (Damage) obj;

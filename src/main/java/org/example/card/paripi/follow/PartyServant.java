@@ -24,7 +24,7 @@ public class PartyServant extends FollowCard {
         """;
     private String subMark = "";
 
-    public PartyServant() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<Card> draw = ownerPlayer().draw(2);

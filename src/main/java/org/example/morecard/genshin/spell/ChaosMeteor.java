@@ -23,7 +23,7 @@ public class ChaosMeteor extends ElementCostSpellCard {
     """;
     public String subMark = "";
 
-    public ChaosMeteor() {
+    public void init() {
         setPlay(new Play(
             ()->{
                 List<FollowCard> enemyFollows = enemyPlayer().getAreaFollowsAsFollow();

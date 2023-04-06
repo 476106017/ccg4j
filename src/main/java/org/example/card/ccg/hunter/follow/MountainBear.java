@@ -25,7 +25,7 @@ public class MountainBear extends FollowCard {
     public String subMark = "";
 
 
-    public MountainBear() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().summon(List.of(createCard(MountainCub.class),createCard(MountainCub.class)));
@@ -44,7 +44,7 @@ public class MountainBear extends FollowCard {
         private String mark = "";
         private String subMark = "";
 
-        public MountainCub() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("守护");
         }

@@ -25,7 +25,7 @@ public class TributeSummon extends SpellCard {
     public String subMark = "";
 
 
-    public TributeSummon() {
+    public void init() {
 
         setPlay(new Play(()->
             List.of(ownerPlayer().getAreaFollowsAsGameObjBy(followCard -> followCard.getCost()<5),

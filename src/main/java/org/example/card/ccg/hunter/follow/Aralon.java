@@ -23,7 +23,7 @@ public class Aralon extends FollowCard {
         """;
     private String subMark = "";
 
-    public Aralon() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()-> {
             ownerPlayer().summon(createCard(Rexxar.FoxSpiritWildseed.class));

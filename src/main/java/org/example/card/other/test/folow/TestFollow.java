@@ -24,12 +24,12 @@ public class TestFollow extends FollowCard {
     private String subMark = "";
 
 
-    public TestFollow() {
+    public void init() {
         setMaxHp(getHp());
 //        getKeywords().add("剧毒");
         setPlay(new Play(() -> {
             getInfo().msg(hashCode() + "战吼");
-            ownerPlayer().summon((TestFollow)cloneOfMe());
+            ownerPlayer().summon((TestFollow) copy());
         }));
         addEffects((new Effect(this,this, EffectTiming.Entering, obj->
             getInfo().msg(hashCode() + "入场时"))));

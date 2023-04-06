@@ -28,7 +28,7 @@ public class PacifistsWar extends SpellCard {
     public String subMark = "";
 
 
-    public PacifistsWar() {
+    public void init() {
         setPlay(new Play(()->{
             PlayerInfo player = ownerPlayer();
             player.getLeader().setOverDraw(i-> info.gameset(player));

@@ -24,7 +24,7 @@ public class CorpseBride extends FollowCard {
         """;
     private String subMark = "";
 
-    public CorpseBride() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             Derivant.Ghost ghost = createCard(Derivant.Ghost.class);

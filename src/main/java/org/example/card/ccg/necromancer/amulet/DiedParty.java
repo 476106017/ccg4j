@@ -26,7 +26,7 @@ public class DiedParty extends AmuletCard {
         """;
     public String subMark = "";
 
-    public DiedParty() {
+    public void init() {
         setCountDown(3);
         addEffects((new Effect(this,this, EffectTiming.WhenOthersRecall,
             obj-> {

@@ -26,7 +26,7 @@ public class TombGuardians extends SpellCard {
     public String subMark = "";
 
 
-    public TombGuardians() {
+    public void init() {
         setPlay(new Play(()->{
             List<AreaCard> zombies = new ArrayList<>();
             zombies.add(createCard(Derivant.Zombie.class,"守护"));

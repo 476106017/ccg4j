@@ -28,7 +28,7 @@ public class zyfn extends FollowCard {
     public int atk = 2;
     public int hp = 2;
 
-    public zyfn() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("疾驰");
         setPlay(new Play(()->{

@@ -24,7 +24,7 @@ public class Bazzalan extends FollowCard {
         """;
     private String subMark = "";
 
-    public Bazzalan() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             ownerPlayer().draw(enemyPlayer().getHandBy(p->p instanceof SpellCard).size());

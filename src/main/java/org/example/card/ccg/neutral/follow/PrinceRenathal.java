@@ -24,7 +24,7 @@ public class PrinceRenathal extends FollowCard {
         """;
     private String subMark = "";
 
-    public PrinceRenathal() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,

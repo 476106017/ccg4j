@@ -63,7 +63,7 @@ public class BeaststalkerTavishLeader extends Leader {
         private String mark = "";
         private String subMark = "";
 
-        public Misha() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("守护");
         }
@@ -80,7 +80,7 @@ public class BeaststalkerTavishLeader extends Leader {
         private String mark = "";
         private String subMark = "";
 
-        public Huffer() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("疾驰");
         }
@@ -100,7 +100,7 @@ public class BeaststalkerTavishLeader extends Leader {
             """;
         private String subMark = "";
 
-        public Leokk() {
+        public void init() {
             setMaxHp(getHp());
             addEffects((new Effect(this,this, EffectTiming.Entering, obj->{
                 ownerPlayer().getAreaFollowsAsFollow().forEach(p->p.addStatus(1,0));

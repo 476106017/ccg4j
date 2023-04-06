@@ -22,7 +22,7 @@ public class DivideByZero extends SpellCard {
     public String subMark = "";
 
 
-    public DivideByZero() {
+    public void init() {
         setPlay(new Play(()->{
             destroy(info.getAreaFollowsCopy());
             info.exile(ownerPlayer().getDeckCopy());

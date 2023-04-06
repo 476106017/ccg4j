@@ -29,7 +29,7 @@ public class ChainsawMan extends FollowCard {
         """;
     private String subMark = "";
 
-    public ChainsawMan() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("恶魔转生");
 
@@ -69,7 +69,7 @@ public class ChainsawMan extends FollowCard {
 
         public String subMark = "";
 
-        public ChainsawMode() {
+        public void init() {
             getKeywords().add("突进");
             getKeywords().add("自愈");
             getKeywords().add("重伤");

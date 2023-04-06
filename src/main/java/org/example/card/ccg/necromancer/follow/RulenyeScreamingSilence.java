@@ -34,7 +34,7 @@ public class RulenyeScreamingSilence extends FollowCard {
     public String getSubMark() {
         return subMark.replaceAll("\\{}", ownerPlayer().getCount(DEATH_PREFIX+getName())+"");
     }
-    public RulenyeScreamingSilence() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         setPlay(new Play(
@@ -73,7 +73,7 @@ public class RulenyeScreamingSilence extends FollowCard {
         }
 
 
-        public ScreamDiffusion() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     int x = ownerPlayer().getCount(DEATH_PREFIX+getName());

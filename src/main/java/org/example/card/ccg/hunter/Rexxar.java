@@ -60,7 +60,7 @@ public class Rexxar extends Leader {
         """;
         public String subMark = "";
 
-        public FoxSpiritWildseed() {
+	    public void init() {
             setCountDown(1);
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
                 ownerPlayer().summon(createCard(FoxSpirit.class))
@@ -79,7 +79,7 @@ public class Rexxar extends Leader {
             private String mark = "";
             private String subMark = "";
 
-            public FoxSpirit() {
+            public void init() {
                 setMaxHp(getHp());
                 getKeywords().add("突进");
             }
@@ -99,7 +99,7 @@ public class Rexxar extends Leader {
         """;
         public String subMark = "";
 
-        public BearSpiritWildseed() {
+        public void init() {
             setCountDown(2);
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->
                 ownerPlayer().summon(createCard(BearSpirit.class))
@@ -118,7 +118,7 @@ public class Rexxar extends Leader {
             private String mark = "";
             private String subMark = "";
 
-            public BearSpirit() {
+            public void init() {
                 setMaxHp(getHp());
                 getKeywords().add("守护");
             }
@@ -138,7 +138,7 @@ public class Rexxar extends Leader {
         """;
         public String subMark = "";
 
-        public StagSpiritWildseed() {
+        public void init() {
             setCountDown(3);
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
                 ownerPlayer().summon(createCard(StagSpirit.class));
@@ -158,7 +158,7 @@ public class Rexxar extends Leader {
             private String mark = "";
             private String subMark = "";
 
-            public StagSpirit() {
+            public void init() {
                 setMaxHp(getHp());
             }
         }

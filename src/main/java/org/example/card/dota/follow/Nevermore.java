@@ -31,7 +31,7 @@ public class Nevermore  extends FollowCard {
     private String subMark = "";
 
 
-    public Nevermore() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("远程");
         setPlay(new Play(() -> {
@@ -88,7 +88,7 @@ public class Nevermore  extends FollowCard {
             return subMark.replaceAll("\\{}",area.get(0).getId());
         }
 
-        public ShadowRazeX() {
+        public void init() {
             setPlay(new Play(()->{
                 List<AreaCard> area = enemyPlayer().getArea();
                 int size = area.size();
@@ -120,7 +120,7 @@ public class Nevermore  extends FollowCard {
             return subMark.replaceAll("\\{}",area.get(1).getId());
         }
 
-        public ShadowRazeY() {
+        public void init() {
             setPlay(new Play(()->{
                 List<AreaCard> area = enemyPlayer().getArea();
                 int size = area.size();
@@ -152,7 +152,7 @@ public class Nevermore  extends FollowCard {
             return subMark.replaceAll("\\{}",area.get(2).getId());
         }
 
-        public ShadowRazeZ() {
+        public void init() {
             setPlay(new Play(()->{
                 List<AreaCard> area = enemyPlayer().getArea();
                 int size = area.size();

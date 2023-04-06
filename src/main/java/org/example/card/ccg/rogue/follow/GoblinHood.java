@@ -28,7 +28,7 @@ public class GoblinHood extends FollowCard {
     private Consumer<Integer> oldOverDraw;
     private Consumer<Integer> newOverDraw;
 
-    public GoblinHood() {
+    public void init() {
         setMaxHp(getHp());
 
         addEffects(new Effect(this,this, EffectTiming.WhenAtArea,()->{

@@ -25,7 +25,7 @@ public class TheRatKing extends FollowCard {
         """;
     private String subMark = "";
 
-    public TheRatKing() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerLeader().addEffect(new Effect(

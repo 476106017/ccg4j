@@ -25,7 +25,7 @@ public class LuckyDay extends ElementCostSpellCard {
     """;
     public String subMark = "";
 
-    public LuckyDay() {
+    public void init() {
         addEffects(new Effect(this,this, EffectTiming.InvocationBegin,
             ()-> ownerLeader() instanceof LittlePrincess littlePrincess
                     && littlePrincess.diceTypeNum() == 7,

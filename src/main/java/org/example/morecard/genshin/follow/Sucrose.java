@@ -40,7 +40,7 @@ public class Sucrose extends ElementBaseFollowCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public Sucrose() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("缴械");
         getKeywords().add("无法破坏");
@@ -70,7 +70,7 @@ public class Sucrose extends ElementBaseFollowCard {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public AnemoHypostasisCreation6308() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -106,7 +106,7 @@ public class Sucrose extends ElementBaseFollowCard {
             return subMark.replaceAll("\\{}",((FollowCard)getParent()).getAtk()+"");
         }
 
-        public ForbiddenCreationIsomer75() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -144,7 +144,7 @@ public class Sucrose extends ElementBaseFollowCard {
                 return subMark.replaceAll("\\{}",getDamageType().getStr());
             }
 
-            public LargeWindSpirit() {
+            public void init() {
                 setCountDown(3);
                 addEffects(new Effect(this,this,EffectTiming.EndTurn,()->{
                     AreaCard areaRandomFollow = enemyPlayer().getAreaRandomGuardFollow();

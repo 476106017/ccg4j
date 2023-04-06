@@ -30,7 +30,7 @@ public class TestOfStrength extends AmuletCard {
 
     List<FollowCard> effectFollows = new ArrayList<>();
 
-    public TestOfStrength() {
+    public void init() {
         setCountDown(2);
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
             ownerPlayer().getAreaFollowsAsFollow().forEach(this::sh);

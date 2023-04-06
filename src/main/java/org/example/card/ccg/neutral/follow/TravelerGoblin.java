@@ -31,7 +31,7 @@ public class TravelerGoblin extends FollowCard {
     public int atk = 1;
     public int hp = 1;
 
-    public TravelerGoblin() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
                 int turn = info.getTurn();

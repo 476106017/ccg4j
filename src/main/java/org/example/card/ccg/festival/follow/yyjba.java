@@ -24,7 +24,7 @@ public class yyjba extends FollowCard {
     public int atk = 2;
     public int hp = 5;
 
-    public yyjba() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("嘲讽");
         setPlay(new Play(()->{

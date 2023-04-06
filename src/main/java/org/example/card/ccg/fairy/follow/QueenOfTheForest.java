@@ -29,7 +29,7 @@ public class QueenOfTheForest extends FollowCard {
     public int atk = 1;
     public int hp = 2;
 
-    public QueenOfTheForest() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->
             ownerPlayer().draw(card -> card instanceof FollowCard followCard

@@ -30,7 +30,7 @@ public class HeroicResolve extends SpellCard {
     }
 
 
-    public HeroicResolve() {
+    public void init() {
         setPlay(new Play(()->
             // 创建主战者回合结束效果
             ownerLeader().addEffect(new Effect(

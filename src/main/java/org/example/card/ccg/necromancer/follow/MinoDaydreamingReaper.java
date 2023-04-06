@@ -25,7 +25,7 @@ public class MinoDaydreamingReaper extends FollowCard {
         """;
     private String subMark = "";
 
-    public MinoDaydreamingReaper() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getCount(EffectTiming.DeathRattle.getName()) >= 5){

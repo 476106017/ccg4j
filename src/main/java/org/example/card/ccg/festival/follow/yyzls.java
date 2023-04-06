@@ -25,7 +25,7 @@ public class yyzls extends FollowCard {
     public int hp = 3;
 
 
-    public yyzls() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
 

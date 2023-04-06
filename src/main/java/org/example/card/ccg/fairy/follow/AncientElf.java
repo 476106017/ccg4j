@@ -26,7 +26,7 @@ public class AncientElf extends FollowCard {
     public int atk = 2;
     public int hp = 3;
 
-    public AncientElf() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("守护");
         setPlay(new Play(()->{

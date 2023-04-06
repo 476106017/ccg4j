@@ -28,7 +28,7 @@ public class ForestGenesis extends SpellCard {
 
     public String subMark = "";
 
-    public ForestGenesis() {
+    public void init() {
         setPlay(new Play(() -> {
                 List<Card> addCards = new ArrayList<>();
                 addCards.add(createCard(EternalSeedling.class));
@@ -63,7 +63,7 @@ public class ForestGenesis extends SpellCard {
             return subMark.replaceAll("\\{count}", count+"");
         }
 
-        public EternalSeedling() {
+        public void init() {
             setMaxHp(getHp());
             addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
                 ()->true,
@@ -119,7 +119,7 @@ public class ForestGenesis extends SpellCard {
         public int atk = 0;
         public int hp = 1;
 
-        public EternalBloom() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("突进");
 
@@ -175,7 +175,7 @@ public class ForestGenesis extends SpellCard {
         }
 
 
-        public EternalGarden() {
+        public void init() {
             addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{
                 Integer x = ownerPlayer().getCount(PLAY_NUM);
                 ownerPlayer().heal(x);
@@ -207,7 +207,7 @@ public class ForestGenesis extends SpellCard {
             return subMark.replaceAll("\\{count}",ownerPlayer().getCount(TRANSMIGRATION_NUM)+"");
         }
 
-        public EternalForest() {
+        public void init() {
 
             setPlay(new Play(() -> {
                 ownerPlayer().addHpMax(10);

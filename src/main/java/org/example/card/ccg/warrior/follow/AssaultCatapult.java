@@ -24,7 +24,7 @@ public class AssaultCatapult extends FollowCard {
         """;
     private String subMark = "";
 
-    public AssaultCatapult() {
+    public void init() {
         setMaxHp(getHp());
 
         addEffects(new Effect(this,this, EffectTiming.EndTurn,()->{

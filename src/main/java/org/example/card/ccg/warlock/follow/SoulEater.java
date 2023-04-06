@@ -23,7 +23,7 @@ public class SoulEater extends FollowCard {
         """;
     private String subMark = "";
 
-    public SoulEater() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this,
             EffectTiming.WhenSummon, areaCard -> ownerPlayer().wearyDamaged())));

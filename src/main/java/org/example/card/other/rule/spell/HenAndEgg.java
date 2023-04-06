@@ -23,7 +23,7 @@ public class HenAndEgg extends SpellCard {
 
     public String subMark = "";
 
-    public HenAndEgg() {
+    public void init() {
         setPlay(new Play(()->{
             HatchBot366 angryHen = createCard(HatchBot366.class);
             Egg egg = createCard(Egg.class);
@@ -48,7 +48,7 @@ public class HenAndEgg extends SpellCard {
             """;
         private String subMark = "";
 
-        public HatchBot366() {
+        public void init() {
             setMaxHp(getHp());
             setPlay(new Play(() -> {
                 ownerPlayer().getAreaFollowsBy(followCard -> followCard instanceof Egg)
@@ -68,7 +68,7 @@ public class HenAndEgg extends SpellCard {
         private String mark = "";
         private String subMark = "";
 
-        public Egg() {
+        public void init() {
             setMaxHp(getHp());
         }
     }

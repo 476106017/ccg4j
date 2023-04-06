@@ -28,7 +28,7 @@ public class FlowerOfFairies extends AmuletCard {
         """;
     public String subMark = "";
 
-    public FlowerOfFairies() {
+    public void init() {
         setCountDown(2);
         setPlay(new Play(()->{
             ownerPlayer().draw(1);

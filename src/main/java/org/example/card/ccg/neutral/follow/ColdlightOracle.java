@@ -23,7 +23,7 @@ public class ColdlightOracle extends FollowCard {
         """;
     private String subMark = "";
 
-    public ColdlightOracle() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(() -> {
                 ownerPlayer().draw(2);

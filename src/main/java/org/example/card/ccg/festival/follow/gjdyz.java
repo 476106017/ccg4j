@@ -24,7 +24,7 @@ public class gjdyz extends FollowCard {
     public int atk = 4;
     public int hp = 6;
 
-    public gjdyz() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             if(ownerPlayer().getAreaFollowsBy(p->p!=this).isEmpty()){

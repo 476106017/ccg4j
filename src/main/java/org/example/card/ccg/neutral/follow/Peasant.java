@@ -24,7 +24,7 @@ public class Peasant extends FollowCard {
         """;
     private String subMark = "";
 
-    public Peasant() {
+    public void init() {
         setMaxHp(getHp());
         addEffects(new Effect(this,this, EffectTiming.BeginTurn,
             ()->ownerPlayer().draw(1)));

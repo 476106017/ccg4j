@@ -28,7 +28,7 @@ public class PeerPressure extends AmuletCard {
     public String subMark = "";
 
 
-    public PeerPressure() {
+    public void init() {
 
         addEffects((new Effect(this,this, EffectTiming.WhenPlay,
             obj-> obj instanceof FollowCard followCard && followCard.getPlay()!=null,

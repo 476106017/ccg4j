@@ -24,7 +24,7 @@ public class fzcf extends FollowCard {
     public int atk = 2;
     public int hp = 2;
 
-    public fzcf() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             FollowCard follow = (FollowCard) ownerPlayer().getAreaRandomFollow();

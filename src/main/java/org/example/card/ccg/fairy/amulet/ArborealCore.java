@@ -27,7 +27,7 @@ public class ArborealCore extends AmuletCard {
         """;
     public String subMark = "";
 
-    public ArborealCore() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenSummon, obj->{
             getInfo().exile(this);
 

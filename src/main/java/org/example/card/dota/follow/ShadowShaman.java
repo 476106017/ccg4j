@@ -27,7 +27,7 @@ public class ShadowShaman extends FollowCard {
     private String subMark = "";
 
 
-    public ShadowShaman() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(() -> {
             ownerPlayer().addHand(createCard(ForkedLightning.class));
@@ -48,7 +48,7 @@ public class ShadowShaman extends FollowCard {
         """;
         public String subMark = "";
 
-        public ForkedLightning() {
+        public void init() {
             setPlay(new Play(()->{
                 List<AreaCard> area = enemyPlayer().getArea();
                 if(area.size()>0 && area.get(0) instanceof FollowCard followCard){
@@ -81,7 +81,7 @@ public class ShadowShaman extends FollowCard {
         public FollowCard target = null;
         public Sheep sheep = null;
 
-        public Voodoo() {
+        public void init() {
             setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),true,obj->{
                 if(obj instanceof FollowCard followCard){
                     Sheep sheep = createEnemyCard(Sheep.class);
@@ -130,7 +130,7 @@ public class ShadowShaman extends FollowCard {
         public Effect effect;
         public Effect targetEffect;
 
-        public Shackle() {
+        public void init() {
             setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),true,obj->{
                 if(obj instanceof FollowCard followCard){
                     Card shadowShaman = (Card) getParent();
@@ -188,7 +188,7 @@ public class ShadowShaman extends FollowCard {
         public Effect effect;
         public Effect targetEffect;
 
-        public MassSerpentWard() {
+        public void init() {
             setPlay(new Play(() -> {
                 enemyPlayer().summon(createEnemyCard(SerpentBar.class));
                 enemyPlayer().summon(createEnemyCard(SerpentBar.class));
@@ -210,7 +210,7 @@ public class ShadowShaman extends FollowCard {
             """;
             public String subMark = "";
 
-            public SerpentBar() {
+            public void init() {
                 setCountDown(2);
                 addEffects((new Effect(this,this, EffectTiming.EnemyEndTurn, obj->
                     new Damage(this,ownerLeader(),1).apply()

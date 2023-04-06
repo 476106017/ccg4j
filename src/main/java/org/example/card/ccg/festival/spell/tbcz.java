@@ -27,7 +27,7 @@ public class tbcz extends SpellCard {
 
     public String subMark = "";
 
-    public tbcz() {
+    public void init() {
         setPlay(new Play(
             ()->{
                 List<GameObj> _return = enemyPlayer().getAreaFollowsAsGameObj();
@@ -66,7 +66,7 @@ public class tbcz extends SpellCard {
         public int atk = 8;
         public int hp = 8;
 
-        public ymzw() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("缴械");
             addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->{

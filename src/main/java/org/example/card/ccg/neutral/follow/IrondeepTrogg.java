@@ -25,7 +25,7 @@ public class IrondeepTrogg extends FollowCard {
         """;
     private String subMark = "";
 
-    public IrondeepTrogg() {
+    public void init() {
         setMaxHp(getHp());
         addEffects(new Effect(this,this, EffectTiming.WhenEnemyPlay,
             card->card instanceof SpellCard,

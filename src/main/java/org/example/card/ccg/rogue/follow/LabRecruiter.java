@@ -25,7 +25,7 @@ public class LabRecruiter extends FollowCard {
         """;
     private String subMark = "";
 
-    public LabRecruiter() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),true,
@@ -33,9 +33,9 @@ public class LabRecruiter extends FollowCard {
                 FollowCard followCard = (FollowCard) gameObjs;
                 List<Card> addCards = new ArrayList<>();
 
-                addCards.add(followCard.cloneOfMe());
-                addCards.add(followCard.cloneOfMe());
-                addCards.add(followCard.cloneOfMe());
+                addCards.add(followCard.copy());
+                addCards.add(followCard.copy());
+                addCards.add(followCard.copy());
 
                 ownerPlayer().addDeck(addCards);
             }));

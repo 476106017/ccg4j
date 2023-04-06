@@ -24,7 +24,7 @@ public class RoomServiceDemon extends SpellCard {
     public String subMark = "";
 
 
-    public RoomServiceDemon() {
+    public void init() {
         setPlay(new Play(
             ()->ownerPlayer().getHandAsGameObjBy(card ->card!=this ),
             true,

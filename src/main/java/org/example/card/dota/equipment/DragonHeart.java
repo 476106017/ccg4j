@@ -28,7 +28,7 @@ public class DragonHeart extends EquipmentCard {
         return subMark.replaceAll("\\{}", ownerPlayer().getCount(PLAY_NUM)+"");
     }
 
-    public DragonHeart() {
+    public void init() {
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObj(),true,
             gameObj -> {

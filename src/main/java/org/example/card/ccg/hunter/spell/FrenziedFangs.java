@@ -30,7 +30,7 @@ public class FrenziedFangs extends SpellCard {
         return subMark.replaceAll("\\{}",getCount()+"");
     }
 
-    public FrenziedFangs() {
+    public void init() {
         addEffects((new Effect(this,this,
             EffectTiming.Charge, obj -> count())));
         setPlay(new Play(

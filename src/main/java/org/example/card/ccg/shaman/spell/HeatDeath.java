@@ -23,7 +23,7 @@ public class HeatDeath extends SpellCard {
     public String subMark = "";
 
 
-    public HeatDeath() {
+    public void init() {
         setPlay(new Play(()->{
                 ownerPlayer().draw(2);
                 ownerPlayer().addDeck(createCard(HeatDeath.class));

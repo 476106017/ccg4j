@@ -25,7 +25,7 @@ public class CursedContract extends SpellCard {
     public String subMark = "";
 
 
-    public CursedContract() {
+    public void init() {
         setPlay(new Play(() -> {
             List<Card> draw = ownerPlayer().draw(1);
             Integer cost = draw.get(0).getCost();

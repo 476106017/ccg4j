@@ -24,7 +24,7 @@ public class ccyyt extends FollowCard {
 
     public int atk = 3;
     public int hp = 6;
-    public ccyyt() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("嘲讽");
         getKeywords().add("圣盾");
@@ -47,7 +47,7 @@ public class ccyyt extends FollowCard {
         public int atk = 1;
         public int hp = 2;
 
-        public ccjqr() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("嘲讽");
             getKeywords().add("圣盾");

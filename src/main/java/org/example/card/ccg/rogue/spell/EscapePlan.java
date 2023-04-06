@@ -23,7 +23,7 @@ public class EscapePlan extends SpellCard {
 
     public String subMark = "";
 
-    public EscapePlan() {
+    public void init() {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),
             true,
             target->{

@@ -25,7 +25,7 @@ public class LastResort extends SpellCard {
     public String subMark = "";
 
 
-    public LastResort() {
+    public void init() {
         setPlay(new Play(()->{
             PlayerInfo player = ownerPlayer();
 

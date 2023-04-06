@@ -25,7 +25,7 @@ public class ltstt extends FollowCard {
     public int atk = 0;
     public int hp = 3;
 
-    public ltstt() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.EndTurn, obj->
         {

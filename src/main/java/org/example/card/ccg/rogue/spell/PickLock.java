@@ -26,7 +26,7 @@ public class PickLock extends SpellCard {
 
     public String subMark = "";
 
-    public PickLock() {
+    public void init() {
         setPlay(new Play(
             () -> enemyPlayer().getAreaFollowsAsGameObj(),true,
             gameObjs -> {

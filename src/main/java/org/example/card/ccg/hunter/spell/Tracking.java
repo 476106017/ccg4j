@@ -25,7 +25,7 @@ public class Tracking extends SpellCard {
 
     public String subMark = "";
 
-    public Tracking() {
+    public void init() {
         setPlay(new Play(()->{
             Map<String, List<Card>> index = ownerPlayer().getDeckCopy()
                 .stream().collect(Collectors.groupingBy(Card::getName));

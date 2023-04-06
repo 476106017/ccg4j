@@ -29,7 +29,7 @@ public class HearthstoneBattleChess  extends AmuletCard {
     List<FollowCard> effectFollows = new ArrayList<>();
 
 
-    public HearthstoneBattleChess() {
+    public void init() {
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, obj->{
             ownerPlayer().getAreaFollowsAsFollow().forEach(this::jx);
             enemyPlayer().getAreaFollowsAsFollow().forEach(this::jx);

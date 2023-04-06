@@ -23,7 +23,7 @@ public class MasterYi extends FollowCard {
     """;
     private String subMark = "";
 
-    public MasterYi() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("疾驰");
         addEffects(new Effect(this,this, EffectTiming.WhenKill, obj->{

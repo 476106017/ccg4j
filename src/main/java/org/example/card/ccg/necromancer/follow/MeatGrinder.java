@@ -22,7 +22,7 @@ public class MeatGrinder extends FollowCard {
         """;
     private String subMark = "";
 
-    public MeatGrinder() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             FollowCard deckRandomFollow = ownerPlayer().getDeckRandomFollow();

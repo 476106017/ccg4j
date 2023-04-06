@@ -26,7 +26,7 @@ public class BoneAshBibimbap extends SpellCard {
     public String subMark = "";
 
 
-    public BoneAshBibimbap() {
+    public void init() {
         setPlay(new Play(()->{
             ownerPlayer().heal(3);
             ownerPlayer().costGraveyardCountTo(6,()->{

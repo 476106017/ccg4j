@@ -24,7 +24,7 @@ public class TormentedSylvanas extends FollowCard {
         """;
     private String subMark = "";
 
-    public TormentedSylvanas() {
+    public void init() {
         setMaxHp(getHp());
 
         addEffects(new Effect(this,this, EffectTiming.BeginTurn,()->{

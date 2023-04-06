@@ -24,7 +24,7 @@ public class DragonTailMan extends FollowCard {
         """;
     private String subMark = "";
 
-    public DragonTailMan() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             int destroy = destroy(ownerPlayer().getAreaFollows());

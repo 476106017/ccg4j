@@ -159,7 +159,7 @@ public class LittlePrincess extends Leader {
         """;
         public String subMark = "";
 
-        public NormalAttack() {
+        public void init() {
             setPlay(new Play(
                 ()->{
                     List<GameObj> enemyTargets = new ArrayList<>();
@@ -201,7 +201,7 @@ public class LittlePrincess extends Leader {
         """;
         public String subMark = "";
 
-        public SwapCharacter() {
+        public void init() {
             setPlay(new Play(
                 ()->ownerPlayer().getAreaFollowsAsGameObj(), true,
                 toObj->{

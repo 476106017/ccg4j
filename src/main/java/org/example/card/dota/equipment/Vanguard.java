@@ -19,7 +19,7 @@ public class Vanguard extends EquipmentCard {
 
     public String subMark = "";
 
-    public Vanguard() {
+    public void init() {
         getKeywords().add("护甲");
         getKeywords().add("护甲");
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));

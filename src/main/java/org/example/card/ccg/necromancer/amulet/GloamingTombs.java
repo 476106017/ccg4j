@@ -25,7 +25,7 @@ public class GloamingTombs extends AmuletCard {
         """;
     public String subMark = "";
 
-    public GloamingTombs() {
+    public void init() {
         addEffects((new Effect(this,this,
             EffectTiming.WhenSummon, obj -> ownerPlayer().countToGraveyard(1))));
     }

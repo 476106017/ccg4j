@@ -26,7 +26,7 @@ public class Sekiheihatijin extends AmuletCard {
         """;
     public String subMark = "";
 
-    public Sekiheihatijin() {
+    public void init() {
 
         addEffects((new Effect(this,this, EffectTiming.WhenOtherAttack, obj->{
             Damage damage = (Damage) obj;

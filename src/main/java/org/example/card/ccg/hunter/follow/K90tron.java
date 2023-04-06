@@ -23,7 +23,7 @@ public class K90tron extends FollowCard {
         """;
     private String subMark = "";
 
-    public K90tron() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             List<Card> deck = ownerPlayer().getDeck();

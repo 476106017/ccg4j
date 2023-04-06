@@ -24,7 +24,7 @@ public class GiftForBloodkin extends SpellCard {
     public String subMark = "";
 
 
-    public GiftForBloodkin() {
+    public void init() {
         setPlay(new Play(()->{
                 info.damageMulti(this,List.of(ownerLeader(),enemyLeader()),1);
                 ownerPlayer().summon(createCard(BattyGuest.ThirstyBat.class));

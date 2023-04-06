@@ -26,7 +26,7 @@ public class KillAllClan extends SpellCard {
     public String subMark = "";
     public int target = 2;
 
-    public KillAllClan() {
+    public void init() {
         setPlay(new Play(()->{
             List<AreaCard> follows = enemyPlayer().getAreaFollows();
             destroy(follows);

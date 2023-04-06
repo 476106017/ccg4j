@@ -25,7 +25,7 @@ public class FelFist extends SpellCard {
     public String subMark = "";
 
 
-    public FelFist() {
+    public void init() {
         setPlay(new Play(()->{
                 List<GameObj> targetable = new ArrayList<>();
                 if(ownerPlayer().getDeck().isEmpty())

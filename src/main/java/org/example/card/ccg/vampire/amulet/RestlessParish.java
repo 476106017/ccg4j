@@ -31,7 +31,7 @@ public class RestlessParish extends AmuletCard {
 
     List<FollowCard> effectFollows = new ArrayList<>();
 
-    public RestlessParish() {
+    public void init() {
         setCountDown(1);
         setPlay(new Play(()->info.damageEffect(this,ownerLeader(),1)));
         addEffects((new Effect(this,this,

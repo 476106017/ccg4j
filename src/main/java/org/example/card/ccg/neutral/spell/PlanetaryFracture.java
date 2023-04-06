@@ -29,7 +29,7 @@ public class PlanetaryFracture extends SpellCard {
         return subMark.replaceAll("\\{}",info.getTurn()+"");
     }
 
-    public PlanetaryFracture() {
+    public void init() {
         setPlay(new Play(()->{
             List<AreaCard> toDestroy = new ArrayList<>();
             toDestroy.addAll(ownerPlayer().getAreaFollowsBy(followCard -> followCard.getCost()>5));

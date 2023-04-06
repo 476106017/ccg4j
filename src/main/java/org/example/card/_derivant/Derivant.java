@@ -29,7 +29,7 @@ public class Derivant {
         private String subMark = "";
 
 
-        public AnalyzingArtifact() {
+        public void init() {
             setMaxHp(getHp());
             addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
                 ownerPlayer().draw(1);
@@ -51,7 +51,7 @@ public class Derivant {
         """;
         private String subMark = "";
 
-        public Ghost() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("疾驰");
             getKeywords().add("游魂");
@@ -75,7 +75,7 @@ public class Derivant {
         """;
         private String subMark = "";
 
-        public Zombie() {
+        public void init() {
             setMaxHp(getHp());
         }
     }
@@ -93,7 +93,7 @@ public class Derivant {
         """;
         private String subMark = "";
 
-        public Skeleton() {
+        public void init() {
             setMaxHp(getHp());
         }
     }
@@ -114,7 +114,7 @@ public class Derivant {
         public int atk = 1;
         public int hp = 1;
 
-        public Fairy() {
+        public void init() {
             setMaxHp(getHp());
             addEffects((new Effect(this,this, EffectTiming.InvocationEnd,
                 ()->ownerPlayer().getPpNum() == 1,
@@ -141,7 +141,7 @@ public class Derivant {
         public int atk = 1;
         public int hp = 1;
 
-        public FairyWisp() {
+        public void init() {
             setMaxHp(getHp());
             setPlay(new Play(()->{
                 if(ownerPlayer().getCount(PLAY_NUM)>=2) info.exile(this);

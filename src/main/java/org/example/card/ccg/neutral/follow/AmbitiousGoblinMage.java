@@ -23,7 +23,7 @@ public class AmbitiousGoblinMage  extends FollowCard {
         """;
     private String subMark = "";
 
-    public AmbitiousGoblinMage() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->ownerPlayer().getHandAsGameObjBy(card ->

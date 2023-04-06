@@ -22,7 +22,7 @@ public class DarkfallenNeophyte extends FollowCard {
         """;
     private String subMark = "";
 
-    public DarkfallenNeophyte() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
             ownerPlayer().costGraveyardCountTo(2,()->

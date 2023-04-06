@@ -26,7 +26,7 @@ public class DimensiusTheAllDevouring extends FollowCard {
 
     private boolean canSummon = true;
 
-    public DimensiusTheAllDevouring() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.InvocationBegin,
             ()->true,

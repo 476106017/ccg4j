@@ -19,7 +19,7 @@ public class PoorMansSheild extends EquipmentCard {
 
     public String subMark = "";
 
-    public PoorMansSheild() {
+    public void init() {
         getKeywords().add("护甲");
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj()));
     }

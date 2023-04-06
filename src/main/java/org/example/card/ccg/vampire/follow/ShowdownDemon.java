@@ -26,7 +26,7 @@ public class ShowdownDemon extends FollowCard {
         """;
     private String subMark = "";
 
-    public ShowdownDemon() {
+    public void init() {
         setMaxHp(getHp());
 
         setPlay(new Play(

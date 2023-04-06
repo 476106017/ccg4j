@@ -24,7 +24,7 @@ public class BoneFanatic extends FollowCard {
         """;
     private String subMark = "";
 
-    public BoneFanatic() {
+    public void init() {
         setMaxHp(getHp());
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().costMoreGraveyardCountTo(1,

@@ -33,7 +33,7 @@ public class RimefireBolt extends SpellCard {
     public String subMark = "";
 
 
-    public RimefireBolt() {
+    public void init() {
         setPlay(new Play(
             () -> enemyPlayer().getAreaFollowsAsGameObj(),true,
             gameObjs -> {

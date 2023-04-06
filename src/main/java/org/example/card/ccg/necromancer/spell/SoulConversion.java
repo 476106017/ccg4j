@@ -24,7 +24,7 @@ public class SoulConversion extends SpellCard {
     public String subMark = "";
 
 
-    public SoulConversion() {
+    public void init() {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),
             true,
             obj->{

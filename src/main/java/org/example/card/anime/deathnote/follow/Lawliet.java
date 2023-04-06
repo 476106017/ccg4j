@@ -23,7 +23,7 @@ public class Lawliet  extends FollowCard {
     private String subMark = "";
 
 
-    public Lawliet() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->setName("L")));
     }

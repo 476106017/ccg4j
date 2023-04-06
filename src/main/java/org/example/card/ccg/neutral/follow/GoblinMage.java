@@ -23,7 +23,7 @@ public class GoblinMage extends FollowCard {
         """;
     private String subMark = "";
 
-    public GoblinMage() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->
             ownerPlayer().draw(card -> card.getCost().equals(2))));

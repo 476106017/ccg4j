@@ -23,7 +23,7 @@ public class AzsharanSaber extends FollowCard {
         """;
     private String subMark = "";
 
-    public AzsharanSaber() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{

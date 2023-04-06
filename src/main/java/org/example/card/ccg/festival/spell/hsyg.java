@@ -23,7 +23,7 @@ public class hsyg extends SpellCard {
 
     public String subMark = "";
 
-    public hsyg() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 ownerPlayer().getDeck().forEach(card -> {

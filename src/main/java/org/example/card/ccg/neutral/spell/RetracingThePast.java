@@ -26,12 +26,7 @@ public class RetracingThePast extends SpellCard {
     public String subMark = "";
     public int target = 1;
 
-    @Override
     public void init() {
-        this.count();
-    }
-
-    public RetracingThePast() {
         setPlay(new Play(()->
             List.of(ownerPlayer().getAreaFollowsAsGameObj(),ownerPlayer().getAreaFollowsAsGameObj()),
             2,true,

@@ -26,7 +26,7 @@ public class WingCommanderIchman extends FollowCard {
     private String subMark = "";
     private transient FunctionN effect = ()->{};
 
-    public WingCommanderIchman() {
+    public void init() {
         setMaxHp(getHp());
         effect = ()->{
             ownerPlayer().hire(card -> card instanceof FollowCard && card.hasRace("野兽"),

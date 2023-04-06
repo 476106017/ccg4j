@@ -24,7 +24,7 @@ public class WildSpirits extends SpellCard {
 
     public String subMark = "";
 
-    public WildSpirits() {
+    public void init() {
         setPlay(new Play(
             () -> {
                 switch ((int)(Math.random()*3)){

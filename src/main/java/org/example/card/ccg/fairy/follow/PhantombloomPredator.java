@@ -24,7 +24,7 @@ public class PhantombloomPredator extends FollowCard {
         """;
     public String subMark = "";
 
-    public PhantombloomPredator() {
+    public void init() {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->ownerPlayer().getAreaFollowsAsGameObjBy(followCard -> followCard.getCost()==1),

@@ -26,7 +26,7 @@ public class Chronos extends FollowCard {
         """;
     private String subMark = "";
 
-    public Chronos() {
+    public void init() {
         setMaxHp(getHp());
         getKeywords().add("突进");
         setPlay(new Play(()->{

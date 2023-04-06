@@ -22,10 +22,10 @@ public class MagicTrick extends SpellCard {
     public String subMark = "";
 
 
-    public MagicTrick() {
+    public void init() {
         setPlay(new Play(()->{
             ownerPlayer().discoverCard(card -> card instanceof MagicTrick,
-                prototype-> ownerPlayer().addHand(prototype.cloneOf(ownerPlayer())));
+                prototype-> ownerPlayer().addHand(prototype.copyBy(ownerPlayer())));
         }));
     }
 

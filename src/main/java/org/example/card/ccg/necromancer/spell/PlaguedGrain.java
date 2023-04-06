@@ -27,7 +27,7 @@ public class PlaguedGrain extends SpellCard {
     public String subMark = "";
 
 
-    public PlaguedGrain() {
+    public void init() {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),
             true,
             obj->{
@@ -51,7 +51,7 @@ public class PlaguedGrain extends SpellCard {
         public String subMark = "";
 
 
-        public Crate() {
+        public void init() {
             setPlay(new Play(()->{
                 ownerPlayer().summon(createCard(Derivant.Zombie.class));
                 ownerPlayer().draw(1);

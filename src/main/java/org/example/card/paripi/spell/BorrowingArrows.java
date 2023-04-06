@@ -26,7 +26,7 @@ public class BorrowingArrows extends SpellCard {
     public String subMark = "";
 
 
-    public BorrowingArrows() {
+    public void init() {
         setPlay(new Play(()->{
             List<FollowCard> follows = enemyPlayer().getAreaFollowsAsFollow();
             follows.forEach(followCard -> followCard.addStatus(-1,0));
@@ -55,7 +55,7 @@ public class BorrowingArrows extends SpellCard {
         """;
         private String subMark = "";
 
-        public GrassBoat() {
+        public void init() {
             setMaxHp(getHp());
             getKeywords().add("守护");
         }

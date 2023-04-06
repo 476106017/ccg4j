@@ -26,7 +26,7 @@ public class Soulfire extends SpellCard {
     public String subMark = "";
 
 
-    public Soulfire() {
+    public void init() {
         setPlay(new Play(()->{
             List<GameObj> targetable = new ArrayList<>();
             targetable.add(info.oppositePlayer().getLeader());

@@ -24,7 +24,7 @@ public class Annihilate extends SpellCard {
     public String subMark = "";
 
 
-    public Annihilate() {
+    public void init() {
         setPlay(new Play(()->
                 enemyPlayer().getAreaFollowsAsGameObj()
             ,
