@@ -27,7 +27,7 @@ public class UnoPlus4 extends SpellCard {
 
     public void init() {
         setPlay(new Play(()->{
-            enemyPlayer().addHand(createCard(UnoDoubt.class));
+            enemyPlayer().addHand(createEnemyCard(UnoDoubt.class));
             enemyPlayer().draw(4);
             enemyPlayer().setHandPlayable(card -> card instanceof UnoDoubt);
         }));
@@ -54,17 +54,17 @@ public class UnoPlus4 extends SpellCard {
 
         public void init() {
             addEffects(new Effect(this,this, EffectTiming.EndTurnAtHand,
-                ()-> ownerPlayer().abandon(this)));
+                ()-> enemyPlayer().abandon(this)));
             setPlay(new Play(()->{
-                boolean succ = enemyPlayer().getHandBy(card -> card.getCost() <= 4).size() > 0;
+                boolean succ = ownerPlayer().getHandBy(card -> card.getCost() <= 4).size() > 0;
                 if(succ){
                     info.msg("质疑成功！可以使用卡牌；对手抽4张牌、并在下个回合无法使用卡牌");
-                    ownerPlayer().setHandPlayable(card -> true);
-                    enemyPlayer().draw(4);
-                    enemyPlayer().setHandPlayable(card -> false);
+                    enemyPlayer().setHandPlayable(card -> true);
+                    ownerPlayer().draw(4);
+                    ownerPlayer().setHandPlayable(card -> false);
                 }else {
                     info.msg("质疑失败！再抽2张牌");
-                    ownerPlayer().draw(2);
+                    enemyPlayer().draw(2);
                 }
             }));
         }

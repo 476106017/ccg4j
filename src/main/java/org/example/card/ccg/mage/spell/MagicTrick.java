@@ -24,7 +24,7 @@ public class MagicTrick extends SpellCard {
 
     public void init() {
         setPlay(new Play(()->{
-            ownerPlayer().discoverCard(card -> card instanceof MagicTrick,
+            ownerPlayer().discoverCard(card -> card instanceof SpellCard && card.getCost() <= 2,
                 prototype-> ownerPlayer().addHand(prototype.copyBy(ownerPlayer())));
         }));
     }
