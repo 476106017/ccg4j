@@ -79,8 +79,8 @@ public class GameInfo implements Serializable {
 
     public void msg(String msg){
         try {
-Msg.send(thisPlayer().getSession(),msg);
-Msg.send(oppositePlayer().getSession(),msg);
+            Msg.send(thisPlayer().getSession(),msg);
+            Msg.send(oppositePlayer().getSession(),msg);
         } catch (Exception ignored) {}
     }
 
@@ -93,6 +93,18 @@ Msg.send(oppositePlayer().getSession(),msg);
         thisPlayer.setDeckCount(thisPlayer.getDeck().size());
         final PlayerInfo oppositePlayer = oppositePlayer();
         oppositePlayer.setDeckCount(oppositePlayer.getDeck().size());
+        thisPlayer.getAreaFollowsAsFollow().forEach(f->{
+            // 回合可攻击数没有打满
+            final boolean notAttacked = f.getTurnAttack() < f.getTurnAttackMax();
+            // 状态正常
+            final boolean normalStatus = !f.hasKeyword("缴械") && !f.hasKeyword("眩晕") && !f.hasKeyword("冻结");
+            final boolean canAttack = notAttacked && normalStatus && (f.getTurnAge() > 0 || f.hasKeyword("疾驰"));
+            final boolean canDash = notAttacked && normalStatus && (f.getTurnAge() == 0 && f.hasKeyword("突进"));
+
+            f.setCanAttack(canAttack);
+            f.setCanDash(canDash);
+        });
+
 
         Msg.send(thisPlayer.getSession(),"battleInfo",
             Maps.newMap("me", thisPlayer,"enemy", oppositePlayer));
@@ -482,6 +494,7 @@ Msg.send(oppositePlayer().getSession(),msg);
         msgToThisPlayer("请出牌！");
         msgToOppositePlayer("等待对手出牌......");
         Msg.send(thisPlayer().getSession(),"yourTurn","");
+        Msg.send(oppositePlayer().getSession(),"enemyTurn","");
     }
 
     public void endTurnOfTimeout(){
@@ -533,7 +546,7 @@ Msg.send(oppositePlayer().getSession(),msg);
                 followCard.setTurnAttack(0);
                 followCard.removeKeyword("眩晕");
                 followCard.removeKeyword("冻结");
-                followCard.removeKeywordAll("格挡");
+//                followCard.removeKeywordAll("格挡");
             }
         });
         thisPlayer().getAreaCopy().forEach(areaCard -> {
@@ -552,10 +565,6 @@ Msg.send(oppositePlayer().getSession(),msg);
             if(areaCard instanceof FollowCard followCard){
                 int turnAgePlus = followCard.getTurnAge() + 1;
                 followCard.setTurnAge(turnAgePlus);
-                if(followCard.notAttacked()){
-                    msg(followCard.getNameWithOwner() + "可以攻击了！");
-                }
-
                 followCard.setTurnAttack(0);
             }
 

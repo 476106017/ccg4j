@@ -1,6 +1,6 @@
 var cardHtml = function(card){
     return `
-        <div class="card col-sm-6 col-md-4 col-lg-2">
+        <div class="card col-sm-6 col-md-4 col-lg-2 ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}" id="${card.id}">
             <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name">${card.name}</div>
             <div class="type">${card.TYPE}</div>
@@ -17,13 +17,99 @@ var cardHtml = function(card){
                 <div class="attack">${card.atk}</div>
                 <div class="health-bar">
                     <div class="health-bar-inner" style="width: ${card.hp/card.maxHp*100}%;"></div>
-                    
-                    <div class="health-bar-text">1/${card.maxHp}</div>
+
+                    <div class="health-bar-text">${card.hp}/${card.maxHp}</div>
                 </div>
             </div>
         </div>
     `
 }
+// 进入某个模式（选择/攻击）后用这个
+var initBoard = function(){
+    $('#enemy-info').removeClass("selected");
+    $('#enemy-info').unbind();
+    $('#my-info').removeClass("selected");
+    $('#my-info').unbind();
+    $(".end-button").html("结束<br/>回合");
+    $(".end-button").css("background","radial-gradient(blue, #2f4f4f9f)");
+    drawBoard();
+}
+var drawBoard = function(){
+    $('#enemy-hero').empty();
+    $('#enemy-hand').empty();
+    $('#enemy-battlefield').empty();
+    $('#my-battlefield').empty();
+    $('#my-hand').empty();
+    $('#my-hero').empty();
+
+
+    $('#enemy-info').html("牌堆："+ boardInfo.enemy.deckCount + "<br/>" + "墓地："+ boardInfo.enemy.graveyardCount +
+        "<br/>" + "血量："+ boardInfo.enemy.hp + "/" + boardInfo.enemy.hpMax);
+    $('#my-info').html("血量："+ boardInfo.me.hp + "/" + boardInfo.me.hpMax + "<br/>" + "墓地："+ boardInfo.me.graveyardCount +
+        "<br/>" + "牌堆："+ boardInfo.me.deckCount);
+    $('.enemy-pp-num').html(boardInfo.enemy.ppNum+"/"+boardInfo.enemy.ppMax);
+    $('.my-pp-num').html(boardInfo.me.ppNum+"/"+boardInfo.me.ppMax);
+
+    boardInfo.enemy.area.forEach(card => {
+        $('#enemy-battlefield').append(cardHtml(card));
+    });
+    boardInfo.enemy.hand.forEach(card => {
+        $('#enemy-hand').append(`
+            <div class="card-back col-sm-6 col-md-4 col-lg-2"></div>
+        `);
+    });
+
+    boardInfo.me.area.forEach(card => {
+        $('#my-battlefield').append(cardHtml(card));
+    });
+    $('#my-battlefield .card').click(function(){
+        if( $(this).hasClass("canAttack") || $(this).hasClass("canDash")){
+            // 可以发起攻击，记录发起方
+            let select = $(this).index()+1;
+            targetMsg = select;
+            
+            $(".end-button").html("发起<br/>攻击");
+            $(".end-button").css("background","radial-gradient(grey, #2f4f4f9f)");
+
+            $('#my-battlefield .card').unbind();
+            $(this).addClass("selected");
+            $(this).click(()=>{
+                initBoard();// 还原棋盘
+            });
+            
+            // 攻击敌方主战者
+            if($(this).hasClass("canAttack")){
+                $('#enemy-info').addClass("selected");
+                $('#enemy-info').click(()=>{
+                    initBoard();// 先还原棋盘
+                    websocket.send('attack::'+targetMsg+' 0');
+                })
+            }
+
+            // 攻击敌方随从
+            $('#enemy-battlefield .FOLLOW').each((i,card)=>{
+                $(card).addClass("selected");
+                $(card).click(()=>{
+                    initBoard();// 先还原棋盘
+                    websocket.send('attack::'+targetMsg+' '+(i+1));
+                });
+
+            })
+            
+        }
+    })
+    boardInfo.me.hand.forEach(card => {
+        $('#my-hand').append(cardHtml(card));
+    });
+    $('#my-hand .card').click(function(){
+        let select = $(this).index()+1;
+        
+        drawBoard();// 先还原棋盘
+        setTimeout(websocket.send('play::'+select),1000);
+    })
+}
+
+
 
 var interval;		//定时器变量
 
@@ -63,7 +149,7 @@ function  mnyAlert(type,msg,time=2000){
 function swap(){
     let swapArr = [];
     $("#swap-card .card").each((i,card)=>{
-        if($(card).hasClass("swapped")){
+        if($(card).hasClass("selected")){
             $(card).hide();
             swapArr.push(i+1);
         }
@@ -84,6 +170,11 @@ function showMsg(){
 
 // var userName = prompt("请问牌友如何称呼？");
 userName = "Player"+Math.floor(Math.random()*1000000);
+
+var boardInfo;// 用于重绘棋盘
+var targetMsg;// 需要指定时，把指令存起来
+var targetLists;// 可指定的卡牌
+
 if ($.trim(userName)) {
     if(window.location.host.indexOf("card4j") <= 0)
         // 本地运行
@@ -110,15 +201,15 @@ if ($.trim(userName)) {
         console.log(obj);
 
         switch(data.channel){
-            case "msg":  
+            case "msg":
                 mnyAlert(1,obj);
                 $('#msg-log-div').prepend(obj+'<br/>');
                 break;
-            case "alert":  
+            case "alert":
                 mnyAlert(2,obj);
                 $('#msg-log-div').prepend(obj+'<br/>');
                 break;
-            case "myDeck":  
+            case "myDeck":
                 $('#card-gridview').html("");
                 obj.deck.forEach(card => {
                     $('#card-gridview').append(cardHtml(card));
@@ -132,11 +223,11 @@ if ($.trim(userName)) {
                 });
                 $('#deck-preset-modal').modal('show');
                 break;
-            case "waitRoom":  
+            case "waitRoom":
                 $('#roomCode').html(obj);
                 $('#wait-room-modal').modal('show');
                 break;
-            case "swap":  
+            case "swap":
                 $('#wait-room-modal').modal('hide');
                 $('#swap-card-modal').modal('show');
                 $("#swap-confirm").show();
@@ -146,59 +237,32 @@ if ($.trim(userName)) {
                 });
                 $("#swap-card .card").each((k,card)=>{
                     $(card).click(()=>{
-                        if($(card).hasClass("swapped"))
-                            $(card).removeClass("swapped");
+                        if($(card).hasClass("selected"))
+                            $(card).removeClass("selected");
                         else
-                            $(card).addClass("swapped");
+                            $(card).addClass("selected");
                     });
                 })
                 // swap();// test
                 break;
-            case "swapOver":  
+            case "swapOver":
                 $('#swap-card-modal').modal('hide');
+                $('#swap-card').html("");
                 $('#senjou-modal').modal('show');
                 break;
-            case "yourTurn":  
+            case "enemyTurn":
+                $(".end-button").html("对方<br/>回合");
+                $(".end-button").css("background","radial-gradient(red, #2f4f4f9f)");
+                break;
+            case "yourTurn":
                 $(".end-button").html("结束<br/>回合");
                 $(".end-button").css("background","radial-gradient(blue, #2f4f4f9f)");
                 break;
-            case "battleInfo": 
-                $('#enemy-hero').empty();
-                $('#enemy-hand').empty();
-                $('#enemy-battlefield').empty();
-                $('#my-battlefield').empty();
-                $('#my-hand').empty();
-                $('#my-hero').empty();
-
-
-                $('#enemy-info').html("牌堆："+ obj.enemy.deckCount + "<br/>" + "墓地："+ obj.enemy.graveyardCount +
-                    "<br/>" + "血量："+ obj.enemy.hp + "/" + obj.enemy.hpMax);
-                $('#my-info').html("血量："+ obj.me.hp + "/" + obj.me.hpMax + "<br/>" + "墓地："+ obj.me.graveyardCount +
-                    "<br/>" + "牌堆："+ obj.me.deckCount);
-                $('.enemy-pp-num').html(obj.enemy.ppNum+"/"+obj.enemy.ppMax);
-                $('.my-pp-num').html(obj.me.ppNum+"/"+obj.me.ppMax);
-
-
-                obj.me.area.forEach(card => {
-                    $('#my-battlefield').append(cardHtml(card));
-                });
-                obj.me.hand.forEach(card => {
-                    $('#my-hand').append(cardHtml(card));
-                    $('#my-hand .card').click(function(){
-                        let select = $(this).index()+1;
-                        setTimeout(websocket.send('play::'+select),500);
-                    })
-                });
-                obj.enemy.area.forEach(card => {
-                    $('#enemy-battlefield').append(cardHtml(card));
-                });
-                obj.enemy.hand.forEach(card => {
-                    $('#enemy-hand').append(`
-                        <div class="card-back col-sm-6 col-md-4 col-lg-2"></div>
-                    `);
-                });
+            case "battleInfo":
+                boardInfo = obj;
+                drawBoard();
                 break;
-            case "discover":  
+            case "discover":
                 $('#discover-card-modal').modal('show');
                 $('#discover-card').html("");
                 obj.forEach(card => {
@@ -207,7 +271,45 @@ if ($.trim(userName)) {
                 $("#discover-card .card").each((k,card)=>{
                     $(card).click(()=>{
                         $('#discover-card-modal').modal('hide');
-                        setTimeout(websocket.send('discover::'+(k+1)),500);
+                        setTimeout(websocket.send('discover::'+(k+1)),1000);
+                        $('#discover-card').html("");
+                    });
+                })
+                break;
+            case "target":
+                $(".end-button").html("选择<br/>目标");
+                $(".end-button").css("background","radial-gradient(grey, #2f4f4f9f)");
+                $('#my-hand .card').unbind();
+                targetMsg = obj.pref+' ';
+                targetLists = obj.targetLists;// 加载待选择项
+
+                targetLists[0].forEach(obj=>{
+                    $("#"+obj.id).addClass("selected");
+                    $("#"+obj.id).click(()=>{
+                        targetMsg+=obj.id;
+
+                        if(targetLists[1]){
+                            // 选择第二个目标
+                            targetLists[0].forEach(obj=>{
+                                $("#"+obj.id).removeClass("selected");
+                                $("#"+obj.id).unbind();
+                            });
+                            targetLists[1].forEach(obj=>{
+                                $("#"+obj.id).addClass("selected");
+                                $("#"+obj.id).click(()=>{
+                                    targetMsg+=" "+obj.id;
+                                    initBoard();// 先还原棋盘
+                                    websocket.send('play::'+targetMsg);
+                                });
+                            });
+                            $(".end-button").html("第二<br/>目标");
+                            $(".end-button").css("background","radial-gradient(grey, #2f4f4f9f)");
+                        }else{
+                            // 选择结束
+                            initBoard();// 先还原棋盘
+                            websocket.send('play::'+targetMsg);
+                        }
+
                     });
                 })
                 break;

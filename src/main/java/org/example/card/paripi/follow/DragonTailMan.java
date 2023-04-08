@@ -27,7 +27,7 @@ public class DragonTailMan extends FollowCard {
     public void init() {
         setMaxHp(getHp());
         setPlay(new Play(()->{
-            int destroy = destroy(ownerPlayer().getAreaFollows());
+            int destroy = destroy(ownerPlayer().getAreaFollowsBy(p->p!=this));
             if(ownerLeader() instanceof Kongming kongming){
                 kongming.addPartyHot(destroy);
             }

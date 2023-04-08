@@ -3,6 +3,7 @@ package org.example.card.ccg.fairy.amulet;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.AmuletCard;
+import org.example.card.FollowCard;
 import org.example.card._derivant.Derivant;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
@@ -34,7 +35,12 @@ public class FirespriteGrove extends AmuletCard {
         )));
 
         addEffects((new Effect(this,this, EffectTiming.Leaving, obj->
-            info.damageEffect(this,Lists.randOf(enemyPlayer().getAreaFollowsAsFollow()),1)
+        {
+            final List<FollowCard> areaFollowsAsFollow = enemyPlayer().getAreaFollowsAsFollow();
+            if(areaFollowsAsFollow.size()>0){
+                info.damageEffect(this,Lists.randOf(areaFollowsAsFollow),1);
+            }
+        }
         )));
     }
 

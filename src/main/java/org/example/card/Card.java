@@ -294,8 +294,8 @@ public abstract class Card extends GameObj implements Serializable {
 
         // region 发动卡牌效果
         if(getPlay() != null){
-            // 如果必须传目标，没有可选择目标时不发动效果
-            if(getPlay().mustTarget() && targets.isEmpty()){
+            // 没有可选择目标时不发动效果
+            if(getPlay().targetNum()>0 && targets.isEmpty()){
                 info.msg(getNameWithOwner() + "因为没有目标而无法发动效果！");
             }else {
                 if (this instanceof AreaCard && ownerPlayer().isCanFanfare()){

@@ -58,7 +58,6 @@ public class ChainsawMan extends FollowCard {
         private int apposition = 0;
         public Integer cost = 3;
         public String name = "链锯模式";
-        private int countdown = 1;
         public transient int addAtk = 2;
         public transient int addHp = 2;
 
@@ -70,6 +69,7 @@ public class ChainsawMan extends FollowCard {
         public String subMark = "";
 
         public void init() {
+            setCountdown(1);
             getKeywords().add("突进");
             getKeywords().add("自愈");
             getKeywords().add("重伤");

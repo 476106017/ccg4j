@@ -19,6 +19,8 @@ public abstract class FollowCard extends AreaCard{
     private transient int atk = 0;
     private transient int hp = 0;
     private int maxHp = 0;
+    private boolean canAttack = false;// 前端展示绿色边缘
+    private boolean canDash = false;// 前端展示橙色边缘
     private transient boolean needSettle = false; // 是否需要结算
     private transient int turnAge = 0;
     private transient int turnAttackMax = 1;
@@ -33,13 +35,6 @@ public abstract class FollowCard extends AreaCard{
     @Override
     public String getType() {
         return TYPE.getName();
-    }
-
-    public boolean notAttacked(){
-        return info.thisPlayer()==ownerPlayer() && //是自己的回合
-            getTurnAttack() < getTurnAttackMax() && // 回合可攻击数没有打满
-            !hasKeyword("缴械") && !hasKeyword("眩晕") && !hasKeyword("冻结") &&
-            (getTurnAge()>0 || hasKeyword("突进") || hasKeyword("疾驰"));
     }
 
     public void equip(EquipmentCard equipmentCard){

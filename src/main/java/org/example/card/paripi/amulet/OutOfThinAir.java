@@ -36,7 +36,7 @@ public class OutOfThinAir extends AmuletCard {
     public void init() {
         setCountDown(3);
 
-        addEffects((new Effect(this,this, EffectTiming.BeginTurn, obj->{
+        addEffects((new Effect(this,this, EffectTiming.DeathRattle, obj->{
             Set<Class<? extends Card>> subTypesOf =
                 new Reflections(new ConfigurationBuilder()
                     .filterInputsBy(s -> !s.contains("genshin"))

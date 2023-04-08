@@ -60,7 +60,7 @@ public class HearthstoneBattleChess  extends AmuletCard {
     private void autoBattle() {
         while (true) {
             boolean end = true;
-            List<FollowCard> thisFollows = info.thisPlayer().getAreaFollowsAsFollowBy(FollowCard::notAttacked);
+            List<FollowCard> thisFollows = info.thisPlayer().getAreaFollowsAsFollowBy(f->f.isCanAttack()||f.isCanDash());
             if (!thisFollows.isEmpty()) {
                 end = false;
 
@@ -72,7 +72,7 @@ public class HearthstoneBattleChess  extends AmuletCard {
 
             }
 
-            List<FollowCard> thatFollows =  info.oppositePlayer().getAreaFollowsAsFollowBy(FollowCard::notAttacked);
+            List<FollowCard> thatFollows =  info.oppositePlayer().getAreaFollowsAsFollowBy(f->f.isCanAttack()||f.isCanDash());
             if (!thatFollows.isEmpty()) {
                 end = false;
 

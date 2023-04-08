@@ -6,7 +6,7 @@
     border: 1px solid #ccc; /* 可选：添加边框样式 */
     box-sizing: border-box; /* 将 padding 和 border 计算在内，避免盒模型的问题 */
   }
-  
+
   .card {
     position: relative;
     width: 220px !important;
@@ -18,9 +18,9 @@
     background-color: #f7f7f7;
     overflow: hidden;
   }
-  
+
   .card .image {
-    
+
     position: absolute;
     left: -5px;
     width: 100%;
@@ -57,7 +57,7 @@
     color: white;
     text-shadow: 0 0 3px #000;
   }
-  
+
   .card .name {
     z-index: 5;
     position: absolute;
@@ -66,11 +66,11 @@
     font-size: 20px;
     font-weight: bold;
     color: white;
-    text-shadow: -1px -1px 0 #0ff,  
+    text-shadow: -1px -1px 0 #0ff,
                     1px 1px 0 #f00,
                     0 0 3px #000;
   }
-  
+
   .card .cost {
     z-index: 5;
     position: absolute;
@@ -91,7 +91,7 @@
     animation: blink 1s infinite;
 
   }
-  
+
 @keyframes blink {
     0% {
       color: #f00;
@@ -103,7 +103,7 @@
       color: #f00;
     }
   }
-  
+
   .card:hover .name {
     z-index: 9;
     animation: tiktok 1s infinite;
@@ -116,27 +116,27 @@
   }
 @keyframes tiktok {
     0% {
-        text-shadow: -1px -1px 0 #0ff,  
+        text-shadow: -1px -1px 0 #0ff,
                     1px 1px 0 #f00 ;
     }
     25% {
-        text-shadow: 1px -1px 0 #0ff,  
+        text-shadow: 1px -1px 0 #0ff,
                     -1px 1px 0 #f00 ;
     }
     50% {
-        text-shadow: 1px 1px 0 #0ff,  
+        text-shadow: 1px 1px 0 #0ff,
                     -1px -1px 0 #f00 ;
     }
     75% {
-        text-shadow: -1px 1px 0 #0ff,  
+        text-shadow: -1px 1px 0 #0ff,
                     1px -1px 0 #f00 ;
     }
     100% {
-        text-shadow: -1px -1px 0 #0ff,  
+        text-shadow: -1px -1px 0 #0ff,
                     1px 1px 0 #f00 ;
     }
   }
-  
+
   .card .countDown {
     z-index: 5;
     position: absolute;
@@ -155,7 +155,7 @@
     line-height: 30px;
   }
 
-  
+
   .card .attack {
     z-index: 5;
     position: absolute;
@@ -195,7 +195,7 @@
     white-space: pre-line;
     overflow: hidden;
     }
-    
+
     .card .description:hover {
       z-index: 9;
       background: linear-gradient(to bottom, #ffd700, #ff0,#eee8aa);
@@ -207,12 +207,12 @@
     .card .description:hover .job {
       display: block;
     }
-    
+
     .card .description p {
       margin: 5px;
       text-align: left;
     }
-    
+
     .job {
       z-index: 5;
       display: none;
@@ -245,7 +245,7 @@
         right: 10px;
         overflow: hidden;
       }
-      
+
       .health-bar-inner {
         width: 100%;
         height: 100%;
@@ -255,7 +255,7 @@
         top: 0;
         left: 0;
       }
-      
+
       .health-bar-text {
         color: white;
         text-align: center;
@@ -270,17 +270,17 @@
         align-items: center;
         font-size: 12px;
       }
-      
+
       .health-bar:hover .health-bar-inner {
         width: 100%;
         background-color: #c0392b;
       }
-      
+
       .health-bar:hover .health-bar-text {
         font-size: 14px;
         transform: scale(1.2);
       }
-      
+
 
 .footer {
     z-index: 999;
@@ -303,19 +303,19 @@
 }
 
 
-.swapped{
+.selected{
   border: 1px solid #f00;
   box-shadow: 0 0 20px #f00;
   text-shadow: 0 0 3px #f00;
 }
 
-.swapped .name{
+.selected .name{
   color: #000;
 }
-.swapped .cost{
+.selected .cost{
   color: #000;
 }
-.swapped .description{
+.selected .description{
   color: #000;
 }
 

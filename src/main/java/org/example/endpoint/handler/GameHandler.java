@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.card.*;
 import org.example.game.*;
 import org.example.system.util.Lists;
+import org.example.system.util.Maps;
+import org.example.system.util.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,13 +45,13 @@ public class GameHandler {
                 indexI = -1;
             }
             if(indexI<1 || indexI>3){
-                info.msgTo(client,"输入序号错误:"+index);
+                Msg.alert(client,"输入序号错误:"+index);
                 return;
             }
             indexs.add(indexI-1);//这里转成下标
         }
         if(player.getStep()!=-1){
-            info.msgTo(client,"已经过了换牌步骤!");
+            Msg.alert(client,"已经过了换牌步骤!");
             return;
         }
         if(indexs.isEmpty()){
@@ -75,7 +77,7 @@ public class GameHandler {
             roomSchedule.put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
             info.startTurn();
         }else {
-            info.msgTo(client,"请等待对方换牌");
+            Msg.send(client,"请等待对方换牌");
         }
     }
 
@@ -93,10 +95,10 @@ public class GameHandler {
 
         if(!client.equals(player.getSession())){
             if("f".equals(msg)){
-                info.msgTo(client,"强制结束对手回合！");
+                Msg.send(client,"强制结束对手回合！");
                 info.endTurnOfCommand();
             }else {
-                info.msgTo(client,"当前不是你的回合！");
+                Msg.alert(client,"当前不是你的回合！");
             }
             return;
         }
@@ -117,16 +119,16 @@ public class GameHandler {
         // endregion
 
         if(!client.equals(player.getSession())){
-            info.msgTo(client,"当前不是你的回合！");
+            Msg.alert(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() == 2){
-            info.msgTo(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
         if(msg.isBlank()){
-            info.msgToThisPlayer("打出卡牌：play <手牌序号> <目标序号> s<抉择序号>；");
+            info.msgToThisPlayer("打出卡牌：play <手牌序号> <目标id> s<抉择序号>；");
             return;
         }
 
@@ -179,18 +181,18 @@ public class GameHandler {
                 continue;
             }
 
-            Integer targetI;
+            Integer targetId;
             try {
-                targetI = Integer.valueOf(targetS);
+                targetId = Integer.valueOf(targetS);
                 // 获取选择对象
-                GameObj target = play.canTargets().get()
-                    .get(i-1).get(targetI - 1);
-                if(target!=null){
+                Optional<GameObj> target = play.canTargets().get()
+                    .get(i-1).stream().filter(gameObj -> gameObj.id==targetId).findFirst();
+                if(target.isPresent()){
                     if(targets.contains(target)){
-                        info.msgToThisPlayer("输入了重复的对象:"+target.getName());
+                        info.msgToThisPlayer("输入了重复的目标");
                         return;
                     }
-                    targets.add(target);
+                    targets.add(target.get());
                 }
             }catch (Exception e){}
         }
@@ -198,10 +200,24 @@ public class GameHandler {
 
         // 不指定目标
         if(targets.size() == 0){
-            if(play.targetNum()==0 || ( play.targetNum()>0 && !play.mustTarget()))
+            if(play.targetNum()==0 )
+                // 不需要指定目标
                 card.play(new ArrayList<>(),choice);// 不指定目标
-            else
-                info.msgToThisPlayer("请指定目标：play <手牌序号> <目标序号> s<抉择序号>\n"+play.describeCanTargets());
+            else{
+                // 可以指定目标
+                final List<List<GameObj>> targetLists = play.canTargets().get();
+                if(targetLists.stream().noneMatch(List::isEmpty)) {
+                    // 多个目标列表没有空的，指定目标
+                    Msg.send(client,"target",
+                        Maps.newMap("pref",msg,"targetLists", targetLists));
+                    info.msgToThisPlayer("请指定目标：play <手牌序号> <目标序号> s<抉择序号>\n"+play.describeCanTargets());
+                }else{
+                    if(play.mustTarget())//必须指定
+                        info.msgToThisPlayer("现在无法打出这张卡牌！");
+                    else// 不指定目标
+                        card.play(new ArrayList<>(),choice);
+                }
+            }
         }else{
             // 指定目标
             if(play.targetNum()==0) {
@@ -210,6 +226,7 @@ public class GameHandler {
                 // 必须指定目标
                 if(play.mustTarget() && targets.size() != play.targetNum()){
                     info.msgToThisPlayer("指定目标数量错误！应为："+ play.targetNum());
+                    info.pushInfo();
                     return;
                 }
                 card.play(targets,choice);// 指定目标
@@ -230,12 +247,12 @@ public class GameHandler {
         // endregion
 
         if(!client.equals(player.getSession())){
-            info.msgTo(client,"当前不是你的回合！");
+            Msg.alert(client,"当前不是你的回合！");
             return;
         }
 
         if(player.getStep() == 2){
-            info.msgTo(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -337,11 +354,11 @@ public class GameHandler {
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
         if(!client.equals(player.getSession())){
-            info.msgTo(client,"当前不是你的回合！");
+            Msg.alert(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() != 2){
-            info.msgTo(client,"当前状态无法发现卡牌！");
+            Msg.alert(client,"当前状态无法发现卡牌！");
             return;
         }
 
@@ -368,11 +385,11 @@ public class GameHandler {
         // endregion
 
         if(!client.equals(player.getSession())){
-            info.msgTo(client,"当前不是你的回合！");
+            Msg.alert(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() == 2){
-            info.msgTo(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -449,7 +466,7 @@ public class GameHandler {
             .findAny().ifPresent(card -> {
             if(card instanceof AreaCard &&
                 player.getArea().size()==player.getAreaMax()){
-                info.msgTo(client,"场上放不下卡牌了！");
+                Msg.alert(client,"场上放不下卡牌了！");
                 return;
             }
             Play play = card.getPlay();

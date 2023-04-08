@@ -27,7 +27,7 @@
   height: 40%;
   flex-direction: column;
 }
-  
+
 .pp-num {
   z-index: 5;
   position: absolute;
@@ -80,23 +80,23 @@
 }
 @keyframes tiktok {
   0% {
-      text-shadow: -1px -1px 0 #0ff,  
+      text-shadow: -1px -1px 0 #0ff,
                   1px 1px 0 #f00 ;
   }
   25% {
-      text-shadow: 1px -1px 0 #0ff,  
+      text-shadow: 1px -1px 0 #0ff,
                   -1px 1px 0 #f00 ;
   }
   50% {
-      text-shadow: 1px 1px 0 #0ff,  
+      text-shadow: 1px 1px 0 #0ff,
                   -1px -1px 0 #f00 ;
   }
   75% {
-      text-shadow: -1px 1px 0 #0ff,  
+      text-shadow: -1px 1px 0 #0ff,
                   1px -1px 0 #f00 ;
   }
   100% {
-      text-shadow: -1px -1px 0 #0ff,  
+      text-shadow: -1px -1px 0 #0ff,
                   1px 1px 0 #f00 ;
   }
 }
@@ -111,6 +111,17 @@
   background-color: green;
   height: 100%;
   margin-bottom: -50px;
+}
+.battlefield .card {
+  transform: scale(0.5) !important;
+}
+.battlefield .canAttack {
+  border: 2px solid rgb(0, 255, 0);
+  box-shadow: 0 0 40px rgb(0, 255, 0);
+}
+.battlefield .canDash {
+  border: 2px solid rgb(255, 255, 0);
+  box-shadow: 0 0 40px rgb(255, 255, 0);
 }
 .enemy-hand {
   background-color: green;
