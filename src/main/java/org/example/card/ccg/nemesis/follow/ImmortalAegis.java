@@ -59,8 +59,7 @@ public class ImmortalAegis extends FollowCard {
 
         public void init() {
 
-            setPlay(new Play(ArrayList::new, false,
-                gameObjs -> {
+            setPlay(new Play(() -> {
                     // 增加主战者效果
                     ownerLeader().addEffect(new Effect(
                         this, ownerLeader(), EffectTiming.BeforeDamaged, 2,

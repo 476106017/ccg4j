@@ -1,6 +1,6 @@
 var cardHtml = function(card){
     return `
-        <div class="card col-sm-6 col-md-4 col-lg-2 ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}" id="${card.id}">
+        <div class="card col-sm-6 col-md-4 col-lg-2 id-${card.id} ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}">
             <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name">${card.name}</div>
             <div class="type">${card.TYPE}</div>
@@ -43,6 +43,8 @@ var drawBoard = function(){
     $('#my-hero').empty();
 
 
+    $('#enemy-info').addClass('id-'+boardInfo.enemy.leader.id);
+    $('#my-info').addClass('id-'+boardInfo.me.leader.id);
     $('#enemy-info').html("牌堆："+ boardInfo.enemy.deckCount + "<br/>" + "墓地："+ boardInfo.enemy.graveyardCount +
         "<br/>" + "血量："+ boardInfo.enemy.hp + "/" + boardInfo.enemy.hpMax);
     $('#my-info').html("血量："+ boardInfo.me.hp + "/" + boardInfo.me.hpMax + "<br/>" + "墓地："+ boardInfo.me.graveyardCount +
@@ -282,21 +284,22 @@ if ($.trim(userName)) {
                 $('#my-hand .card').unbind();
                 targetMsg = obj.pref+' ';
                 targetLists = obj.targetLists;// 加载待选择项
+                $('#my-battlefield .card').unbind();// 禁止攻击事件
 
                 targetLists[0].forEach(obj=>{
-                    $("#"+obj.id).addClass("selected");
-                    $("#"+obj.id).click(()=>{
+                    $(".id-"+obj.id).addClass("selected");
+                    $(".id-"+obj.id).click(()=>{
                         targetMsg+=obj.id;
 
                         if(targetLists[1]){
                             // 选择第二个目标
                             targetLists[0].forEach(obj=>{
-                                $("#"+obj.id).removeClass("selected");
-                                $("#"+obj.id).unbind();
+                                $(".id-"+obj.id).removeClass("selected");
+                                $(".id-"+obj.id).unbind();
                             });
                             targetLists[1].forEach(obj=>{
-                                $("#"+obj.id).addClass("selected");
-                                $("#"+obj.id).click(()=>{
+                                $(".id-"+obj.id).addClass("selected");
+                                $(".id-"+obj.id).click(()=>{
                                     targetMsg+=" "+obj.id;
                                     initBoard();// 先还原棋盘
                                     websocket.send('play::'+targetMsg);
