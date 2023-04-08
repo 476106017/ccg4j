@@ -89,12 +89,14 @@ var drawBoard = function(){
             }
 
             // 攻击敌方随从
-            $('#enemy-battlefield .FOLLOW').each((i,card)=>{
-                $(card).addClass("selected");
-                $(card).click(()=>{
-                    initBoard();// 先还原棋盘
-                    websocket.send('attack::'+targetMsg+' '+(i+1));
-                });
+            $('#enemy-battlefield .card').each((i,card)=>{
+                if($(card).hasClass("FOLLOW")){
+                    $(card).addClass("selected");
+                    $(card).click(()=>{
+                        initBoard();// 先还原棋盘
+                        websocket.send('attack::'+targetMsg+' '+(i+1));
+                    });
+                }
 
             })
             
