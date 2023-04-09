@@ -1,3 +1,8 @@
+var distinctArr = function(arr){
+    return Object.entries(
+        arr.reduce((count, el) => ((count[el] = ++count[el] || 1), count), {})
+      ).map(([el, count]) => `${el}${count > 1 ? count.toString() : ""}`);
+}
 var cardHtml = function(card){
     return `
         <div class="card col-sm-6 col-md-4 col-lg-2 id-${card.id} ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}">
@@ -7,7 +12,7 @@ var cardHtml = function(card){
             ${card.race.length>0?'<p class="race">'+card.race.join(' ')+'</p>':""}
             <div class="cost">${card.cost}</div>
             <div class="description">
-                <p>${card.keywords.length>0?'<b class="keyword">'+card.keywords.join(' ')+'</b>\n':""}${card.mark}${card.subMark}</p>
+                <p>${card.keywords.length>0?'<b class="keyword">'+distinctArr(card.keywords).join(' ')+'</b>\n':""}${card.mark}<i>${card.subMarkStr}</i></p>
                 <div class="job">${card.job}</div>
             </div>
             <div ${card.TYPE!="AMULET"?"hidden":""}>
@@ -64,7 +69,7 @@ var drawBoard = function(){
     boardInfo.me.area.forEach(card => {
         $('#my-battlefield').append(cardHtml(card));
     });
-    $('#my-battlefield .card').click(function(){
+    $('#my-battlefield .card').unbind().click(function(){
         if( $(this).hasClass("canAttack") || $(this).hasClass("canDash")){
             // 可以发起攻击，记录发起方
             let select = $(this).index()+1;
@@ -75,16 +80,16 @@ var drawBoard = function(){
 
             $('#my-battlefield .card').unbind();
             $(this).addClass("selected");
-            $(this).click(()=>{
+            $(this).unbind().click(()=>{
                 initBoard();// 还原棋盘
             });
             
             // 攻击敌方主战者
             if($(this).hasClass("canAttack")){
                 $('#enemy-info').addClass("selected");
-                $('#enemy-info').click(()=>{
+                $('#enemy-info').unbind().click(()=>{
                     initBoard();// 先还原棋盘
-                    websocket.send('attack::'+targetMsg+' 0');
+                    setTimeout("websocket.send('attack::"+targetMsg+" 0')",500);
                 })
             }
 
@@ -92,9 +97,9 @@ var drawBoard = function(){
             $('#enemy-battlefield .card').each((i,card)=>{
                 if($(card).hasClass("FOLLOW")){
                     $(card).addClass("selected");
-                    $(card).click(()=>{
+                    $(card).unbind().click(()=>{
                         initBoard();// 先还原棋盘
-                        websocket.send('attack::'+targetMsg+' '+(i+1));
+                        setTimeout("websocket.send('attack::"+targetMsg+" "+(i+1)+"')",500);
                     });
                 }
 
@@ -105,11 +110,11 @@ var drawBoard = function(){
     boardInfo.me.hand.forEach(card => {
         $('#my-hand').append(cardHtml(card));
     });
-    $('#my-hand .card').click(function(){
+    $('#my-hand .card').unbind().click(function(){
         let select = $(this).index()+1;
         
         drawBoard();// 先还原棋盘
-        setTimeout(websocket.send('play::'+select),1000);
+        setTimeout("websocket.send('play::"+select+"')",500);
     })
 }
 
@@ -165,7 +170,8 @@ function swap(){
 function endTurn(){
     $(".end-button").html("对方<br/>回合");
     $(".end-button").css("background","radial-gradient(red, #2f4f4f9f)");
-    websocket.send('end');
+    
+    setTimeout("websocket.send('end')",500);
 }
 
 function showMsg(){
@@ -273,9 +279,9 @@ if ($.trim(userName)) {
                     $('#discover-card').append(cardHtml(card));
                 });
                 $("#discover-card .card").each((k,card)=>{
-                    $(card).click(()=>{
+                    $(card).unbind().click(()=>{
                         $('#discover-card-modal').modal('hide');
-                        setTimeout(websocket.send('discover::'+(k+1)),1000);
+                        setTimeout("websocket.send('discover::"+(k+1)+"')",500);
                         $('#discover-card').html("");
                     });
                 })
@@ -290,7 +296,7 @@ if ($.trim(userName)) {
 
                 targetLists[0].forEach(obj=>{
                     $(".id-"+obj.id).addClass("selected");
-                    $(".id-"+obj.id).click(()=>{
+                    $(".id-"+obj.id).unbind().click(()=>{
                         targetMsg+=obj.id;
 
                         if(targetLists[1]){
@@ -301,10 +307,10 @@ if ($.trim(userName)) {
                             });
                             targetLists[1].forEach(obj=>{
                                 $(".id-"+obj.id).addClass("selected");
-                                $(".id-"+obj.id).click(()=>{
+                                $(".id-"+obj.id).unbind().click(()=>{
                                     targetMsg+=" "+obj.id;
                                     initBoard();// 先还原棋盘
-                                    websocket.send('play::'+targetMsg);
+                                    setTimeout("websocket.send('play::"+targetMsg+"')",500);
                                 });
                             });
                             $(".end-button").html("第二<br/>目标");
@@ -312,7 +318,7 @@ if ($.trim(userName)) {
                         }else{
                             // 选择结束
                             initBoard();// 先还原棋盘
-                            websocket.send('play::'+targetMsg);
+                            setTimeout("websocket.send('play::"+targetMsg+"')",500);
                         }
 
                     });

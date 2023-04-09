@@ -93,13 +93,21 @@ public class GameInfo implements Serializable {
         thisPlayer.setDeckCount(thisPlayer.getDeck().size());
         final PlayerInfo oppositePlayer = oppositePlayer();
         oppositePlayer.setDeckCount(oppositePlayer.getDeck().size());
+        // region 加载补充信息
+        thisPlayer.getAreaAsCard().forEach(f->f.setSubMarkStr(f.getSubMark()));
+        thisPlayer.getHand().forEach(f->f.setSubMarkStr(f.getSubMark()));
+        oppositePlayer.getAreaAsCard().forEach(f->f.setSubMarkStr(f.getSubMark()));
+        // endregion 加载补充信息
+        thisPlayer.getAreaAsCard().forEach(f->f.setSubMarkStr(f.getSubMark()));
         thisPlayer.getAreaFollowsAsFollow().forEach(f->{
             // 回合可攻击数没有打满
             final boolean notAttacked = f.getTurnAttack() < f.getTurnAttackMax();
             // 状态正常
             final boolean normalStatus = !f.hasKeyword("缴械") && !f.hasKeyword("眩晕") && !f.hasKeyword("冻结");
-            final boolean canAttack = notAttacked && normalStatus && (f.getTurnAge() > 0 || f.hasKeyword("疾驰"));
-            final boolean canDash = notAttacked && normalStatus && (f.getTurnAge() == 0 && f.hasKeyword("突进"));
+            final boolean canAttack = notAttacked && normalStatus &&
+                (f.getTurnAge() > 0 || f.hasKeyword("疾驰"));
+            final boolean canDash = notAttacked && normalStatus &&
+                (f.getTurnAge() == 0 && !f.hasKeyword("疾驰") && f.hasKeyword("突进"));
 
             f.setCanAttack(canAttack);
             f.setCanDash(canDash);

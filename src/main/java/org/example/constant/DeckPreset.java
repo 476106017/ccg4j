@@ -31,9 +31,12 @@ import org.example.card.ccg.necromancer.amulet.*;
 import org.example.card.ccg.necromancer.follow.*;
 import org.example.card.ccg.necromancer.spell.*;
 import org.example.card.ccg.nemesis.Yuwan;
+import org.example.card.ccg.nemesis.amulet.Acceleratium;
+import org.example.card.ccg.nemesis.amulet.NilpotentEntity;
 import org.example.card.ccg.nemesis.follow.ImmortalAegis;
-import org.example.card.ccg.nemesis.spell.CalamitysGenesis;
+import org.example.card.ccg.nemesis.spell.*;
 import org.example.card.ccg.neutral.ThePlayer;
+import org.example.card.ccg.neutral.amulet.PathToPurgatory;
 import org.example.card.ccg.neutral.amulet.TestOfStrength;
 import org.example.card.ccg.neutral.follow.*;
 import org.example.card.ccg.neutral.spell.*;
@@ -65,6 +68,8 @@ import org.example.morecard.genshin.follow.Diluc;
 import org.example.morecard.genshin.follow.Keaya;
 import org.example.morecard.genshin.follow.Sucrose;
 import org.example.morecard.genshin.spell.*;
+import org.example.morecard.xie.follow.*;
+import org.example.morecard.xie.spell.*;
 import org.example.system.Database;
 import org.example.system.util.Maps;
 
@@ -84,7 +89,7 @@ public class DeckPreset {
             Bahamut.class, DarkSnare.class, TestOfStrength.class, AmbitiousGoblinMage.class,Hamsa.class,
             ColdlightOracle.class, MysticRing.class, TravelerGoblin.class, Zelgenea.class, PlanetaryFracture.class,
 
-            MahjongTable.class, LabRecruiter.class, Preparation.class, Shadowstep.class, Derivant.AnalyzingArtifact.class,
+            MahjongTable.class, LabRecruiter.class, Preparation.class, Shadowstep.class, Yuwan.AnalyzingArtifact.class,
             ImmortalAegis.class, CalamitysGenesis.class, Lawliet.class, YagamiLight.class, DeathNote.class,
 
             ChainsawMan.class, DarkDemon.class, Makima.class, AirboundBarrage.class, ErosiveAnnihilation.class,
@@ -139,6 +144,19 @@ public class DeckPreset {
             SoulConversion.class,TombGuardians.class, TributeSummon.class,Zelgenea.class,MintheOfUnderworld.class
         ));
         deckLeader.put("死灵术士", Luna.class);
+        decks.put("无限造物",List.of(
+            Acceleratium.class, Acceleratium.class, Acceleratium.class,
+            ArtifactScan.class, ArtifactScan.class, ArtifactScan.class,
+            ArtifactCall.class, ArtifactCall.class, ArtifactCall.class,
+            AugmentationBestowal.class, AugmentationBestowal.class, AugmentationBestowal.class,
+            Biofabrication.class, Biofabrication.class, Biofabrication.class,
+            Focus.class, Focus.class, Focus.class,
+            Mechanization.class, Mechanization.class, Mechanization.class,
+            Metaproduction.class, Metaproduction.class, Metaproduction.class,
+            Syntonization.class, Syntonization.class, Syntonization.class,
+            Scavenge.class, NilpotentEntity.class, PathToPurgatory.class
+        ));
+        deckLeader.put("无限造物", Yuwan.class);
         decks.put("dota",List.of(
             Roshan.class, Nevermore.class,Nevermore.class, FacelessVoid.class,FacelessVoid.class,
             DefenceTower.class,DefenceTower.class,DefenceTower.class,Slark.class,Slark.class,
@@ -178,9 +196,15 @@ public class DeckPreset {
             JolyneCujoh.class,JolyneCujoh.class,JolyneCujoh.class,
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
         ));
+        decks.put("谢test",List.of(
+            Test02.class, Test03.class, Test04.class, Test05.class, Test06.class, Test07.class, Test08.class,Test09.class,Test10.class,Test11.class,
+            Test12.class, Test13.class, Test14.class, Test15.class, Test16.class, Test17.class, Test18.class,Test19.class,Test20.class,Test21.class,
+            Test22.class, Test23.class,
+            Spell01.class,Spell02.class,Spell03.class,Spell04.class, Spell05.class, Spell06.class, Spell07.class, Spell08.class
+        ));
         decks.put("test",List.of(
-            Tracking.class,Tracking.class, Tracking.class,WandThief.class, WandThief.class,
-            MagicTrick.class, MagicTrick.class, MagicTrick.class,ylxs.class,ylxs.class
+            ylxs.class,ylxs.class, ylxs.class,ylxs.class, ylxs.class,
+            ylxs.class, ylxs.class, ylxs.class,ylxs.class,ylxs.class
         ));
         decks.put("传奇音乐节",List.of(
             ccgm.class,ccgm.class,  dbzwtn.class, fzcf.class,fzcf.class,

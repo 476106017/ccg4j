@@ -127,8 +127,14 @@ public abstract class AreaCard extends Card{
             return;
         }
 
-        if(this instanceof FollowCard followCard && followCard.equipped()){
-            followCard.getEquipment().death();
+        if (this instanceof FollowCard followCard){
+            followCard.setHp(1);
+            followCard.setTurnAge(0);
+            followCard.setTurnAttack(0);
+
+            if (followCard.equipped()) {
+                followCard.getEquipment().death();
+            }
         }
 
         ownerPlayer().addGraveyard(this);

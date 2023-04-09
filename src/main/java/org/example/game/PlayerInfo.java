@@ -39,7 +39,7 @@ public class PlayerInfo implements Serializable {
     boolean canFanfare = true;
     int hp = 30;
     int hpMax = 30;
-    int step = -1; // 0换牌完成 1使用 2发现
+    int step = -1; // 0换牌完成 1发现
     int discoverMax = 3; // 发现卡牌数量
     transient Thread discoverThread = null;
     int discoverNum = 0; // 发现卡牌序号
@@ -100,7 +100,7 @@ public class PlayerInfo implements Serializable {
 
     // 自动发现并继续同步执行
     public void autoDiscover(){
-        while(getStep()==2){// 连续发现的，全部自动完成
+        while(getStep() > 0){// 连续发现的，全部自动完成
             setDiscoverNum(0);
             getDiscoverThread().run();// 就用run，不用有并发线程
         }
@@ -121,7 +121,7 @@ public class PlayerInfo implements Serializable {
         }
 
         // 让玩家选择
-        setStep(2);
+        step++;
         StringBuilder sb = new StringBuilder("发现卡牌：");
         AtomicInteger num = new AtomicInteger(1);
 
@@ -138,7 +138,7 @@ public class PlayerInfo implements Serializable {
                 discoverCard= cardsCopy.get(discoverNum-1);
 
             consumer.accept(discoverCard);
-            setStep(1);
+            step--;
             discoverNum = 0;
         });
 
@@ -193,6 +193,15 @@ public class PlayerInfo implements Serializable {
     public void addHpMax(int hpMax){
         setHpMax(getHpMax() + hpMax);
         info.msg(this.getName()+"血上限提升"+hpMax+"（提升后血量上限为"+this.getHpMax()+"）");
+    }
+    public void addPp(int num){
+        if(num>0){
+            int pp = Math.min(getPpLimit(),getPpNum()+num);
+            setPpNum(pp);
+        } else if (num<0) {
+            int pp = Math.max(0,getPpNum()+num);
+            setPpNum(pp);
+        }
     }
 
     public void shuffleGraveyard(){
@@ -367,6 +376,9 @@ public class PlayerInfo implements Serializable {
     }
     public List<Card> getGraveyardCopy(){
         return new ArrayList<>(getGraveyard());
+    }
+    public List<Card> getGraveyardBy(Predicate<Card> p){
+        return getGraveyard().stream().filter(p).toList();
     }
 
     public List<FollowCard> getHandFollows(){
@@ -581,9 +593,11 @@ public class PlayerInfo implements Serializable {
 
         List<AreaCard> areaCards = getAreaBy(areaCard -> !summonedCards.contains(areaCard));
         info.useAreaCardEffectBatch(areaCards,EffectTiming.WhenSummon,summonedCards);
+        getLeader().useEffects(EffectTiming.WhenSummon,summonedCards);
 
         List<AreaCard> enemyAreaCards = getEnemy().getAreaBy(areaCard -> !summonedCards.contains(areaCard));
         info.useAreaCardEffectBatch(enemyAreaCards,EffectTiming.WhenEnemySummon,summonedCards);
+        getLeader().useEffects(EffectTiming.WhenEnemySummon,summonedCards);
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){

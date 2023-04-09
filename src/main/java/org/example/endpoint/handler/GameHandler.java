@@ -50,7 +50,7 @@ public class GameHandler {
             }
             indexs.add(indexI-1);//这里转成下标
         }
-        if(player.getStep()!=-1){
+        if(player.getStep() > -1){
             Msg.alert(client,"已经过了换牌步骤!");
             return;
         }
@@ -122,7 +122,7 @@ public class GameHandler {
             Msg.alert(client,"当前不是你的回合！");
             return;
         }
-        if(player.getStep() == 2){
+        if(player.getStep() > 0){
             Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
@@ -251,7 +251,7 @@ public class GameHandler {
             return;
         }
 
-        if(player.getStep() == 2){
+        if(player.getStep() > 0){
             Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
@@ -357,7 +357,7 @@ public class GameHandler {
             Msg.alert(client,"当前不是你的回合！");
             return;
         }
-        if(player.getStep() != 2){
+        if(player.getStep() == 0){
             Msg.alert(client,"当前状态无法发现卡牌！");
             return;
         }
@@ -367,7 +367,8 @@ public class GameHandler {
             player.setDiscoverNum(indexI);
             player.getDiscoverThread().run();
             info.startEffect();
-            info.pushInfo();
+            if(player.getStep()==0)// 全部发现完再渲染
+                info.pushInfo();
         }catch (Exception e){
             info.msgToThisPlayer("输入discover <序号>以发现一张卡牌");
         }
@@ -388,7 +389,7 @@ public class GameHandler {
             Msg.alert(client,"当前不是你的回合！");
             return;
         }
-        if(player.getStep() == 2){
+        if(player.getStep() > 0){
             Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }

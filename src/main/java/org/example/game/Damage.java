@@ -2,6 +2,7 @@ package org.example.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 
 import java.util.List;
@@ -80,7 +81,8 @@ public class Damage{
             if (!isFromAtk && toFollow.hasKeyword("效果伤害免疫")) {
                 setDamage(0);
                 toFollow.getInfo().msg(toFollow.getNameWithOwner() + "免疫了效果伤害！");
-            } else {
+            } else if(!(from instanceof Card card && card.hasKeyword("穿透"))) {
+                // 没有穿透效果，计算减免
                 int reduce = 0;
                 reduce += toFollow.countKeyword("伤害减免");
                 if (isFromAtk())

@@ -29,6 +29,7 @@ public class Database {
         if(prototype!=null) return (T)prototype;
         try {
             Card card = clazz.getDeclaredConstructor().newInstance();
+            card.init();
             prototypes.put(clazz,card);
             return (T)card;
         }catch (Exception e){

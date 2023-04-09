@@ -27,9 +27,9 @@ public class GoblinHotPotato extends SpellCard {
 
     public void init() {
         setPlay(new Play(()->{
-            changeOwner();
             removeWhenNotAtArea();
             enemyPlayer().addHand(this);
+            changeOwner();
         }));
 
         addEffects(new Effect(this,this, EffectTiming.EndTurnAtHand, obj->{

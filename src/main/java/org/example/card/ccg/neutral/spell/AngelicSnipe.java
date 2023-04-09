@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class AngelicSnipe extends SpellCard {
-    public Integer cost = 1;
+    public Integer cost = 0;
     public String name = "天使的圣箭";
     public String job = "中立";
     private List<String> race = Lists.ofStr();
