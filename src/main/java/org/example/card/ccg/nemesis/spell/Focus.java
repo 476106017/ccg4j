@@ -36,11 +36,11 @@ public class Focus extends SpellCard {
             ownerLeader().addEffect(
                 new Effect(this,null, EffectTiming.EndTurn, 1,
                     obj -> {
-                        if(ownerPlayer().getPpNum()>=1){
-                            ownerPlayer().draw(1);
-                        }else if(ownerPlayer().getPpNum()>=3){
+                        if(ownerPlayer().getPpNum()>=3){
                             ownerPlayer().draw(2);
                             ownerPlayer().heal(2);
+                        }else if(ownerPlayer().getPpNum()>=1){
+                            ownerPlayer().draw(1);
                         }
                     }
                 ), false);
