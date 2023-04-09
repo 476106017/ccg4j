@@ -77,7 +77,10 @@ public class Damage{
     }
 
     public void reduce(){
-        final Integer strength = from.ownerPlayer().getCount("力量");
+        Integer strength = 0;
+        try{
+            strength = from.ownerPlayer().getCount("力量");
+        }catch (Exception ignored){}
         if(strength>0){
             to.getInfo().msg(from.ownerLeader().getNameWithOwner() + "的力量使本次伤害增加" + strength);
             addDamage(strength);
