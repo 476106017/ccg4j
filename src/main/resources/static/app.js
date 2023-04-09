@@ -50,12 +50,30 @@ var drawBoard = function(){
 
     $('#enemy-info').addClass('id-'+boardInfo.enemy.leader.id);
     $('#my-info').addClass('id-'+boardInfo.me.leader.id);
-    $('#enemy-info').html("牌堆："+ boardInfo.enemy.deckCount + "<br/>" + "墓地："+ boardInfo.enemy.graveyardCount +
+    $('#enemy-info').html("<p title='超抽效果："+boardInfo.enemy.leader.overDrawMark+"'>牌堆："+ boardInfo.enemy.deckCount+"</p>墓地："+ boardInfo.enemy.graveyardCount +
         "<br/>" + "血量："+ boardInfo.enemy.hp + "/" + boardInfo.enemy.hpMax);
     $('#my-info').html("血量："+ boardInfo.me.hp + "/" + boardInfo.me.hpMax + "<br/>" + "墓地："+ boardInfo.me.graveyardCount +
-        "<br/>" + "牌堆："+ boardInfo.me.deckCount);
-    $('.enemy-pp-num').html(boardInfo.enemy.ppNum+"/"+boardInfo.enemy.ppMax);
-    $('.my-pp-num').html(boardInfo.me.ppNum+"/"+boardInfo.me.ppMax);
+        "<br/><p title='超抽效果："+boardInfo.me.leader.overDrawMark+"'>牌堆："+ boardInfo.me.deckCount+"</p>");
+
+    $('#enemy-info-detail').html("<p class='skill' title='"+boardInfo.enemy.leader.skillMark+"'>"+ boardInfo.enemy.leader.skillName + "(" + boardInfo.enemy.leader.skillCost + ")</p>" +
+    "<p title='"+boardInfo.enemy.leader.mark+"'>主战者："+ boardInfo.enemy.leader.name + "</p>" );
+    if(boardInfo.enemy.leader.canUseSkill){
+        $('#enemy-info-detail .skill').addClass("canUse");
+    }else{
+        $('#enemy-info-detail .skill').removeClass("canUse");
+    }
+
+    $('#my-info-detail').html("<p title='"+boardInfo.me.leader.mark+"'>主战者："+ boardInfo.me.leader.name + "</p>" +
+        "<p class='skill' title='"+boardInfo.me.leader.skillMark+"'>"+ boardInfo.me.leader.skillName + "(" + boardInfo.me.leader.skillCost + ")</p>");
+    if(boardInfo.me.leader.canUseSkill){
+        $('#my-info-detail .skill').addClass("canUse");
+        $('#my-info-detail .skill').unbind().click(function(){setTimeout("websocket.send('skill')",500);})
+    }else{
+        $('#my-info-detail .skill').removeClass("canUse");
+    }
+
+    $('.enemy-pp-num').html(boardInfo.enemy.ppNum+" / "+boardInfo.enemy.ppMax);
+    $('.my-pp-num').html(boardInfo.me.ppNum+" / "+boardInfo.me.ppMax);
 
     boardInfo.enemy.area.forEach(card => {
         $('#enemy-battlefield').append(cardHtml(card));
@@ -286,8 +304,30 @@ if ($.trim(userName)) {
                     });
                 })
                 break;
+            case "skill":
+                $(".end-button").html("技能<br/>目标");
+                $(".end-button").css("background","radial-gradient(grey, #2f4f4f9f)");
+                $('#my-hand .card').unbind();
+                targetLists = obj;// 加载待选择项
+                $('#my-battlefield .card').unbind();// 禁止攻击事件
+                
+                $('#my-info-detail .skill').addClass("selected");
+                $('#my-info-detail .skill').unbind().click(()=>{
+                    initBoard();// 还原棋盘
+                });
+
+                targetLists.forEach(obj=>{
+                    $(".id-"+obj.id).addClass("selected");
+                    $(".id-"+obj.id).unbind().click(()=>{
+                        // 选择结束
+                        initBoard();// 先还原棋盘
+                        setTimeout("websocket.send('skill::"+obj.id+"')",500);
+
+                    });
+                })
+                break;
             case "target":
-                $(".end-button").html("选择<br/>目标");
+                $(".end-button").html("效果<br/>目标");
                 $(".end-button").css("background","radial-gradient(grey, #2f4f4f9f)");
                 $('#my-hand .card').unbind();
                 targetMsg = obj.pref+' ';

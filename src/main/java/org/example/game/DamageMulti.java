@@ -33,8 +33,8 @@ public class DamageMulti {
         // region 扣血
         damages.forEach(damage -> {
             GameObj to = damage.getTo();
+            damage.reduce();
             if(to instanceof FollowCard toFollow){
-                damage.reduce();
                 toFollow.setHp(toFollow.getHp() - damage.getDamage());
                 info.msg(to.getNameWithOwner()+"受到了来自"+damage.getFrom().getNameWithOwner()+"的"+damage.getDamage()+"点伤害！" +
                     "（剩余"+ toFollow.getHp()+"点生命值）");

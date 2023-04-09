@@ -1,4 +1,4 @@
-package org.example.card.ccg.warrior.spell;
+package org.example.card.ccg.sts.spell;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,10 +13,10 @@ import java.util.List;
 public class Angry extends SpellCard {
     public Integer cost = 0;
     public String name = "愤怒";
-    public String job = "战士";
+    public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        对1名敌方随从造成6点伤害
+        对1名敌方随从造成6(8)点伤害
         将1张愤怒洗入牌堆
         """;
 
@@ -27,7 +27,7 @@ public class Angry extends SpellCard {
         setPlay(new Play(()->enemyPlayer().getAreaFollowsAsGameObj(),
             true,
             target->{
-                info.damageEffect(this,target,6);
+                info.damageEffect(this,target,isUpgrade()?8:6);
                 ownerPlayer().addDeck(createCard(Angry.class));
             }
         ));

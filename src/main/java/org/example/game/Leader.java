@@ -16,12 +16,8 @@ public abstract class Leader extends GameObj {
 
 
     private transient boolean needTarget = true;
-    private transient boolean canUseSkill = true;
-    private transient String Mark = "";// 能力介绍
+    private boolean canUseSkill = true;
 
-    private transient String overDrawMark = """
-        输掉游戏
-        """;
     // 默认超抽效果（输掉游戏）
     private transient Consumer<Integer> overDraw = integer -> info.gameset(enemyPlayer());
 
@@ -31,6 +27,10 @@ public abstract class Leader extends GameObj {
     public abstract String getSkillName();
     public abstract String getSkillMark();
     public abstract int getSkillCost();
+    public abstract String getMark();
+    public abstract void setMark(String mark);
+    public abstract String getOverDrawMark();
+    public abstract void setOverDrawMark(String overDrawMark);
     public String getNameWithOwner(){
         return ownerPlayer().getName()+"的主战者【"+getName()+"】";
     };
@@ -65,6 +65,9 @@ public abstract class Leader extends GameObj {
 
     public void damaged(GameObj from,int damage){
         new Damage(from,this,damage).apply();
+    }
+    public void addEffect(Effect newEffect){
+        addEffect(newEffect,true);
     }
 
     public void addEffect(Effect newEffect,boolean only){

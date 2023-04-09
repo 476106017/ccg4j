@@ -396,36 +396,18 @@ public class GameHandler {
 
         Leader leader = player.getLeader();
         List<GameObj> targetable = leader.targetable();
-        if(msg.isBlank()){
-            if(!leader.isNeedTarget()){
-                leader.skill(null);
-            }else {
-                StringBuilder sb = new StringBuilder();
-                sb.append("你需要指定目标以使用" + leader.getSkillName() + "：skill <目标序号>\n")
-                    .append("可指定的目标：\n");
-                if(targetable.isEmpty()) sb.append("没有可指定的目标！\n");
-                for (int i = 0; i < targetable.size(); i++) {
-                    sb.append("【").append(i+1).append("】\t");
-
-                    GameObj gameObj = targetable.get(i);
-                    if(gameObj instanceof Leader leader1){
-                        sb.append(player.getLeader()==leader1?"我方主战者":"敌方主战者");
-                    }else if (gameObj instanceof Card targetCard){
-                        // 卡牌属于哪方
-                        PlayerInfo ownerPlayer = targetCard.ownerPlayer();
-                        sb.append(ownerPlayer == player ? "我方\t":"敌方\t")
-                            .append(targetCard.getId()).append("\t");
-                        if(gameObj instanceof FollowCard followCard){
-                            sb.append("随从\t")
-                                .append(followCard.getAtk()).append("/").append(followCard.getHp());
-                        }else if(gameObj instanceof AmuletCard amuletCard){
-                            sb.append("护符\t");
-                            sb.append("倒数：").append(amuletCard.getCountDown()).append("\t");
-                        }
-                    }
-                    sb.append("\n");
+        if(msg.isBlank()){// 没有输入指定对象
+            if (leader.isNeedTarget()) {
+                if(targetable.isEmpty()){
+                    info.msgToThisPlayer("现在无法使用主战者技能！");
+                }else {
+                    // 指定目标
+                    Msg.send(client,"skill",targetable);
+                    info.msgToThisPlayer("请指定目标");
                 }
-                info.msgToThisPlayer(sb.toString());
+            } else {
+                leader.skill(null);
+                info.pushInfo();
             }
         }else {// 输入了指定对象
             if(!leader.isNeedTarget()){
@@ -434,15 +416,16 @@ public class GameHandler {
             }
             GameObj target = null;
             try {
-                int indexI = Integer.parseInt(msg);
-                target = targetable.get(indexI-1);
+                int indexId = Integer.parseInt(msg);
+                // 获取选择对象
+                target = targetable.stream().filter(gameObj -> gameObj.id==indexId).findFirst().get();
             }catch (Exception e){
                 info.msgToThisPlayer("指定目标错误！");
                 return;
             }
             leader.skill(target);
+            info.pushInfo();
         }
-        info.pushInfo();
     }
 
 

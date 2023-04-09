@@ -28,6 +28,7 @@ public class BeaststalkerTavishLeader extends Leader {
 
     private boolean needTarget = false;
 
+    private String mark = "猎人职业的特殊主战者";
 
     private String overDrawMark =  """
         对自己造成疲劳伤害

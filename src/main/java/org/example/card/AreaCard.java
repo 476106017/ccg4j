@@ -93,7 +93,7 @@ public abstract class AreaCard extends Card{
             return true;
         }
         info.msg(getNameWithOwner() + "被"+from.getNameWithOwner()+"破坏！");
-        death();
+         death();
         if(this instanceof FollowCard thisFollow && from instanceof Card card){
             card.tempEffects(EffectTiming.WhenKill,thisFollow);
         }
@@ -128,9 +128,6 @@ public abstract class AreaCard extends Card{
         }
 
         if (this instanceof FollowCard followCard){
-            followCard.setHp(1);
-            followCard.setTurnAge(0);
-            followCard.setTurnAttack(0);
 
             if (followCard.equipped()) {
                 followCard.getEquipment().death();

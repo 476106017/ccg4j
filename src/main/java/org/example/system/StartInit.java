@@ -17,6 +17,7 @@ public class StartInit implements CommandLineRunner {
 
         Set<Class<? extends Card>> subTypesOf =
             new Reflections(new ConfigurationBuilder()
+                .filterInputsBy(s -> !s.contains("morecard"))
                 .forPackage("org.example.card"))
                 .getSubTypesOf(Card.class);
         // 移除不符合的卡牌类型

@@ -31,7 +31,7 @@ public class Damage{
     }
 
     public void addDamage(int add){
-        damage += add;
+        damage = Math.max(0,damage+add);
     }
 
     public GameObj another(GameObj obj){
@@ -77,6 +77,11 @@ public class Damage{
     }
 
     public void reduce(){
+        final Integer strength = from.ownerPlayer().getCount("力量");
+        if(strength>0){
+            to.getInfo().msg(from.ownerLeader().getNameWithOwner() + "的力量使本次伤害增加" + strength);
+            addDamage(strength);
+        }
         if(to instanceof FollowCard toFollow && toFollow.atArea()) {
             if (!isFromAtk && toFollow.hasKeyword("效果伤害免疫")) {
                 setDamage(0);
@@ -101,8 +106,31 @@ public class Damage{
                     int parryReduce = Math.min(getDamage(), parry);
                     setDamage(getDamage() - parryReduce);
                     toFollow.removeKeyword("格挡",parryReduce);
-                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "格挡了" + parryReduce + "点伤害");
+                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "格挡了" + parryReduce + "点伤害（还剩"+toFollow.countKeyword("格挡")+"点格挡）");
                 }
+            }
+        } else if (to instanceof Leader leader && !(from instanceof Card card && card.hasKeyword("穿透"))) {
+            final PlayerInfo playerInfo = to.ownerPlayer();
+            // 没有穿透效果，计算减免
+            int reduce = 0;
+            reduce += playerInfo.getCount("伤害减免");
+            if (isFromAtk())
+                reduce += playerInfo.getCount("护甲");
+            else
+                reduce += playerInfo.getCount("魔抗");
+
+            if (reduce > 0) {
+                int finalReduce = Math.min(getDamage(), reduce);
+                setDamage(getDamage() - finalReduce);
+                leader.getInfo().msg(leader.getNameWithOwner() + "通过抗性减少了" + finalReduce + "点伤害");
+            }
+
+            int parry = playerInfo.getCount("格挡");
+            if(getDamage()>0 && parry>0){
+                int parryReduce = Math.min(getDamage(), parry);
+                setDamage(getDamage() - parryReduce);
+                playerInfo.count("格挡",-parryReduce);
+                leader.getInfo().msg(leader.getNameWithOwner() + "格挡了" + parryReduce + "点伤害（还剩"+playerInfo.getCount("格挡")+"点格挡）");
             }
         }
     }

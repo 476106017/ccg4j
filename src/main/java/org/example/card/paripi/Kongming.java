@@ -18,7 +18,7 @@ public class Kongming extends Leader {
     private String name = "诸葛孔明";
     private String job = "派对咖";
 
-    private String Mark = """
+    private String mark = """
         打出战吼牌时，增加1点派对热度
         """;
 

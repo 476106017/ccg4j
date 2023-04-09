@@ -27,6 +27,12 @@ public class Yuwan extends Leader {
         """;
     private int skillCost = 2;
 
+    private String mark = "鱼丸";
+    // 超抽效果
+    private String overDrawMark = """
+        输掉游戏。
+        """;
+
     @Override
     public List<GameObj> targetable() {
         List<GameObj> targetable = super.targetable();

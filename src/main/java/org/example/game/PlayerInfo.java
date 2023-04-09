@@ -173,7 +173,7 @@ public class PlayerInfo implements Serializable {
         counter.remove(key);
     }
     public void count(String key,int time){
-        counter.merge(key, time, Integer::sum);
+        counter.merge(key, time, (a, b) -> Math.max(0,Integer.sum(a, b)));
     }
 
     public void heal(int hp){
@@ -347,6 +347,12 @@ public class PlayerInfo implements Serializable {
             info.msg(getName()+"的战场放不下了，多出的"+i+"张牌从游戏中除外！");
             info.tempAreaCardEffectBatch(exileCards,EffectTiming.Exile);
         }
+        cards.forEach(areaCard -> {// 加入战场时初始化攻击数
+            if(areaCard instanceof FollowCard followCard){
+                followCard.setTurnAge(0);
+                followCard.setTurnAttack(0);
+            }
+        });
         getArea().addAll(cards);
         getArea().removeAll(exileCards);
         info.tempAreaCardEffectBatch(cards,EffectTiming.WhenAtArea);
@@ -390,6 +396,9 @@ public class PlayerInfo implements Serializable {
     }
     public List<Card> getDeckBy(Predicate<Card> p){
         return getDeck().stream().filter(p).toList();
+    }
+    public List<GameObj> getHandAsGameObj(){
+        return getHand().stream().map(i->(GameObj)i).toList();
     }
     public List<GameObj> getHandAsGameObjBy(Predicate<Card> p){
         return getHand().stream().filter(p).map(i->(GameObj)i).toList();

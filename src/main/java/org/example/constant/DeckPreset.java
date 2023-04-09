@@ -26,6 +26,7 @@ import org.example.card.ccg.hunter.follow.*;
 import org.example.card.ccg.hunter.spell.*;
 import org.example.card.ccg.mage.follow.WandThief;
 import org.example.card.ccg.mage.spell.MagicTrick;
+import org.example.card.ccg.mage.spell.RimefireBolt;
 import org.example.card.ccg.necromancer.Luna;
 import org.example.card.ccg.necromancer.amulet.*;
 import org.example.card.ccg.necromancer.follow.*;
@@ -43,6 +44,11 @@ import org.example.card.ccg.neutral.spell.*;
 import org.example.card.ccg.rogue.follow.LabRecruiter;
 import org.example.card.ccg.rogue.spell.Preparation;
 import org.example.card.ccg.rogue.spell.Shadowstep;
+import org.example.card.ccg.sts.Intruder;
+import org.example.card.ccg.sts.amulet.Barricade;
+import org.example.card.ccg.sts.amulet.DemonForm;
+import org.example.card.ccg.sts.amulet.Inflame;
+import org.example.card.ccg.sts.spell.*;
 import org.example.card.ccg.vampire.amulet.BloodfedFlowerbed;
 import org.example.card.ccg.vampire.amulet.RestlessParish;
 import org.example.card.ccg.vampire.follow.AmblingWraith;
@@ -191,6 +197,12 @@ public class DeckPreset {
         ));
         deckLeader.put("野兽猎", Rexxar.class);
 
+        decks.put("杀戮尖塔",List.of(
+            Strike.class,Strike.class, Strike.class,Strike.class, Strike.class,
+            Defend.class,Defend.class, Defend.class, Defend.class, Defend.class,
+            Barricade.class, DemonForm.class, Inflame.class, Angry.class, Armaments.class, SwordBoomerang.class
+        ));
+        deckLeader.put("杀戮尖塔", Intruder.class);
         decks.put("jojo",List.of(
             EnricoPucci.class, EnricoPucci.class, EnricoPucci.class,
             JolyneCujoh.class,JolyneCujoh.class,JolyneCujoh.class,
@@ -203,8 +215,8 @@ public class DeckPreset {
             Spell01.class,Spell02.class,Spell03.class,Spell04.class, Spell05.class, Spell06.class, Spell07.class, Spell08.class
         ));
         decks.put("test",List.of(
-            ylxs.class,ylxs.class, ylxs.class,ylxs.class, ylxs.class,
-            ylxs.class, ylxs.class, ylxs.class,ylxs.class,ylxs.class
+            Test03.class,Test03.class, Test03.class,Test03.class, Test03.class,
+            RimefireBolt.class, RimefireBolt.class, RimefireBolt.class, RimefireBolt.class,RimefireBolt.class
         ));
         decks.put("传奇音乐节",List.of(
             ccgm.class,ccgm.class,  dbzwtn.class, fzcf.class,fzcf.class,

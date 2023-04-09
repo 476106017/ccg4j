@@ -20,7 +20,6 @@ public class PlayerDeck {
             Leader leader = leaderClass.getDeclaredConstructor().newInstance();
             leader.setOwner(owner);
             leader.setInfo(info);
-            leader.init();
             return leader;
         } catch (NoSuchMethodException | InstantiationException |
                  IllegalAccessException | InvocationTargetException e) {

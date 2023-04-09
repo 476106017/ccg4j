@@ -32,6 +32,8 @@ public class Alisa extends Leader {
 
     private boolean needTarget = false;
 
+    private String mark = "影之诗的看板娘";
+
     private String overDrawMark =  """
         从墓地里抽1张妖精并获得【游魂】【疾驰】，若墓地没有妖精，则输掉游戏
         """;

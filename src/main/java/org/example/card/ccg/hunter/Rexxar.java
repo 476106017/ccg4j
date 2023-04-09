@@ -28,6 +28,7 @@ public class Rexxar extends Leader {
 
     private boolean needTarget = false;
 
+    private String mark = "炉石传说中的一位英雄";
 
     private String overDrawMark =  """
         对自己造成疲劳伤害

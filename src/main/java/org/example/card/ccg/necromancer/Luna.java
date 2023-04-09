@@ -26,6 +26,8 @@ public class Luna extends Leader {
 
     private boolean needTarget = false;
 
+    private String mark = "这是个主打死灵术的主战者";
+
     private String overDrawMark =  """
         输掉游戏。死灵术 X：改为受到1点伤害(X是疲劳值)
         """;

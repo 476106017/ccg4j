@@ -37,7 +37,9 @@ public abstract class Card extends GameObj implements Serializable {
     private String subMarkStr = "";
 
     public void upgrade(){
+        if(isUpgrade())return;
         info.msg(getNameWithOwner() + "进化了！");
+        addToName(" +");
         setUpgrade(true);
     }
 
@@ -148,6 +150,8 @@ public abstract class Card extends GameObj implements Serializable {
     }
     public void removeWhenNotAtArea(){
         if(where()==null || atArea())return;
+        if(atGraveyard() && this instanceof FollowCard followCard)
+            followCard.setHp(followCard.getMaxHp());// 移出墓地时回满生命值
         where().remove(this);
     }
     public void removeWhenAtArea(){

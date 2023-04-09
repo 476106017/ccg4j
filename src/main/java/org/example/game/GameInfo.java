@@ -460,6 +460,9 @@ public class GameInfo implements Serializable {
         p1.setDeck(playerDeck1.getActiveDeckInstance(1, this));
         Collections.shuffle(p1.getDeck());
 
+        p0.getLeader().init();
+        p1.getLeader().init();
+
         p0.draw(3);
         p1.draw(3);
         msg("游戏开始，请选择3张手牌交换");

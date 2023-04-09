@@ -1,4 +1,4 @@
-package org.example.card.ccg.nemesis.amulet;
+package org.example.card.ccg.sts.amulet;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 public class TimeEater extends AmuletCard {
     public Integer cost = 0;
     public String name = "时间吞噬者";
-    public String job = "复仇者";
+    public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();
     public String mark = """
         当打出第12张牌以上时，回复PP到最大值并受到疲劳伤害

@@ -27,7 +27,7 @@ public class LittlePrincess extends Leader {
     private String name = "小王子";
     private String job = "原神";
 
-    private String Mark = """
+    private String mark = """
         游戏开始时：搜索1张元素随从，获得1张普通攻击和1张切换角色
         回合开始时：生成与PP点相同数量的随机元素骰；
         如果不是第一回合、且场上没有任何元素随从，则输掉游戏。

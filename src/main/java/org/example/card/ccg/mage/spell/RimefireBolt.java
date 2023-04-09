@@ -57,9 +57,8 @@ public class RimefireBolt extends SpellCard {
                     info.msg("无法找到法师法术牌！");
                 // 随机取30张
                 List<Class<? extends Card>> classes = new ArrayList<>(subTypesOf.stream().toList());
-                Collections.shuffle(classes);
 
-                ownerPlayer().addHand(createCard(classes.get(0)));
+                ownerPlayer().addHand(createCard(Lists.randOf(classes)));
 
             })));
     }

@@ -28,6 +28,8 @@ public class ThePlayer extends Leader {
         """;
     private int skillCost = 0;
 
+    private String mark = "最基础的玩家，有炉石传说的超抽效果和影之诗的技能";
+
     private String overDrawMark =  """
         对自己造成疲劳伤害
         """;
