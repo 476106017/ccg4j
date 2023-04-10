@@ -39,7 +39,6 @@ public abstract class Card extends GameObj implements Serializable {
     public void upgrade(){
         if(isUpgrade())return;
         info.msg(getNameWithOwner() + "进化了！");
-        addToName(" +");
         setUpgrade(true);
     }
 

@@ -23,7 +23,6 @@ public class Acceleratium extends AmuletCard {
     public String job = "复仇者";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        倒数 3
         召唤时，创造物随从：使其获得【突进】。
         使用卡牌时，创造物卡：回复自己的PP 1点。
         """;

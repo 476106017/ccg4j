@@ -124,6 +124,7 @@ Msg.send(session,name + "登录成功！");
 
                 case "deck" -> deckEditHandler.deck(session);
                 case "usedeck" -> deckEditHandler.usedeck(session, param);
+                case "setdeck" -> deckEditHandler.setdeck(session, param);
                 case "chat" -> chatHandler.chat(session, param);
 
                 case "swap" -> gameHandler.swap(session, param);

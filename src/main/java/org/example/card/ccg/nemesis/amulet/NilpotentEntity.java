@@ -35,6 +35,7 @@ public class NilpotentEntity extends AmuletCard {
                 List<Card> artifact = ownerPlayer().getHandBy(card -> card.getRace().contains("创造物"));
                 if(!artifact.isEmpty()){
                     ownerPlayer().abandon(Lists.randOf(artifact));
+                    upgrade();
                     setCountDown(4);
                 }
         }));

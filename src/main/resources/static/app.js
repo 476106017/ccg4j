@@ -7,11 +7,11 @@ var cardHtml = function(card){
     return `
         <div class="card col-sm-6 col-md-4 col-lg-2 id-${card.id} ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}">
             <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
-            <div class="name">${card.name}</div>
+            <div class="name ${card.upgrade?"upgrade":""}">${card.name + (card.upgrade?" +":"")}</div>
             <div class="type">${card.TYPE}</div>
             ${card.race.length>0?'<p class="race">'+card.race.join(' ')+'</p>':""}
             <div class="cost">${card.cost}</div>
-            <div class="description">
+            <div class="description" title="${card.mark}">
                 <p>${card.keywords.length>0?'<b class="keyword">'+distinctArr(card.keywords).join(' ')+'</b>\n':""}${card.mark}<i>${card.subMarkStr}</i></p>
                 <div class="job">${card.job}</div>
             </div>
@@ -62,6 +62,7 @@ var drawBoard = function(){
     }else{
         $('#enemy-info-detail .skill').removeClass("canUse");
     }
+    $('.enemy-pp-num').attr("title",JSON.stringify(boardInfo.enemy.counter));
 
     $('#my-info-detail').html("<p title='"+boardInfo.me.leader.mark+"'>主战者："+ boardInfo.me.leader.name + "</p>" +
         "<p class='skill' title='"+boardInfo.me.leader.skillMark+"'>"+ boardInfo.me.leader.skillName + "(" + boardInfo.me.leader.skillCost + ")</p>");
@@ -71,6 +72,7 @@ var drawBoard = function(){
     }else{
         $('#my-info-detail .skill').removeClass("canUse");
     }
+    $('.my-pp-num').attr("title",JSON.stringify(boardInfo.me.counter));
 
     $('.enemy-pp-num').html(boardInfo.enemy.ppNum+" / "+boardInfo.enemy.ppMax);
     $('.my-pp-num').html(boardInfo.me.ppNum+" / "+boardInfo.me.ppMax);
@@ -196,6 +198,11 @@ function showMsg(){
     $('#msg-log-div').toggle();
 }
 
+var myDeck;
+function editDeck(){
+    let newDeck = prompt("输入牌组构成（推荐编辑好后粘贴过来）：",myDeck);
+    setTimeout("websocket.send('setdeck::"+newDeck+"')",500);
+}
 // var userName = prompt("请问牌友如何称呼？");
 userName = "Player"+Math.floor(Math.random()*1000000);
 
@@ -233,14 +240,20 @@ if ($.trim(userName)) {
                 mnyAlert(1,obj);
                 $('#msg-log-div').prepend(obj+'<br/>');
                 break;
-            case "alert":
+            case "warn":
                 mnyAlert(2,obj);
                 $('#msg-log-div').prepend(obj+'<br/>');
                 break;
+            case "alert":
+                alert(obj);
+                break;
             case "myDeck":
                 $('#card-gridview').html("");
+                myDeck = "";
                 obj.deck.forEach(card => {
                     $('#card-gridview').append(cardHtml(card));
+                    myDeck += card.name;
+                    myDeck += "#";
                 });
                 // websocket.send('joinRoom');// test
                 break;

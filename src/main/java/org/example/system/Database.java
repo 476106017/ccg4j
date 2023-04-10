@@ -22,6 +22,7 @@ public class Database {
 
     public static  Map<String,ScheduledExecutorService> roomSchedule = new ConcurrentHashMap<>();
 
+    public static Map<String,Class<? extends Card>> nameToCardClass = new ConcurrentHashMap<>();
     public static Map<Class<? extends Card>, Card> prototypes = new ConcurrentHashMap<>();
     // 单例模式访问卡牌初始属性
     public static <T extends Card> T getPrototype(Class<T> clazz) {
@@ -31,6 +32,7 @@ public class Database {
             Card card = clazz.getDeclaredConstructor().newInstance();
             card.init();
             prototypes.put(clazz,card);
+            nameToCardClass.put(card.getName(),clazz);
             return (T)card;
         }catch (Exception e){
             throw new RuntimeException(e);

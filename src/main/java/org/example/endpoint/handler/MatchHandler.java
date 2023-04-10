@@ -24,7 +24,7 @@ public class MatchHandler {
     public void joinRoom(Session client) throws IOException {
         String room = userRoom.get(client);
         if(room != null){
-            Msg.alert(client,"请不要重复进入房间！");
+            Msg.warn(client,"请不要重复进入房间！");
             return;
         }
 

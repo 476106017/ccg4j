@@ -215,8 +215,8 @@ public class DeckPreset {
             Spell01.class,Spell02.class,Spell03.class,Spell04.class, Spell05.class, Spell06.class, Spell07.class, Spell08.class
         ));
         decks.put("test",List.of(
-            Test03.class,Test03.class, Test03.class,Test03.class, Test03.class,
-            RimefireBolt.class, RimefireBolt.class, RimefireBolt.class, RimefireBolt.class,RimefireBolt.class
+            SwordBoomerang.class,SwordBoomerang.class, SwordBoomerang.class,SwordBoomerang.class, SwordBoomerang.class,
+            SwordBoomerang.class, SwordBoomerang.class, SwordBoomerang.class, SwordBoomerang.class,SwordBoomerang.class
         ));
         decks.put("传奇音乐节",List.of(
             ccgm.class,ccgm.class,  dbzwtn.class, fzcf.class,fzcf.class,

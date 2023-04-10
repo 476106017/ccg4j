@@ -31,7 +31,8 @@
 
 	
 	<div class="container text-center">
-		<h2><username>玩家</username>的卡组</h2>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="websocket.send('usedeck');">选择预设卡组</a><br/><br/><br/>
+		<h2><username>玩家</username>的卡组</h2>
+		<a href="#" onclick="editDeck();">编辑卡组</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="websocket.send('usedeck');">选择预设卡组</a><br/><br/><br/>
 		<div class="row" id="card-gridview"></div>
 	</div>
 	<footer class="footer">
@@ -43,12 +44,12 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel1">选择预设牌组</h4>
+					<h4 class="modal-title" id="myModalLabel1">选择预设卡组</h4>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">选择预设牌组：
+				<div class="modal-body">选择预设卡组
 					<p id="deck-preset"></p></div>
-				<div class="modal-footer">
+					<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
 				</div>
 			</div><!-- /.modal-content -->

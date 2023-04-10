@@ -9,12 +9,12 @@ import org.example.card.ccg.neutral.ThePlayer;
 import org.example.constant.DeckPreset;
 import org.example.game.Leader;
 import org.example.game.PlayerDeck;
+import org.example.system.Database;
 import org.example.system.util.Msg;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.example.system.Database.userDecks;
 
@@ -24,6 +24,32 @@ public class DeckEditHandler {
 
     public void deck(Session client) throws IOException, EncodeException {
         Msg.send(client,"myDeck",userDecks.get(client).describe());
+    }
+
+    public void setdeck(Session client, String data) throws IOException, EncodeException {
+
+        if(Strings.isBlank(data)){
+            Msg.warn(client,"牌组无效");
+            return;
+        }
+        final List<String> cardNames = Arrays.stream(data.split("#")).filter(s -> !s.trim().equals("")).toList();
+
+        if(cardNames.size()>100){
+            Msg.warn(client,"牌组最多100张牌！");
+            return;
+        }
+        List<Class<? extends Card>> newDeck = new ArrayList<>();
+        cardNames.forEach(name->{
+            final Class<? extends Card> aClass = Database.nameToCardClass.get(name);
+            if(aClass!=null) newDeck.add(aClass);
+        });
+        if(newDeck.size()<=10){
+            Msg.warn(client,"牌组至少需要10张牌！");
+            return;
+        }
+        final PlayerDeck playerDeck = userDecks.get(client);
+        playerDeck.setActiveDeck(newDeck);
+        Msg.send(client,"myDeck", playerDeck.describe());
     }
 
 

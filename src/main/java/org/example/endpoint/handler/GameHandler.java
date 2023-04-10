@@ -45,13 +45,13 @@ public class GameHandler {
                 indexI = -1;
             }
             if(indexI<1 || indexI>3){
-                Msg.alert(client,"输入序号错误:"+index);
+                Msg.warn(client,"输入序号错误:"+index);
                 return;
             }
             indexs.add(indexI-1);//这里转成下标
         }
         if(player.getStep() > -1){
-            Msg.alert(client,"已经过了换牌步骤!");
+            Msg.warn(client,"已经过了换牌步骤!");
             return;
         }
         if(indexs.isEmpty()){
@@ -98,7 +98,7 @@ public class GameHandler {
                 Msg.send(client,"强制结束对手回合！");
                 info.endTurnOfCommand();
             }else {
-                Msg.alert(client,"当前不是你的回合！");
+                Msg.warn(client,"当前不是你的回合！");
             }
             return;
         }
@@ -119,11 +119,11 @@ public class GameHandler {
         // endregion
 
         if(!client.equals(player.getSession())){
-            Msg.alert(client,"当前不是你的回合！");
+            Msg.warn(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() > 0){
-            Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.warn(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -247,12 +247,12 @@ public class GameHandler {
         // endregion
 
         if(!client.equals(player.getSession())){
-            Msg.alert(client,"当前不是你的回合！");
+            Msg.warn(client,"当前不是你的回合！");
             return;
         }
 
         if(player.getStep() > 0){
-            Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.warn(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -354,11 +354,11 @@ public class GameHandler {
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
         if(!client.equals(player.getSession())){
-            Msg.alert(client,"当前不是你的回合！");
+            Msg.warn(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() == 0){
-            Msg.alert(client,"当前状态无法发现卡牌！");
+            Msg.warn(client,"当前状态无法发现卡牌！");
             return;
         }
 
@@ -386,11 +386,11 @@ public class GameHandler {
         // endregion
 
         if(!client.equals(player.getSession())){
-            Msg.alert(client,"当前不是你的回合！");
+            Msg.warn(client,"当前不是你的回合！");
             return;
         }
         if(player.getStep() > 0){
-            Msg.alert(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.warn(client,"请先发现卡牌！（输入discover <序号>）");
             return;
         }
 
@@ -450,7 +450,7 @@ public class GameHandler {
             .findAny().ifPresent(card -> {
             if(card instanceof AreaCard &&
                 player.getArea().size()==player.getAreaMax()){
-                Msg.alert(client,"场上放不下卡牌了！");
+                Msg.warn(client,"场上放不下卡牌了！");
                 return;
             }
             Play play = card.getPlay();

@@ -160,6 +160,9 @@ public class GameInfo implements Serializable {
         gameset = true;
         msg("游戏结束，获胜者："+winner.getName());
         pushInfo();
+        final Session winnerSession = winner.getSession();
+        Msg.send(winnerSession,"alert","你赢了！");
+        Msg.send(anotherPlayerBySession(winnerSession).getSession(),"alert","你输了！");
 
         // 释放资源
         roomGame.remove(getRoom());

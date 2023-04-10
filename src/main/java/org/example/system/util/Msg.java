@@ -1,12 +1,9 @@
 package org.example.system.util;
 
 
-import jakarta.websocket.EncodeException;
 import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.IOException;
 
 @Setter
 @Getter
@@ -31,9 +28,9 @@ public class Msg<T> {
             throw new RuntimeException(e);
         }
     }
-    public synchronized static void alert(Session session,String msg){
+    public synchronized static void warn(Session session, String msg){
         try {
-            session.getBasicRemote().sendObject(new Msg<>("alert",msg));
+            session.getBasicRemote().sendObject(new Msg<>("warn",msg));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

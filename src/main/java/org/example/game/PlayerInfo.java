@@ -1,6 +1,5 @@
 package org.example.game;
 
-import jakarta.websocket.EncodeException;
 import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,14 +7,12 @@ import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.CounterKey;
-import org.example.constant.DeckPreset;
 import org.example.constant.EffectTiming;
 import org.example.system.Database;
 import org.example.system.util.FunctionN;
 import org.example.system.util.Lists;
 import org.example.system.util.Msg;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -221,14 +218,16 @@ public class PlayerInfo implements Serializable {
         return true;
     }
 
-    public void steal(int num){
+    public List<Card> steal(int num){
         info.msg(this.name+"从对手牌堆中偷取了"+num+"张卡牌");
         List<Card> enemyDeck = getEnemy().getDeck();
         int finalNum = Math.min(num, enemyDeck.size()) ;// 真正抽到的牌数
 
         List<Card> cards = enemyDeck.subList(0, finalNum);
         getEnemy().setDeck(enemyDeck.subList(finalNum,enemyDeck.size()));
+        cards.forEach(Card::changeOwner);
         addHand(cards);
+        return cards;
     }
     public List<Card> draw(int num){
         info.msg(this.name+"从牌堆中抽了"+num+"张卡牌");

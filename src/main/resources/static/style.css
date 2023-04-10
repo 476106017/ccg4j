@@ -301,7 +301,9 @@
   z-index: 999999;
   opacity: 0.618;
 }
-
+.upgrade{
+  color: #3F3 !important;
+}
 
 .selected{
   border: 1px solid #f00;
