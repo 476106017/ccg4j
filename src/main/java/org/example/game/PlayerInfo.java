@@ -118,15 +118,10 @@ public class PlayerInfo implements Serializable {
             consumer.accept(cards.get(0));
             return;
         }
-        List<Card> cardsCopy = new ArrayList<>(cards);
-        if(cardsCopy.size()> getDiscoverMax()){
-            cardsCopy = Lists.randOf(cardsCopy,getDiscoverMax());
-        }
+        List<Card> cardsCopy = Lists.randOf(cards,getDiscoverMax());
 
         // 让玩家选择
         step++;
-
-        Collections.shuffle(cardsCopy);
 
         Msg.send(getSession(),"discover", cardsCopy);
 
