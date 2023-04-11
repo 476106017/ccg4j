@@ -54,6 +54,17 @@ public class Preparation extends SpellCard {
                         }), false);
                     }
                 });
+
+
+                ownerLeader().addEffect(new Effect(this,ownerLeader(), EffectTiming.EndTurn,1,
+                    o ->
+                        // 影响列表牌费用加回来
+                        cutCosts.forEach((k, v)->{
+                            if(k!=o){
+                                k.addCost(v);
+                            }
+                        })
+                ), false);
             }));
     }
 }

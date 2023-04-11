@@ -11,6 +11,7 @@ import org.example.card.anime.deathnote.follow.YagamiLight;
 import org.example.card.anime.jojo.follow.EnricoPucci;
 import org.example.card.anime.jojo.follow.JolyneCujoh;
 import org.example.card.anime.jojo.follow.KujoJotaro;
+import org.example.card.ccg.druid.spell.*;
 import org.example.card.ccg.fairy.Alisa;
 import org.example.card.ccg.fairy.amulet.*;
 import org.example.card.ccg.fairy.follow.*;
@@ -25,6 +26,8 @@ import org.example.card.ccg.hunter.equipment.HarpoonGun;
 import org.example.card.ccg.hunter.follow.*;
 import org.example.card.ccg.hunter.spell.*;
 import org.example.card.ccg.mage.follow.WandThief;
+import org.example.card.ccg.mage.spell.DimensionShift;
+import org.example.card.ccg.mage.spell.DreamComeTrue;
 import org.example.card.ccg.mage.spell.MagicTrick;
 import org.example.card.ccg.mage.spell.RimefireBolt;
 import org.example.card.ccg.necromancer.Luna;
@@ -196,6 +199,13 @@ public class DeckPreset {
             Aralon.class,Aralon.class, WildSpirits.class, WildSpirits.class
         ));
         deckLeader.put("野兽猎", Rexxar.class);
+
+        decks.put("凯子德",List.of(TheKeyDraw.class,Barnes.class,KaelthasSunstrider.class,KaelthasSunstrider.class,Focus.class,Focus.class,
+            AquaticForm.class, AquaticForm.class, BiologyProject.class,BiologyProject.class, LightningBloom.class,LightningBloom.class,
+            MiracleGrowth.class, MiracleGrowth.class, MoonlitGuidance.class,MoonlitGuidance.class, Naturalize.class, Naturalize.class,
+            UltimateInfestation.class, UltimateInfestation.class, TheCoin.class,TheCoin.class,AngelicSnipe.class,AngelicSnipe.class,
+            DimensionShift.class, DimensionShift.class, DimensionShift.class, DreamComeTrue.class,DreamComeTrue.class,DreamComeTrue.class
+        ));
 
         decks.put("杀戮尖塔",List.of(
             Strike.class,Strike.class, Strike.class,Strike.class, Strike.class,

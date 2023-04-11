@@ -323,6 +323,7 @@ public abstract class Card extends GameObj implements Serializable {
 
         ownerPlayer().count(PLAY_NUM);
         ownerPlayer().count(PLAY_NUM_ALL);
+        ownerPlayer().getPlayedCard().add(this);
 
         info.startEffect();
         info.pushInfo();

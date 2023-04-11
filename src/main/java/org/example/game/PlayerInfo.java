@@ -51,10 +51,16 @@ public class PlayerInfo implements Serializable {
     Predicate<Card> handPlayable = card -> true;
     List<AreaCard> area = new ArrayList<>();
     transient List<Card> graveyard = new ArrayList<>();
-    transient Set<Card> abandon = new HashSet<>();
     Integer graveyardCount = 0;// 当墓地消耗时，只消耗计数，不消耗真实卡牌
 
     Integer deckCount; // 前端展示用
+
+    Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
+    Leader leader;
+
+
+    transient Set<Card> abandon = new HashSet<>();
+    List<Card> playedCard = new ArrayList<>();// 本回合使用卡牌计数器
 
 
     public void countToGraveyard(int count){
@@ -86,10 +92,6 @@ public class PlayerInfo implements Serializable {
         return true;
     }
 
-    Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
-    Map<Integer,List<Card>> playedCard = new HashMap<>();// 使用卡牌计数器
-    Leader leader;
-
     public void setLeader(Leader leader) {
         this.leader = leader;
         info.msg(getName()+"的主战者变成了"+leader.getName());
@@ -116,13 +118,14 @@ public class PlayerInfo implements Serializable {
             consumer.accept(cards.get(0));
             return;
         }
+        List<Card> cardsCopy = new ArrayList<>(cards);
+        if(cardsCopy.size()> getDiscoverMax()){
+            cardsCopy = Lists.randOf(cardsCopy,getDiscoverMax());
+        }
 
         // 让玩家选择
         step++;
-        StringBuilder sb = new StringBuilder("发现卡牌：");
-        AtomicInteger num = new AtomicInteger(1);
 
-        ArrayList<Card> cardsCopy = new ArrayList<>(cards);
         Collections.shuffle(cardsCopy);
 
         Msg.send(getSession(),"discover", cardsCopy);
@@ -192,13 +195,22 @@ public class PlayerInfo implements Serializable {
         info.msg(this.getName()+"血上限提升"+hpMax+"（提升后血量上限为"+this.getHpMax()+"）");
     }
     public void addPp(int num){
+        int pp = 0;
         if(num>0){
-            int pp = Math.min(getPpLimit(),getPpNum()+num);
-            setPpNum(pp);
+            pp = Math.min(getPpLimit(),getPpNum()+num);
         } else if (num<0) {
-            int pp = Math.max(0,getPpNum()+num);
-            setPpNum(pp);
+            pp = Math.max(0,getPpNum()+num);
         }
+        setPpNum(pp);
+    }
+    public void addPpMax(int num){
+        int pp = 0;
+        if(num>0){
+            pp = Math.min(getPpLimit(),getPpMax()+num);
+        } else if (num<0) {
+            pp = Math.max(0,getPpNum()+num);
+        }
+        setPpMax(pp);
     }
 
     public void shuffleGraveyard(){

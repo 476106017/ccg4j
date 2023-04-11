@@ -61,9 +61,10 @@ public class TreasureFromBelow extends FollowCard {
         public void init() {
             setCountDown(2);
 
-            addEffects((new Effect(this,this, EffectTiming.Leaving, obj->
-                ownerPlayer().summon(createCard(TreasureFromBelow.class))
-            )));
+            addEffects((new Effect(this,this, EffectTiming.Leaving, obj-> {
+                ownerPlayer().summon(createCard(TreasureFromBelow.class));
+                ownerPlayer().steal(1).forEach(card -> card.addCost(-2));
+            })));
         }
     }
 }

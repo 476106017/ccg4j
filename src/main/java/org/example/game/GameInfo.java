@@ -31,6 +31,7 @@ public class GameInfo implements Serializable {
     boolean inSettle = false;
     int turn;
     int turnPlayer;
+    int moreTurn = 0;// 追加回合
     boolean gameset = false;
     ScheduledFuture<?> rope;
     List<Damage> incommingDamages = new ArrayList<>();
@@ -445,6 +446,19 @@ public class GameInfo implements Serializable {
         return _result;
     }
 
+    // region turn
+    public void beginGame(){
+        Leader leader = thisPlayer().getLeader();
+        leader.setCanUseSkill(true);
+        leader.useEffects(EffectTiming.BeginGame);
+
+        Leader enemyLeader = oppositePlayer().getLeader();
+        enemyLeader.useEffects(EffectTiming.BeginGame);
+
+        Msg.send(thisPlayer().getSession(),"swapOver","");
+        Msg.send(oppositePlayer().getSession(),"swapOver","");
+
+    }
     public void zeroTurn(Session u0, Session u1){
 
         PlayerInfo p0 = thisPlayer();
@@ -473,22 +487,10 @@ public class GameInfo implements Serializable {
         Msg.send(p1.getSession(),"swap",p1.getHand());
     }
 
-    // region turn
-    public void beginGame(){
-        Leader leader = thisPlayer().getLeader();
-        leader.setCanUseSkill(true);
-        leader.useEffects(EffectTiming.BeginGame);
-
-        Leader enemyLeader = oppositePlayer().getLeader();
-        enemyLeader.useEffects(EffectTiming.BeginGame);
-
-        Msg.send(thisPlayer().getSession(),"swapOver","");
-        Msg.send(oppositePlayer().getSession(),"swapOver","");
-
-    }
 
     public void startTurn(){
         thisPlayer().clearCount(PLAY_NUM);
+        thisPlayer().getPlayedCard().clear();
         if(thisPlayer().ppMax<thisPlayer().getPpLimit()){
                 thisPlayer().ppMax++;
         }
@@ -531,8 +533,13 @@ public class GameInfo implements Serializable {
         }
 
         if(thisPlayer().getStep() == -1)return;// 回合结束效果触发了重启游戏
-        turn += turnPlayer;// 如果是玩家1就加回合数
-        turnPlayer = 1 ^ turnPlayer;
+        // 是否有追加回合
+        if(moreTurn>0){
+            moreTurn--;
+        }else {
+            turn += turnPlayer;// 如果是玩家1就加回合数
+            turnPlayer = 1 ^ turnPlayer;
+        }
         msg("——————————");
 
         startTurn();
@@ -655,5 +662,8 @@ public class GameInfo implements Serializable {
         oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyEndTurnAtHand));
     }
 
+    public void addMoreTurn(){
+        moreTurn++;
+    }
     // endregion turn
 }

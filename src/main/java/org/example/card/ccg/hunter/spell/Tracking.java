@@ -32,7 +32,6 @@ public class Tracking extends SpellCard {
             List<Card> cards = ownerPlayer().getDeckCopy().stream()
                 .map(Card::getName)
                 .distinct()
-                .limit(ownerPlayer().getDiscoverMax())
                 .map(name->index.get(name).get(0)).toList();
 
 

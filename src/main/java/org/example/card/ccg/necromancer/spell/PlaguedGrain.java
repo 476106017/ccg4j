@@ -2,14 +2,17 @@ package org.example.card.ccg.necromancer.spell;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.card.SpellCard;
 import org.example.card._derivant.Derivant;
+import org.example.card.ccg.fairy.spell.ForestGenesis;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,8 +34,13 @@ public class PlaguedGrain extends SpellCard {
         setPlay(new Play(()->ownerPlayer().getAreaFollowsAsGameObj(),
             true,
             obj->{
-                destroy((FollowCard)obj);
-                ownerPlayer().draw(2);
+                ownerPlayer().countToGraveyard(3);
+                List<Card> addCards = new ArrayList<>();
+                addCards.add(createCard(Crate.class));
+                addCards.add(createCard(Crate.class));
+                addCards.add(createCard(Crate.class));
+                addCards.add(createCard(Crate.class));
+                ownerPlayer().addDeck(addCards);
             }));
     }
 

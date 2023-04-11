@@ -6,7 +6,7 @@ var distinctArr = function(arr){
 var cardHtml = function(card){
     return `
         <div class="card col-sm-6 col-md-4 col-lg-2 id-${card.id} ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}">
-            <img src="${card.name}.jpg" alt="" class="image" onerror="this.src='error.webp'">
+            <img src="${card.name}.png" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name ${card.upgrade?"upgrade":""}">${card.name + (card.upgrade?" +":"")}</div>
             <div class="type">${card.TYPE}</div>
             ${card.race.length>0?'<p class="race">'+card.race.join(' ')+'</p>':""}

@@ -67,6 +67,7 @@ public class ThePlayer extends Leader {
         FollowCard follow = (FollowCard) target;
         follow.addStatus(2,2);
         follow.addKeyword("突进");
+        follow.upgrade();
 
         ownerPlayer().count(EP_NUM,-1);
         getInfo().msgToThisPlayer("你还剩下"+ownerPlayer().getCount(EP_NUM)+"个进化点");
