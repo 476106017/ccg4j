@@ -316,7 +316,10 @@ public abstract class Card extends GameObj implements Serializable {
         String boostCards = ownerPlayer().getHandCopy().stream().map(card -> card.getEffects(EffectTiming.Boost))
             .flatMap(Collection::stream)
             .filter(boost -> boost.getCanEffect().test(this))
-            .map(effect -> effect.getOwnerObj().getId()).collect(Collectors.joining("、"));
+            .map(effect -> {
+                effect.getEffect().accept(this);
+                return effect.getOwnerObj().getId();
+            }).collect(Collectors.joining("、"));
         if(!boostCards.isEmpty()){
             info.msgToThisPlayer(boostCards + "发动增幅效果");
         }

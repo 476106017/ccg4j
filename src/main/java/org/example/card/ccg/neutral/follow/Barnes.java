@@ -36,8 +36,13 @@ public class Barnes extends FollowCard {
         setPlay(new Play(() -> {
             final List<Card> deckBy = ownerPlayer().getDeckBy(p -> p instanceof FollowCard);
             final Card follow = Lists.randOf(deckBy);
-            if(follow != null)
-                ownerPlayer().summon((FollowCard) follow.copyBy(ownerPlayer()));
+            if(follow != null) {
+                final FollowCard copy = (FollowCard) follow.copyBy(ownerPlayer());
+                copy.setAtk(1);
+                copy.setHp(1);
+                copy.setMaxHp(1);
+                ownerPlayer().summon(copy);
+            }
         }));
     }
 }

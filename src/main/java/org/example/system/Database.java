@@ -4,6 +4,7 @@ import jakarta.websocket.Session;
 import org.example.card.Card;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
+import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class Database {
         return prototypeBy.isEmpty()?null:prototypeBy.get(0);
     }
     public static List<Card> getPrototypeBy(Predicate<Card> predicate, int num){
-        return prototypes.values().stream().filter(predicate).limit(num).map(Card::prototype).toList();
+        final List<Card> list = prototypes.values().stream().filter(predicate).toList();
+        return Lists.randOf(list,num).stream().map(Card::prototype).toList();
     }
 }

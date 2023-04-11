@@ -2,8 +2,6 @@
 
 可以看做影之诗（シャドバ）的fan made作品。以后可能会变成别的玩法。
 
-目前的工作分支：feature-javawebsocket
-
 ## 试玩
 http://www.card4j.top/
 
@@ -23,6 +21,9 @@ git config --global http.proxy 127.0.0.1:33210(端口改下你懂的)
 6. 或者把局域网ip发给局域网里的小伙伴，用局域网ip替换localhost，和小伙伴来场pk吧！
 
 ## 最新动态
+#### 2023/04/11
+前端页面重构完成了
+
 #### 2023/03/23
 已经很完美了。但是有个不协调的地方，netty-socketio有点过时了。现在的springboot自带了websocket，所以嘛，重构吧。
 然后就是完全放弃后端渲染，比如效果描述之类的。想要做成api，这样可以更好的前后端合作。

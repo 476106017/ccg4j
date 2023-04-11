@@ -34,7 +34,7 @@ public class MiracleGrowth extends SpellCard {
 
     @Getter
     @Setter
-    public class KelpCreeper extends FollowCard {
+    public static class KelpCreeper extends FollowCard {
         private String name = "海藻爬行者";
         private Integer cost = 1;
         private int atk = 1;

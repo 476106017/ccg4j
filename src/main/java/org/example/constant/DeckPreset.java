@@ -77,8 +77,6 @@ import org.example.morecard.genshin.follow.Diluc;
 import org.example.morecard.genshin.follow.Keaya;
 import org.example.morecard.genshin.follow.Sucrose;
 import org.example.morecard.genshin.spell.*;
-import org.example.morecard.xie.follow.*;
-import org.example.morecard.xie.spell.*;
 import org.example.system.Database;
 import org.example.system.util.Maps;
 
@@ -217,12 +215,6 @@ public class DeckPreset {
             EnricoPucci.class, EnricoPucci.class, EnricoPucci.class,
             JolyneCujoh.class,JolyneCujoh.class,JolyneCujoh.class,
             KujoJotaro.class,KujoJotaro.class,KujoJotaro.class
-        ));
-        decks.put("谢test",List.of(
-            Test02.class, Test03.class, Test04.class, Test05.class, Test06.class, Test07.class, Test08.class,Test09.class,Test10.class,Test11.class,
-            Test12.class, Test13.class, Test14.class, Test15.class, Test16.class, Test17.class, Test18.class,Test19.class,Test20.class,Test21.class,
-            Test22.class, Test23.class,
-            Spell01.class,Spell02.class,Spell03.class,Spell04.class, Spell05.class, Spell06.class, Spell07.class, Spell08.class
         ));
         decks.put("test",List.of(
             SwordBoomerang.class,SwordBoomerang.class, SwordBoomerang.class,SwordBoomerang.class, SwordBoomerang.class,
