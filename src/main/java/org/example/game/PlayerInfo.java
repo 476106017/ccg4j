@@ -258,6 +258,7 @@ public class PlayerInfo implements Serializable {
         if(getStep()>-1){
             info.tempEffectBatch(getAreaAsGameObj(),EffectTiming.WhenDraw,cards);
             info.tempEffectBatch(getEnemy().getAreaAsGameObj(),EffectTiming.WhenEnemyDraw,cards);
+            cards.forEach(card -> card.tempEffects(EffectTiming.WhenDrawn));
         }
 
         return cards;
@@ -338,8 +339,10 @@ public class PlayerInfo implements Serializable {
         }
         hand.addAll(successCards);
 
-        if(getStep()>-1)
-            successCards.forEach(card -> card.tempEffects(EffectTiming.WhenDrawn));
+        if(getStep()>-1){
+            getLeader().tempEffects(EffectTiming.WhenAddHand,cards);
+            successCards.forEach(card -> card.tempEffects(EffectTiming.WhenAddedToHand));
+        }
 
     }
     public void addArea(AreaCard areaCard){

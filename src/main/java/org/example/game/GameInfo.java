@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
+import org.example.system.util.CardPackage;
 import org.example.system.util.Lists;
 import org.example.system.util.Maps;
 import org.example.system.util.Msg;
@@ -511,6 +512,13 @@ public class GameInfo implements Serializable {
         msgToOppositePlayer("等待对手出牌......");
         Msg.send(thisPlayer().getSession(),"yourTurn","");
         Msg.send(oppositePlayer().getSession(),"enemyTurn","");
+
+
+        if(turn==1){// 活动模式，第一回合奖励
+            final List<Class<? extends Card>> classes = CardPackage.randCard("passive", 3);
+            final List<Card> list =  classes.stream().map(clazz -> (Card)thisPlayer().getLeader().createCard(clazz)).toList();
+            thisPlayer().discoverCard(list,card -> card.getPlay().effect().accept(0,new ArrayList<>()));
+        }
     }
 
     public void endTurnOfTimeout(){
