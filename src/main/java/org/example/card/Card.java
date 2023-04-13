@@ -6,6 +6,7 @@ import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 import org.example.game.Play;
 import org.example.game.PlayerInfo;
+import org.example.system.util.Msg;
 
 import java.io.Serializable;
 import java.util.*;
@@ -257,11 +258,11 @@ public abstract class Card extends GameObj implements Serializable {
 
     public void play(List<GameObj> targets,int choice){
         if(!ownerPlayer().getHandPlayable().test(this)){
-            info.msgToThisPlayer("由于限制，目前无法使用这张卡牌！");
+            Msg.warn(ownerPlayer().getSession(), "由于限制，目前无法使用这张卡牌！");
             return;
         }
         if(ownerPlayer().getPpNum() < getCost()){
-            info.msgToThisPlayer("你没有足够的PP来使用该卡牌！");
+            Msg.warn(ownerPlayer().getSession(), "你没有足够的PP来使用该卡牌！");
             return;
         }
         info.msg(ownerPlayer().getName() + "使用了" + getName());
@@ -284,7 +285,7 @@ public abstract class Card extends GameObj implements Serializable {
         if(this instanceof AreaCard areaCard){
             if(this instanceof EquipmentCard equipmentCard){
                 if(targets.size()!=1 || !(targets.get(0) instanceof FollowCard target)){
-                    info.msgToThisPlayer("无法使用装备卡！");
+                    Msg.warn(ownerPlayer().getSession(), "无法使用装备卡！");
                     return;
                 }
                 target.equip(equipmentCard);
@@ -321,7 +322,7 @@ public abstract class Card extends GameObj implements Serializable {
                 return effect.getOwnerObj().getId();
             }).collect(Collectors.joining("、"));
         if(!boostCards.isEmpty()){
-            info.msgToThisPlayer(boostCards + "发动增幅效果");
+            Msg.warn(ownerPlayer().getSession(), boostCards + "发动增幅效果");
         }
 
         ownerPlayer().count(PLAY_NUM);

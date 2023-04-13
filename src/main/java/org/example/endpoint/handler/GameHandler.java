@@ -118,17 +118,18 @@ public class GameHandler {
         PlayerInfo player = info.thisPlayer();
         // endregion
 
-        if(!client.equals(player.getSession())){
-            Msg.warn(client,"当前不是你的回合！");
-            return;
+        boolean myTurn = client.equals(player.getSession());
+        if(!myTurn){
+            player = info.oppositePlayer();
         }
+
         if(player.getStep() > 0){
-            Msg.warn(client,"请先发现卡牌！（输入discover <序号>）");
+            Msg.warn(client,"请先发现卡牌！");
             return;
         }
 
         if(msg.isBlank()){
-            info.msgToThisPlayer("打出卡牌：play <手牌序号> <目标id> s<抉择序号>；");
+            Msg.warn(client,"打出卡牌：play <手牌序号> <目标id> s<抉择序号>；");
             return;
         }
 
@@ -142,14 +143,20 @@ public class GameHandler {
             indexI = -1;
         }
         if(indexI <= 0 || indexI > player.getHand().size()){
-            info.msgToThisPlayer("输入手牌序号错误:"+split[0]);
+            Msg.warn(client,"输入手牌序号错误:"+split[0]);
             return;
         }
 
         Card card = player.getHand().get(indexI - 1);
+
+        if(!myTurn && !card.hasKeyword("速攻")){
+            Msg.warn(client,"当前不是你的回合！");
+            return;
+        }
+
         if(card instanceof AreaCard && !(card instanceof EquipmentCard) &&
             player.getArea().size()==player.getAreaMax()){
-            info.msgToThisPlayer("场上放不下卡牌了！");
+            Msg.warn(client,"场上放不下卡牌了！");
             return;
         }
         // 已选好要出的card
@@ -167,13 +174,13 @@ public class GameHandler {
             String targetS = split[i];
             if (targetS.startsWith("s")) {
                 if(play.choiceNum()==0){
-                    info.msgToThisPlayer("此卡不需要抉择！");
+                    Msg.warn(client,"此卡不需要抉择！");
                     return;
                 }
                 try {
                     choice = Integer.parseInt(targetS.substring(1, 2));
                     if(choice<=0 || choice > play.choiceNum()){
-                        info.msgToThisPlayer("指定抉择序号错误！应为：s1-s"+play.choiceNum());
+                        Msg.warn(client,"指定抉择序号错误！应为：s1-s"+play.choiceNum());
                         return;
                     }
                 } catch (Exception e) {
@@ -189,7 +196,7 @@ public class GameHandler {
                     .get(i-1).stream().filter(gameObj -> gameObj.id==targetId).findFirst();
                 if(target.isPresent()){
                     if(targets.contains(target)){
-                        info.msgToThisPlayer("输入了重复的目标");
+                        Msg.warn(client,"输入了重复的目标");
                         return;
                     }
                     targets.add(target.get());
@@ -210,10 +217,10 @@ public class GameHandler {
                     // 多个目标列表没有空的，指定目标
                     Msg.send(client,"target",
                         Maps.newMap("pref",msg,"targetLists", targetLists));
-                    info.msgToThisPlayer("请指定目标：play <手牌序号> <目标序号> s<抉择序号>\n"+play.describeCanTargets());
+                    Msg.warn(client,"请指定目标：play <手牌序号> <目标序号> s<抉择序号>\n"+play.describeCanTargets());
                 }else{
                     if(play.mustTarget())//必须指定
-                        info.msgToThisPlayer("现在无法打出这张卡牌！");
+                        Msg.warn(client,"现在无法打出这张卡牌！");
                     else// 不指定目标
                         card.play(new ArrayList<>(),choice);
                 }
@@ -221,11 +228,11 @@ public class GameHandler {
         }else{
             // 指定目标
             if(play.targetNum()==0) {
-                info.msgToThisPlayer("无法为该卡牌指定目标！");
+                Msg.warn(client,"无法为该卡牌指定目标！");
             }else {
                 // 必须指定目标
                 if(play.mustTarget() && targets.size() != play.targetNum()){
-                    info.msgToThisPlayer("指定目标数量错误！应为："+ play.targetNum());
+                    Msg.warn(client,"指定目标数量错误！应为："+ play.targetNum());
                     info.pushInfo();
                     return;
                 }
@@ -259,7 +266,7 @@ public class GameHandler {
         String[] split = msg.split("\\s+");
 
         if(msg.isBlank() || split.length!=2){
-            info.msgToThisPlayer("攻击：attack <随从序号> <目标随从序号(敌方主战者序号是0)>");
+            Msg.warn(client,"攻击：attack <随从序号> <目标随从序号(敌方主战者序号是0)>");
             return;
         }
 
@@ -271,34 +278,34 @@ public class GameHandler {
             indexI = -1;
         }
         if(indexI <= 0 || indexI > player.getArea().size()){
-            info.msgToThisPlayer("输入随从序号错误:"+split[0]);
+            Msg.warn(client,"输入随从序号错误:"+split[0]);
             return;
         }
         Card myCard = player.getArea().get(indexI - 1);
         if(myCard instanceof AmuletCard amuletCard){
-            info.msgToThisPlayer("无法让护符卡攻击:"+amuletCard.getId());
+            Msg.warn(client,"无法让护符卡攻击:"+amuletCard.getId());
             return;
         } else if (myCard instanceof FollowCard followCard) {
             if(followCard.hasKeyword("冻结")){
-                info.msgToThisPlayer("被冻结的随从无法攻击！");
+                Msg.warn(client,"被冻结的随从无法攻击！");
                 return;
             }
             if(followCard.hasKeyword("缴械")){
-                info.msgToThisPlayer("被缴械的随从无法攻击！");
+                Msg.warn(client,"被缴械的随从无法攻击！");
                 return;
             }
             if(followCard.hasKeyword("眩晕")){
-                info.msgToThisPlayer("眩晕的随从无法攻击！");
+                Msg.warn(client,"眩晕的随从无法攻击！");
                 return;
             }
             if(followCard.getTurnAge() == 0 &&
                 !followCard.hasKeyword("突进") &&
                 !followCard.hasKeyword("疾驰")){
-                info.msgToThisPlayer("无法让刚入场的随从攻击");
+                Msg.warn(client,"无法让刚入场的随从攻击");
                 return;
             }
             if(followCard.getTurnAttack() == followCard.getTurnAttackMax()){
-                info.msgToThisPlayer("该随从已经攻击过了");
+                Msg.warn(client,"该随从已经攻击过了");
                 return;
             }
         }
@@ -310,24 +317,24 @@ public class GameHandler {
             indexII = -1;
         }
         if(indexII < 0 || indexII > enemy.getArea().size()){
-            info.msgToThisPlayer("输入目标序号错误:"+split[1]);
+            Msg.warn(client,"输入目标序号错误:"+split[1]);
             return;
         } else if (indexII == 0) {
             FollowCard myFollow = (FollowCard) myCard;
             if(myFollow.getTurnAge() == 0 && !myFollow.hasKeyword("疾驰")){
-                info.msgToThisPlayer("随从在入场回合无法攻击敌方主战者！");
+                Msg.warn(client,"随从在入场回合无法攻击敌方主战者！");
                 return;
             }
             Optional<AreaCard> guard = enemy.getArea().stream().filter(areaCard -> areaCard.hasKeyword("守护")).findAny();
             if(guard.isPresent() && !myFollow.hasKeyword("无视守护")){
-                info.msgToThisPlayer("你必须先攻击带有守护效果的随从！");
+                Msg.warn(client,"你必须先攻击带有守护效果的随从！");
                 return;
             }
             info.msg(myFollow.getNameWithOwner()+"直接攻击对手的主战者");
             myFollow.attack(enemy.getLeader());
             return;
         } else if(enemy.getArea().get(indexII-1) instanceof AmuletCard amuletCard){
-            info.msgToThisPlayer("无法攻击护符卡:"+amuletCard.getId());
+            Msg.warn(client,"无法攻击护符卡:"+amuletCard.getId());
             return;
         }
         FollowCard myFollow = (FollowCard) myCard;
@@ -335,7 +342,7 @@ public class GameHandler {
 
         Optional<AreaCard> guard = enemy.getArea().stream().filter(areaCard -> areaCard.hasKeyword("守护")).findAny();
         if(!target.hasKeyword("守护") && guard.isPresent() && !myFollow.hasKeyword("无视守护")){
-            info.msgToThisPlayer("你必须先攻击带有守护效果的随从！");
+            Msg.warn(client,"你必须先攻击带有守护效果的随从！");
             return;
         }
         myFollow.attack(target);
@@ -370,7 +377,7 @@ public class GameHandler {
             if(player.getStep()==0)// 全部发现完再渲染
                 info.pushInfo();
         }catch (Exception e){
-            info.msgToThisPlayer("输入discover <序号>以发现一张卡牌");
+            Msg.warn(client,"输入discover <序号>以发现一张卡牌");
         }
     }
 
@@ -399,11 +406,11 @@ public class GameHandler {
         if(msg.isBlank()){// 没有输入指定对象
             if (leader.isNeedTarget()) {
                 if(targetable.isEmpty()){
-                    info.msgToThisPlayer("现在无法使用主战者技能！");
+                    Msg.warn(client,"现在无法使用主战者技能！");
                 }else {
                     // 指定目标
                     Msg.send(client,"skill",targetable);
-                    info.msgToThisPlayer("请指定目标");
+                    Msg.warn(client,"请指定目标");
                 }
             } else {
                 leader.skill(null);
@@ -411,7 +418,7 @@ public class GameHandler {
             }
         }else {// 输入了指定对象
             if(!leader.isNeedTarget()){
-                info.msgToThisPlayer("不可指定目标！");
+                Msg.warn(client,"不可指定目标！");
                 return;
             }
             GameObj target = null;
@@ -420,7 +427,7 @@ public class GameHandler {
                 // 获取选择对象
                 target = targetable.stream().filter(gameObj -> gameObj.id==indexId).findFirst().get();
             }catch (Exception e){
-                info.msgToThisPlayer("指定目标错误！");
+                Msg.warn(client,"指定目标错误！");
                 return;
             }
             leader.skill(target);

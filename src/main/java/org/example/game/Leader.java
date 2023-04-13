@@ -4,6 +4,7 @@ import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.constant.EffectTiming;
+import org.example.system.util.Msg;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,15 +47,15 @@ public abstract class Leader extends GameObj {
         Session me = ownerPlayer().getSession();
 
         if(!isCanUseSkill()){
-            info.msgToThisPlayer("现在无法使用主战者技能！");
+            Msg.warn(me, "现在无法使用主战者技能！");
             throw new RuntimeException();
         }
         if(getSkillCost() > ownerPlayer().getPpNum()){
-            info.msgToThisPlayer("没有足够的pp以使用主战者技能！");
+            Msg.warn(me, "没有足够的pp以使用主战者技能！");
             throw new RuntimeException();
         }
         if(target!=null && !targetable().contains(target)){
-            info.msgToThisPlayer("无法指定该目标！");
+            Msg.warn(me, "无法指定该目标！");
             throw new RuntimeException();
         }
         info.msg(ownerPlayer().getName() + "使用了"+getName()+"的主战者技能："+getSkillName());
