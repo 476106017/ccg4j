@@ -322,7 +322,7 @@ public abstract class Card extends GameObj implements Serializable {
                 return effect.getOwnerObj().getId();
             }).collect(Collectors.joining("、"));
         if(!boostCards.isEmpty()){
-            Msg.warn(ownerPlayer().getSession(), boostCards + "发动增幅效果");
+            Msg.send(ownerPlayer().getSession(), boostCards + "发动增幅效果");
         }
 
         ownerPlayer().count(PLAY_NUM);

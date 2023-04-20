@@ -51,6 +51,7 @@ import org.example.card.ccg.sts.Intruder;
 import org.example.card.ccg.sts.amulet.Barricade;
 import org.example.card.ccg.sts.amulet.DemonForm;
 import org.example.card.ccg.sts.amulet.Inflame;
+import org.example.card.ccg.sts.amulet.NoxiousFumes;
 import org.example.card.ccg.sts.spell.*;
 import org.example.card.ccg.vampire.amulet.BloodfedFlowerbed;
 import org.example.card.ccg.vampire.amulet.RestlessParish;
@@ -208,7 +209,8 @@ public class DeckPreset {
         decks.put("杀戮尖塔",List.of(
             Strike.class,Strike.class, Strike.class,Strike.class, Strike.class,
             Defend.class,Defend.class, Defend.class, Defend.class, Defend.class,
-            Barricade.class, DemonForm.class, Inflame.class, Angry.class, Armaments.class, SwordBoomerang.class
+            Barricade.class, DemonForm.class, Inflame.class, Angry.class, Armaments.class, SwordBoomerang.class,
+            DeadlyPoison.class, NoxiousFumes.class
         ));
         deckLeader.put("杀戮尖塔", Intruder.class);
         decks.put("jojo",List.of(

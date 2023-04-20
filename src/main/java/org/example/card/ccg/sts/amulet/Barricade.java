@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Barricade extends AmuletCard {
-    public Integer cost = 3;
+    public Integer cost = 4;
     public String name = "壁垒";
     public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();

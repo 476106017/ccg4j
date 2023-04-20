@@ -26,7 +26,7 @@ public class yyjba extends FollowCard {
 
     public void init() {
         setMaxHp(getHp());
-        getKeywords().add("嘲讽");
+        getKeywords().add("守护");
         setPlay(new Play(()->{
             if(ownerPlayer().getPpNum()==0) {
                 List<FollowCard> follows = enemyPlayer().getAreaFollowsAsFollow();

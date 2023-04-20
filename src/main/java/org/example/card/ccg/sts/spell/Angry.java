@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Angry extends SpellCard {
-    public Integer cost = 0;
+    public Integer cost = 1;
     public String name = "愤怒";
     public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();

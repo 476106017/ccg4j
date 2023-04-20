@@ -19,7 +19,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class SwordBoomerang extends SpellCard {
-    public Integer cost = 1;
+    public Integer cost = 2;
     public String name = "飞剑回旋镖";
     public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();

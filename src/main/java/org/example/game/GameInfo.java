@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import static org.example.constant.CounterKey.POISON;
 import static org.example.system.Database.*;
 
 @Getter
@@ -623,6 +624,10 @@ public class GameInfo implements Serializable {
         oppositePlayer().getHandCopy().forEach(card -> card.useEffects(EffectTiming.EnemyBeginTurnAtHand));
     }
     public void afterTurn(){
+        // 对手中毒效果
+        final Integer poison = oppositePlayer().getCount(POISON);
+        damageEffect(thisPlayer().getLeader(), oppositePlayer().getLeader(), poison);
+        oppositePlayer().count(POISON,-1);
 
         // 发动回合结束效果
         oppositePlayer().getAreaCopy().forEach(areaCard -> {

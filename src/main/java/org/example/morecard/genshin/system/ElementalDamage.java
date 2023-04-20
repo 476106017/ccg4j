@@ -10,6 +10,8 @@ import org.example.game.GameObj;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.constant.CounterKey.BLOCK;
+
 @Getter
 @Setter
 public class ElementalDamage extends Damage {
@@ -36,7 +38,7 @@ public class ElementalDamage extends Damage {
             if (cling.isActive()) {
                 getTo().getInfo().msg("结晶！");
                 if (getFrom() instanceof FollowCard fromFollow) {
-                    fromFollow.addKeywordN("格挡", 2);
+                    fromFollow.addKeywordN(BLOCK, 2);
                 }
             }
 

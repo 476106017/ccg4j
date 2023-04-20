@@ -306,6 +306,7 @@ public class PlayerInfo implements Serializable {
         if(deckSize + cardsSize > deckMax){
             cards.subList(0,deckMax-deckSize);
         }
+        info.tempCardEffectBatch(getAreaAsCard(),EffectTiming.WhenAddDeck);
         info.msgTo(getEnemy().getSession(),"对手将" + cards.size() + "张卡洗入牌堆中");
         info.msgTo(getSession(),
             cards.stream().map(GameObj::getName).collect(Collectors.joining("、")) + "被洗入牌堆");

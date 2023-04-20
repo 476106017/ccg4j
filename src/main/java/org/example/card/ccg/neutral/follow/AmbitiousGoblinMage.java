@@ -19,7 +19,7 @@ public class AmbitiousGoblinMage  extends FollowCard {
     private String job = "中立";
     private List<String> race = Lists.ofStr("人类");
     private String mark = """
-        战吼：将手牌的1张随从牌放回牌堆，搜索1张费用低于该牌的随从牌
+        战吼：将手牌的1张随从牌洗入牌堆，搜索1张费用低于该牌的随从牌
         """;
     private String subMark = "";
 

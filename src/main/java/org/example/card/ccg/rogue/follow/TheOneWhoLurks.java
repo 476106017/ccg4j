@@ -36,6 +36,7 @@ public class TheOneWhoLurks extends FollowCard {
                 changeOwner();
                 ownerPlayer().addDeck(this);
                 setCanEffect(false);
+                setSubMark("已失去能力");
         })));
     }
 }

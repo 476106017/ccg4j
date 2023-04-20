@@ -7,6 +7,9 @@ import org.example.card.FollowCard;
 
 import java.util.List;
 
+import static org.example.constant.CounterKey.BLOCK;
+import static org.example.constant.CounterKey.STRENGTH;
+
 @Getter
 @Setter
 public class Damage{
@@ -79,7 +82,7 @@ public class Damage{
     public void reduce(){
         Integer strength = 0;
         try{
-            strength = from.ownerPlayer().getCount("力量");
+            strength = from.ownerPlayer().getCount(STRENGTH);
         }catch (Exception ignored){}
         if(strength>0){
             to.getInfo().msg(from.ownerLeader().getNameWithOwner() + "的力量使本次伤害增加" + strength);
@@ -104,11 +107,11 @@ public class Damage{
                     toFollow.getInfo().msg(toFollow.getNameWithOwner() + "通过抗性减少了" + finalReduce + "点伤害");
                 }
 
-                int parry = toFollow.countKeyword("格挡");
+                int parry = toFollow.countKeyword(BLOCK);
                 if(getDamage()>0 && parry>0){
                     int parryReduce = Math.min(getDamage(), parry);
                     setDamage(getDamage() - parryReduce);
-                    toFollow.removeKeyword("格挡",parryReduce);
+                    toFollow.removeKeyword(BLOCK,parryReduce);
                     toFollow.getInfo().msg(toFollow.getNameWithOwner() + "格挡了" + parryReduce + "点伤害（还剩"+toFollow.countKeyword("格挡")+"点格挡）");
                 }
             }
@@ -128,7 +131,7 @@ public class Damage{
                 leader.getInfo().msg(leader.getNameWithOwner() + "通过抗性减少了" + finalReduce + "点伤害");
             }
 
-            int parry = playerInfo.getCount("格挡");
+            int parry = playerInfo.getCount(BLOCK);
             if(getDamage()>0 && parry>0){
                 int parryReduce = Math.min(getDamage(), parry);
                 setDamage(getDamage() - parryReduce);

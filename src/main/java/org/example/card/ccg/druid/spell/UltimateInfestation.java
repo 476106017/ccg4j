@@ -12,6 +12,8 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 
+import static org.example.constant.CounterKey.BLOCK;
+
 @Getter
 @Setter
 public class UltimateInfestation extends SpellCard {
@@ -34,7 +36,7 @@ public class UltimateInfestation extends SpellCard {
         true,target->{
             info.damageEffect(this,target,5 );
             ownerPlayer().draw(5);
-            ownerPlayer().count("格挡",5);
+            ownerPlayer().count(BLOCK,5);
             ownerPlayer().summon(createCard(Derivant.Zombie.class,5,5));
         }));
     }

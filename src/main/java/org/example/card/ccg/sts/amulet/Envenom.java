@@ -5,28 +5,30 @@ import lombok.Setter;
 import org.example.card.AmuletCard;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
-import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
 
-import static org.example.constant.CounterKey.STRENGTH;
+import static org.example.constant.CounterKey.POISON;
 
 @Getter
 @Setter
-public class DemonForm extends AmuletCard {
-    public Integer cost = 4;
-    public String name = "恶魔形态";
+public class Envenom extends AmuletCard {
+    public Integer cost = 3;
+    public String name = "涂毒";
     public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();
     public String mark = """
-        回合开始时：获得2(3)点力量
+        每有一次攻击对主战者造成未被格挡的伤害，就给予1层中毒。
         """;
 
     public String subMark = "";
 
     public void init() {
         addEffects(new Effect(this,this, EffectTiming.BeginTurn,
-            ()->ownerPlayer().count(STRENGTH,isUpgrade()?3:2)));
+            ()->{
+                final int n = isUpgrade()?3:2;
+                enemyPlayer().count(POISON,n);
+            }));
     }
 }

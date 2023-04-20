@@ -40,11 +40,13 @@ public enum EffectTiming {
 
     AfterDamaged("受伤时",Damage.class),
     AfterLeaderDamaged("主战者受伤后",Damage.class),
+    AfterEnemyLeaderDamaged("敌方主战者受伤后",Damage.class),
     LeaderHealing("主战者回复时",Damage.class),
     LeaderHealed("主战者回复后",Damage.class),
     WhenAddHand("加入手牌时",List.class),
     WhenAddedToHand("被加入手牌时"),
     WhenDrawn("被抽到时"),
+    WhenAddDeck("我方洗入牌堆时",List.class),
     WhenDraw("我方抽牌时",List.class),
     WhenOverDraw("我方超抽时",Integer.class),
     WhenEnemyDraw("敌方抽牌时",List.class),

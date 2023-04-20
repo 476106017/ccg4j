@@ -29,6 +29,15 @@ var cardHtml = function(card){
         </div>
     `
 }
+var dictShow = function(obj){
+    let show = "";
+    for (let key in obj) {
+        if(key.indexOf("_")<0 && obj[key]>0){
+            show = show+key+":"+obj[key]+"\n";
+        }
+    }
+    return show;
+}
 // 进入某个模式（选择/攻击）后用这个
 var initBoard = function(){
     $('#enemy-info').removeClass("selected");
@@ -50,10 +59,10 @@ var drawBoard = function(){
 
     $('#enemy-info').addClass('id-'+boardInfo.enemy.leader.id);
     $('#my-info').addClass('id-'+boardInfo.me.leader.id);
-    $('#enemy-info').html("<p title='超抽效果："+boardInfo.enemy.leader.overDrawMark+"'>牌堆："+ boardInfo.enemy.deckCount+"</p>墓地："+ boardInfo.enemy.graveyardCount +
-        "<br/>" + "血量："+ boardInfo.enemy.hp + "/" + boardInfo.enemy.hpMax);
-    $('#my-info').html("血量："+ boardInfo.me.hp + "/" + boardInfo.me.hpMax + "<br/>" + "墓地："+ boardInfo.me.graveyardCount +
-        "<br/><p title='超抽效果："+boardInfo.me.leader.overDrawMark+"'>牌堆："+ boardInfo.me.deckCount+"</p>");
+    $('#enemy-info').html("<p title='超抽效果："+boardInfo.enemy.leader.overDrawMark+"'>🗃️"+ boardInfo.enemy.deckCount+"</p>💀"+ boardInfo.enemy.graveyardCount +
+        "<br/>" + "❤️"+ boardInfo.enemy.hp + "/" + boardInfo.enemy.hpMax);
+    $('#my-info').html("❤️"+ boardInfo.me.hp + "/" + boardInfo.me.hpMax + "<br/>" + "💀"+ boardInfo.me.graveyardCount +
+        "<br/><p title='超抽效果："+boardInfo.me.leader.overDrawMark+"'>🗃️"+ boardInfo.me.deckCount+"</p>");
 
     $('#enemy-info-detail').html("<p class='skill' title='"+boardInfo.enemy.leader.skillMark+"'>"+ boardInfo.enemy.leader.skillName + "(" + boardInfo.enemy.leader.skillCost + ")</p>" +
     "<p title='"+boardInfo.enemy.leader.mark+"'>主战者："+ boardInfo.enemy.leader.name + "</p>" );
@@ -62,7 +71,7 @@ var drawBoard = function(){
     }else{
         $('#enemy-info-detail .skill').removeClass("canUse");
     }
-    $('.enemy-pp-num').attr("title",JSON.stringify(boardInfo.enemy.counter));
+    $('.enemy-pp-num').attr("title",dictShow(boardInfo.enemy.counter));
 
     $('#my-info-detail').html("<p title='"+boardInfo.me.leader.mark+"'>主战者："+ boardInfo.me.leader.name + "</p>" +
         "<p class='skill' title='"+boardInfo.me.leader.skillMark+"'>"+ boardInfo.me.leader.skillName + "(" + boardInfo.me.leader.skillCost + ")</p>");
@@ -72,7 +81,7 @@ var drawBoard = function(){
     }else{
         $('#my-info-detail .skill').removeClass("canUse");
     }
-    $('.my-pp-num').attr("title",JSON.stringify(boardInfo.me.counter));
+    $('.my-pp-num').attr("title",dictShow(boardInfo.me.counter));
 
     $('.enemy-pp-num').html(boardInfo.enemy.ppNum+" / "+boardInfo.enemy.ppMax);
     $('.my-pp-num').html(boardInfo.me.ppNum+" / "+boardInfo.me.ppMax);
@@ -196,6 +205,13 @@ function endTurn(){
 
 function showMsg(){
     $('#msg-log-div').toggle();
+}
+function showKeywords(){
+    $('#keywords').html("");
+    keywords.forEach(keyword => {
+        $('#keywords').append('<button type="button" class="btn btn-outline-dark" title='+keyword.desc+' data-dismiss="modal">'+keyword.key+'</button>');
+    });
+    $('#keywords-modal').modal('show');
 }
 
 var myDeck;
@@ -383,4 +399,6 @@ if ($.trim(userName)) {
     websocket.onclose = function () {
         // alert("已断开和服务器的连接，请刷新页面！");
     };
+
+    
 }

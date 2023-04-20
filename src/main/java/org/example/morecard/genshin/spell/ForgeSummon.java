@@ -13,6 +13,8 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 
+import static org.example.constant.CounterKey.BLOCK;
+
 @Getter
 @Setter
 public class ForgeSummon extends ElementCostSpellCard {
@@ -53,7 +55,7 @@ public class ForgeSummon extends ElementCostSpellCard {
             addEffects(new Effect(this,this, EffectTiming.WhenAttack, obj->{
                 Damage damage = (Damage) obj;
                 if(damage.getTo() instanceof FollowCard toFollow){
-                    toFollow.removeKeyword("格挡");
+                    toFollow.removeKeyword(BLOCK);
                     toFollow.removeKeyword("护甲");
                 }
             }));

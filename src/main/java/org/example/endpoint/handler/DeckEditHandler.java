@@ -43,7 +43,7 @@ public class DeckEditHandler {
             final Class<? extends Card> aClass = Database.nameToCardClass.get(name);
             if(aClass!=null) newDeck.add(aClass);
         });
-        if(newDeck.size()<=10){
+        if(newDeck.size()<10){
             Msg.warn(client,"牌组至少需要10张牌！");
             return;
         }

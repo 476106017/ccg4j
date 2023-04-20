@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static org.example.constant.CounterKey.BLOCK;
 import static org.example.constant.CounterKey.EP_NUM;
 
 
@@ -24,7 +25,7 @@ public class Intruder extends Leader {
     private String job = "杀戮尖塔";
 
     private String mark = """
-        游戏开始时：对手增加100点生命
+        游戏开始时：对手增加100点生命，自己的杀戮尖塔职业牌费用-1
         回合开始时：再抽4张牌,pp值变成3,格挡消失
         回合结束时：将剩余手牌放置于牌堆底部
         """;
@@ -51,12 +52,17 @@ public class Intruder extends Leader {
         addEffect(new Effect(this, this, EffectTiming.BeginGame,() -> {
                 enemyPlayer().addHpMax(100);
                 enemyPlayer().heal(100);
+                ownerPlayer().getDeck().forEach(card -> {
+                    if("杀戮尖塔".equals(card.getJob())){
+                        card.addCost(-1);
+                    }
+                });
             }));
         addEffect(new Effect(this, this, EffectTiming.BeginTurn,() -> {
                 ownerPlayer().draw(4);
                 ownerPlayer().setPpNum(3);
                 if (ownerPlayer().getCount("壁垒")==0) {
-                    ownerPlayer().clearCount("格挡");
+                    ownerPlayer().clearCount(BLOCK);
                 }
             }));
         addEffect(new Effect(this, this, EffectTiming.EndTurn,() ->

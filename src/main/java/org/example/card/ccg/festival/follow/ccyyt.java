@@ -26,7 +26,7 @@ public class ccyyt extends FollowCard {
     public int hp = 6;
     public void init() {
         setMaxHp(getHp());
-        getKeywords().add("嘲讽");
+        getKeywords().add("守护");
         getKeywords().add("圣盾");
         addEffects(new Effect(this,this, EffectTiming.DeathRattle, obj->{
             ownerPlayer().summon(List.of(
@@ -49,7 +49,7 @@ public class ccyyt extends FollowCard {
 
         public void init() {
             setMaxHp(getHp());
-            getKeywords().add("嘲讽");
+            getKeywords().add("守护");
             getKeywords().add("圣盾");
         }
     }

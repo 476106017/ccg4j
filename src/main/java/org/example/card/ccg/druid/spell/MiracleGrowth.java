@@ -20,7 +20,7 @@ public class MiracleGrowth extends SpellCard {
     public String job = "德鲁伊";
     private List<String> race = Lists.ofStr("自然");
     public String mark = """
-        抽三张牌。召唤一个属性值等同于你的手牌数量并具有嘲讽的植物。
+        抽三张牌。召唤一个属性值等同于你的手牌数量并具有守护的植物。
         """;
 
     public String subMark = "";

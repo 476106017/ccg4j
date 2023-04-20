@@ -11,10 +11,12 @@ import org.example.system.util.Lists;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.constant.CounterKey.BLOCK;
+
 @Getter
 @Setter
 public class Armaments extends SpellCard {
-    public Integer cost = 1;
+    public Integer cost = 2;
     public String name = "武装";
     public String job = "杀戮尖塔";
     private List<String> race = Lists.ofStr();
@@ -30,7 +32,7 @@ public class Armaments extends SpellCard {
         setPlay(new Play(()-> ownerPlayer().getHandAsGameObj(),
             true,
             target->{
-                ownerPlayer().count("格挡",5);
+                ownerPlayer().count(BLOCK,5);
                 if(isUpgrade()){
                     ownerPlayer().getHand().forEach(Card::upgrade);
                 }else {
