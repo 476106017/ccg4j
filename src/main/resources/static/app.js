@@ -6,7 +6,7 @@ var distinctArr = function(arr){
 var cardHtml = function(card){
     return `
         <div class="card col-sm-6 col-md-4 col-lg-2 id-${card.id} ${card.TYPE} ${card.canAttack?'canAttack':''} ${card.canDash?'canDash':''}">
-            <img src="${card.name}.png" alt="" class="image" onerror="this.src='error.webp'">
+            <img src="https://c-1316363893.cos.ap-nanjing.myqcloud.com/${encodeURIComponent(card.name)}.png" alt="" class="image" onerror="this.src='error.webp'">
             <div class="name ${card.upgrade?"upgrade":""}">${card.name + (card.upgrade?" +":"")}</div>
             <div class="type">${card.TYPE}</div>
             ${card.race.length>0?'<p class="race">'+card.race.join(' ')+'</p>':""}
@@ -48,14 +48,16 @@ var initBoard = function(){
     $(".end-button").css("background","radial-gradient(blue, #2f4f4f9f)");
     drawBoard();
 }
-var drawBoard = function(){
+var clearBoard = function(){
     $('#enemy-hero').empty();
     $('#enemy-hand').empty();
     $('#enemy-battlefield').empty();
     $('#my-battlefield').empty();
     $('#my-hand').empty();
     $('#my-hero').empty();
-
+}
+var drawBoard = function(){
+    clearBoard();
 
     $('#enemy-info').addClass('id-'+boardInfo.enemy.leader.id);
     $('#my-info').addClass('id-'+boardInfo.me.leader.id);
@@ -318,6 +320,9 @@ if ($.trim(userName)) {
             case "battleInfo":
                 boardInfo = obj;
                 drawBoard();
+                break;
+            case "clearBoard":
+                clearBoard();
                 break;
             case "discover":
                 $('#discover-card-modal').modal('show');

@@ -52,17 +52,36 @@ public class Damage{
     }
 
     public boolean avoid(){
+        final PlayerInfo player = to.ownerPlayer();
+        if (isFromAtk()) {
+            if (isMiss()) {
+                player.getInfo().msg(to.getNameWithOwner() + "闪避了本次攻击伤害！");
+                return true;
+            }
+        }
+        if (to instanceof Leader leader) {
+            if (player.getCount("圣盾")>0) {
+                player.getInfo().msg(leader.getNameWithOwner() + "的圣盾抵消了本次伤害！");
+                player.count("圣盾",-1);
+                return true;
+            }
+            if (!isFromAtk()) {
+                if (player.getCount("魔法免疫")>0) {
+                    player.getInfo().msg(leader.getNameWithOwner() + "免疫了本次伤害！");
+                    return true;
+                }
+                if (player.getCount("魔法护盾")>0) {
+                    player.getInfo().msg(leader.getNameWithOwner() + "的魔法护盾抵消了本次效果伤害！");
+                    player.count("魔法护盾",-1);
+                    return true;
+                }
+            }
+        }
         if (to instanceof FollowCard toFollow && toFollow.atArea()) {
             if (toFollow.hasKeyword("圣盾")) {
                 toFollow.getInfo().msg(toFollow.getNameWithOwner() + "的圣盾抵消了本次伤害！");
                 toFollow.removeKeyword("圣盾");
                 return true;
-            }
-            if (isFromAtk()) {
-                if (isMiss()) {
-                    toFollow.getInfo().msg(toFollow.getNameWithOwner() + "闪避了本次攻击伤害！");
-                    return true;
-                }
             }
             if (!isFromAtk()) {
                 if (toFollow.hasKeyword("魔法免疫")) {

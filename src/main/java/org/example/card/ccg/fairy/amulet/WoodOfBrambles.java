@@ -11,6 +11,7 @@ import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,6 +31,8 @@ public class WoodOfBrambles extends AmuletCard {
         """;
     public String subMark = "";
 
+    List<FollowCard> effectFollows = new ArrayList<>();
+
     public void init() {
         setCountDown(2);
         setPlay(new Play(()->{
@@ -38,17 +41,18 @@ public class WoodOfBrambles extends AmuletCard {
         }));
         addEffects((new Effect(this,this, EffectTiming.WhenAtArea, ignored->
             ownerPlayer().getAreaFollowsAsFollow().forEach(followCard -> {
+                effectFollows.add(followCard);
                 followCard.addEffects(new Effect(this,followCard,EffectTiming.WhenBattle,
                 obj -> {
                     Damage damage = (Damage) obj;
                     FollowCard another = (FollowCard) damage.another(followCard);
-                    info.damageEffect(followCard,another,1);
                     info.damageEffect(followCard,another,1);
                 }));
             })
         )));
         addEffects((new Effect(this,this, EffectTiming.WhenSummon,areaCard -> {
             if(areaCard instanceof FollowCard followCard){
+                effectFollows.add(followCard);
                 followCard.addEffects(new Effect(this,followCard,EffectTiming.WhenBattle,
                 obj -> {
                     Damage damage = (Damage) obj;
@@ -58,8 +62,8 @@ public class WoodOfBrambles extends AmuletCard {
             }
         })));
         addEffects((new Effect(this,this, EffectTiming.WhenNoLongerAtArea, obj->
-            ownerPlayer().getAreaFollowsAsFollow().forEach(followCard ->
-                followCard.getEffects().removeIf(effect -> effect.getParent().equals(this)))
+            effectFollows.forEach(followCard ->
+                followCard.getEffects().removeIf(effect -> effect.getParent()==this))
         )));
     }
 

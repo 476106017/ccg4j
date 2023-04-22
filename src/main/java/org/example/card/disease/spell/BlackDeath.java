@@ -1,4 +1,4 @@
-package org.example.card.ccg.warlock.spell;
+package org.example.card.disease.spell;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +19,8 @@ import java.util.List;
 public class BlackDeath extends SpellCard {
     public Integer cost = 2;
     public String name = "黑死病";
-    public String job = "术士";
-    private List<String> race = Lists.ofStr("灾厄");
+    public String job = "疾病";
+    private List<String> race = Lists.ofStr();
     public String mark = """
         对1名敌方随从造成2点伤害，如果该随从没有死亡，获得【亡语：对相邻随从释放黑死病】
         （该亡语不能叠加）

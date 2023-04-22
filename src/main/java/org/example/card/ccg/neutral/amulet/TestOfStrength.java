@@ -24,7 +24,7 @@ public class TestOfStrength extends AmuletCard {
     private List<String> race = Lists.ofStr();
 
     public String mark = """
-        若此卡在场上，双方全部随从获得【守护】
+        场上全部随从具有【守护】
         """;
     public String subMark = "";
 

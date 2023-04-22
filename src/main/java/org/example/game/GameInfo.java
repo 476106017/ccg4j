@@ -10,7 +10,6 @@ import org.example.system.util.Lists;
 import org.example.system.util.Maps;
 import org.example.system.util.Msg;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
@@ -435,6 +434,14 @@ public class GameInfo implements Serializable {
         _result.addAll(oppositePlayer().getArea());
         return _result;
     }
+    public List<GameObj> getTargetableGameObj(){
+        List<GameObj> _result = new ArrayList<>();
+        _result.addAll(thisPlayer().getAreaFollows());
+        _result.addAll(oppositePlayer().getAreaFollows());
+        _result.add(thisPlayer().getLeader());
+        _result.add(oppositePlayer().getLeader());
+        return _result;
+    }
     public List<AreaCard> getAreaFollowsCopy(){
         List<AreaCard> _result = new ArrayList<>();
         _result.addAll(thisPlayer().getAreaFollows());
@@ -505,7 +512,7 @@ public class GameInfo implements Serializable {
             rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
             msg("倒计时30秒！");
         }else{
-            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 3600, TimeUnit.SECONDS);
+            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
             msg("倒计时300秒！");
         }
         pushInfo();
@@ -515,7 +522,7 @@ public class GameInfo implements Serializable {
         Msg.send(oppositePlayer().getSession(),"enemyTurn","");
 
 
-        if(turn==1){// 活动模式，第一回合奖励
+        if(turn==10){// TODO 活动模式，第10回合奖励
             final List<Class<? extends Card>> classes = CardPackage.randCard("passive", 3);
             final List<Card> list =  classes.stream().map(clazz -> (Card)thisPlayer().getLeader().createCard(clazz)).toList();
             thisPlayer().discoverCard(list,card -> card.getPlay().effect().accept(0,new ArrayList<>()));
@@ -626,8 +633,11 @@ public class GameInfo implements Serializable {
     public void afterTurn(){
         // 对手中毒效果
         final Integer poison = oppositePlayer().getCount(POISON);
-        damageEffect(thisPlayer().getLeader(), oppositePlayer().getLeader(), poison);
-        oppositePlayer().count(POISON,-1);
+        if(poison>0){
+            msg(oppositePlayer().getLeader().getNameWithOwner() + "受到"+poison+"点中毒伤害");
+            damageEffect(thisPlayer().getLeader(), oppositePlayer().getLeader(), poison);
+            oppositePlayer().count(POISON,-1);
+        }
 
         // 发动回合结束效果
         oppositePlayer().getAreaCopy().forEach(areaCard -> {

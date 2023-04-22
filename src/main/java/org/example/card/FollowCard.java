@@ -151,13 +151,15 @@ public abstract class FollowCard extends AreaCard{
             }
         }
 
+
         if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard)
             useEffectsAndSettle(EffectTiming.WhenBattle,damage);
 
         if(damage.checkFollowAtArea() && damage.getTo() instanceof FollowCard toFollow)
             toFollow.useEffectsAndSettle(EffectTiming.WhenBattle,damage);
 
-        info.damageAttacking(this,target);
+        if(damage.checkFollowAtArea())
+            info.damageAttacking(this,target);
 
         if(equipped())expireEquipSettlement();
 
