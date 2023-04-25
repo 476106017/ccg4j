@@ -58,7 +58,7 @@ public class PhantomAssassin extends FollowCard {
         public Integer cost = 1;
         public String name = "窒息之刃";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         投出匕首，对目标造成1点伤害和1层【眩晕】
         """;
@@ -79,7 +79,7 @@ public class PhantomAssassin extends FollowCard {
         public Integer cost = 1;
         public String name = "幻影突袭";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         立即攻击1个敌方随从，之后重置普攻
         """;

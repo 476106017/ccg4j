@@ -26,6 +26,8 @@ public enum EffectTiming {
     InvocationEnd("瞬念召唤（回合结束时）"),
     WhenPlay("我方出牌时",Card.class),
     WhenEnemyPlay("敌方出牌时",Card.class),
+    AfterPlay("我方出牌后",Card.class),
+    AfterEnemyPlay("敌方出牌后",Card.class),
     Boost("增幅",Card.class,true),
 
     WhenOtherAttack("友方随从攻击时",Damage.class),// TODO

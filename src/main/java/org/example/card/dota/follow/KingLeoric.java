@@ -51,7 +51,7 @@ public class KingLeoric extends FollowCard {
         public Integer cost = 2;
         public String name = "冥火暴击";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         从剑尖向目标投掷一团来自地狱的火焰，造成2点伤害和2层【眩晕】
         """;

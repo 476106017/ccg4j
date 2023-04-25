@@ -68,7 +68,7 @@ public class Nevermore  extends FollowCard {
         public Integer cost = 0;
         public String name = "影压";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
 
     }
     @Getter

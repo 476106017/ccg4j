@@ -52,7 +52,7 @@ public class FacelessVoid extends FollowCard {
         public Integer cost = 4;
         public String name = "时间结界";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         虚空假面获得【疾驰】并且每回合可以攻击2次
         """;

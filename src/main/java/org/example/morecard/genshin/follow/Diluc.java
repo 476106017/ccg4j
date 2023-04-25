@@ -55,7 +55,7 @@ public class Diluc extends ElementBaseFollowCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "逆焰之刃";
         public String job = "原神";
-        private List<String> race = Lists.ofStr("技能","元素战技");
+        private List<String> race = Lists.ofStr("灵魂绑定","元素战技");
         public String mark = """
         对敌方随从造成3+X点火元素伤害（X是迪卢克攻击力）
         """;
@@ -87,7 +87,7 @@ public class Diluc extends ElementBaseFollowCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "黎明";
         public String job = "原神";
-        private List<String> race = Lists.ofStr("技能","元素爆发");
+        private List<String> race = Lists.ofStr("灵魂绑定","元素爆发");
         public String mark = """
         对敌方随从造成8+X点火元素伤害（X是迪卢克攻击力），迪卢克的普攻获得火元素附魔
         """;

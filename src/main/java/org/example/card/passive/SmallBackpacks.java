@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class SmallBackpacks extends SpellCard {
-    public Integer cost = 0;
+    public Integer cost = 3;
     public String name = "小型背包";
     public String job = "被动";
     private List<String> race = Lists.ofStr();

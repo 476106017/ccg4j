@@ -60,7 +60,7 @@ public class Sucrose extends ElementBaseFollowCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "风灵作成6308";
         public String job = "原神";
-        private List<String> race = Lists.ofStr("技能","元素战技");
+        private List<String> race = Lists.ofStr("灵魂绑定","元素战技");
         public String mark = """
         对敌方随从造成3+X点风元素伤害（X是砂糖攻击力）
         如果目标没有阵亡且拥有【守护】，则将守护转移到敌方场上任意目标身上
@@ -97,7 +97,7 @@ public class Sucrose extends ElementBaseFollowCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "禁·风灵作成75同构2型";
         public String job = "原神";
-        private List<String> race = Lists.ofStr("技能","元素爆发");
+        private List<String> race = Lists.ofStr("灵魂绑定","元素爆发");
         public String mark = """
         对敌方随从造成1点风元素伤害，召唤1个大型风灵，并增加其X回合倒数（X是砂糖攻击力）
         """;

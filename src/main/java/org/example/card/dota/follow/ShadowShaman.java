@@ -42,7 +42,7 @@ public class ShadowShaman extends FollowCard {
         public Integer cost = 3;
         public String name = "叉形闪电";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         对敌方前3个位置分别造成3点伤害
         """;
@@ -72,7 +72,7 @@ public class ShadowShaman extends FollowCard {
         public Integer cost = 4;
         public String name = "妖术";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         到下回合开始前，将1个敌方随从变成小动物
         """;
@@ -117,7 +117,7 @@ public class ShadowShaman extends FollowCard {
         public Integer cost = 1;
         public String name = "枷锁";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
             暗影萨满使用魔法绑住1个敌方随从
             暗影萨满获得【缴械】和【回合结束时：眩晕该随从，并对该随从造成1点伤害】持续3回合、或者枷锁消失
@@ -176,7 +176,7 @@ public class ShadowShaman extends FollowCard {
         public Integer cost = 6;
         public String name = "蛇群守卫";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
             在敌方战场上召唤3只蛇棒
             """;

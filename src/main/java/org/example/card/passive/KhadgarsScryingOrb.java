@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class KhadgarsScryingOrb extends SpellCard {
-    public Integer cost = 0;
+    public Integer cost = 3;
     public String name = "卡德加的占卜宝珠";
     public String job = "被动";
     private List<String> race = Lists.ofStr();

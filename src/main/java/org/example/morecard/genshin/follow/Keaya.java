@@ -60,7 +60,7 @@ public class Keaya extends ElementBaseFollowCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "霜袭";
         public String job = "原神";
-        private List<String> race = Lists.ofStr("技能","元素战技");
+        private List<String> race = Lists.ofStr("灵魂绑定","元素战技");
         public String mark = """
         对敌方随从造成3+X点冰元素伤害（X是凯亚攻击力）
         """;
@@ -92,7 +92,7 @@ public class Keaya extends ElementBaseFollowCard {
         public List<Elemental> elementCost = List.of(Elemental.Main, Elemental.Main, Elemental.Main, Elemental.Main);
         public String name = "凌冽轮舞";
         public String job = "原神";
-        private List<String> race = Lists.ofStr("技能","元素爆发");
+        private List<String> race = Lists.ofStr("灵魂绑定","元素爆发");
         public String mark = """
         对敌方随从造成1+X点冰元素伤害（X是凯亚攻击力），主战者获得唯一效果【切换时：对随机一个敌方随从造成2点冰元素伤害（每回合仅可发动1次）】
         """;

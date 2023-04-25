@@ -51,7 +51,7 @@ public class Slark extends FollowCard {
         public Integer cost = 0;
         public String name = "黑暗契约";
         public String job = "dota";
-        private List<String> race = Lists.ofStr("技能");
+        private List<String> race = Lists.ofStr("灵魂绑定");
         public String mark = """
         支付1hp，在下个回合开始时移除自身的负面关键字，然后再获得1张黑暗契约
         """;

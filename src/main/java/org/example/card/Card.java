@@ -163,12 +163,12 @@ public abstract class Card extends GameObj implements Serializable {
             areaCard.useEffects(EffectTiming.WhenNoLongerAtArea);
 
             List<Card> skills = ownerPlayer().getHandCopy().stream()
-                .filter(card -> card.getRace().contains("技能") && card.getParent() == this)
+                .filter(card -> card.getRace().contains("灵魂绑定") && card.getParent() == this)
                 .toList();
 
             if(!skills.isEmpty()){
                 getInfo().exile(skills);
-                getInfo().msg(getNameWithOwner() + "的技能从手牌中除外了");
+                getInfo().msg(getNameWithOwner() + "的灵魂绑定从手牌中除外了");
             }
         }
     }
@@ -292,9 +292,14 @@ public abstract class Card extends GameObj implements Serializable {
             }else {
                 ownerPlayer().summon(areaCard);
             }
-        } else if (this instanceof SpellCard) {
-            ownerPlayer().getGraveyard().add(this);
-            ownerPlayer().countToGraveyard(1);
+        } else if (this instanceof SpellCard spellCard) {
+            if(spellCard.hasKeyword("灵魂绑定")){
+                Msg.send(ownerPlayer().getSession(), "灵魂绑定！");
+                ownerPlayer().addHand(this);
+            }else{
+                ownerPlayer().getGraveyard().add(this);
+                ownerPlayer().countToGraveyard(1);
+            }
         }
         // endregion
 
@@ -313,6 +318,7 @@ public abstract class Card extends GameObj implements Serializable {
         }
         // endregion 发动卡牌效果
 
+
         // 触发手牌上全部增幅效果
         String boostCards = ownerPlayer().getHandCopy().stream().map(card -> card.getEffects(EffectTiming.Boost))
             .flatMap(Collection::stream)
@@ -329,6 +335,12 @@ public abstract class Card extends GameObj implements Serializable {
         ownerPlayer().count(PLAY_NUM_ALL);
         ownerPlayer().getPlayedCard().add(this);
 
+        // region 计算使用后
+        ownerLeader().useEffects(EffectTiming.AfterPlay,this);
+        enemyLeader().useEffects(EffectTiming.AfterEnemyPlay,this);
+        ownerPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.AfterPlay,this));
+        enemyPlayer().getAreaCopy().forEach(areaCard -> areaCard.useEffects(EffectTiming.AfterEnemyPlay,this));
+        // endregion 计算使用后
         info.startEffect();
         info.pushInfo();
 

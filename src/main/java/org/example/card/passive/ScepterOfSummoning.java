@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ScepterOfSummoning extends SpellCard {
-    public Integer cost = 0;
+    public Integer cost = 3;
     public String name = "召唤权杖";
     public String job = "被动";
     private List<String> race = Lists.ofStr();
