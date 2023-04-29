@@ -85,6 +85,12 @@ public class GameInfo implements Serializable {
             Msg.send(oppositePlayer().getSession(),msg);
         } catch (Exception ignored) {}
     }
+    public void story(String msg){
+        try {
+            Msg.story(thisPlayer().getSession(),msg);
+            Msg.story(oppositePlayer().getSession(),msg);
+        } catch (Exception ignored) {}
+    }
 
     public void msgTo(Session session, String msg){
         Msg.send(session,msg);
@@ -639,6 +645,14 @@ public class GameInfo implements Serializable {
             oppositePlayer().count(POISON,-1);
         }
 
+        oppositePlayer().getAreaCopy().forEach(areaCard -> {
+            if(areaCard instanceof FollowCard followCard && followCard.hasKeyword("中毒")){
+                final int poison1 = followCard.countKeyword("中毒");
+                msg(followCard.getNameWithOwner() + "受到"+poison1+"点中毒伤害");
+                damageEffect(followCard, followCard, poison1);
+            }
+        });
+
         // 发动回合结束效果
         oppositePlayer().getAreaCopy().forEach(areaCard -> {
             if(!areaCard.atArea())return;
@@ -663,6 +677,11 @@ public class GameInfo implements Serializable {
                 EquipmentCard equipment = followCard.getEquipment();
                 equipment.useEffects(EffectTiming.EndTurn);
             }
+        });
+        thisPlayer().getHandCopy().forEach(card -> {
+           if(card.hasKeyword("虚无")){
+               thisPlayer().abandon(card);
+           }
         });
 
         // 查找牌堆是否有瞬召卡牌，同名字卡牌各取一张

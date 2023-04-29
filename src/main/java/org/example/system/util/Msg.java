@@ -21,6 +21,13 @@ public class Msg<T> {
         this.data = data;
     }
 
+    public synchronized static void story(Session session,String msg){
+        try {
+            session.getBasicRemote().sendObject(new Msg<>("story",msg));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     public synchronized static void send(Session session,String msg){
         try {
             session.getBasicRemote().sendObject(new Msg<>(msg));

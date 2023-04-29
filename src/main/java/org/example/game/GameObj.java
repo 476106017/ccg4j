@@ -145,6 +145,8 @@ public abstract class GameObj {
             card.setOwner(getOwner());
             card.setInfo(getInfo());
             card.init();
+            info.useAreaCardEffectBatch(ownerPlayer().getAreaCopy(),EffectTiming.WhenCreateCard,card);
+            ownerLeader().useEffects(EffectTiming.WhenCreateCard,card);
             return card;
         } catch (Exception e) {
             throw new RuntimeException(e);
