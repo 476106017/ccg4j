@@ -1,4 +1,4 @@
-package org.example.card.disease.spell;
+package org.example.card.original.disease.spell;
 
 import lombok.Getter;
 import lombok.Setter;

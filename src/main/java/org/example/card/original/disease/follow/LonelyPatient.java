@@ -1,4 +1,4 @@
-package org.example.card.disease.follow;
+package org.example.card.original.disease.follow;
 
 import lombok.Getter;
 import lombok.Setter;

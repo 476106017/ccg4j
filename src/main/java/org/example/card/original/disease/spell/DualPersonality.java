@@ -1,4 +1,4 @@
-package org.example.card.disease.spell;
+package org.example.card.original.disease.spell;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,6 @@ import org.example.game.Effect;
 import org.example.game.Play;
 import org.example.system.Database;
 import org.example.system.util.Lists;
-import org.example.system.util.Msg;
 
 import java.util.List;
 

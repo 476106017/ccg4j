@@ -1,4 +1,4 @@
-package org.example.card.disease.amulet;
+package org.example.card.original.disease.amulet;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package org.example.card.disease.spell;
+package org.example.card.original.disease.spell;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +8,6 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static org.example.constant.CounterKey.PLAY_NUM;
 
 @Getter
 @Setter
