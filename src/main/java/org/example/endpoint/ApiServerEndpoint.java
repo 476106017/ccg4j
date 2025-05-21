@@ -12,12 +12,8 @@ import org.example.endpoint.handler.MatchHandler;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.game.PlayerInfo;
-import org.example.system.GsonConfig;
-import org.example.system.WebSocketConfig;
-import org.example.system.WebSocketConfigurator;
+import org.example.system.*;
 import org.example.system.util.Msg;
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
@@ -41,55 +37,49 @@ public class ApiServerEndpoint {
     @Autowired DeckEditHandler deckEditHandler;
     @Autowired GameHandler gameHandler;
     @Autowired MatchHandler matchHandler;
+    @Autowired CardInitializationService cardInitializationService;
+    @Autowired GameStateService gameStateService;
+    @Autowired WebSocketConfig webSocketConfig;
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
         // handle open event
         final String name = session.getPathParameters().get("name");
-        if(Strings.isBlank(name) || userNames.containsValue(name)){
+        if(Strings.isBlank(name) || gameStateService.getUserNames().containsValue(name)){
             Msg.send(session,"用户名无法使用！");
             session.close();
             return;
         }
         session.getUserProperties().put("name",name);
-        userNames.put(session,name);
+        gameStateService.getUserNames().put(session,name);
 
         // region
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(ThePlayer.class);
 
-        Set<Class<? extends Card>> subTypesOf =
-            new Reflections(new ConfigurationBuilder()
-                .filterInputsBy(s -> !s.contains("morecard"))
-                .forPackage("org.example.card"))
-                .getSubTypesOf(Card.class);
-        // 移除不符合的卡牌类型
-        subTypesOf.removeIf(aClass ->{
-            int modifiers = aClass.getModifiers();
-            return Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers);
-        });
+        List<Class<? extends Card>> allCardClasses = cardInitializationService.getAllCardClasses();
         // 随机取30张
-        List<Class<? extends Card>> classes = new ArrayList<>(subTypesOf.stream().toList());
+        List<Class<? extends Card>> classes = new ArrayList<>(allCardClasses);
         Collections.shuffle(classes);
-        playerDeck.getActiveDeck().addAll(classes.subList(0,30));
-        userDecks.put(session, playerDeck);
+        playerDeck.getActiveDeck().addAll(classes.subList(0,Math.min(30, classes.size())));
+        gameStateService.getUserDecks().put(session, playerDeck);
         // endregion
 Msg.send(session,name + "登录成功！");
-        final int size = userNames.size();
-        WebSocketConfig.broadcast("【全体】有玩家登陆了游戏！当前在线："+ size +"人");
+        final int size = gameStateService.getUserNames().size();
+        webSocketConfig.broadcast("【全体】有玩家登陆了游戏！当前在线："+ size +"人");
     }
 
     @OnClose
     public void onClose(Session session) {
         // handle close event
-        String name = userNames.get(session);
-        userNames.remove(session);
-        final int size = userNames.size();
-        WebSocketConfig.broadcast("【全体】有玩家退出了游戏！当前在线："+ size +"人");
-        String room = userRoom.get(session);
+        String name = gameStateService.getUserNames().get(session);
+        gameStateService.getUserNames().remove(session);
+        final int size = gameStateService.getUserNames().size();
+        webSocketConfig.broadcast("【全体】有玩家退出了游戏！当前在线："+ size +"人");
+        String room = gameStateService.getUserRoom().get(session);
         if(room==null)return;
 
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         if(info!=null){
             PlayerInfo player = info.playerBySession(session);
             PlayerInfo enemy = info.anotherPlayerBySession(session);
@@ -98,12 +88,12 @@ Msg.send(session,name + "登录成功！");
             return;
         }
         // 释放资源
-        roomGame.remove(room);
-        userRoom.remove(session);
-        if(session==waitUser || room.equals(waitRoom) ){
-            waitRoom = "";
-            waitUser = null;
-            WebSocketConfig.broadcast("【全体】匹配中的玩家已经退出了！");
+        gameStateService.getRoomGame().remove(room);
+        gameStateService.getUserRoom().remove(session);
+        if(session == gameStateService.getWaitUser() || room.equals(gameStateService.getWaitRoom()) ){
+            gameStateService.setWaitRoom("");
+            gameStateService.clearWaitUser();
+            webSocketConfig.broadcast("【全体】匹配中的玩家已经退出了！");
         }
     }
 

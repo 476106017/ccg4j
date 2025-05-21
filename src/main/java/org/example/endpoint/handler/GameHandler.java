@@ -5,6 +5,7 @@ import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.example.card.*;
 import org.example.game.*;
+import org.example.system.GameStateService;
 import org.example.system.util.Lists;
 import org.example.system.util.Maps;
 import org.example.system.util.Msg;
@@ -14,23 +15,23 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.Executors;
 
-import static org.example.system.Database.*;
-
 @Service
 @Slf4j
 public class GameHandler {
 
     @Autowired
     Gson gson;
+    @Autowired
+    private GameStateService gameStateService;
 
 
     public void swap(Session client, String msg) {
         // region 获取游戏对象
-        String name = userNames.get(client);
+        String name = gameStateService.getUserNames().get(client);
 
-        String room = userRoom.get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.playerBySession(client);
         // endregion
 
@@ -74,7 +75,7 @@ public class GameHandler {
             // 两名玩家都换完了，开始游戏
             info.msg("双方均交换完成，游戏开始！由【"+turnPlayerName+"】先攻。");
             info.beginGame();
-            roomSchedule.put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
+            gameStateService.getRoomSchedule().put(room, Executors.newScheduledThreadPool(1));// 房间里面放一个计时器
             info.startTurn();
         }else {
             Msg.send(client,"请等待对方换牌");
@@ -86,10 +87,10 @@ public class GameHandler {
     public void end(Session client, String msg){
 
         // region 获取游戏对象
-        String name = userNames.get(client);
-        String room = userRoom.get(client);
+        String name = gameStateService.getUserNames().get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.thisPlayer();
         // endregion
 
@@ -110,11 +111,11 @@ public class GameHandler {
 
     public void play(Session client, String msg) {
         // region 获取游戏对象
-        String name = userNames.get(client);
+        String name = gameStateService.getUserNames().get(client);
 
-        String room = userRoom.get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.thisPlayer();
         // endregion
 
@@ -245,10 +246,10 @@ public class GameHandler {
     public void attack(Session client, String msg){
 
         // region 获取游戏对象
-        String name = userNames.get(client);
-        String room = userRoom.get(client);
+        String name = gameStateService.getUserNames().get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
@@ -353,10 +354,10 @@ public class GameHandler {
     public void discover(Session client, String msg){
 
         // region 获取游戏对象
-        String name = userNames.get(client);
-        String room = userRoom.get(client);
+        String name = gameStateService.getUserNames().get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
@@ -384,10 +385,10 @@ public class GameHandler {
 
     public void skill(Session client, String msg){
         // region 获取游戏对象
-        String name = userNames.get(client);
-        String room = userRoom.get(client);
+        String name = gameStateService.getUserNames().get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.thisPlayer();
         PlayerInfo enemy = info.oppositePlayer();
         // endregion
@@ -440,9 +441,9 @@ public class GameHandler {
 
     public void test(Session client){
 
-        String room = userRoom.get(client);
+        String room = gameStateService.getUserRoom().get(client);
         if(room==null)return;
-        GameInfo info = roomGame.get(room);
+        GameInfo info = gameStateService.getRoomGame().get(room);
         PlayerInfo player = info.thisPlayer();
 
 

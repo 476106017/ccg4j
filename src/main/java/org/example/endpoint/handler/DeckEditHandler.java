@@ -9,21 +9,30 @@ import org.example.card.ccg.neutral.ThePlayer;
 import org.example.constant.DeckPreset;
 import org.example.game.Leader;
 import org.example.game.PlayerDeck;
+import org.example.system.CardInitializationService;
 import org.example.system.Database;
+import org.example.system.GameStateService;
 import org.example.system.util.Msg;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
 
-import static org.example.system.Database.userDecks;
-
 @Service
 @Slf4j
 public class DeckEditHandler {
 
+    @Autowired
+    private GameStateService gameStateService;
+    @Autowired
+    private CardInitializationService cardInitializationService;
+    // Database service is not directly used here for prototypes,
+    // as card instances are not created in this handler based on the new logic.
+    // If Database.getPrototype was needed, it would be injected.
+
     public void deck(Session client) throws IOException, EncodeException {
-        Msg.send(client,"myDeck",userDecks.get(client).describe());
+        Msg.send(client,"myDeck",gameStateService.getUserDecks().get(client).describe());
     }
 
     public void setdeck(Session client, String data) throws IOException, EncodeException {
@@ -40,14 +49,14 @@ public class DeckEditHandler {
         }
         List<Class<? extends Card>> newDeck = new ArrayList<>();
         cardNames.forEach(name->{
-            final Class<? extends Card> aClass = Database.nameToCardClass.get(name);
+            final Class<? extends Card> aClass = cardInitializationService.getNameToCardClassMap().get(name);
             if(aClass!=null) newDeck.add(aClass);
         });
         if(newDeck.size()<10){
             Msg.warn(client,"牌组至少需要10张牌！");
             return;
         }
-        final PlayerDeck playerDeck = userDecks.get(client);
+        final PlayerDeck playerDeck = gameStateService.getUserDecks().get(client);
         playerDeck.setActiveDeck(newDeck);
         Msg.send(client,"myDeck", playerDeck.describe());
     }
@@ -72,7 +81,7 @@ public class DeckEditHandler {
             leader = ThePlayer.class;
         }
 
-        PlayerDeck playerDeck = userDecks.get(client);
+        PlayerDeck playerDeck = gameStateService.getUserDecks().get(client);
         if(playerDeck==null){
             Msg.send(client,"不存在的用户，请刷新页面重新登录");
             return;
@@ -84,7 +93,7 @@ public class DeckEditHandler {
         playerDeck.setLeaderClass(leader);
 
         Msg.send(client, "成功使用预设牌组：" + data);
-        Msg.send(client,"myDeck",userDecks.get(client).describe());
+        Msg.send(client,"myDeck",gameStateService.getUserDecks().get(client).describe());
     }
 
 }

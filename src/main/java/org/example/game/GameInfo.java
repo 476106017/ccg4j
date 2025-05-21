@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
 import static org.example.constant.CounterKey.POISON;
-import static org.example.system.Database.*;
+
+import org.example.system.GameStateService;
 
 @Getter
 @Setter
 public class GameInfo implements Serializable {
+    private final GameStateService gameStateService;
     String room;
 
     // 连锁
@@ -54,29 +56,35 @@ public class GameInfo implements Serializable {
 
     PlayerInfo[] playerInfos;
 
-    public GameInfo(String room) {
+    public GameInfo(String room, GameStateService gameStateService) {
         this.room = room;
+        this.gameStateService = gameStateService;
         this.turn = 1;
         this.turnPlayer = 0;
         this.playerInfos = new PlayerInfo[2];
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
-
     }
 
     public void resetGame(){
         msg("游戏重启！");
-        roomSchedule.get(getRoom()).shutdown();
-        roomSchedule.remove(getRoom());
+        this.gameStateService.getRoomSchedule().get(getRoom()).shutdown();
+        this.gameStateService.getRoomSchedule().remove(getRoom());
         rope.cancel(true);
         this.turn = 1;
         this.turnPlayer = 0;
         Session thisSession = thisPlayer().session;
         Session oppoSession = oppositePlayer().session;
+
+        PlayerDeck deck0 = this.gameStateService.getUserDecks().get(thisSession);
+        String name0 = this.gameStateService.getUserNames().get(thisSession);
+        PlayerDeck deck1 = this.gameStateService.getUserDecks().get(oppoSession);
+        String name1 = this.gameStateService.getUserNames().get(oppoSession);
+
         this.playerInfos = new PlayerInfo[2];
         this.playerInfos[0] = new PlayerInfo(this,true);
         this.playerInfos[1] = new PlayerInfo(this,false);
-        zeroTurn(thisSession,oppoSession);
+        zeroTurn(deck0, name0, thisSession, deck1, name1, oppoSession);
     }
 
     public void msg(String msg){
@@ -173,18 +181,18 @@ public class GameInfo implements Serializable {
         Msg.send(anotherPlayerBySession(winnerSession).getSession(),"alert","你输了！");
 
         // 释放资源
-        roomGame.remove(getRoom());
+        this.gameStateService.getRoomGame().remove(getRoom());
         // 退出房间
         try {
-            userRoom.remove(thisPlayer().getSession());
+            this.gameStateService.getUserRoom().remove(thisPlayer().getSession());
             msgToThisPlayer("离开房间成功");
-            userRoom.remove(oppositePlayer().getSession());
+            this.gameStateService.getUserRoom().remove(oppositePlayer().getSession());
             msgToOppositePlayer("离开房间成功");
 
             rope.cancel(true);
-            ScheduledExecutorService ses = roomSchedule.get(getRoom());
+            ScheduledExecutorService ses = this.gameStateService.getRoomSchedule().get(getRoom());
             ses.shutdown();
-            roomSchedule.remove(getRoom());
+            this.gameStateService.getRoomSchedule().remove(getRoom());
         }catch (Exception e){e.printStackTrace();}
         throw new RuntimeException("Game Set");
     }
@@ -474,22 +482,20 @@ public class GameInfo implements Serializable {
         Msg.send(oppositePlayer().getSession(),"swapOver","");
 
     }
-    public void zeroTurn(Session u0, Session u1){
+    public void zeroTurn(PlayerDeck deck0, String name0, Session session0, PlayerDeck deck1, String name1, Session session1){
 
         PlayerInfo p0 = thisPlayer();
-        PlayerDeck playerDeck0 = userDecks.get(u0);
-        p0.setSession(u0);
-        p0.setName(userNames.get(u0));
-        p0.setLeader(playerDeck0.getLeader(0, this));
-        p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
+        p0.setSession(session0);
+        p0.setName(name0);
+        p0.setLeader(deck0.getLeader(0, this));
+        p0.setDeck(deck0.getActiveDeckInstance(0, this));
         Collections.shuffle(p0.getDeck());
 
         PlayerInfo p1 = oppositePlayer();
-        PlayerDeck playerDeck1 = userDecks.get(u1);
-        p1.setSession(u1);
-        p1.setName(userNames.get(u1));
-        p1.setLeader(playerDeck1.getLeader(1, this));
-        p1.setDeck(playerDeck1.getActiveDeckInstance(1, this));
+        p1.setSession(session1);
+        p1.setName(name1);
+        p1.setLeader(deck1.getLeader(1, this));
+        p1.setDeck(deck1.getActiveDeckInstance(1, this));
         Collections.shuffle(p1.getDeck());
 
         p0.getLeader().init();
@@ -515,10 +521,10 @@ public class GameInfo implements Serializable {
         thisPlayer().draw(1);
 
         if(thisPlayer().isShortRope()){
-            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
+            rope = this.gameStateService.getRoomSchedule().get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
             msg("倒计时30秒！");
         }else{
-            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
+            rope = this.gameStateService.getRoomSchedule().get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
             msg("倒计时300秒！");
         }
         pushInfo();

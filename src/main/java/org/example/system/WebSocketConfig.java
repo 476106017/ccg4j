@@ -1,26 +1,25 @@
 package org.example.system;
 
 import org.example.system.util.Msg;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
-import java.io.IOException;
-
-import static org.example.system.Database.userNames;
-
-@Configuration
+@Service
 @EnableWebSocket
 public class WebSocketConfig  {
+
+    @Autowired
+    private GameStateService gameStateService;
+
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
 
-
-
-    public static void broadcast(String msg){
-        userNames.keySet().forEach(userSession-> Msg.send(userSession,msg));
+    public void broadcast(String msg){
+        gameStateService.getUserNames().keySet().forEach(userSession-> Msg.send(userSession,msg));
     }
 }

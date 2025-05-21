@@ -3,6 +3,7 @@ package org.example.system;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import jakarta.websocket.Encoder;
+import lombok.extern.slf4j.Slf4j;
 import org.example.system.util.Func;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,14 +33,14 @@ public class GsonConfig {
             })
         .create();
     }
+    @Slf4j
     public static class MyEncoder implements Encoder.Text<Object> {
         @Override
         public String encode(Object object) {
             try {
-
                 return Func.toJson(object);
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("Failed to serialize object of type: {}", (object != null ? object.getClass().getName() : "null"), e);
             }
             return "";
         }
