@@ -6,10 +6,13 @@ import org.example.card.FollowCard;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class KingKrush extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "暴龙王克鲁什";
     private Integer cost = 9;
     private int atk = 8;

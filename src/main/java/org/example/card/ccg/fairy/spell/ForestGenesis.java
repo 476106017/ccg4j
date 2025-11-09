@@ -13,11 +13,14 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
 import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ForestGenesis extends SpellCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 1;
     public String name = "森林模式";
     public String job = "妖精";
@@ -40,6 +43,8 @@ public class ForestGenesis extends SpellCard {
     @Setter
     public static class EternalSeedling extends FollowCard {
 
+
+        private CardRarity rarity = CardRarity.SILVER;
         public Integer cost = 0;
 
         public String name = "永恒树苗";
@@ -103,6 +108,8 @@ public class ForestGenesis extends SpellCard {
     @Setter
     public static class EternalBloom extends FollowCard {
 
+
+        private CardRarity rarity = CardRarity.GOLD;
         public Integer cost = 0;
 
         public String name = "永恒之花";
@@ -160,6 +167,8 @@ public class ForestGenesis extends SpellCard {
     @Setter
     public static class EternalGarden extends AmuletCard {
 
+
+        private CardRarity rarity = CardRarity.GOLD;
         public Integer cost = 5;
 
         public String name = "永恒庭园";
@@ -190,6 +199,8 @@ public class ForestGenesis extends SpellCard {
     @Getter
     @Setter
     public static class EternalForest extends SpellCard {
+
+        private CardRarity rarity = CardRarity.LEGENDARY;
         public Integer cost = 0;
         public String name = "永恒森林";
         public String job = "妖精";

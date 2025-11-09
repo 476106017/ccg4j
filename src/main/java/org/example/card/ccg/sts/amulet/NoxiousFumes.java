@@ -11,10 +11,13 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.POISON;
 import static org.example.constant.CounterKey.STRENGTH;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class NoxiousFumes extends AmuletCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "毒雾";
     public String job = "杀戮尖塔";

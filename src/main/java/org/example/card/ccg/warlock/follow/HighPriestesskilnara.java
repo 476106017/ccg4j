@@ -7,10 +7,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class HighPriestesskilnara extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "高阶祭司基尔娜拉";
     private Integer cost = 5;
     private int atk = 4;

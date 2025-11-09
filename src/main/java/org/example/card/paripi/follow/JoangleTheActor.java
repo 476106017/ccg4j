@@ -10,11 +10,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class JoangleTheActor extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "演员乔安格";
     private Integer cost = 3;
     private int atk = 1;

@@ -12,10 +12,13 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class ElixirOfVigor extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "活化药剂";
     public String job = "被动";

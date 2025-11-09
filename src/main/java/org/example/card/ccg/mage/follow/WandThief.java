@@ -10,10 +10,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class WandThief extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "魔杖窃贼";
     private Integer cost = 1;
     private int atk = 1;

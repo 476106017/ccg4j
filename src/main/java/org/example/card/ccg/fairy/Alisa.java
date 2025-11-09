@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Alisa extends Leader {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "亚里莎";
     private String job = "妖精";
 

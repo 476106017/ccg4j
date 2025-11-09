@@ -24,7 +24,7 @@
 
 .enemy {
   display: flex;
-  height: 40%;
+  height: 45%;
   flex-direction: column;
 }
 
@@ -32,8 +32,11 @@
   z-index: 5;
   position: absolute;
   right: 0;
-  width: 70px;
-  height: 30px;
+  width: auto; /* 改为自动宽度 */
+  min-width: 70px; /* 最小宽度 */
+  max-width: 140px; /* 最大宽度 */
+  min-height: 30px;
+  height: auto;
   font-size: 0.6rem;
   color: #fff;
   text-shadow: 0px 0px 3px #000080;
@@ -42,14 +45,26 @@
   border: 1px solid #4b4b4b;
   font-weight: bold;
   line-height: 30px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(0); /* 默认位置 */
+  transition: transform 0.2s ease; /* 平滑移动动画 */
+}
+
+/* 当内容变成两行时，向右移动避免遮挡UI */
+.pp-num:has(br),
+.pp-num[style*="flex-wrap"] {
+  transform: translateX(10px);
 }
 .enemy-pp-num{
-  top: -30px;
+  top: -80px; /* 向上移动，远离中间按钮 */
   width: 110px;
   background: linear-gradient(to bottom, green, #ffd700,#fffacd );
 }
 .my-pp-num{
-  bottom: -30px;
+  bottom: -80px; /* 向下移动，远离中间按钮 */
   width: 110px;
   background: linear-gradient(to bottom, #fffacd, #ffd700, green);
 }
@@ -106,18 +121,29 @@
 
 .player {
   display: flex;
-  height: 60%;
+  height: 55%;
   flex-direction: column;
+  overflow: visible;
 }
 
 .battlefield {
   background-color: green;
   height: 100%;
-  margin-bottom: -50px;
+  margin-bottom: -20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 改为顶部对齐，避免重叠 */
+  flex-wrap: wrap;
+  gap: 15px; /* 进一步增大间距 */
 }
+
+/* 双方场上的卡牌适当缩小，避免重叠 */
 .battlefield .card {
-  transform: scale(0.5) !important;
+  transform: scale(0.85) !important;
+  margin: 0 -18px !important; /* 增加左右间距 */
+  flex-shrink: 0 !important; /* 防止卡牌被压缩 */
 }
+
 .canUse {
   color: rgb(64, 255, 64);
   border: 3px solid aquamarine;
@@ -161,15 +187,31 @@
 .hand {
   background-color: green;
   padding-left: 80px;
+  position: relative;
+  overflow: visible;
+  height: 60px; /* 只显示卡牌顶部（费用部分），约60px */
+  display: flex;
+  align-items: flex-end; /* 卡牌从底部对齐 */
 }
+
+/* 手牌区域整体hover - 让所有手牌略微展开 */
+.hand:hover .card{
+  margin-bottom: -150px !important;
+}
+
+/* 单张卡牌默认状态 */
 .hand .card{
-  margin-bottom: -130px !important;
-  transform:rotate(-15deg);
+  margin-bottom: -296px !important; /* 卡牌高度356px - 显示60px = -296px */
+  transform: rotate(-15deg);
+  transition: all 0.2s ease;
+  position: relative;
 }
+
+/* 单张卡牌hover - 完全展开并放大，向上凸出 */
 .hand .card:hover{
-  z-index: 999;
-  transform: scale(1) ;
-  margin-top: -190px !important;
+  z-index: 9999 !important;
+  transform: scale(1.2) rotate(0deg) translateY(-340px) !important;
+  margin-bottom: -296px !important;
 }
 
 .hero-power {

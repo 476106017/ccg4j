@@ -7,11 +7,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Haggle extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 1;
     public String name = "讨价还价";
     public String job = "潜行者";

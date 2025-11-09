@@ -3,12 +3,16 @@ package org.example.game;
 import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.example.card.*;
 import org.example.constant.EffectTiming;
+import org.example.game.ai.AiRegistry;
+import org.example.system.GameConfig;
 import org.example.system.util.CardPackage;
 import org.example.system.util.Lists;
 import org.example.system.util.Maps;
 import org.example.system.util.Msg;
+import org.example.system.util.SpringContext;
 
 import java.io.Serializable;
 import java.util.*;
@@ -21,9 +25,11 @@ import static org.example.constant.CounterKey.PLAY_NUM;
 import static org.example.constant.CounterKey.POISON;
 import static org.example.system.Database.*;
 
+@Slf4j
 @Getter
 @Setter
 public class GameInfo implements Serializable {
+
     String room;
 
     // 连锁
@@ -37,10 +43,31 @@ public class GameInfo implements Serializable {
     ScheduledFuture<?> rope;
     List<Damage> incommingDamages = new ArrayList<>();
     Map<Card,EventType> events = new HashMap<>();
-    List<Effect.EffectInstance> effectInstances = new LinkedList<>();
+    // 使用队列保证先入先出（FIFO）处理效果实例，处理时新产生的效果会继续入队并被处理
+    Queue<Effect.EffectInstance> effectInstances = new LinkedList<>();
+
+    // 弥留之国：存储AI的初始卡组代码（用于结算时获取）
+    private transient List<String> aiInitialDeckCodes;
+
+    // 对战统计信息
+    private transient long battleStartTime; // 对战开始时间（毫秒）
+    private transient int totalTurns = 0; // 总回合数
+    private transient String battleMode; // 对战模式：normal, borderland
+    private transient String endReason; // 结束原因
+    private transient List<String> battleLog = new ArrayList<>(); // 对战日志
 
     public boolean hasEvent(){
         return !incommingDamages.isEmpty() || !events.isEmpty();
+    }
+
+    /**
+     * 添加对战日志
+     */
+    public void addBattleLog(String msg) {
+        String logEntry = String.format("[T%d] %s", turn, msg);
+        battleLog.add(logEntry);
+        // 同时输出到控制台
+        log.info("游戏日志: {}", logEntry);
     }
 
     public void setCanChain(boolean canChain) {
@@ -66,6 +93,7 @@ public class GameInfo implements Serializable {
 
     public void resetGame(){
         msg("游戏重启！");
+        AiRegistry.unregister(this);
         roomSchedule.get(getRoom()).shutdown();
         roomSchedule.remove(getRoom());
         rope.cancel(true);
@@ -83,7 +111,12 @@ public class GameInfo implements Serializable {
         try {
             Msg.send(thisPlayer().getSession(),msg);
             Msg.send(oppositePlayer().getSession(),msg);
-        } catch (Exception ignored) {}
+            // 同时记录到对战日志
+            addBattleLog(msg);
+            System.out.println(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void story(String msg){
         try {
@@ -136,10 +169,16 @@ public class GameInfo implements Serializable {
     }
 
     public void measureLeader(){
-        if(thisPlayer().getHp()<=0)
+        if(thisPlayer().getHp()<=0) {
+            endReason = "hp_zero";
+            addBattleLog(String.format("%s 生命值归零", thisPlayer().getName()));
             gameset(oppositePlayer());
-        if(oppositePlayer().getHp()<=0)
+        }
+        if(oppositePlayer().getHp()<=0) {
+            endReason = "hp_zero";
+            addBattleLog(String.format("%s 生命值归零", oppositePlayer().getName()));
             gameset(thisPlayer());
+        }
     }
     public void measureFollows(){
 //        msg("——————结算卡牌状态——————");
@@ -165,26 +204,221 @@ public class GameInfo implements Serializable {
     }
 
     public void gameset(PlayerInfo winner){
+        AiRegistry.unregister(this);
         gameset = true;
-        msg("游戏结束，获胜者："+winner.getName());
+
+        // 计算对战持续时间
+        long battleDuration = (System.currentTimeMillis() - battleStartTime) / 1000; // 转换为秒
+
+        String victoryMsg = "游戏结束,获胜者："+winner.getName();
+        msg(victoryMsg);
+        addBattleLog(victoryMsg);
+        addBattleLog(String.format("对战持续：%d秒，共%d回合", battleDuration, totalTurns));
+
         pushInfo();
         final Session winnerSession = winner.getSession();
-        Msg.send(winnerSession,"alert","你赢了！");
-        Msg.send(anotherPlayerBySession(winnerSession).getSession(),"alert","你输了！");
+        final PlayerInfo loser = anotherPlayerBySession(winnerSession);
+        final Session loserSession = loser != null ? loser.getSession() : null;
+
+        // 保存对战记录
+        try {
+            saveBattleRecord(winner, loser, battleDuration);
+        } catch (Exception e) {
+            log.error("保存对战记录失败", e);
+        }
+
+        // 如果是弥留之国模式，发送重定向消息并进行结算
+        boolean isBorderlandMode = getRoom() != null && getRoom().startsWith("borderland-");
+        if (isBorderlandMode) {
+            // 弥留之国对战结算
+            try {
+                Long winnerId = winnerSession != null ? sessionUserIds.get(winnerSession) : null;
+                Long loserId = loserSession != null ? sessionUserIds.get(loserSession) : null;
+
+                if (winnerId != null && loserId == null) {
+                    // 玩家击败AI的情况
+                    try {
+                        org.example.user.service.BorderlandService borderlandService =
+                            org.example.system.util.SpringContext.getBean(org.example.user.service.BorderlandService.class);
+
+                        // 使用带卡组参数的方法
+                        if (aiInitialDeckCodes != null && !aiInitialDeckCodes.isEmpty()) {
+                            String rewardCard = borderlandService.winAgainstAI(winnerId, aiInitialDeckCodes);
+                            if (winnerSession != null) {
+                                if (rewardCard != null && !rewardCard.isEmpty()) {
+                                    Msg.send(winnerSession,"alert",String.format(
+                                        "🎉 胜利！\n\n击败AI获得：\n• 卡牌：%s\n• 签证延长1天", rewardCard));
+                                } else {
+                                    Msg.send(winnerSession,"alert","🎉 胜利！\n\n击败AI获得：\n• 签证延长1天");
+                                }
+                            }
+                            log.info("玩家 {} 在弥留之国击败了AI，获得卡牌 [{}]，签证延长1天", winnerId, rewardCard);
+                        } else {
+                            // 如果没有AI卡组信息，只延长天数
+                            borderlandService.winAgainstAI(winnerId);
+                            if (winnerSession != null) {
+                                Msg.send(winnerSession,"alert","🎉 胜利！\n\n签证延长1天");
+                            }
+                            log.info("玩家 {} 在弥留之国击败了AI，签证延长1天", winnerId);
+                        }
+                        
+                        // 保存战斗记录到数据库
+                        org.example.user.service.BorderlandBattleLogService battleLogService =
+                            org.example.system.util.SpringContext.getBean(org.example.user.service.BorderlandBattleLogService.class);
+                        
+                        String winnerUserName = winnerSession != null ? userNames.get(winnerSession) : "未知玩家";
+                        
+                        BorderlandBattleLog victoryLog = new BorderlandBattleLog(
+                            "victory",
+                            winnerUserName,
+                            "弥留AI",
+                            winnerUserName,
+                            null
+                        );
+                        battleLogService.save(victoryLog);
+                        broadcastBattleLog(victoryLog);
+                    } catch (Exception e) {
+                        log.error("弥留之国AI对战结算失败", e);
+                        if (winnerSession != null) {
+                            Msg.send(winnerSession,"alert","胜利！但结算出现错误");
+                        }
+                    }
+                } else if (winnerId == null && loserId != null) {
+                    // AI击败玩家的情况
+                    try {
+                        org.example.user.service.BorderlandService borderlandService =
+                            org.example.system.util.SpringContext.getBean(org.example.user.service.BorderlandService.class);
+
+                        borderlandService.loseAgainstAI(loserId);
+                        if (loserSession != null) {
+                            Msg.send(loserSession,"alert","💀 失败！\n\n被AI击败：\n• 签证失效\n• 卡组清空\n• 进入1分钟惩罚期");
+                        }
+                        
+                        // 保存战斗记录到数据库 (1分钟 = 60秒)
+                        org.example.user.service.BorderlandBattleLogService battleLogService =
+                            org.example.system.util.SpringContext.getBean(org.example.user.service.BorderlandBattleLogService.class);
+                        
+                        String loserUserName = loserSession != null ? userNames.get(loserSession) : "未知玩家";
+                        
+                        BorderlandBattleLog defeatLog = new BorderlandBattleLog(
+                            "defeat",
+                            loserUserName,
+                            "弥留AI",
+                            "弥留AI",
+                            60  // 1分钟惩罚
+                        );
+                        battleLogService.save(defeatLog);
+                        broadcastBattleLog(defeatLog);
+                        
+                        log.info("玩家 {} 在弥留之国输给了AI，签证失效，进入惩罚期", loserId);
+                    } catch (Exception e) {
+                        log.error("弥留之国AI对战失败结算错误", e);
+                        if (loserSession != null) {
+                            Msg.send(loserSession,"alert","失败！结算出现错误");
+                        }
+                    }
+                } else if (winnerId != null && loserId != null) {
+                    // 玩家对玩家的情况（PVP入侵模式）
+                    try {
+                        org.example.user.service.BorderlandService borderlandService =
+                            org.example.system.util.SpringContext.getBean(org.example.user.service.BorderlandService.class);
+
+                        // 获取败者的卡组和天数信息
+                        org.example.user.entity.BorderlandVisa loserVisa = borderlandService.getVisaStatus(loserId);
+                        int loserCards = 0;
+                        int loserDays = 0;
+                        if (loserVisa != null) {
+                            String deckData = loserVisa.getDeckData();
+                            loserCards = (deckData != null && !deckData.isEmpty()) ? deckData.split(",").length : 0;
+                            loserDays = loserVisa.getDaysRemaining();
+                        }
+
+                        borderlandService.settleBattle(winnerId, loserId, false);
+
+                        if (winnerSession != null) {
+                            Msg.send(winnerSession,"alert",String.format(
+                                "🎉 PVP胜利！\n\n夺取对手：\n• %d张卡牌\n• %d天签证",
+                                loserCards, loserDays));
+                        }
+                        if (loserSession != null) {
+                            Msg.send(loserSession,"alert",String.format(
+                                "💀 PVP失败！\n\n失去全部：\n• %d张卡牌\n• %d天签证\n• 进入24小时惩罚期",
+                                loserCards, loserDays));
+                        }
+                        
+                        // 保存战斗记录到数据库 (24小时 = 86400秒)
+                        org.example.user.service.BorderlandBattleLogService battleLogService =
+                            org.example.system.util.SpringContext.getBean(org.example.user.service.BorderlandBattleLogService.class);
+                        
+                        String winnerUserName = winnerSession != null ? userNames.get(winnerSession) : "未知玩家";
+                        String loserUserName = loserSession != null ? userNames.get(loserSession) : "未知玩家";
+                        
+                        BorderlandBattleLog pvpLog = new BorderlandBattleLog(
+                            "victory",
+                            winnerUserName,
+                            loserUserName,
+                            winnerUserName,
+                            86400  // 败者24小时惩罚
+                        );
+                        battleLogService.save(pvpLog);
+                        broadcastBattleLog(pvpLog);
+
+                        log.info("弥留之国PVP结算: 胜者={}, 败者={}", winnerId, loserId);
+                    } catch (Exception e) {
+                        log.error("弥留之国PVP结算失败", e);
+                        if (winnerSession != null) {
+                            Msg.send(winnerSession,"alert","PVP胜利！但结算出现错误");
+                        }
+                        if (loserSession != null) {
+                            Msg.send(loserSession,"alert","PVP失败！结算出现错误");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("弥留之国结算失败", e);
+            }
+
+            // 最后发送重定向
+            if (winnerSession != null) {
+                Msg.send(winnerSession, "redirect", "borderland.html");
+            }
+            if (loserSession != null) {
+                Msg.send(loserSession, "redirect", "borderland.html");
+            }
+        } else {
+            // 普通模式的简单消息
+            if (winnerSession != null) {
+                Msg.send(winnerSession,"alert","你赢了！");
+            }
+            if (loserSession != null) {
+                Msg.send(loserSession,"alert","你输了！");
+            }
+        }
 
         // 释放资源
         roomGame.remove(getRoom());
         // 退出房间
         try {
-            userRoom.remove(thisPlayer().getSession());
-            msgToThisPlayer("离开房间成功");
-            userRoom.remove(oppositePlayer().getSession());
-            msgToOppositePlayer("离开房间成功");
+            Session thisSession = thisPlayer().getSession();
+            Session oppositeSession = oppositePlayer().getSession();
 
-            rope.cancel(true);
+            if (thisSession != null) {
+                userRoom.remove(thisSession);
+                msgToThisPlayer("离开房间成功");
+            }
+            if (oppositeSession != null) {
+                userRoom.remove(oppositeSession);
+                msgToOppositePlayer("离开房间成功");
+            }
+
+            if (rope != null) {
+                rope.cancel(true);
+            }
             ScheduledExecutorService ses = roomSchedule.get(getRoom());
-            ses.shutdown();
-            roomSchedule.remove(getRoom());
+            if (ses != null) {
+                ses.shutdown();
+                roomSchedule.remove(getRoom());
+            }
         }catch (Exception e){e.printStackTrace();}
         throw new RuntimeException("Game Set");
     }
@@ -257,7 +491,8 @@ public class GameInfo implements Serializable {
     }
     public void tempEffect(Effect.EffectInstance instance){
         Effect effect = instance.getEffect();
-        effectInstances.add(instance);
+        // 入队（尾部加入），保证 FIFO
+        effectInstances.offer(instance);
 //        msg(effect.getOwnerObj().getNameWithOwner()+"的【"+effect.getTiming().getName()+"】效果已加入队列" +
 //            "（队列现在有" + effectInstances.size() + "个效果）");
     }
@@ -294,22 +529,21 @@ public class GameInfo implements Serializable {
         }
     }
     public void consumeEffect(){
-        if(effectInstances.isEmpty()) return;
-        effectInstances.sort((o1, o2) -> {
-            for (EffectTiming value : EffectTiming.values()) {
-                if(value.equals(o1.getEffect().getTiming()))
-                    return -1;
-                else if(value.equals(o2.getEffect().getTiming()))
-                    return 1;
+        // 按队列（FIFO）依次处理效果实例，处理过程中若有新效果加入队列则继续处理
+        while(!effectInstances.isEmpty()){
+            Effect.EffectInstance instance = effectInstances.poll();
+            try{
+                instance.consume();
+            }catch (RuntimeException e){
+                // 如果是游戏结束异常，需要重新抛出
+                if("Game Set".equals(e.getMessage())){
+                    throw e;
+                }
+                e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            return 0;
-        });
-
-        List<Effect.EffectInstance> instances = new ArrayList<>(effectInstances);
-
-        instances.forEach(Effect.EffectInstance::consume);
-
-        effectInstances.clear();
+        }
     }
     // endregion effect
 
@@ -475,25 +709,51 @@ public class GameInfo implements Serializable {
 
     }
     public void zeroTurn(Session u0, Session u1){
+        zeroTurnWithDecks(u0, userDecks.get(u0), userNames.get(u0),
+            u1, userDecks.get(u1), userNames.get(u1));
+    }
+
+    public void zeroTurnWithDecks(Session u0, PlayerDeck deck0, String name0,
+                                  Session u1, PlayerDeck deck1, String name1){
+
+        Objects.requireNonNull(deck0, "Deck for first player is missing");
+        Objects.requireNonNull(deck1, "Deck for second player is missing");
+
+        // 初始化对战统计
+        battleStartTime = System.currentTimeMillis();
+        totalTurns = 0;
+        battleLog.clear();
+        if (aiInitialDeckCodes != null && !aiInitialDeckCodes.isEmpty()) {
+            battleMode = "borderland";
+            addBattleLog("对战模式：弥留之国 - AI对战");
+        } else {
+            battleMode = "normal";
+            addBattleLog("对战模式：常规匹配");
+        }
 
         PlayerInfo p0 = thisPlayer();
-        PlayerDeck playerDeck0 = userDecks.get(u0);
         p0.setSession(u0);
-        p0.setName(userNames.get(u0));
-        p0.setLeader(playerDeck0.getLeader(0, this));
-        p0.setDeck(playerDeck0.getActiveDeckInstance(0, this));
+        p0.setName(name0 != null ? name0 : "Player A");
+        // 为玩家1随机分配英雄技能
+        Class<? extends Leader> skill0 = LeaderSkillFactory.getRandomSkill();
+        p0.setLeader(createLeader(skill0, 0));
+        p0.setDeck(deck0.getActiveDeckInstance(0, this));
         Collections.shuffle(p0.getDeck());
 
         PlayerInfo p1 = oppositePlayer();
-        PlayerDeck playerDeck1 = userDecks.get(u1);
         p1.setSession(u1);
-        p1.setName(userNames.get(u1));
-        p1.setLeader(playerDeck1.getLeader(1, this));
-        p1.setDeck(playerDeck1.getActiveDeckInstance(1, this));
+        p1.setName(name1 != null ? name1 : "Player B");
+        // 为玩家2随机分配英雄技能
+        Class<? extends Leader> skill1 = LeaderSkillFactory.getRandomSkill();
+        p1.setLeader(createLeader(skill1, 1));
+        p1.setDeck(deck1.getActiveDeckInstance(1, this));
         Collections.shuffle(p1.getDeck());
 
         p0.getLeader().init();
         p1.getLeader().init();
+
+        addBattleLog(String.format("%s 使用 %s", p0.getName(), p0.getLeader().getName()));
+        addBattleLog(String.format("%s 使用 %s", p1.getName(), p1.getLeader().getName()));
 
         p0.draw(3);
         p1.draw(3);
@@ -502,37 +762,63 @@ public class GameInfo implements Serializable {
         Msg.send(p1.getSession(),"swap",p1.getHand());
     }
 
+    /**
+     * 创建 Leader 实例
+     */
+    private Leader createLeader(Class<? extends Leader> leaderClass, int owner) {
+        try {
+            Leader leader = leaderClass.getDeclaredConstructor().newInstance();
+            leader.setOwner(owner);
+            leader.setInfo(this);
+            return leader;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create leader: " + leaderClass.getName(), e);
+        }
+    }
+
 
     public void startTurn(){
+        totalTurns++; // 增加回合计数
         thisPlayer().clearCount(PLAY_NUM);
         thisPlayer().getPlayedCard().clear();
         if(thisPlayer().ppMax<thisPlayer().getPpLimit()){
                 thisPlayer().ppMax++;
         }
         thisPlayer().ppNum = thisPlayer().ppMax;
-        msg("第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp");
+        String turnMsg = "第" + turn + "回合：" + thisPlayer().getName()+"的回合，有" + thisPlayer().ppNum + "pp";
+        msg(turnMsg);
+        addBattleLog(turnMsg);
         beforeTurn();
         thisPlayer().draw(1);
 
-        if(thisPlayer().isShortRope()){
-            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 30, TimeUnit.SECONDS);
-            msg("倒计时30秒！");
-        }else{
-            rope = roomSchedule.get(getRoom()).schedule(this::endTurnOfTimeout, 300, TimeUnit.SECONDS);
-            msg("倒计时300秒！");
+        ScheduledExecutorService scheduler = roomSchedule.get(getRoom());
+        if (scheduler == null) {
+            log.error("roomSchedule为null! room={}, roomSchedule keys={}", getRoom(), roomSchedule.keySet());
+            // 尝试重新初始化
+            scheduler = java.util.concurrent.Executors.newScheduledThreadPool(1);
+            roomSchedule.put(getRoom(), scheduler);
+            log.info("已重新初始化roomSchedule for room={}", getRoom());
         }
+
+        // 从配置中获取超时时间
+        GameConfig config = SpringContext.getBean(GameConfig.class);
+        int timeoutSeconds = thisPlayer().isShortRope() ? config.getShortRopeSeconds() : config.getTurnTimeoutSeconds();
+        
+        rope = scheduler.schedule(this::endTurnOfTimeout, timeoutSeconds, TimeUnit.SECONDS);
+        msg("倒计时" + timeoutSeconds + "秒！");
         pushInfo();
         msgToThisPlayer("请出牌！");
         msgToOppositePlayer("等待对手出牌......");
         Msg.send(thisPlayer().getSession(),"yourTurn","");
         Msg.send(oppositePlayer().getSession(),"enemyTurn","");
 
-
         if(turn==10){// TODO 活动模式，第10回合奖励
             final List<Class<? extends Card>> classes = CardPackage.randCard("passive", 3);
             final List<Card> list =  classes.stream().map(clazz -> (Card)thisPlayer().getLeader().createCard(clazz)).toList();
             thisPlayer().discoverCard(list,card -> card.getPlay().effect().accept(0,new ArrayList<>()));
         }
+
+        AiRegistry.onTurnStart(this);
     }
 
     public void endTurnOfTimeout(){
@@ -706,6 +992,86 @@ public class GameInfo implements Serializable {
 
     public void addMoreTurn(){
         moreTurn++;
+    }
+
+    /**
+     * 保存对战记录到数据库
+     */
+    private void saveBattleRecord(PlayerInfo winner, PlayerInfo loser, long duration) {
+        try {
+            org.example.user.mapper.BattleRecordMapper battleRecordMapper =
+                org.example.system.util.SpringContext.getBean(org.example.user.mapper.BattleRecordMapper.class);
+
+            org.example.user.entity.BattleRecord record = new org.example.user.entity.BattleRecord();
+
+            // 设置胜负双方ID
+            Session winnerSession = winner.getSession();
+            Session loserSession = loser != null ? loser.getSession() : null;
+
+            Long winnerId = winnerSession != null ? sessionUserIds.get(winnerSession) : null;
+            Long loserId = loserSession != null ? sessionUserIds.get(loserSession) : null;
+
+            record.setWinnerId(winnerId);
+            record.setLoserId(loserId);
+            record.setMode(battleMode != null ? battleMode : "normal");
+
+            // 设置卡组信息
+            List<String> winnerDeckCodes = winner.getDeck().stream()
+                .map(Card::getClass)
+                .map(Class::getSimpleName)
+                .collect(Collectors.toList());
+            record.setWinnerDeck(String.join(",", winnerDeckCodes));
+            record.setWinnerLeader(winner.getLeader().getName());
+
+            if (loser != null) {
+                List<String> loserDeckCodes = loser.getDeck().stream()
+                    .map(Card::getClass)
+                    .map(Class::getSimpleName)
+                    .collect(Collectors.toList());
+                record.setLoserDeck(String.join(",", loserDeckCodes));
+                record.setLoserLeader(loser.getLeader().getName());
+            }
+
+            // 设置对战统计
+            record.setDuration((int) duration);
+            record.setTotalTurns(totalTurns);
+            record.setEndReason(endReason != null ? endReason : "hp_zero");
+
+            // 设置对战详情（保存所有日志）
+            String detailsLog = String.join("\n", battleLog);
+            record.setBattleDetails(detailsLog);
+
+            record.setCreatedAt(java.time.OffsetDateTime.now());
+
+            battleRecordMapper.insert(record);
+
+            log.info("对战记录已保存: 胜者={}, 败者={}, 模式={}, 时长={}秒, 回合数={}",
+                winnerId, loserId, record.getMode(), duration, totalTurns);
+        } catch (Exception e) {
+            log.error("保存对战记录异常", e);
+        }
+    }
+    
+    /**
+     * 广播战斗记录给所有在线玩家
+     */
+    private void broadcastBattleLog(BorderlandBattleLog battleLog) {
+        java.util.Map<String, Object> data = new java.util.HashMap<>();
+        data.put("type", battleLog.getEventType());
+        data.put("player1", battleLog.getPlayer1Name());
+        data.put("player2", battleLog.getPlayer2Name());
+        data.put("winner", battleLog.getWinnerName());
+        data.put("timestamp", battleLog.getTimestamp().toString());
+        data.put("punishmentSeconds", battleLog.getPunishmentSeconds());
+        
+        // 广播给所有玩家
+        for (Session session : userNames.keySet()) {
+            try {
+                Msg.send(session, "borderland-battle-log", data);
+            } catch (Exception e) {
+                log.warn("Failed to broadcast battle log to session", e);
+            }
+        }
     }
     // endregion turn
 }

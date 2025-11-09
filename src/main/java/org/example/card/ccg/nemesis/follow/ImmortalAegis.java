@@ -13,11 +13,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ImmortalAegis extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private Integer cost = 6;
     private String name = "永恒之盾·席翁";
     private String job = "复仇者";
@@ -47,6 +50,8 @@ public class ImmortalAegis extends FollowCard {
     @Getter
     @Setter
     public static class MercurialMight  extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
         public String name = "水银的断绝";
         public String job = "复仇者";

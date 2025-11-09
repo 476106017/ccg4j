@@ -11,11 +11,14 @@ import org.example.system.util.Lists;
 
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class QueenOfTheForest extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 3;
     public String name = "森林女王";
     public String job = "妖精";

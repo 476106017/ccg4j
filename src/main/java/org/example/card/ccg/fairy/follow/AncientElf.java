@@ -9,11 +9,14 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class AncientElf extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 3;
     public String name = "远古精灵";
     public String job = "妖精";

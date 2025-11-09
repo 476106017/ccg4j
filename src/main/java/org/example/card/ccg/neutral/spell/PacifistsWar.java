@@ -11,10 +11,13 @@ import org.example.game.PlayerInfo;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class PacifistsWar extends SpellCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 1;
     public String name = "反战之战";
     public String job = "中立";

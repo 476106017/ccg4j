@@ -14,6 +14,7 @@ import java.util.TreeMap;
 @Configuration
 public class GsonConfig {
 
+
     @Bean
     public Gson gson(){
         return new GsonBuilder()
@@ -33,6 +34,7 @@ public class GsonConfig {
         .create();
     }
     public static class MyEncoder implements Encoder.Text<Object> {
+
         @Override
         public String encode(Object object) {
             try {

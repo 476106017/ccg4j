@@ -9,10 +9,13 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Ashe extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "寒冰射手艾希";
     private Integer cost = 4;
     private int atk = 3;

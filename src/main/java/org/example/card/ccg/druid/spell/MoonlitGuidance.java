@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class MoonlitGuidance extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "月光指引";
     public String job = "德鲁伊";

@@ -12,12 +12,15 @@ import org.example.system.util.Lists;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ForestSymphony extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 1;
 
     public String name = "森林交响乐";

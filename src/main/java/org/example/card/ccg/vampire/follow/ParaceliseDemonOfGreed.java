@@ -10,11 +10,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ParaceliseDemonOfGreed extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "贪婪的大恶魔·帕拉琎丽婕";
     private Integer cost = 4;
     private int atk = 3;

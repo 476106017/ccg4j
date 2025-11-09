@@ -9,12 +9,15 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class BorderlinePersonalityDisorder extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 6;
 
     public String name = "边缘型人格障碍";

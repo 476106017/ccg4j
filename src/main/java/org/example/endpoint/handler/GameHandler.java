@@ -20,6 +20,7 @@ import static org.example.system.Database.*;
 @Slf4j
 public class GameHandler {
 
+
     @Autowired
     Gson gson;
 
@@ -184,6 +185,7 @@ public class GameHandler {
                         return;
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 continue;
             }
@@ -195,13 +197,16 @@ public class GameHandler {
                 Optional<GameObj> target = play.canTargets().get()
                     .get(i-1).stream().filter(gameObj -> gameObj.id==targetId).findFirst();
                 if(target.isPresent()){
-                    if(targets.contains(target)){
+                    GameObj resolvedTarget = target.get();
+                    if(targets.contains(resolvedTarget)){
                         Msg.warn(client,"输入了重复的目标");
                         return;
                     }
-                    targets.add(target.get());
+                    targets.add(resolvedTarget);
                 }
-            }catch (Exception e){}
+            }catch (Exception e){
+                log.error("目标选择异常: {}", e.getMessage(), e);
+            }
         }
         // endregion 获取选择目标
 
@@ -377,6 +382,7 @@ public class GameHandler {
             if(player.getStep()==0)// 全部发现完再渲染
                 info.pushInfo();
         }catch (Exception e){
+            e.printStackTrace();
             Msg.warn(client,"输入discover <序号>以发现一张卡牌");
         }
     }

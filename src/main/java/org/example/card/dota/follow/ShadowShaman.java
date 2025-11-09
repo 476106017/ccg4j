@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class ShadowShaman extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "暗影萨满";
     private Integer cost = 1;
     private int atk = 1;
@@ -39,6 +42,8 @@ public class ShadowShaman extends FollowCard {
     @Getter
     @Setter
     public static class ForkedLightning extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 3;
         public String name = "叉形闪电";
         public String job = "dota";
@@ -69,6 +74,8 @@ public class ShadowShaman extends FollowCard {
     @Getter
     @Setter
     public static class Voodoo extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 4;
         public String name = "妖术";
         public String job = "dota";
@@ -101,6 +108,8 @@ public class ShadowShaman extends FollowCard {
         @Getter
         @Setter
         public static class Sheep extends FollowCard {
+
+            private CardRarity rarity = CardRarity.BRONZE;
             private String name = "绵羊";
             private Integer cost = 1;
             private String job = "dota";
@@ -114,6 +123,8 @@ public class ShadowShaman extends FollowCard {
     @Getter
     @Setter
     public static class Shackle extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
         public String name = "枷锁";
         public String job = "dota";
@@ -173,6 +184,8 @@ public class ShadowShaman extends FollowCard {
     @Getter
     @Setter
     public static class MassSerpentWard extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 6;
         public String name = "蛇群守卫";
         public String job = "dota";
@@ -199,6 +212,8 @@ public class ShadowShaman extends FollowCard {
         @Setter
         public static class SerpentBar extends AmuletCard {
 
+
+            private CardRarity rarity = CardRarity.BRONZE;
             public Integer cost = 1;
 
             public String name = "蛇棒";

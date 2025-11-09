@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class dbzwtn extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 5;
     public String name = "盗版之王托尼";
     public String job = "中立";

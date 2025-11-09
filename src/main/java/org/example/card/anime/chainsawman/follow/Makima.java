@@ -11,10 +11,13 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Makima extends FollowCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     private int slot = 7;
     private int apposition = 1;
     private String name = "支配恶魔";
@@ -91,10 +94,11 @@ public class Makima extends FollowCard {
     @Getter
     @Setter
     public static class DominatePipe extends EquipmentCard {
+
+       private CardRarity rarity = CardRarity.SILVER;
         private int apposition = 0;
         public Integer cost = 2;
         public String name = "支配之线";
-        public boolean control = true;
         public transient int addAtk = 0;
         public transient int addHp = 0;
         public String job = "链锯人";
@@ -105,6 +109,7 @@ public class Makima extends FollowCard {
         public String subMark = "";
 
         public void init() {
+            setControl(true);
             setPlay(new Play(()->new ArrayList<>()));
 
         }

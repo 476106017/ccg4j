@@ -9,10 +9,13 @@ import org.example.system.util.Lists;
 
 import java.util.Collections;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Castling extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 1;
     public String name = "王车易位";
     public String job = "游戏规则";

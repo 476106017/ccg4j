@@ -13,6 +13,7 @@ import static org.example.system.Database.userNames;
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig  {
+
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();

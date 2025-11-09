@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Zelgenea extends FollowCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     public Integer cost = 5;
     public int atk = 5;
     public int hp = 5;

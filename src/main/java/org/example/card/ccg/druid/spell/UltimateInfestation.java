@@ -13,10 +13,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.BLOCK;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class UltimateInfestation extends SpellCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 10;
     public String name = "终极感染";
     public String job = "德鲁伊";

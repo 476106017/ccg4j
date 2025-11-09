@@ -15,16 +15,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class MahjongTable extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 7;
 
     public String name = "自动麻将桌";
     public String job = "游戏规则";
-    private List<String> race = Lists.ofStr("机器");
+    private List<String> race = Lists.ofStr("机械");
     public String mark = """
         双方抽牌时：
         如果手牌费用符合门清自摸和，则获得游戏胜利
@@ -118,7 +121,16 @@ public class MahjongTable extends AmuletCard {
 
         boolean isWin = checkWinLoop(costCount, costs, false);
 
-        if (isWin) info.gameset(player);
+        if (isWin) {
+            // 记录详细的胜利信息
+            String handInfo = hand.stream()
+                .map(card -> String.format("%s(%d费)", card.getName(), card.getCost()))
+                .collect(Collectors.joining(", "));
+            info.addBattleLog(String.format("【麻将桌】%s 胡牌！手牌：%s", player.getName(), handInfo));
+            info.setEndReason("special");
+            info.msg(String.format("🀄️ %s 达成门清自摸和！", player.getName()));
+            info.gameset(player);
+        }
     }
 
     private static boolean checkWinLoop(Map<Integer, Long> costCount,List<Integer> costs,boolean findPair){

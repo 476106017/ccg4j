@@ -1,0 +1,100 @@
+#card-search-modal .modal-dialog {
+    max-width: 1180px;
+    margin: 1.75rem auto;
+}
+
+#card-search-modal .modal-content {
+    width: 100%;
+}
+
+/* 卡片删除按钮样式（放在卡牌右上角） */
+.delete-card {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    transform: scale(0.95);
+    width: 26px;
+    height: 26px;
+    padding: 0 6px;
+    border-radius: 13px;
+    font-size: 13px;
+    line-height: 24px;
+    opacity: 0;
+    background-color: rgba(220, 53, 69, 0.55); /* 半透明，低调 */
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(3px);
+    transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+    z-index: 30;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 鼠标悬停时显示删除按钮（卡牌悬停显示） */
+.card:hover .delete-card {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* 删除按钮悬停效果（按钮本身的微交互） */
+.delete-card:hover {
+    background-color: rgba(220, 53, 69, 0.78);
+    transform: translateX(-50%) scale(1.08);
+    box-shadow: 0 6px 14px rgba(220, 53, 69, 0.16);
+}
+
+.search-results-container {
+    margin-top: 20px;
+    padding: 0 15px; /* 添加左右内边距以对齐其他内容 */
+}
+
+/* 保持卡牌名称始终可见 */
+#card-gridview .card .name {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+}
+
+#search-results {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-height: calc(2 * (240px + 10px)); /* 两行卡牌的高度加上间距 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px; /* 为滚动条留出空间 */
+}
+
+/* 调整卡牌大小以适应网格 */
+#search-results .card {
+    width: 100%;
+    margin: 0;
+    position: relative; /* 确保删除按钮以卡牌为参照定位 */
+}
+
+.search-stats {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+/* 自定义滚动条样式 */
+#search-results::-webkit-scrollbar {
+    width: 8px;
+}
+
+#search-results::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#search-results::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+#search-results::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

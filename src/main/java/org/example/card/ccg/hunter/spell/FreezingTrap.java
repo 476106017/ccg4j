@@ -11,11 +11,14 @@ import org.example.system.util.Lists;
 import org.example.system.util.Msg;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class FreezingTrap extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "冰冻陷阱";
     public String job = "猎人";
@@ -44,6 +47,8 @@ public class FreezingTrap extends SpellCard {
     @Getter
     @Setter
     public static class TavishsRam extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "塔维什的山羊";
         private Integer cost = 2;
         private int atk = 2;

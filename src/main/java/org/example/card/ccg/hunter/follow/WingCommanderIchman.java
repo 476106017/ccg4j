@@ -10,10 +10,13 @@ import org.example.system.util.FunctionN;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class WingCommanderIchman extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "空军指挥官艾克曼";
     private Integer cost = 9;
     private int atk = 5;

@@ -9,10 +9,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class EscapeFromDeath extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "绝处逢生";
     public String job = "萨满";

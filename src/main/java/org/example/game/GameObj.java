@@ -7,7 +7,6 @@ import org.example.card.AreaCard;
 import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.EffectTiming;
-import org.example.morecard.genshin.system.Elemental;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,6 @@ public abstract class GameObj {
     public final int id;
 
     public transient GameInfo info;
-
-    public transient Elemental elementalCling = Elemental.Void;
 
     public transient int owner = 0;
     public void changeOwner(){
@@ -69,8 +66,22 @@ public abstract class GameObj {
     public List<Effect> getEffectsFrom(GameObj parent){
         return getEffects().stream().filter(effect -> effect.getParent().equals(parent)).toList();
     }
+    /**
+     * 检查对象是否已绑定 GameInfo
+     * @param operation 要执行的操作名称
+     * @throws IllegalStateException 如果未绑定 GameInfo
+     */
+    protected void checkInfoBound(String operation) {
+        if (getInfo() == null) {
+            throw new IllegalStateException(
+                String.format("Cannot perform %s on unbound object %s", 
+                    operation, getClass().getSimpleName()));
+        }
+    }
+
     // 不加入队列，立即生效的效果（增加回复量、伤害量、加减状态等）
     public void useEffects(EffectTiming timing, Object param){
+        checkInfoBound("useEffects");
         List<Effect> effectList = getEffects(timing);
         if(effectList.size()>0)
             ownerPlayer().count(timing.getName());
@@ -79,6 +90,7 @@ public abstract class GameObj {
         });
     }
     public void useEffects(EffectTiming timing){
+        checkInfoBound("useEffects");
         List<Effect> effectList = getEffects(timing);
         if(effectList.size()>0)
             ownerPlayer().count(timing.getName());
@@ -94,6 +106,7 @@ public abstract class GameObj {
         info.startEffect();
     }
     public void tempEffects(EffectTiming timing){
+        checkInfoBound("tempEffects");
         List<Effect> effectList = getEffects(timing);
         if(effectList.size()>0)
             ownerPlayer().count(timing.getName());
@@ -103,6 +116,7 @@ public abstract class GameObj {
         });
     }
     public void tempEffects(EffectTiming timing,Object param){
+        checkInfoBound("tempEffects");
         List<Effect> effectList = getEffects(timing);
         if(effectList.size()>0)
             ownerPlayer().count(timing.getName());

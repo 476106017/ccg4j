@@ -13,11 +13,14 @@ import org.example.system.util.Lists;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class TeleportToBattleGround extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 0;
     public String name = "TP进场";
     public String job = "dota";

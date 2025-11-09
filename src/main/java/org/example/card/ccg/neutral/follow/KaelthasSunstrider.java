@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class KaelthasSunstrider extends FollowCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     public Integer cost = 6;
     public String name = "凯尔萨斯·逐日者";
     public String job = "中立";

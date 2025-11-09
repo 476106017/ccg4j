@@ -8,10 +8,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class GiftForBloodkin extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 0;
     public String name = "给仆从的礼物";
     public String job = "吸血鬼";

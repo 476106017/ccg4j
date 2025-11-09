@@ -11,12 +11,15 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class RestlessParish extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 0;
 
     public String name = "诡谲的幽暗街道";

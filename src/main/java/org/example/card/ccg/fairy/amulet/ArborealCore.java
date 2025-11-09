@@ -11,12 +11,15 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ArborealCore extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 3;
 
     public String name = "森林之核";

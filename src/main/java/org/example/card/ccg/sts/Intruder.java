@@ -15,12 +15,15 @@ import java.util.function.Consumer;
 
 import static org.example.constant.CounterKey.BLOCK;
 import static org.example.constant.CounterKey.EP_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Intruder extends Leader {
 
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "入侵者";
     private String job = "杀戮尖塔";
 

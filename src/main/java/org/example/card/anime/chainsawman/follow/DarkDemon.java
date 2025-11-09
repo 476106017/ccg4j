@@ -10,10 +10,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DarkDemon extends FollowCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     private int slot = 7;
     private int apposition = 1;
     private String name = "暗之恶魔";

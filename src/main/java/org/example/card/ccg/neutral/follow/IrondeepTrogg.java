@@ -9,11 +9,14 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class IrondeepTrogg extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "深铁穴居人";
     private Integer cost = 1;
     private int atk = 1;

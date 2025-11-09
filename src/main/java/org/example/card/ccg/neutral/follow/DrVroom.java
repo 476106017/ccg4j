@@ -8,11 +8,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class DrVroom extends FollowCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     private String name = "呜呜博士";
     private Integer cost = 7;
     private int atk = 7;

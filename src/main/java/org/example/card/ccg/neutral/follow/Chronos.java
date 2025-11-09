@@ -10,11 +10,14 @@ import org.example.system.util.Lists;
 
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Chronos extends FollowCard {
+
+   private CardRarity rarity = CardRarity.LEGENDARY;
     private String name = "克罗诺斯";
     private Integer cost = 8;
     private int atk = 4;

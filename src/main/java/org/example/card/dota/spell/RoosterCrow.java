@@ -13,11 +13,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class RoosterCrow extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "出兵的号角";
     public String job = "dota";
@@ -51,6 +54,8 @@ public class RoosterCrow extends SpellCard {
     @Getter
     @Setter
     public static class SentinelCorps extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "近卫军团";
         private Integer cost = 1;
         private int atk = 1;
@@ -70,6 +75,8 @@ public class RoosterCrow extends SpellCard {
     @Getter
     @Setter
     public static class ScourgeCorps extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "天灾军团";
         private Integer cost = 1;
         private int atk = 1;

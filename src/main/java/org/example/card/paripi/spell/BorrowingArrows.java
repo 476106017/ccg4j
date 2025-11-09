@@ -9,10 +9,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class BorrowingArrows extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 3;
     public String name = "草船借箭";
     public String job = "派对咖";
@@ -45,6 +48,8 @@ public class BorrowingArrows extends SpellCard {
     @Getter
     @Setter
     public static class GrassBoat extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "草船";
         private Integer cost = 1;
         private int atk = 0;

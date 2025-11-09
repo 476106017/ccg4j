@@ -11,10 +11,13 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class SoulStealer extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "窃魂者";
     private Integer cost = 8;
     private int atk = 5;

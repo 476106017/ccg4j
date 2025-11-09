@@ -1,6 +1,7 @@
 package org.example.constant;
 
 public class CounterKey{
+
     public static final String DEFAULT = "默认";
     public static final String PLAY_NUM = "\uD83D\uDC4F本回合使用数";
     public static final String PLAY_NUM_ALL = "本局对战总使用数";

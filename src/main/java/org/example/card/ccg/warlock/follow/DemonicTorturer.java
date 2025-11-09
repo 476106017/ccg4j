@@ -7,10 +7,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DemonicTorturer extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "恶魔折磨师";
     private Integer cost = 3;
     private int atk = 2;

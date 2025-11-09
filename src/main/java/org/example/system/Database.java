@@ -1,10 +1,13 @@
 package org.example.system;
 
+import com.google.gson.Gson;
 import jakarta.websocket.Session;
 import org.example.card.Card;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.system.util.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -12,9 +15,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Predicate;
 
+@Component
 public class Database {
 
+    public static Gson gson;
+
+    @Autowired
+    public void setGson(Gson gson) {
+        Database.gson = gson;
+    }
+
     public static Map<Session,String> userNames = new ConcurrentHashMap<>();
+    public static Map<Session, Long> sessionUserIds = new ConcurrentHashMap<>();
     public static Map<Session, PlayerDeck> userDecks = new ConcurrentHashMap<>();
     public static Map<Session, String > userRoom = new ConcurrentHashMap<>();
     public static String waitRoom = "";// 匹配中的房间

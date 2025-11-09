@@ -1,0 +1,171 @@
+/* 卡牌搜索模态框样式 */
+.card-search-modal .modal-dialog {
+    max-width: 90%;
+}
+
+/* 卡组视图 - 网格布局 */
+#card-gridview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+#search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+#search-results .card,
+#card-gridview .card {
+    position: relative;
+    margin: 0;
+}
+
+/* 紧凑统计条样式 */
+.deck-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.deck-badges {
+    display: flex;
+    gap: 12px;
+}
+.deck-badges .badge-count,
+.deck-badges .badge-dust {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 14px;
+    line-height: 1;
+    background: #f5f7fb;
+    color: #333;
+    border: 1px solid #e5e9f2;
+}
+.deck-badges .badge-dust {
+    background: #fff7e6;
+    color: #8a6d3b;
+    border-color: #ffe1a8;
+}
+.deck-badges strong { font-weight: 700; }
+
+/* 搜索结果的卡牌hover时不隐藏名字 */
+#search-results .card:hover .name {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* 搜索表单样式 */
+#card-search-name {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+#card-search-type,
+#card-search-cost {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+/* 卡组计数器 */
+.deck-counter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+/* 卡牌悬停效果 */
+#search-results .card:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* 描述统一左对齐 */
+#search-results .card .card-description,
+#search-results .card .mark,
+#card-gridview .card .card-description,
+#card-gridview .card .mark {
+    text-align: left !important;
+    line-height: 1.2;
+}
+
+/* 添加到卡组时的动画效果 */
+@keyframes addToDeck {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.card.adding {
+    animation: addToDeck 0.5s ease-out;
+}
+
+/* 新增卡牌淡入效果 */
+@keyframes fadeInCard {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.card.newly-added {
+    animation: fadeInCard 0.4s ease-out;
+}
+
+/* 卡牌列表项的稀有度背景色 */
+.card-item.rarity-bronze {
+    background: linear-gradient(135deg, #8b7355 0%, #6b5644 100%);
+}
+
+.card-item.rarity-silver {
+    background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);
+}
+
+.card-item.rarity-gold {
+    background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+}
+
+.card-item.rarity-rainbow {
+    background: linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #ffff00 100%);
+}
+
+.card-item.rarity-legendary {
+    background: linear-gradient(135deg, #ff6b00 0%, #ff0000 100%);
+}
+
+/* 卡牌列表项文字颜色 */
+.card-item {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+.card-item .card-name,
+.card-item .card-type,
+.card-item .card-description {
+    color: white;
+}

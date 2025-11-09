@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class DamageMulti {
+
     private GameInfo info;
     private List<Damage> damages;
 
@@ -33,14 +34,17 @@ public class DamageMulti {
         // region 扣血
         damages.forEach(damage -> {
             GameObj to = damage.getTo();
+            GameObj from = damage.getFrom();
             damage.reduce();
             if(to instanceof FollowCard toFollow){
                 toFollow.setHp(toFollow.getHp() - damage.getDamage());
-                info.msg(to.getNameWithOwner()+"受到了来自"+damage.getFrom().getNameWithOwner()+"的"+damage.getDamage()+"点伤害！" +
+                String fromName = (from != null) ? from.getNameWithOwner() : "未知来源";
+                info.msg(to.getNameWithOwner()+"受到了来自"+fromName+"的"+damage.getDamage()+"点伤害！" +
                     "（剩余"+ toFollow.getHp()+"点生命值）");
             }else if (to instanceof Leader leader){
                 leader.ownerPlayer().setHp(leader.ownerPlayer().getHp()- damage.getDamage());
-                info.msg(to.getNameWithOwner()+"受到了来自"+damage.getFrom().getNameWithOwner()+"的"+damage.getDamage()+"点伤害！" +
+                String fromName = (from != null) ? from.getNameWithOwner() : "未知来源";
+                info.msg(to.getNameWithOwner()+"受到了来自"+fromName+"的"+damage.getDamage()+"点伤害！" +
                     "（剩余"+ leader.getHp()+"点生命值）");
             }
         });

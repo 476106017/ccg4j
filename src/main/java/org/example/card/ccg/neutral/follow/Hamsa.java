@@ -8,11 +8,14 @@ import org.example.system.util.Lists;
 
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Hamsa extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "汉萨";
     private Integer cost = 2;
     private int atk = 0;

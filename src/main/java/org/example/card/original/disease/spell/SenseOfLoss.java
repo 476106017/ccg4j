@@ -8,10 +8,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class SenseOfLoss extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 1;
     public String name = "丧失感";
     public String job = "疾病";
@@ -46,6 +49,8 @@ public class SenseOfLoss extends SpellCard {
     @Getter
     @Setter
     public static class Tear extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "眼泪";
         private Integer cost = 0;
         private int atk = 1;

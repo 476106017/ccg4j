@@ -2,6 +2,7 @@ package org.example.card;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.constant.CardRarity;
 import org.example.constant.EffectTiming;
 import org.example.game.GameObj;
 import org.example.game.Play;
@@ -22,6 +23,14 @@ public abstract class Card extends GameObj implements Serializable {
     public static final int APPOSITION = 3;
 
     private transient GameObj parent = null;
+
+    protected void checkInfoBound(String operation) {
+        if (getInfo() == null) {
+            throw new IllegalStateException(
+                String.format("Cannot perform %s on unbound card prototype %s",
+                    operation, getClass().getSimpleName()));
+        }
+    }
 
     public void changeParent(GameObj obj){
         info.msg(getNameWithOwner()+"的创造者被变更为："+obj.getName());
@@ -59,10 +68,12 @@ public abstract class Card extends GameObj implements Serializable {
         return String.join(" ", keywordWithCount);
     }
     public void addKeyword(String k){
+        checkInfoBound("addKeyword");
         info.msg(getNameWithOwner()+"获得了【"+k+"】");
         getKeywords().add(k);
     }
     public void addKeywordN(String k,int n){
+        checkInfoBound("addKeywordN");
         info.msg(getNameWithOwner()+"获得了"+n+"层【"+k+"】");
         for (int i = 0; i < n; i++) {
             getKeywords().add(k);
@@ -70,6 +81,7 @@ public abstract class Card extends GameObj implements Serializable {
     }
     public void addKeywords(List<String> ks){
         if(ks.isEmpty())return;
+        checkInfoBound("addKeywords");
         info.msg(getNameWithOwner()+"获得了【"+ String.join("】【", ks) +"】");
         getKeywords().addAll(ks);
     }
@@ -131,6 +143,8 @@ public abstract class Card extends GameObj implements Serializable {
     public abstract String getType();
     public abstract void setCost(Integer cost);
     public abstract Integer getCost();
+    public abstract CardRarity getRarity();
+    public abstract void setRarity(CardRarity cardRarity);
 
     public void addCost(Integer cost){
         setCost(Math.max(0,getCost() + cost));
@@ -140,6 +154,22 @@ public abstract class Card extends GameObj implements Serializable {
     public abstract List<String> getRace();
     public abstract String getMark();
     public abstract String getSubMark();
+
+    // 获取攻击力（仅随从卡有值，其他卡返回null需要包装类型）
+    public Integer getAtkAsInteger() {
+        if (this instanceof FollowCard) {
+            return ((FollowCard) this).getAtk();
+        }
+        return null;
+    }
+
+    // 获取生命值（仅随从卡有值，其他卡返回null需要包装类型）
+    public Integer getHpAsInteger() {
+        if (this instanceof FollowCard) {
+            return ((FollowCard) this).getHp();
+        }
+        return null;
+    }
 
     public List<Card> where(){
         if(atArea())return ownerPlayer().getAreaAsCard();
@@ -162,13 +192,19 @@ public abstract class Card extends GameObj implements Serializable {
             area.remove(this);
             areaCard.useEffects(EffectTiming.WhenNoLongerAtArea);
 
-            List<Card> skills = ownerPlayer().getHandCopy().stream()
-                .filter(card -> card.getRace().contains("灵魂绑定") && card.getParent() == this)
+            // 处理灵魂绑定：当创造此卡的卡牌离开战场，舍弃手牌中的灵魂绑定卡片
+            List<Card> soulBoundCards = ownerPlayer().getHandCopy().stream()
+                .filter(card -> {
+                    boolean hasSoulBound = card.getRace().contains("灵魂绑定");
+                    boolean isCreatedByThis = card.getParent() == this;
+                    return hasSoulBound && isCreatedByThis;
+                })
                 .toList();
 
-            if(!skills.isEmpty()){
-                getInfo().exile(skills);
-                getInfo().msg(getNameWithOwner() + "的灵魂绑定从手牌中除外了");
+            if(!soulBoundCards.isEmpty()){
+                ownerPlayer().getHand().removeAll(soulBoundCards);
+                getInfo().exile(soulBoundCards);
+                getInfo().msg(getNameWithOwner() + "离开战场，" + soulBoundCards.size() + "张灵魂绑定卡从手牌中除外");
             }
         }
     }
@@ -218,8 +254,16 @@ public abstract class Card extends GameObj implements Serializable {
     }
 
     public Card copyBy(PlayerInfo player){
-        Card card = createCard(this.getClass());
+        // 当从原型复制时（原型可能没有绑定到任何 GameInfo），避免调用 createCard（会访问 this.info）
+        Card card;
+        try {
+            card = this.getClass().getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
+        // 将新卡牌绑定到指定玩家的上下文
         card.setParent(player.getLeader());
         card.setInfo(player.getInfo());
         card.setOwner(player.getInfo().getPlayerInfos()[0]==player?0:1);
@@ -265,6 +309,16 @@ public abstract class Card extends GameObj implements Serializable {
             Msg.warn(ownerPlayer().getSession(), "你没有足够的PP来使用该卡牌！");
             return;
         }
+
+        FollowCard equipmentTarget = null;
+        if (this instanceof EquipmentCard) {
+            if (targets.size() != 1 || !(targets.get(0) instanceof FollowCard target)) {
+                Msg.warn(ownerPlayer().getSession(), "无法使用装备卡！");
+                return;
+            }
+            equipmentTarget = target;
+        }
+
         info.msg(ownerPlayer().getName() + "使用了" + getName());
 
         // region 消耗PP
@@ -284,11 +338,7 @@ public abstract class Card extends GameObj implements Serializable {
         // region 驻场卡召唤到场上(装备卡装备给随从)，法术卡丢到墓地
         if(this instanceof AreaCard areaCard){
             if(this instanceof EquipmentCard equipmentCard){
-                if(targets.size()!=1 || !(targets.get(0) instanceof FollowCard target)){
-                    Msg.warn(ownerPlayer().getSession(), "无法使用装备卡！");
-                    return;
-                }
-                target.equip(equipmentCard);
+                equipmentTarget.equip(equipmentCard);
             }else {
                 ownerPlayer().summon(areaCard);
             }

@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Preparation extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 0;
     public String name = "伺机待发";
     public String job = "潜行者";

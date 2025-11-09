@@ -1,5 +1,9 @@
 /gradle/wrapper/*.jar
 build/
+bin/
 target/
 .gradle
 .idea
+.vscode
+.history
+.yml

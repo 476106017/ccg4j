@@ -9,10 +9,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.STRENGTH;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Inflame extends AmuletCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "燃烧";
     public String job = "杀戮尖塔";

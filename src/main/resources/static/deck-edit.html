@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑卡组 - CCG4J</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="deck-edit.css">
+    <link rel="stylesheet" href="search.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">首页</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="collection.html">我的收藏</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="deck-list.html">我的卡组</a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="px-3">
+                        <div class="user-info mb-3">
+                            <div id="username-display" class="fw-bold"></div>
+                        </div>
+                        <button id="back-btn" class="btn btn-sm btn-outline-secondary w-100 mb-2">
+                            ← 返回卡组列表
+                        </button>
+                        <button id="logout-btn" class="btn btn-sm btn-outline-danger w-100">退出登录</button>
+                    </div>
+                </div>
+            </nav>
+
+            <main class="col-md-10 ms-sm-auto px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2" id="deck-title">编辑卡组</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button id="save-deck-btn" class="btn btn-sm btn-primary">💾 保存卡组</button>
+                            <button id="quick-edit-btn" class="btn btn-sm btn-outline-secondary">快速编辑</button>
+                        </div>
+                        <button id="search-cards-btn" class="btn btn-sm btn-success">🔍 添加卡牌</button>
+                    </div>
+                </div>
+
+                <!-- 卡组统计 -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">卡牌数量</h6>
+                                <h3 class="card-title" id="deck-count">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">合成消耗</h6>
+                                <h3 class="card-title text-warning" id="deck-dust">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡组视图 -->
+                <div id="card-gridview" class="card-grid"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 卡牌搜索对话框 -->
+    <div class="modal fade" id="card-search-modal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">搜索卡牌</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="card-search-name" placeholder="卡牌名称">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="card-search-type">
+                                <option value="">所有类型</option>
+                                <option value="FOLLOW">随从</option>
+                                <option value="SPELL">法术</option>
+                                <option value="EQUIPMENT">装备</option>
+                                <option value="AREA">场地</option>
+                                <option value="AMULET">护符</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" id="card-search-cost" placeholder="费用" min="0" max="20">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" id="do-search-btn">搜索</button>
+                        </div>
+                    </div>
+                    <div id="search-results" class="card-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速编辑对话框 -->
+    <div class="modal fade" id="quick-edit-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">快速编辑卡组</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">卡组代码（逗号分隔）</label>
+                        <textarea class="form-control" id="quick-edit-textarea" rows="10" placeholder="例如: lol001,lol002,lol003"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirm-quick-edit-btn">应用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="jquery-3.6.4.js"></script>
+    <script src="context-menu.js"></script>
+    <script src="deck-edit.js"></script>
+</body>
+</html>

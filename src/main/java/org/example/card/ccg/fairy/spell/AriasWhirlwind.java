@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class AriasWhirlwind extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "阿丽雅的旋风";
     public String job = "妖精";

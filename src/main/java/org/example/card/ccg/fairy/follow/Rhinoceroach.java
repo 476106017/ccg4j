@@ -9,11 +9,14 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Rhinoceroach extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "破魔虫";
     public String job = "妖精";

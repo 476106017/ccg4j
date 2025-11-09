@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 public class Maps {
 
+
     public static <K, V> K randomKey(Map<K,V> x){
         Random random = new Random();
         List<K> keys = new ArrayList<K>(x.keySet());

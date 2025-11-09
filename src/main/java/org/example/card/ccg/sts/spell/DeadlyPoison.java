@@ -10,10 +10,13 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.BLOCK;
 import static org.example.constant.CounterKey.POISON;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DeadlyPoison extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "致命毒药";
     public String job = "杀戮尖塔";

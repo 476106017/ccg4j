@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Rexxar extends Leader {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "雷克萨";
     private String job = "猎人";
 
@@ -50,6 +53,8 @@ public class Rexxar extends Leader {
     @Getter
     @Setter
     public static class FoxSpiritWildseed extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "狐灵之种";
@@ -71,6 +76,8 @@ public class Rexxar extends Leader {
         @Getter
         @Setter
         public static class FoxSpirit extends FollowCard {
+
+            private CardRarity rarity = CardRarity.BRONZE;
             private String name = "狐灵";
             private Integer cost = 1;
             private int atk = 3;
@@ -89,6 +96,8 @@ public class Rexxar extends Leader {
     @Getter
     @Setter
     public static class BearSpiritWildseed extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "熊灵之种";
@@ -110,6 +119,8 @@ public class Rexxar extends Leader {
         @Getter
         @Setter
         public static class BearSpirit extends FollowCard {
+
+            private CardRarity rarity = CardRarity.BRONZE;
             private String name = "熊灵";
             private Integer cost = 2;
             private int atk = 2;
@@ -128,6 +139,8 @@ public class Rexxar extends Leader {
     @Getter
     @Setter
     public static class StagSpiritWildseed extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "鹿灵之种";
@@ -150,6 +163,8 @@ public class Rexxar extends Leader {
         @Getter
         @Setter
         public static class StagSpirit extends FollowCard {
+
+            private CardRarity rarity = CardRarity.BRONZE;
             private String name = "鹿灵";
             private Integer cost = 3;
             private int atk = 4;

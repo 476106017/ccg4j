@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.NECROMANCY_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class tlzqy extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 10;
     public String name = "通灵最强音";
     public String job = "死灵术士";

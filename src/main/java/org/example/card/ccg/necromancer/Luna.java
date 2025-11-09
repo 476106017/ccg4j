@@ -10,11 +10,14 @@ import org.example.game.Leader;
 import org.example.game.PlayerInfo;
 
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Luna extends Leader {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "露娜·死亡骑士";
     private String job = "死灵术士";
 

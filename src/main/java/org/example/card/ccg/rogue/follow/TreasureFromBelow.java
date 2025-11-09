@@ -13,11 +13,14 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class TreasureFromBelow extends FollowCard {
+
+   private CardRarity rarity = CardRarity.LEGENDARY;
     private String name = "深海的秘藏";
     private Integer cost = 0;
     private int atk = 0;
@@ -48,6 +51,8 @@ public class TreasureFromBelow extends FollowCard {
     @Getter
     @Setter
     public static class TreasureLost extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.LEGENDARY;
         public Integer cost = 0;
         public String name = "深海的秘藏（复活中）";
         public String job = "复仇者";

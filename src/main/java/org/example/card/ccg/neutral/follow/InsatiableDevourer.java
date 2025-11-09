@@ -9,11 +9,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class InsatiableDevourer extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "贪食的吞噬者";
     private Integer cost = 9;
     private int atk = 4;

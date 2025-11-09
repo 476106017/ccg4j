@@ -1,21 +1,24 @@
 package org.example.endpoint;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
 import org.example.card.ccg.neutral.ThePlayer;
-import org.example.endpoint.handler.ChatHandler;
-import org.example.endpoint.handler.DeckEditHandler;
-import org.example.endpoint.handler.GameHandler;
-import org.example.endpoint.handler.MatchHandler;
+import org.example.endpoint.handler.*;
+import org.example.auth.SessionConstants;
 import org.example.game.GameInfo;
 import org.example.game.PlayerDeck;
 import org.example.game.PlayerInfo;
+import org.example.system.Database;
 import org.example.system.GsonConfig;
 import org.example.system.WebSocketConfig;
 import org.example.system.WebSocketConfigurator;
 import org.example.system.util.Msg;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.example.system.Database.*;
 
@@ -37,13 +37,16 @@ import static org.example.system.Database.*;
 @Service
 @DependsOn({"chatHandler","deckEditHandler","gameHandler","matchHandler"})
 public class ApiServerEndpoint {
+
     @Autowired ChatHandler chatHandler;
     @Autowired DeckEditHandler deckEditHandler;
     @Autowired GameHandler gameHandler;
     @Autowired MatchHandler matchHandler;
+    @Autowired CardSearchHandler cardSearchHandler;
+    @Autowired Gson gson;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException {
+    public void onOpen(Session session, EndpointConfig config) throws IOException {
         // handle open event
         final String name = session.getPathParameters().get("name");
         if(Strings.isBlank(name) || userNames.containsValue(name)){
@@ -53,6 +56,14 @@ public class ApiServerEndpoint {
         }
         session.getUserProperties().put("name",name);
         userNames.put(session,name);
+
+        HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        if (httpSession != null) {
+            Long userId = (Long) httpSession.getAttribute(SessionConstants.SESSION_USER_ID);
+            if (userId != null) {
+                sessionUserIds.put(session, userId);
+            }
+        }
 
         // region
         PlayerDeck playerDeck = new PlayerDeck();
@@ -84,6 +95,7 @@ Msg.send(session,name + "登录成功！");
         // handle close event
         String name = userNames.get(session);
         userNames.remove(session);
+        sessionUserIds.remove(session);
         final int size = userNames.size();
         WebSocketConfig.broadcast("【全体】有玩家退出了游戏！当前在线："+ size +"人");
         String room = userRoom.get(session);
@@ -110,17 +122,53 @@ Msg.send(session,name + "登录成功！");
     @OnMessage
     public void onMessage(String msg, Session session) {
         // handle message event
-        final String[] split = msg.trim().split("::");
         try {
 
-            String param;
-            if(split.length<2 || Strings.isBlank(split[1]))
-                param = "";
-            else param = split[1];
+            String trimmed = msg.trim();
+            String param = "";
+            String command = trimmed;
 
-            switch (split[0]){
-                case "joinRoom" -> matchHandler.joinRoom(session);
+            // 检查是否是JSON格式的消息
+            if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+                Type type = new TypeToken<Map<String, Object>>(){}.getType();
+                Map<String, Object> jsonMsg = gson.fromJson(trimmed, type);
+                String messageType = (String) jsonMsg.get("type");
+                Map<String, Object> data = (Map<String, Object>) jsonMsg.get("data");
+
+                switch (messageType) {
+                    case "search_cards" -> cardSearchHandler.searchCards(session, data);
+                    case "update_deck" -> deckEditHandler.setdeck(session, gson.toJson(data));
+                    default -> Msg.send(session, "不支持的JSON消息类型！");
+                }
+                return;
+            }
+
+            int delimiterIndex = trimmed.indexOf("::");
+            int delimiterLength = 2;
+            if (delimiterIndex < 0) {
+                delimiterIndex = trimmed.indexOf(':');
+                delimiterLength = 1;
+            }
+            if (delimiterIndex >= 0) {
+                command = trimmed.substring(0, delimiterIndex);
+                if (delimiterIndex + delimiterLength < trimmed.length()) {
+                    param = trimmed.substring(delimiterIndex + delimiterLength);
+                }
+            }
+
+            // 兼容：如果没有使用"::"分隔，但命令包含空格（如 "discover 1"），把空格后的部分视为参数
+            if(command.contains(" ")){
+                String[] parts = command.split("\\s+", 2);
+                command = parts[0];
+                if(param.isBlank() && parts.length>1){
+                    param = parts[1];
+                }
+            }
+
+            switch (command){
+                case "joinRoom" -> matchHandler.joinRoom(session, param);
                 case "leave" -> matchHandler.leave(session);
+                case "cancelAISearch" -> matchHandler.cancelBorderlandAISearch(session);
 
                 case "deck" -> deckEditHandler.deck(session);
                 case "usedeck" -> deckEditHandler.usedeck(session, param);

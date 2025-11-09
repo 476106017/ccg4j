@@ -16,11 +16,14 @@ import org.example.system.util.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class DarkSnare extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 4;
     public String name = "暗黑陷阱";
     public String job = "中立";

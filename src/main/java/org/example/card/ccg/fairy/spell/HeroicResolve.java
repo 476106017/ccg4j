@@ -11,11 +11,14 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class HeroicResolve extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 1;
     public String name = "英雄的觉悟";
     public String job = "妖精";

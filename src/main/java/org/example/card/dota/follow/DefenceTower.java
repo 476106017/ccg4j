@@ -10,10 +10,13 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DefenceTower extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "防御塔";
     private Integer cost = 4;
     private int atk = 0;

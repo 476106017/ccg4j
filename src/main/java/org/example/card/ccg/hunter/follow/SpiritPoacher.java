@@ -8,10 +8,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class SpiritPoacher extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "灵体偷猎者";
     private Integer cost = 2;
     private int atk = 2;

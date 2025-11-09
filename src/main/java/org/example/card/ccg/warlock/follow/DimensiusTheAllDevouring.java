@@ -9,10 +9,13 @@ import org.example.game.Leader;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DimensiusTheAllDevouring extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "诸界吞噬者迪蒙修斯";
     private Integer cost = 10;
     private int atk = 10;

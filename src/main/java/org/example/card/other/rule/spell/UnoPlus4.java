@@ -9,10 +9,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class UnoPlus4 extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 4;
     public String name = "+4";
     public String job = "游戏规则";
@@ -37,6 +40,8 @@ public class UnoPlus4 extends SpellCard {
     @Getter
     @Setter
     public static class UnoDoubt extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 0;
         public String name = "质疑";
         public String job = "游戏规则";

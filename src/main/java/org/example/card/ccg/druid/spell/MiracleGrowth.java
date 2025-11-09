@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class MiracleGrowth extends SpellCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 8;
     public String name = "奇迹生长";
     public String job = "德鲁伊";
@@ -35,6 +38,8 @@ public class MiracleGrowth extends SpellCard {
     @Getter
     @Setter
     public static class KelpCreeper extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "海藻爬行者";
         private Integer cost = 1;
         private int atk = 1;

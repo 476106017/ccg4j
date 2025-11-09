@@ -1,10 +1,10 @@
 .container {
-    width: 100%; /* 宽度可以根据需要进行调整 */
-    max-width: 1200px; /* 可选：设置最大宽度，以确保容器不会太宽 */
-    margin: 0 auto; /* 使容器居中对齐 */
+    width: 100%; /* 宽度可以根据需要进行调�?*/
+    max-width: 1200px; /* 可选：设置最大宽度，以确保容器不会太�?*/
+    margin: 0 auto; /* 使容器居中对�?*/
     padding: 20px; /* 可选：设置内边距以增加内容和容器之间的空白 */
     border: 1px solid #ccc; /* 可选：添加边框样式 */
-    box-sizing: border-box; /* 将 padding 和 border 计算在内，避免盒模型的问题 */
+    box-sizing: border-box; /* �?padding �?border 计算在内，避免盒模型的问�?*/
   }
 
   .card {
@@ -12,21 +12,33 @@
     width: 220px !important;
     height: 356px !important;
     margin: 20px;
+    padding: 0; /* 确保没有内边距 */
     border-radius: 5px;
     border: 1px solid #4b4b4b;
     box-shadow: 0 0 20px #4b4b4b;
     background-color: #f7f7f7;
+  }
+
+  .card .card-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+    border-radius: inherit;
   }
 
   .card .image {
 
+    /* 卡图不再展示：隐藏图片元素，保留占位和兼容�?*/
+    display: none;
     position: absolute;
     left: -5px;
     width: 100%;
-    height: 50%;
+    height: 0%;
     object-fit: contain;
-    transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.2s ease-in-out;
     overflow: hidden;
   }
 
@@ -40,7 +52,7 @@
   .card .type {
     z-index: 2;
     position: absolute;
-    top: 10px;
+    top: 16px;
     right: 10px;
     font-size: 32px;
     font-weight: bold;
@@ -92,6 +104,31 @@
 
   }
 
+  /* 手牌可用/不可用样�?*/
+  .card.can-play .cost{
+    /* 原有的亮绿色效果（更明显�?*/
+    background: radial-gradient(#7CFC00, #228B22);
+    border-color: #7CFC00;
+    color: #002200;
+    box-shadow: 0 0 12px #7CFC00;
+  }
+  .card.not-enough-pp .cost{
+    /* 灰色化显示，表示不足 */
+    background: linear-gradient(#e0e0e0, #a0a0a0);
+    border-color: #b0b0b0;
+    color: #666666;
+    filter: grayscale(80%);
+    box-shadow: none;
+  }
+  .card.not-enough-pp .card-inner{
+    /* 不可用卡片的内容区域半透明，但保留稀有度背景 */
+    opacity: 0.6;
+  }
+  .card.not-enough-pp .cost{
+    /* 费用圈不透明，保持清晰可见 */
+    opacity: 1 !important;
+  }
+
 @keyframes blink {
     0% {
       color: #f00;
@@ -107,6 +144,63 @@
   .card:hover .name {
     z-index: 9;
     animation: tiktok 1s infinite;
+    .card-use-animate {
+      animation: cardUseHover 1s ease-in-out;
+      z-index: 9999;
+      box-shadow: 0 0 40px 10px #ffd700;
+      transform: scale(1.15) translateY(-20px);
+    }
+
+    @keyframes cardUseHover {
+      0% {
+        box-shadow: 0 0 0 0 #ffd700;
+        transform: scale(1) translateY(0);
+      }
+      50% {
+        box-shadow: 0 0 40px 10px #ffd700;
+        transform: scale(1.15) translateY(-20px);
+      }
+      100% {
+        box-shadow: 0 0 0 0 #ffd700;
+        transform: scale(1) translateY(0);
+      }
+    }
+    /* 随从攻击时撞击动�?*/
+    .card-attack-animate {
+      animation: cardAttackMove 0.5s ease-in-out;
+      z-index: 9999;
+    }
+
+    @keyframes cardAttackMove {
+      0% {
+        transform: scale(1) translateX(0);
+      }
+      30% {
+        transform: scale(1.1) translateX(40px);
+      }
+      70% {
+        transform: scale(1.1) translateX(-20px);
+      }
+      100% {
+        transform: scale(1) translateX(0);
+      }
+    }
+
+    /* 受击抖动动画 */
+    .card-hit {
+      animation: cardHitShake 0.6s ease-in-out;
+      box-shadow: 0 0 10px 3px rgba(255,0,0,0.6);
+    }
+
+    @keyframes cardHitShake {
+      0% { transform: translateX(0); }
+      15% { transform: translateX(-6px) rotate(-3deg); }
+      30% { transform: translateX(6px) rotate(3deg); }
+      45% { transform: translateX(-4px) rotate(-2deg); }
+      60% { transform: translateX(4px) rotate(2deg); }
+      75% { transform: translateX(-2px) rotate(-1deg); }
+      100% { transform: translateX(0) rotate(0); }
+    }
     transform: scale(1.5);
     margin-right: 10px;
   }
@@ -174,59 +268,371 @@
     line-height: 30px;
   }
 
+  /* 抽卡结果 - 3D散开效果容器 */
+  #pack-result-grid.pack-result-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    position: relative;
+    width: 100%;
+    min-height: 700px;
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+  }
+  .pack-card-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200px !important;
+    height: 280px !important;
+    margin-left: -100px;
+    margin-top: -140px;
+    transform-style: preserve-3d;
+    opacity: 0;
+    will-change: transform, opacity;
+    overflow: visible;
+    z-index: 1;
+  }
+  .pack-card-wrap:hover {
+    z-index: 9999 !important;
+  }
+  .pack-card-wrap .card {
+    width: 200px;
+    height: 280px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  /* 悬停时卡片动画 - 抬起并放大 */
+  .pack-card-wrap .card:hover {
+    transform: translateY(-10px) scale(1.05) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important;
+  }
+  .pack-card-wrap .card .cost,
+  .pack-card-wrap .card .type {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+    line-height: 30px;
+  }
+  .pack-card-wrap .card .name {
+    font-size: 1.05rem;
+    padding: 4px 10px;
+  }
+  .pack-card-wrap .card .description {
+    font-size: 14px;
+    padding: 7px;
+  }
+  .pack-card-wrap .card .atk,
+  .pack-card-wrap .card .health {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    line-height: 30px;
+  }
 
-  .card .description {
+
+    /* 生命值改为红色圆圈数字显示（右下角），替代之前的进度条样�?*/
+    .card .health {
+        z-index: 6;
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        background: radial-gradient(#ff4d4d, #8b0000);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: 0 0 6px #800;
+        font-size: 14px;
+    }
+
+  /* 小型生命进度条，位于红圈左侧 */
+  .card .health-bar-small{
+    z-index: 6;
+    position: absolute;
+    bottom: 14px;
+    right: 48px; /* 在红圈左�?*/
+    width: 60px;
+    height: 8px;
+    background: #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+  }
+  .card .health-bar-small .health-bar-inner-small{
+    height: 100%;
+    background: linear-gradient(to right, #ff4d4d, #8b0000);
+    width: 100%;
+    transition: width 0.3s ease-in-out;
+  }
+
+    .card .description {
     display: flex;
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 90%;
-    height: 40%;
-    padding: 0 10px 0 10px;
-    margin: 0 10px 40px 10px;
+    /* 占据去掉卡图后的主要空间：从顶端若干偏移到底部预留位�?*/
+    top: 60px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 8px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 16px; /* 起始字体，后面会�?JS 根据溢出情况缩小 */
     font-weight: bold;
     color: #8b4513;
     border-radius: 5%;
-    background: linear-gradient(to bottom, #faebd7, #bdb76b,#fdf5e6);
-    transition: width 0.3s ease-in-out,height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+    background: transparent;
+    transition: background 0.2s ease-in-out;
     z-index: 1;
     white-space: pre-line;
     overflow: hidden;
+  align-items: flex-start;
+    }
+    
+    /* 给description内的文字添加半透明背景以保证可读性 */
+    .card .description p {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 4px 6px;
+      border-radius: 4px;
+      margin: 0;
     }
 
-    .card .description:hover {
-      z-index: 9;
-      background: linear-gradient(to bottom, #ffd700, #ff0,#eee8aa);
-      margin: 0 0 30px 0;
-      width: 100%;
-      height: 80%;
-      font-size: 14px;
+    /* 稀有度样式 - 铜卡(默认) */
+    .card.BRONZE .description,
+    .card.BRONZE .mark {
+      background: linear-gradient(145deg, 
+        rgba(212, 197, 169, 0.7) 0%,
+        rgba(201, 185, 147, 0.7) 25%,
+        rgba(186, 165, 126, 0.7) 50%,
+        rgba(179, 152, 114, 0.7) 75%,
+        rgba(200, 180, 151, 0.7) 100%);
+      color: #000;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
+      box-shadow: inset 0 2px 5px rgba(212,197,169,0.5),
+                  inset 0 -2px 5px rgba(0,0,0,0.2);
     }
-    .card .description:hover .job {
-      display: block;
+
+    /* 稀有度样式 - 银卡 */
+    .card.SILVER .description,
+    .card.SILVER .mark {
+      background: linear-gradient(to bottom, rgba(232, 232, 232, 0.7), rgba(192, 192, 192, 0.7), rgba(245, 245, 245, 0.7));
+      color: #4a4a4a;
     }
+
+    /* 稀有度样式 - 金卡 */
+    .card.GOLD .description,
+    .card.GOLD .mark {
+      background: linear-gradient(to bottom, rgba(255, 215, 0, 0.7), rgba(255, 179, 71, 0.7), rgba(255, 248, 220, 0.7));
+      color: #8b4513;
+    }
+
+    /* 稀有度样式 - 彩虹卡 - 柔和炫彩透明感 */
+    .card.RAINBOW .description, .card.RAINBOW .mark {
+      background: 
+        linear-gradient(90deg,
+          rgba(255,182,193,0.85) 0%,     /* 浅粉 */
+          rgba(255,218,185,0.85) 10%,    /* 桃色 */
+          rgba(255,250,205,0.85) 20%,    /* 柠檬绸 */
+          rgba(240,255,240,0.85) 30%,    /* 蜜瓜色 */
+          rgba(224,255,255,0.85) 40%,    /* 浅青 */
+          rgba(230,230,250,0.85) 50%,    /* 淡紫 */
+          rgba(255,228,225,0.85) 60%,    /* 雾玫瑰 */
+          rgba(255,240,245,0.85) 70%,    /* 淡紫红 */
+          rgba(245,245,220,0.85) 80%,    /* 米黄 */
+          rgba(255,250,240,0.85) 90%,    /* 花白 */
+          rgba(255,182,193,0.85) 100%),  /* 回到浅粉 */
+        linear-gradient(135deg,
+          rgba(255,255,255,0.4) 0%,
+          rgba(255,255,255,0.1) 50%,
+          rgba(255,255,255,0.4) 100%);
+      background-size: 400% 100%, 100% 100%;
+      background-blend-mode: overlay;
+      color: #2a2a2a;
+      text-shadow: 0 0 8px rgba(255,255,255,0.9),
+                   0 0 15px rgba(255,255,255,0.6),
+                   1px 1px 3px rgba(255,255,255,0.8);
+      font-weight: bold;
+      animation: rainbow-gradient 5s linear infinite,
+                 rainbow-shimmer 3s ease-in-out infinite;
+      box-shadow: 0 0 25px rgba(255,255,255,0.6),
+                  0 0 40px rgba(200,180,255,0.4),
+                  inset 0 0 30px rgba(255,255,255,0.5),
+                  inset 0 0 60px rgba(255,240,255,0.3);
+      backdrop-filter: blur(1px);
+    }
+
+    @keyframes rainbow-gradient {
+      0% { background-position: 0% 50%, 0% 0%; }
+      100% { background-position: 400% 50%, 0% 0%; }
+    }
+
+    @keyframes rainbow-shimmer {
+      0%, 100% { 
+        box-shadow: 0 0 25px rgba(255,255,255,0.6),
+                    0 0 40px rgba(200,180,255,0.4),
+                    inset 0 0 30px rgba(255,255,255,0.5),
+                    inset 0 0 60px rgba(255,240,255,0.3);
+      }
+      33% { 
+        box-shadow: 0 0 30px rgba(255,200,220,0.7),
+                    0 0 50px rgba(180,200,255,0.5),
+                    inset 0 0 40px rgba(255,250,240,0.6),
+                    inset 0 0 70px rgba(240,255,255,0.4);
+      }
+      66% { 
+        box-shadow: 0 0 28px rgba(240,220,255,0.65),
+                    0 0 45px rgba(255,180,200,0.45),
+                    inset 0 0 35px rgba(255,240,250,0.55),
+                    inset 0 0 65px rgba(255,255,240,0.35);
+      }
+    }
+
+    /* 稀有度样式 - 传说卡 - 红水晶效果 */
+    .card.LEGENDARY .description, .card.LEGENDARY .mark {
+      background: linear-gradient(135deg, 
+        #8b0000 0%,    /* 深红 */
+        #a50000 15%,   /* 暗红 */
+        #c00000 30%,   /* 红色 */
+        #dc143c 45%,   /* 猩红 */
+        #ff1744 60%,   /* 亮红 */
+        #ff4569 75%,   /* 粉红 */
+        #ff6b8a 90%,   /* 浅粉红 */
+        #ffb3c1 100%); /* 淡粉 */
+      background-size: 400% 400%;
+      color: #fff;
+      text-shadow: 0 0 5px rgba(220,20,60,1),
+                   0 0 10px rgba(200,0,0,0.8),
+                   0 0 15px rgba(139,0,0,0.6),
+                   1px 1px 3px rgba(0,0,0,0.9);
+      font-weight: bold;
+      animation: legendary-glow 4s ease-in-out infinite,
+                 legendary-shine-diagonal 6s linear infinite,
+                 legendary-pulse 5s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(220,20,60,0.8),
+                  0 0 35px rgba(200,0,0,0.6),
+                  inset 0 0 25px rgba(255,70,105,0.4),
+                  inset 0 2px 10px rgba(255,179,193,0.5);
+    }
+
+    @keyframes legendary-glow {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(220,20,60,0.8),
+                    0 0 35px rgba(200,0,0,0.6),
+                    inset 0 0 25px rgba(255,70,105,0.4),
+                    inset 0 2px 10px rgba(255,179,193,0.5);
+      }
+      50% { 
+        box-shadow: 0 0 30px rgba(220,20,60,1),
+                    0 0 50px rgba(200,0,0,0.8),
+                    0 0 70px rgba(255,23,68,0.4),
+                    inset 0 0 35px rgba(255,70,105,0.6),
+                    inset 0 2px 15px rgba(255,179,193,0.7);
+      }
+    }
+
+    @keyframes legendary-shine-diagonal {
+      0% { background-position: 400% 400%; }
+      100% { background-position: -100% -100%; }
+    }
+
+    @keyframes legendary-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.008); }
+    }
+
+    /* 移除描述�?hover 放大/展开效果（按用户要求不再�?hover 特效�?*/
 
     .card .description p {
       margin: 5px;
       text-align: left;
+      line-height: 1.2;
     }
 
     .job {
       z-index: 5;
-      display: none;
+      display: inline-block;
       position: absolute;
-      bottom: 0px;
-      left: 80px;
-      width: 70px;
-      height: 30px;
+      bottom: 26px; /* 放在血条上方一点（血条14px + 8px高度 + 4px间隔）*/
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 0.6rem;
-      color: #cd853f;
+      color: #8b4513;
       text-align: center;
       font-weight: bold;
-      line-height: 30px;
+      background-color: white;
+      border: 1px solid #8b4513;
+      border-radius: 3px;
+      padding: 1px 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      white-space: nowrap;
     }
+
+/* 拖拽态样式：被拖动的卡牌微透明 */
+.card.dragging{
+  opacity: 0.6;
+  transform: scale(0.98);
+}
+
+/* 可选目标高亮（拖动时使用） */
+.possible-target{
+  box-shadow: 0 0 16px 4px rgba(255,215,0,0.9) !important;
+  border: 2px solid rgba(255,215,0,0.9) !important;
+  transform: translateZ(0);
+}
+
+/* 领导者生命（卡组信息区域）的小红�?*/
+.leader-health{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background: radial-gradient(#ff4d4d, #900);
+  color: #fff;
+  font-weight:bold;
+  margin-left:6px;
+  font-size:14px;
+}
+
+/* PP 宝石显示 */
+.pp-gems{
+  display:flex;
+  flex-direction: column;
+  gap:2px;
+  align-items:center;
+  width: 100%;
+}
+
+/* 我方PP从上往下 */
+.pp-gems-player {
+  flex-direction: column;
+}
+
+/* 敌方PP从下往上 */
+.pp-gems-enemy {
+  flex-direction: column-reverse;
+}
+
+.pp-gems-row {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+}
+
+.pp-gems .gem{
+  font-size:18px;
+  line-height:1;
+}
+.pp-gems .gem.used{
+  opacity: 0.7;
+  filter: grayscale(100%);
+}
 
     .keyword {
       color: #8b0000;
@@ -281,16 +687,6 @@
         transform: scale(1.2);
       }
 
-
-.footer {
-    z-index: 999;
-    text-align: right;
-    bottom: 10px;
-    right: 10px;
-    background-color: #fff;
-}
-
-
 .mny-alert-position{
   position:absolute;
   float: left;
@@ -324,4 +720,558 @@
 
 #swap-card .card{
   margin: 5px;
+}
+/* 卡牌左右提示框（关键�?/ 触发器） */
+.card-tooltip-left, .card-tooltip-right{
+  position: absolute; /* 相对于容器定�?*/
+  width: max-content;
+  max-width: 240px;
+  background: rgba(0,0,0,0.95);
+  color: #fff;
+  padding: 8px 10px;
+  pointer-events: none; /* 防止tooltip挡住鼠标事件 */
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.3;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6), 0 0 1px #fff;
+  z-index: 999999; /* 提高 z-index */
+  pointer-events: none;
+  display: none;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.card-tooltip-left{
+  margin-right: 10px; /* 改用 margin 控制间距 */
+  text-align: left;
+}
+.card-tooltip-right{
+  margin-left: 10px; /* 改用 margin 控制间距 */
+  text-align: left;
+}
+.card .keyword-inline{
+  display:block;
+  margin-bottom:6px;
+}
+.card-tooltip-title{
+  font-weight:700;
+  margin-bottom:6px;
+  color:#ffd700;
+}
+.collection-card{
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.collection-card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+.collection-card.owned{
+  filter: none;
+  opacity: 1;
+}
+.collection-card.missing{
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+.collection-card .badge{
+  font-size: 0.75rem;
+}
+.pack-card{
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.pack-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.auth-body {
+  background: #f4f6f9;
+}
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 15px;
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  border: none;
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+}
+.auth-card .nav-pills .nav-link {
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.auth-card .nav-pills .nav-link.active {
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 8px 15px rgba(99,102,241,0.25);
+}
+.auth-pane {
+  display: none;
+}
+.auth-pane.active {
+  display: block;
+  animation: fadeIn 0.2s ease-in-out;
+}
+.auth-footer a {
+  color: #6366f1;
+}
+.auth-footer a:hover {
+  color: #4f46e5;
+}
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(8px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* 卡包轮播图样式 */
+#packCarousel {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#packCarousel .carousel-control-prev,
+#packCarousel .carousel-control-next {
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+#packCarousel .carousel-control-prev {
+  left: 10px;
+}
+
+#packCarousel .carousel-control-next {
+  right: 10px;
+}
+
+#packCarousel .carousel-control-prev:hover,
+#packCarousel .carousel-control-next:hover {
+  opacity: 1;
+}
+
+#packCarousel .carousel-indicators {
+  margin-bottom: 0;
+}
+
+#packCarousel .carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #667eea;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+#packCarousel .carousel-indicators button.active {
+  opacity: 1;
+}
+
+/* Tab导航样式优化 */
+.nav-tabs {
+  border-bottom: 2px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+  color: #6c757d;
+  font-weight: 500;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 24px;
+  transition: all 0.3s;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #495057;
+  border-color: transparent;
+  background: rgba(0,0,0,0.02);
+}
+
+.nav-tabs .nav-link.active {
+  color: #667eea;
+  border-color: #667eea;
+  background: transparent;
+}
+
+/* 匹配对战页面卡片悬停效果 */
+.hover-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+
+.hover-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25) !important;
+}
+
+.hover-card .card-body {
+  transition: all 0.3s ease;
+}
+
+.hover-card:hover .card-body {
+  transform: scale(1.02);
+}
+
+/* 游戏模式卡片按钮悬停效果 */
+.hover-card .btn {
+  transition: all 0.3s ease;
+}
+
+.hover-card:hover .btn {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* 收藏页面卡牌额外样式 */
+.card .atk {
+  z-index: 5;
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+  color: #f0ffff;
+  text-shadow: 0px 0px 2px #000080;
+  text-align: center;
+  border-radius: 50%;
+  border: 2px solid #f0ffff;
+  background: radial-gradient(#0000cd, #333333);
+  font-weight: bold;
+  line-height: 30px;
+}
+
+.card .hp {
+  z-index: 6;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: radial-gradient(#ff4d4d, #8b0000);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 0 6px #800;
+  font-size: 14px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.card .mark {
+  display: flex;
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  right: 10px;
+  bottom: 50px;
+  padding: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-weight: bold;
+  color: #8b4513;
+  border-radius: 5%;
+  background: linear-gradient(to bottom, #faebd7, #bdb76b,#fdf5e6);
+  z-index: 1;
+  white-space: pre-line;
+  overflow-y: auto; /* 允许垂直滚动 */
+  overflow-x: hidden; /* 隐藏横向滚动 */
+  align-items: flex-start;
+  justify-content: flex-start; /* 改为从顶部开始，便于滚动查看 */
+  text-align: center;
+  /* 美化滚动条 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 69, 19, 0.3) transparent;
+}
+
+/* Webkit浏览器滚动条样式 */
+.card .mark::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card .mark::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card .mark::-webkit-scrollbar-thumb {
+  background: rgba(139, 69, 19, 0.3);
+  border-radius: 3px;
+}
+
+.card .mark::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 69, 19, 0.5);
+}
+
+.card .quantity {
+  z-index: 7;
+  position: absolute;
+  top: 50px;
+  right: 5px;
+  padding: 4px 8px;
+  background: rgba(40, 167, 69, 0.9);
+  color: white;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 装备卡攻击力和耐久度显示 */
+.equipment-atk {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  z-index: 6;
+}
+
+.equipment-durability {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4dabf7, #1971c2);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  z-index: 6;
+}
+
+/* 被装备随从的装备图标 */
+.equipment-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.9);
+  color: #8b4513;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 6;
+  cursor: help;
+}
+
+/* 主战者影响列表图标 */
+.leader-affecting-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 10;
+  cursor: help;
+}
+
+/* 卡牌浮动展示容器 */
+.card-hover-display {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  display: none;
+}
+
+.card-hover-display.show {
+  display: block;
+}
+
+.card-hover-display .card {
+  transform: scale(1.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+/* ========== 全局稀有度样式 ========== */
+/* 稀有度阴影 - 统一使用黑色阴影 */
+.card.BRONZE {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+.card.SILVER {
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+}
+.card.GOLD {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+.card.RAINBOW {
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.7);
+  animation: rainbow-shine 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+.card.LEGENDARY {
+  animation: legendary-pulse 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========== 稀有度背景色 ========== */
+.card.BRONZE .card-inner,
+.card:not(.SILVER):not(.GOLD):not(.RAINBOW):not(.LEGENDARY) .card-inner {
+  background: linear-gradient(180deg, #6b5644 0%, #8b7355 40%, #a89176 100%);
+}
+
+.card.SILVER .card-inner {
+  background: linear-gradient(180deg, #6b7280 0%, #9ca3af 40%, #d1d5db 100%);
+}
+
+.card.GOLD .card-inner {
+  background: linear-gradient(180deg, #8b7355 0%, #c9a961 40%, #f4e5c2 100%);
+}
+
+.card.RAINBOW .card-inner {
+  background: linear-gradient(135deg, 
+    #ffb3d9 0%, #b3d9ff 20%, #b3ffcc 40%, 
+    #fff4b3 60%, #e6b3ff 80%, #ffb3d9 100%);
+  background-size: 300% 300%;
+  animation: rainbow-flow 6s ease infinite;
+}
+
+.card.LEGENDARY .card-inner {
+  background: linear-gradient(180deg, #4b0f0f 0%, #941b1b 40%, #ff6b6b 100%);
+}
+
+/* 法术卡圆角 */
+.card.SPELL .card-inner {
+  border-radius: 20px !important;
+}
+.card.SPELL {
+  border-radius: 20px !important;
+}
+
+/* 传说卡去除type和description的文字阴影 */
+.card.LEGENDARY .type {
+  text-shadow: none !important;
+  color: #000 !important;
+}
+.card.LEGENDARY .description {
+  text-shadow: none !important;
+  color: #8b4513 !important;
+}
+.card.LEGENDARY .description p {
+  color: #8b4513 !important;
+}
+
+/* 虹卡和传说卡高光特效 */
+.card.RAINBOW::before,
+.card.LEGENDARY::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 999;
+}
+.card.RAINBOW::before {
+  background: linear-gradient(45deg, 
+    transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+  animation: shine-sweep 4s ease-in-out infinite;
+}
+.card.LEGENDARY::before {
+  background: linear-gradient(45deg, 
+    transparent 30%, rgba(255, 215, 0, 0.4) 50%, transparent 70%);
+  animation: shine-sweep 3s ease-in-out infinite;
+}
+
+/* 稀有度动画 */
+@keyframes rainbow-shine {
+  0%, 100% { filter: brightness(1) saturate(1); }
+  50% { filter: brightness(1.15) saturate(1.3); }
+}
+@keyframes legendary-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+}
+@keyframes shine-sweep {
+  0% { transform: translate(-100%, -100%) rotate(45deg); }
+  100% { transform: translate(100%, 100%) rotate(45deg); }
+}
+@keyframes rainbow-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 护符卡倒数框加大 */
+.card-type-amulet .hp {
+  width: 48px !important;
+  height: 48px !important;
+  font-size: 26px !important;
+  line-height: 48px !important;
+  bottom: 6px !important;
+  right: 6px !important;
+  border-width: 4px !important;
+}
+
+
+/* 浮动提示框动画 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
 }

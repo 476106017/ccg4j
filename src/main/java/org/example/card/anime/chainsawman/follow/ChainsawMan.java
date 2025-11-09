@@ -10,10 +10,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class ChainsawMan extends FollowCard {
+
+    private CardRarity rarity = CardRarity.SILVER;
     private int slot = 7;
     private int apposition = 1;
     private String name = "链锯恶魔";
@@ -55,6 +58,8 @@ public class ChainsawMan extends FollowCard {
     @Getter
     @Setter
     public static class ChainsawMode extends EquipmentCard {
+
+        private CardRarity rarity = CardRarity.SILVER;
         private int apposition = 0;
         public Integer cost = 3;
         public String name = "链锯模式";

@@ -8,11 +8,14 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class PrinceRenathal extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "雷纳索尔王子";
     private Integer cost = 3;
     private int atk = 3;

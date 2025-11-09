@@ -13,11 +13,14 @@ import org.example.system.util.Lists;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Yuwan extends Leader {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "伊昂";
     private String job = "复仇者";
 
@@ -57,6 +60,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class AnalyzingArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "解析的造物";
         private Integer cost = 1;
         private int atk = 2;
@@ -79,6 +84,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class AncientArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "古老的创造物";
         private Integer cost = 1;
         private int atk = 3;
@@ -99,6 +106,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class MysticArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "神秘的创造物";
         private Integer cost = 3;
         private int atk = 2;
@@ -122,6 +131,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class BifurcatingArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "增殖的创造物";
         private Integer cost = 3;
         private int atk = 2;
@@ -146,6 +157,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class RadiantArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "绚烂的创造物";
         private Integer cost = 5;
         private int atk = 4;
@@ -168,6 +181,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class BarrierArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "守御的创造物";
         private Integer cost = 5;
         private int atk = 4;
@@ -188,6 +203,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class KeenedgeArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "锋锐的创造物";
         private Integer cost = 5;
         private int atk = 3;
@@ -208,6 +225,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class AirstrikeArtifact extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "迅袭的创造物\n";
         private Integer cost = 5;
         private int atk = 2;
@@ -230,6 +249,8 @@ public class Yuwan extends Leader {
     @Getter
     @Setter
     public static class ParadigmShift extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 7;
         public String name = "典范转移";
         public String job = "复仇者";

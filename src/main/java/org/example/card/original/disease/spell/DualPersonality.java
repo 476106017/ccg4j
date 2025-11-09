@@ -12,10 +12,13 @@ import org.example.system.Database;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DualPersonality extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "双重人格";
     public String job = "疾病";

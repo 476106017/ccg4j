@@ -12,6 +12,7 @@ import java.util.Set;
 @Component
 public class StartInit implements CommandLineRunner {
 
+
     @Override
     public void run(String... args) throws Exception {
 

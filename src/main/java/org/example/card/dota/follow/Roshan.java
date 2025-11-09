@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Roshan extends FollowCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     private String name = "Roshan";
     private Integer cost = 6;
     private int atk = 3;
@@ -39,19 +42,21 @@ public class Roshan extends FollowCard {
     @Getter
     @Setter
     public static class ImmortalGuard extends EquipmentCard {
+
+        private CardRarity rarity = CardRarity.GOLD;
         public Integer cost = 2;
         public String name = "不朽之守护";
         public transient int addAtk = 0;
         public transient int addHp = 0;
         public String job = "dota";
-        private List<String> race = Lists.ofStr("圣遗物");
         public String mark = """
-        战吼：使装备者获得【复生】
+        战吼:使装备者获得【复生】
         """;
 
         public String subMark = "信春哥，得永生";
 
         public void init() {
+            setRace(Lists.ofStr("圣遗物"));
             getKeywords().add("死亡掉落");
             setPlay(new Play(
                 ()->ownerPlayer().getAreaFollowsAsGameObj(),true,

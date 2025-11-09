@@ -9,11 +9,14 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class InsectLord extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public int atk = 1;
     public int hp = 1;

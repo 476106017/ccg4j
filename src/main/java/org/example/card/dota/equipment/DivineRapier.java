@@ -4,10 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.card.EquipmentCard;
 import org.example.game.Play;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DivineRapier extends EquipmentCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 10;
     public String name = "圣剑";
     public transient int addAtk = 30;

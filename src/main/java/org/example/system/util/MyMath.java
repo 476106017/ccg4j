@@ -1,6 +1,7 @@
 package org.example.system.util;
 
 public class MyMath {
+
     public static void main(String[] args) {
         System.out.println(maxPrimeNum(0));
     }

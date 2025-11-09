@@ -10,11 +10,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class FairyWhisperer extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "妖之轻语者";
     public String job = "妖精";

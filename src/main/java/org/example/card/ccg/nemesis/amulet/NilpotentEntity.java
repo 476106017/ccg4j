@@ -12,10 +12,13 @@ import org.example.system.util.Lists;
 import org.example.system.util.MyMath;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class NilpotentEntity extends AmuletCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 1;
     public String name = "虚数物体";
     public String job = "复仇者";

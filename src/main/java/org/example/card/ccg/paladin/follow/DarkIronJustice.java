@@ -9,11 +9,14 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class DarkIronJustice extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "黑铁裁决者";
     private Integer cost = 5;
     private int atk = 3;

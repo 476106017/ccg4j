@@ -8,11 +8,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class KujoJotaro extends FollowCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     private String name = "空条承太郎";
     private Integer cost = 7;
     private int atk = 5;

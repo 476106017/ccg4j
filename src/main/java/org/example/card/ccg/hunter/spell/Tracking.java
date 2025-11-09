@@ -10,11 +10,14 @@ import org.example.system.util.Lists;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Tracking extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 1;
     public String name = "追踪术";
     public String job = "猎人";

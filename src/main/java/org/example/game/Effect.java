@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 @Getter
 @Setter
 public class Effect{
+
     private GameObj parent;
     private GameObj ownerObj;
     private EffectTiming timing;
@@ -83,6 +84,7 @@ public class Effect{
     @Setter
     @Getter
     public static class EffectInstance {
+
         private Effect effect;
         private Object param;
 

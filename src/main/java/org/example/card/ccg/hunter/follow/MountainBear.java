@@ -8,10 +8,13 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class MountainBear extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "山岭野熊";
     private Integer cost = 7;
     private int atk = 5;
@@ -35,6 +38,8 @@ public class MountainBear extends FollowCard {
     @Getter
     @Setter
     public static class MountainCub extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "山熊宝宝";
         private Integer cost = 3;
         private int atk = 2;

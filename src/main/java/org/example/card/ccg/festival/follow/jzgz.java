@@ -11,11 +11,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class jzgz extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 4;
     public String name = "举烛观众";
     public String job = "中立";

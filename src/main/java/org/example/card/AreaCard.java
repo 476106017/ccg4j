@@ -63,7 +63,19 @@ public abstract class AreaCard extends Card{
                 info.msg(getNameWithOwner() + "的装备被留在了战场！");
                 followCard.getEquipment().death();
             }
-            followCard.setHp(followCard.getMaxHp());// 回复到满血
+            // 重置随从到初始状态
+            FollowCard prototypeFollow = (FollowCard) followCard.prototype();
+            followCard.setAtk(prototypeFollow.getAtk());
+            followCard.setHp(prototypeFollow.getHp());
+            followCard.setMaxHp(prototypeFollow.getMaxHp());
+            followCard.setTurnAttack(0);
+            followCard.setTurnAttackMax(1);
+            followCard.setTurnAge(0);
+            followCard.setCanAttack(false);
+            followCard.setCanDash(false);
+            // 清除所有临时关键字和效果（保留离场时效果已经在removeWhenAtArea中处理）
+            followCard.getKeywords().clear();
+            followCard.getKeywords().addAll(prototypeFollow.getKeywords());
         }else if (this instanceof AmuletCard amuletCard){
             amuletCard.setCountDown(((AmuletCard)(amuletCard.prototype())).getCountDown());
         }

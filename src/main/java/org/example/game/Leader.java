@@ -3,6 +3,7 @@ package org.example.game;
 import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.card.Card;
 import org.example.constant.EffectTiming;
 import org.example.system.util.Msg;
 
@@ -18,6 +19,9 @@ public abstract class Leader extends GameObj {
 
     private transient boolean needTarget = true;
     private boolean canUseSkill = true;
+    
+    // 跟踪影响此主战者的卡牌（用于显示影响列表）
+    private transient List<Card> affectingCards = new ArrayList<>();
 
     // 默认超抽效果（输掉游戏）
     private transient Consumer<Integer> overDraw = integer -> info.gameset(enemyPlayer());
@@ -84,6 +88,12 @@ public abstract class Leader extends GameObj {
         }
         info.msg(newEffect.getParent().getNameWithOwner() + "为" + ownerPlayer().getName() + "提供了"+newEffect.getTiming().getName()+"效果！");
         effects.add(newEffect);
+        
+        // 记录影响来源的卡牌（用于UI显示）
+        GameObj parent = newEffect.getParent();
+        if (parent instanceof Card card && !affectingCards.contains(card)) {
+            affectingCards.add(card);
+        }
     }
 
     public List<Effect> getEffectsWhen(EffectTiming timing){
@@ -107,6 +117,19 @@ public abstract class Leader extends GameObj {
                 }
             });
         getEffects().removeAll(usedUpEffects);
+        
+        // 清理已过期效果对应的卡牌
+        for (Effect usedUpEffect : usedUpEffects) {
+            GameObj parent = usedUpEffect.getParent();
+            if (parent instanceof Card card) {
+                // 检查是否还有该卡牌的其他效果
+                boolean stillHasEffect = effects.stream()
+                    .anyMatch(e -> e.getParent() == parent);
+                if (!stillHasEffect) {
+                    affectingCards.remove(card);
+                }
+            }
+        }
     }
 
 }

@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class BeaststalkerTavishLeader extends Leader {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "野兽追猎者塔维什";
     private String job = "猎人";
 
@@ -55,6 +58,8 @@ public class BeaststalkerTavishLeader extends Leader {
     @Getter
     @Setter
     public static class Misha extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "米莎";
         private Integer cost = 3;
         private int atk = 4;
@@ -72,6 +77,8 @@ public class BeaststalkerTavishLeader extends Leader {
     @Getter
     @Setter
     public static class Huffer extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "霍弗";
         private Integer cost = 3;
         private int atk = 4;
@@ -89,6 +96,8 @@ public class BeaststalkerTavishLeader extends Leader {
     @Getter
     @Setter
     public static class Leokk extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "雷欧克";
         private Integer cost = 3;
         private int atk = 2;

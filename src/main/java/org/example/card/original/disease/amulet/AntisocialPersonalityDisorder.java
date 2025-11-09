@@ -13,12 +13,15 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class AntisocialPersonalityDisorder extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 9;
 
     public String name = "反社会人格障碍";

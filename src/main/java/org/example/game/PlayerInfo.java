@@ -26,11 +26,13 @@ import static org.example.constant.CounterKey.TRANSMIGRATION_NUM;
 @Getter
 @Setter
 public class PlayerInfo implements Serializable {
+
     transient GameInfo info;
 
     String name;
     transient Session session;
     boolean initative;// 先攻
+    boolean aiControlled = false;
     boolean shortRope = false;
     // 战吼
     boolean canFanfare = true;
@@ -132,7 +134,18 @@ public class PlayerInfo implements Serializable {
             else
                 discoverCard= cardsCopy.get(discoverNum-1);
 
-            consumer.accept(discoverCard);
+            // 如果被选中的卡是 prototype（未绑定 GameInfo），先复制一份并绑定到当前 player 再交给 consumer
+            if(discoverCard.getInfo() == null){
+                try{
+                    Card safeCard = discoverCard.copyBy(this);
+                    consumer.accept(safeCard);
+                }catch (Exception e){
+                    // 若复制失败，仍然尝试传原始卡以便出现更明确的错误日志
+                    consumer.accept(discoverCard);
+                }
+            }else{
+                consumer.accept(discoverCard);
+            }
             step--;
             discoverNum = 0;
         });
@@ -190,22 +203,29 @@ public class PlayerInfo implements Serializable {
         info.msg(this.getName()+"血上限提升"+hpMax+"（提升后血量上限为"+this.getHpMax()+"）");
     }
     public void addPp(int num){
-        int pp = 0;
-        if(num>0){
-            pp = Math.min(getPpLimit(),getPpNum()+num);
-        } else if (num<0) {
-            pp = Math.max(0,getPpNum()+num);
+        if (num == 0) return;  // 如果增加值为0，直接返回，不做任何改变
+        int pp;
+        if(num > 0){
+            pp = Math.min(getPpLimit(), getPpNum() + num);
+        } else {
+            pp = Math.max(0, getPpNum() + num);
         }
         setPpNum(pp);
     }
     public void addPpMax(int num){
-        int pp = 0;
-        if(num>0){
-            pp = Math.min(getPpLimit(),getPpMax()+num);
-        } else if (num<0) {
-            pp = Math.max(0,getPpNum()+num);
+        if (num == 0) {
+            return;
         }
-        setPpMax(pp);
+        int currentMax = getPpMax();
+        if(num>0){
+            currentMax = Math.min(getPpLimit(), currentMax + num);
+        } else {
+            currentMax = Math.max(0, currentMax + num);
+        }
+        setPpMax(currentMax);
+        if(getPpNum() > currentMax){
+            setPpNum(currentMax);
+        }
     }
 
     public void shuffleGraveyard(){
@@ -283,12 +303,13 @@ public class PlayerInfo implements Serializable {
         return searches;
     }
     public void backToDeck(Card cards){
-        addDeck(cards);
-        hand.remove(cards);
+        if(!addDeck(cards).isEmpty()){
+            hand.remove(cards);
+        }
     }
     public void backToDeck(List<Card> cards){
-        addDeck(cards);
-        hand.removeAll(cards);
+        List<Card> added = addDeck(cards);
+        hand.removeAll(added);
     }
 
     public void addDeckBottom(Card card){
@@ -297,23 +318,46 @@ public class PlayerInfo implements Serializable {
         info.msgTo(getSession(),card.getName() + "被放到牌堆底部");
         getDeck().add(card);
     }
-    public void addDeck(Card card){
-        addDeck(List.of(card));
+    public List<Card> addDeck(Card card){
+        return addDeck(List.of(card));
     }
-    public void addDeck(List<Card> cards){
-        int cardsSize = cards.size();
-        int deckSize = getDeck().size();
-        if(deckSize + cardsSize > deckMax){
-            cards.subList(0,deckMax-deckSize);
+    public List<Card> addDeck(List<Card> cards){
+        if(cards.isEmpty()){
+            return Collections.emptyList();
         }
-        info.tempCardEffectBatch(getAreaAsCard(),EffectTiming.WhenAddDeck);
-        info.msgTo(getEnemy().getSession(),"对手将" + cards.size() + "张卡洗入牌堆中");
-        info.msgTo(getSession(),
-            cards.stream().map(GameObj::getName).collect(Collectors.joining("、")) + "被洗入牌堆");
-        cards.forEach(card -> {
-            int index = (int)(Math.random() * getDeck().size());
-            getDeck().add(index,card);
-        });
+
+        int deckSize = getDeck().size();
+        int availableSlots = Math.max(0, deckMax - deckSize);
+
+        List<Card> cardsToAdd = new ArrayList<>();
+        List<Card> overflow = new ArrayList<>();
+
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            if (i < availableSlots) {
+                cardsToAdd.add(card);
+            } else {
+                overflow.add(card);
+            }
+        }
+
+        if(!cardsToAdd.isEmpty()){
+            info.tempCardEffectBatch(getAreaAsCard(),EffectTiming.WhenAddDeck);
+            info.msgTo(getEnemy().getSession(),"对手将" + cardsToAdd.size() + "张卡洗入牌堆中");
+            info.msgTo(getSession(),
+                cardsToAdd.stream().map(GameObj::getName).collect(Collectors.joining("、")) + "被洗入牌堆");
+            cardsToAdd.forEach(card -> {
+                int index = getDeck().isEmpty() ? 0 : (int)(Math.random() * (getDeck().size() + 1));
+                getDeck().add(index,card);
+            });
+        }
+
+        if(!overflow.isEmpty()){
+            info.msg(getName()+"的牌堆放不下了，多出的"+overflow.size()+"张牌从游戏中除外");
+            info.tempCardEffectBatch(overflow,EffectTiming.Exile);
+        }
+
+        return cardsToAdd;
     }
     public void addHand(Card card){
         addHand(List.of(card));
@@ -606,6 +650,7 @@ public class PlayerInfo implements Serializable {
     }
 
     public void summon(List<AreaCard> summonedCards){
+        String cardsStr = summonedCards.stream().map(AreaCard::getName).collect(Collectors.joining("、"));
         info.msg(getName() + "召唤了" + summonedCards.stream().map(AreaCard::getId).collect(Collectors.joining("、")));
         addArea(summonedCards);
         info.useAreaCardEffectBatch(summonedCards,EffectTiming.Entering);
@@ -616,7 +661,7 @@ public class PlayerInfo implements Serializable {
 
         List<AreaCard> enemyAreaCards = getEnemy().getAreaBy(areaCard -> !summonedCards.contains(areaCard));
         info.useAreaCardEffectBatch(enemyAreaCards,EffectTiming.WhenEnemySummon,summonedCards);
-        getLeader().useEffects(EffectTiming.WhenEnemySummon,summonedCards);
+        getEnemy().getLeader().useEffects(EffectTiming.WhenEnemySummon,summonedCards);
     }
 
     public void transmigration(Predicate<? super Card> predicate,int num){
@@ -637,6 +682,7 @@ public class PlayerInfo implements Serializable {
     @Getter
     @Setter
     public static class Weary extends GameObj{
+
         private String name = "疲劳";
     }
 }

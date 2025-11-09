@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class FacelessVoid extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "虚空假面";
     private Integer cost = 2;
     private int atk = 2;
@@ -49,6 +52,8 @@ public class FacelessVoid extends FollowCard {
     @Getter
     @Setter
     public static class Chronosphere extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 4;
         public String name = "时间结界";
         public String job = "dota";

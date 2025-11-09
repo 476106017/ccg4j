@@ -9,11 +9,14 @@ import org.example.system.util.Lists;
 
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class PredatoryMight extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "强者的威严";
     public String job = "妖精";

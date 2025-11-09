@@ -13,10 +13,13 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DiscoZombie extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "舞王僵尸";
     private Integer cost = 3;
     private int atk = 3;

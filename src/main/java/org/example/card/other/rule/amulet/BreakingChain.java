@@ -8,10 +8,13 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class BreakingChain extends AmuletCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 4;
     public String name = "连锁终结";
     public String job = "游戏规则";

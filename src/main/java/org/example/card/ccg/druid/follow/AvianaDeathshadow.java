@@ -8,10 +8,13 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class AvianaDeathshadow extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "死亡之影艾维娜";
     private Integer cost = 5;
     private int atk = 7;

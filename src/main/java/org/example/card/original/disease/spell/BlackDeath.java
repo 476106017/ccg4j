@@ -13,10 +13,13 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class BlackDeath extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "黑死病";
     public String job = "疾病";

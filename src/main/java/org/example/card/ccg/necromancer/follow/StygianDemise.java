@@ -11,10 +11,13 @@ import org.example.system.util.Lists;
 
 import java.util.Comparator;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class StygianDemise extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "冥河的流葬";
     private Integer cost = 6;
     private int atk = 4;

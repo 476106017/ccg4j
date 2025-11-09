@@ -8,11 +8,14 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class TormentedSylvanas extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "饱受折磨的希尔瓦娜斯";
     private Integer cost = 8;
     private int atk = 3;

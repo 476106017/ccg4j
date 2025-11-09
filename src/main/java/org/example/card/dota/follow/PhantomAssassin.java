@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class PhantomAssassin extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "幻影刺客";
     private Integer cost = 2;
     private int atk = 3;
@@ -55,6 +58,8 @@ public class PhantomAssassin extends FollowCard {
     @Getter
     @Setter
     public static class StiflingDagger extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
         public String name = "窒息之刃";
         public String job = "dota";
@@ -76,6 +81,8 @@ public class PhantomAssassin extends FollowCard {
     @Getter
     @Setter
     public static class PhantomStrike extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
         public String name = "幻影突袭";
         public String job = "dota";

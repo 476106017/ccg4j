@@ -2,3 +2,41 @@ server:
   port: 18081
   wss-port: 18089
   max-http-header-size: 1000000
+  servlet:
+    session:
+      timeout: 30m  # session超时时间30分钟
+
+spring:
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+      flush-mode: on-save  # 在请求结束时才保存session
+      save-mode: on-set-attribute  # 只在属性变更时保存
+  datasource:
+    url: jdbc:postgresql://db.paiznwpfgrjegswduyot.supabase.co:5432/postgres
+    username: postgres
+    password:
+    driver-class-name: org.postgresql.Driver
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: 2s
+      quiet-period: 1s
+      additional-paths: src/main/java  # 添加额外的监控路径
+    livereload:
+      enabled: true  # 启用 livereload
+      port: 35729    # livereload 默认端口
+  web:
+    resources:
+      static-locations: classpath:/static/
+      chain:
+        cache: false
+      cache:
+        period: 0    # 禁用缓存
+  thymeleaf:
+    cache: false     # 禁用模板缓存
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true

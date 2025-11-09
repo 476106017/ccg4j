@@ -8,10 +8,13 @@ import org.example.game.PlayerInfo;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class LastResort extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 6;
     public String name = "终极手段";
     public String job = "术士";

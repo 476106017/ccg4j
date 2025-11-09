@@ -14,11 +14,14 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.ALL_COST;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Bahamut extends FollowCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     public Integer cost = 9;
     public String name = "巴哈姆特";
     public String job = "中立";

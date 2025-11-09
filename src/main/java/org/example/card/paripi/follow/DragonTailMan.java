@@ -8,11 +8,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class DragonTailMan extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "难以接近的龙尾人";
     private Integer cost = 2;
     private int atk = 3;

@@ -10,11 +10,14 @@ import org.example.game.Leader;
 import org.example.system.util.FunctionN;
 
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Kongming extends Leader {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "诸葛孔明";
     private String job = "派对咖";
 

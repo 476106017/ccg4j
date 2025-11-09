@@ -11,6 +11,7 @@ import java.util.*;
 @Getter
 @Setter
 public class PlayerDeck {
+
     Class<? extends Leader> leaderClass;
     List<Class<? extends Card>> activeDeck = new ArrayList<>();
     List<Class<? extends Card>> availableDeck = new ArrayList<>();

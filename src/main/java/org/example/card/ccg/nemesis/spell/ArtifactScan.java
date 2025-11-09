@@ -10,11 +10,14 @@ import org.example.system.util.Lists;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ArtifactScan extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 1;
     public String name = "创造物扫描";
     public String job = "复仇者";

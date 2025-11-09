@@ -1,0 +1,174 @@
+/* 卡组网格布局 */
+#deck-grid {
+    max-width: 1400px;
+}
+
+/* 卡组卡片 */
+.deck-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 24px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* 随机卡组特殊样式 */
+.deck-card.random-deck {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.deck-card.random-deck:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(245, 87, 108, 0.4);
+}
+
+.deck-card.random-deck .deck-card-name {
+    font-size: 1.6rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.deck-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.deck-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.deck-card:hover::before {
+    opacity: 1;
+}
+
+/* 卡组名称 */
+.deck-card-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+    word-break: break-word;
+}
+
+/* 卡组信息 */
+.deck-card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+}
+
+.deck-card-stats {
+    flex: 1;
+}
+
+.deck-stat {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 4px;
+}
+
+.deck-stat strong {
+    font-size: 1.1rem;
+    margin-left: 8px;
+}
+
+.deck-dust {
+    color: #ffd700;
+}
+
+/* 卡组操作按钮 - 已移除，现在整个卡片可点击，右键显示菜单
+.deck-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.deck-card:hover .deck-actions {
+    opacity: 1;
+}
+
+.deck-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.deck-action-btn:hover {
+    background: rgba(255,255,255,0.4);
+    transform: scale(1.1);
+}
+
+.deck-action-btn.delete-btn:hover {
+    background: rgba(255,59,48,0.8);
+}
+*/
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.empty-state-hint {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* 更新时间标签 */
+.deck-updated {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 8px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .deck-card {
+        min-height: 150px;
+        padding: 20px;
+    }
+
+    .deck-card-name {
+        font-size: 1.2rem;
+    }
+
+    .deck-actions {
+        opacity: 1; /* 移动端始终显示 */
+    }
+}

@@ -7,11 +7,15 @@ import org.example.game.GameObj;
 import org.example.game.Play;
 import org.example.system.util.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class SpiritCleanser extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "灵魂净化者";
     private Integer cost = 2;
     private int atk = 2;
@@ -27,7 +31,8 @@ public class SpiritCleanser extends FollowCard {
         setMaxHp(getHp());
         setPlay(new Play(
             ()->{
-                List<GameObj> targets = enemyPlayer().getAreaFollowsAsGameObj();
+                List<GameObj> targets = new ArrayList<>();
+                targets.addAll(enemyPlayer().getAreaFollowsAsGameObj());
                 targets.addAll(ownerPlayer().getAreaFollowsAsGameObj());
                 return targets;
             },

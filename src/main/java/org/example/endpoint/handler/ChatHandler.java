@@ -18,6 +18,7 @@ import static org.example.system.Database.userRoom;
 @Slf4j
 public class ChatHandler {
 
+
     @Autowired
     Gson gson;
 
@@ -46,7 +47,9 @@ Msg.send(client,sb.toString());
         Integer id = -1;
         try {
             id = Integer.valueOf(data);
-        }catch (Exception e){}
+        }catch (Exception e){
+            log.warn("聊天ID解析失败: {}", data);
+        }
 
         for (ChatPreset preset : ChatPreset.values()) {
             if(id.equals(preset.getId())){

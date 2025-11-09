@@ -11,11 +11,14 @@ import org.example.system.util.Lists;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class LowKeyTalentScouts extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "低调的星探";
     private Integer cost = 3;
     private int atk = 2;

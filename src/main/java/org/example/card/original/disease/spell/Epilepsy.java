@@ -8,10 +8,13 @@ import org.example.system.util.Lists;
 import org.example.system.util.Msg;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Epilepsy extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 0;
     public String name = "癫痫";
     public String job = "疾病";

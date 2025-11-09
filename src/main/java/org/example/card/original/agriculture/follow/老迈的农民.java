@@ -12,10 +12,13 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class 老迈的农民 extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public static final int APPOSITION = 7;
 
     private String name = "老迈的农民";
@@ -46,6 +49,8 @@ public class 老迈的农民 extends FollowCard {
     @Getter
     @Setter
     public static class 年轻的农民 extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "年轻的农民";
         private Integer cost = 1;
         private int atk = 1;

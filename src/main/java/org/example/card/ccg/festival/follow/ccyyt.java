@@ -8,11 +8,14 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ccyyt extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 9;
     public String name = "吵吵演艺团";
     public String job = "圣骑士";
@@ -37,6 +40,8 @@ public class ccyyt extends FollowCard {
     @Getter
     @Setter
     public static class ccjqr extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 2;
         public String name = "吵吵机器人";
         public String job = "中立";

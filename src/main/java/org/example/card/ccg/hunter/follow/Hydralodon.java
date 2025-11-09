@@ -9,10 +9,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Hydralodon extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "海卓拉顿";
     private Integer cost = 7;
     private int atk = 5;
@@ -35,6 +38,8 @@ public class Hydralodon extends FollowCard {
     @Getter
     @Setter
     public static class HydralodonHead extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "海卓拉顿之头";
         private Integer cost = 2;
         private int atk = 3;

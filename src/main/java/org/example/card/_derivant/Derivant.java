@@ -11,13 +11,18 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 public class Derivant {
 
 
+
+   private CardRarity rarity = CardRarity.BRONZE;
     @Getter
     @Setter
     public static class Ghost extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "怨灵";
         private Integer cost = 0;
         private int atk = 1;
@@ -43,6 +48,8 @@ public class Derivant {
     @Getter
     @Setter
     public static class Zombie extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "僵尸";
         private Integer cost = 2;
         private int atk = 2;
@@ -61,6 +68,8 @@ public class Derivant {
     @Getter
     @Setter
     public static class Skeleton extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "骷髅";
         private Integer cost = 1;
         private int atk = 1;
@@ -79,6 +88,8 @@ public class Derivant {
     @Getter
     @Setter
     public static class Fairy extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "妖精";
@@ -103,6 +114,8 @@ public class Derivant {
     @Getter
     @Setter
     public static class FairyWisp extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 0;
         public String name = "妖精萤火";
         public String job = "妖精";

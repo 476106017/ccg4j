@@ -13,10 +13,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Nevermore  extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "影魔";
     private Integer cost = 4;
     private int atk = 0;
@@ -52,7 +55,7 @@ public class Nevermore  extends FollowCard {
             AreaCard areaCard = area.get(0);
             info.msg(getNameWithOwner() + "的魂之挽歌命中了" + areaCard.getId());
             if(areaCard instanceof FollowCard followCard)
-                new Damage(getParent(),followCard,getAtk()/2 ).apply();
+                new Damage(this,followCard,getAtk()/2 ).apply();
 
             List<Card> abandons = ownerPlayer().getHandCopy().stream()
                 .filter(card -> card.getParent() == this && card.getName().startsWith("影压")).toList();
@@ -66,7 +69,6 @@ public class Nevermore  extends FollowCard {
     @Setter
     public static abstract class ShadowRaze extends SpellCard {
         public Integer cost = 0;
-        public String name = "影压";
         public String job = "dota";
         private List<String> race = Lists.ofStr("灵魂绑定");
 
@@ -74,6 +76,8 @@ public class Nevermore  extends FollowCard {
     @Getter
     @Setter
     public static class ShadowRazeX extends ShadowRaze {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public String name = "影压（X）";
         public String mark = """
         影魔对敌方第1个位置造成2点伤害
@@ -106,6 +110,8 @@ public class Nevermore  extends FollowCard {
     @Getter
     @Setter
     public static class ShadowRazeY extends ShadowRaze {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public String name = "影压（Y）";
         public String mark = """
         影魔对敌方第2个位置造成2点伤害
@@ -138,6 +144,8 @@ public class Nevermore  extends FollowCard {
     @Getter
     @Setter
     public static class ShadowRazeZ extends ShadowRaze {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public String name = "影压（Z）";
         public String mark = """
         影魔对敌方第3个位置造成2点伤害

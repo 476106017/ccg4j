@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>弥留之国 - Card4j</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="board.css">
+	<link rel="stylesheet" href="search.css">
+	<link rel="stylesheet" href="deck-edit.css">
+	<script src="jquery-3.6.4.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+	<style>
+		.borderland-header {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 2rem 0;
+			margin-bottom: 2rem;
+			position: relative;
+		}
+		.rules-help-btn {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			width: 24px;
+			height: 24px;
+			background: #ffc107;
+			color: #333;
+			border: 2px solid #fff;
+			border-radius: 50%;
+			font-size: 14px;
+			font-weight: bold;
+			cursor: pointer;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.2s;
+		}
+		.rules-help-btn:hover {
+			background: #ffca2c;
+			transform: scale(1.1);
+		}
+		
+		/* 战斗记录样式 */
+		.battle-log {
+			position: absolute;
+			top: 20px;
+			right: 60px;
+			width: 320px;
+			max-height: 400px;
+			background: rgba(0, 0, 0, 0.85);
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+		}
+		.battle-log-header {
+			background: rgba(255, 255, 255, 0.1);
+			padding: 8px 12px;
+			font-size: 14px;
+			font-weight: bold;
+			text-align: center;
+			border-bottom: 1px solid rgba(255,255,255,0.2);
+		}
+		.battle-log-content {
+			max-height: 360px;
+			overflow-y: auto;
+			padding: 8px;
+		}
+		.battle-log-item {
+			display: flex;
+			align-items: center;
+			padding: 6px 8px;
+			margin-bottom: 4px;
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 4px;
+			font-size: 13px;
+			border-left: 3px solid transparent;
+		}
+		.battle-log-item.win {
+			border-left-color: #28a745;
+		}
+		.battle-log-item.lose {
+			border-left-color: #dc3545;
+		}
+		.battle-log-item.match {
+			border-left-color: #ffc107;
+		}
+		.battle-log-icon {
+			width: 20px;
+			height: 20px;
+			margin-right: 8px;
+			flex-shrink: 0;
+		}
+		.battle-log-icon.win {
+			color: #28a745;
+		}
+		.battle-log-icon.lose {
+			color: #dc3545;
+		}
+		.battle-log-icon.match {
+			color: #ffc107;
+		}
+		.battle-log-text {
+			flex: 1;
+			line-height: 1.3;
+		}
+		.battle-log-time {
+			font-size: 11px;
+			color: rgba(255,255,255,0.5);
+			margin-left: 8px;
+			flex-shrink: 0;
+		}
+		
+		.visa-card {
+			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+			color: white;
+			border-radius: 15px;
+			padding: 2rem;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+		}
+		.visa-status {
+			font-size: 1.2rem;
+			font-weight: bold;
+		}
+		.days-remaining {
+			font-size: 3rem;
+			font-weight: bold;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+		}
+		.punishment-warning {
+			background: #dc3545;
+			color: white;
+			padding: 1rem;
+			border-radius: 10px;
+			margin: 1rem 0;
+		}
+		.achievement-badge {
+			background: gold;
+			color: #333;
+			padding: 0.5rem 1rem;
+			border-radius: 20px;
+			display: inline-block;
+			margin: 0.5rem;
+			font-weight: bold;
+		}
+		.card-deck-grid {
+			display: grid;
+			grid-template-columns: repeat(5, 1fr);
+			gap: 1rem;
+			margin-top: 1rem;
+		}
+		.borderland-card {
+			position: relative;
+			cursor: pointer;
+			transition: transform 0.2s;
+		}
+		.borderland-card:hover {
+			transform: translateY(-5px);
+		}
+		.card-count-badge {
+			position: absolute;
+			bottom: 55px; /* 从8px改为55px，避免与血条重复 */
+			right: 8px;
+			background: rgba(0, 0, 0, 0.85);
+			color: #ffc107;
+			border: 2px solid #ffc107;
+			border-radius: 12px;
+			padding: 2px 8px;
+			font-size: 14px;
+			font-weight: bold;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+			z-index: 10;
+		}
+		.discard-btn {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			background: rgba(220, 53, 69, 0.9);
+			color: white;
+			border: none;
+			border-radius: 50%;
+			width: 30px;
+			height: 30px;
+			font-size: 16px;
+			cursor: pointer;
+			display: none;
+		}
+		.borderland-card:hover .discard-btn {
+			display: block;
+		}
+		.export-card-modal .card-option {
+			cursor: pointer;
+			transition: all 0.3s;
+			border: 3px solid transparent;
+		}
+		.export-card-modal .card-option:hover {
+			border-color: #667eea;
+			transform: scale(1.05);
+		}
+		.export-card-modal .card-option.selected {
+			border-color: #28a745;
+			background: rgba(40, 167, 69, 0.1);
+		}
+		/* 弥留之国卡组中的卡牌描述处理 */
+		.borderland-card .card .description {
+			overflow-y: auto;
+			scrollbar-width: thin;
+			scrollbar-color: rgba(139, 69, 19, 0.5) transparent;
+			/* 给描述底部留白，滚动到最底部时能看到空行 */
+			padding-bottom: 2.5em;
+		}
+		.borderland-card .card .description::after {
+			content: "\A\A\A"; /* 三行空行，显示为可滚动的空白 */
+			white-space: pre;
+			display: block;
+			height: 2.5em;
+		}
+		.borderland-card .card .description::-webkit-scrollbar {
+			width: 4px;
+		}
+		.borderland-card .card .description::-webkit-scrollbar-thumb {
+			background: rgba(139, 69, 19, 0.5);
+			border-radius: 2px;
+		}
+		.borderland-card .card .description::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		
+		/* 不同类型卡牌的底色区分 */
+		.borderland-card .card-type-follow .description {
+			background: linear-gradient(to bottom, #fff8dc, #f0e68c, #fffacd) !important;
+		}
+		.borderland-card .card-type-spell .description {
+			background: linear-gradient(to bottom, #e6f3ff, #cce5ff, #e6f7ff) !important;
+		}
+		.borderland-card .card-type-spell .card-inner {
+			border-radius: 20px !important;
+		}
+		/* 法术卡去除外部白色底色 */
+		.borderland-card .card-type-spell.card {
+			background-color: transparent !important;
+			border-radius: 20px !important;
+		}
+		.borderland-card .card-type-amulet .description {
+			background: linear-gradient(to bottom, #f0e6ff, #e6ccff, #f5e6ff) !important;
+		}
+		.borderland-card .card-type-equip .description {
+			background: linear-gradient(to bottom, #ffe6e6, #ffcccc, #ffe6e6) !important;
+		}
+		
+		/* 护符卡倒数的框做大，数值更明显 */
+		.borderland-card .card-type-amulet .hp {
+			width: 48px !important;
+			height: 48px !important;
+			font-size: 26px !important;
+			line-height: 48px !important;
+			bottom: 6px !important;
+			right: 6px !important;
+			border-width: 4px !important;
+		}
+		
+		/* 稀有度阴影效果 - 统一使用黑色阴影 */
+		/* 铜卡 - 普通黑色阴影 */
+		.borderland-card .card.BRONZE {
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+		}
+		
+		/* 银卡 - 黑色阴影 */
+		.borderland-card .card.SILVER {
+			box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+		}
+		
+		/* 金卡 - 黑色阴影 */
+		.borderland-card .card.GOLD {
+			box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+		}
+		
+		/* 虹卡 - 黑色阴影 + 光芒特效 */
+		.borderland-card .card.RAINBOW {
+			box-shadow: 0 0 35px rgba(0, 0, 0, 0.7);
+			animation: rainbow-shine 3s ease-in-out infinite;
+			position: relative;
+			overflow: hidden;
+		}
+		.borderland-card .card.RAINBOW::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, 
+				transparent 30%, 
+				rgba(255, 255, 255, 0.3) 50%, 
+				transparent 70%);
+			animation: shine-sweep 4s ease-in-out infinite;
+			pointer-events: none;
+			z-index: 999;
+		}
+		
+		/* 传说卡 - 保留高光特效，但不要在卡牌外部/内部添加额外的阴影（阴影由稀有度整体控制） */
+		.borderland-card .card.LEGENDARY {
+			/* 去掉 box-shadow，让阴影不覆盖在卡牌内部 */
+			animation: legendary-pulse 2s ease-in-out infinite;
+			position: relative;
+			overflow: hidden;
+		}
+		.borderland-card .card.LEGENDARY::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, 
+				transparent 30%, 
+				rgba(255, 215, 0, 0.4) 50%, 
+				transparent 70%);
+			animation: shine-sweep 3s ease-in-out infinite;
+			pointer-events: none;
+			z-index: 999;
+		}
+
+		/* 在 card-inner 上为 传说/虹卡 添加渐变背景（红水晶 / 淡彩） */
+		.borderland-card .card.LEGENDARY .card-inner {
+			background: linear-gradient(180deg, #4b0f0f 0%, #941b1b 40%, #ff6b6b 100%);
+		}
+		/* 传说卡只去除type和description的文字阴影 */
+		.borderland-card .card.LEGENDARY .type {
+			text-shadow: none !important;
+			color: #000 !important;
+		}
+		.borderland-card .card.LEGENDARY .description {
+			text-shadow: none !important;
+			color: #8b4513 !important; /* 使用标准的描述棕色 */
+		}
+		.borderland-card .card.LEGENDARY .description p {
+			color: #8b4513 !important;
+		}
+		.borderland-card .card.RAINBOW .card-inner {
+			/* 虹卡斜向彩色渐变背景 + 流动动画 */
+			background: linear-gradient(135deg, 
+				#ffb3d9 0%,    /* 粉 */
+				#b3d9ff 20%,   /* 蓝 */
+				#b3ffcc 40%,   /* 绿 */
+				#fff4b3 60%,   /* 黄 */
+				#e6b3ff 80%,   /* 紫 */
+				#ffb3d9 100%   /* 粉（首尾相接） */
+			);
+			background-size: 300% 300%;
+			animation: rainbow-flow 6s ease infinite;
+		}
+		
+		/* 虹卡流动动画 */
+		@keyframes rainbow-flow {
+			0% {
+				background-position: 0% 50%;
+			}
+			50% {
+				background-position: 100% 50%;
+			}
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+		
+		/* 金卡/银卡 - card-inner 渐变背景 */
+		.borderland-card .card.GOLD .card-inner {
+			background: linear-gradient(180deg, #8b7355 0%, #c9a961 40%, #f4e5c2 100%);
+		}
+		.borderland-card .card.SILVER .card-inner {
+			background: linear-gradient(180deg, #6b7280 0%, #9ca3af 40%, #d1d5db 100%);
+		}
+		
+		/* 虹卡光芒动画 */
+		@keyframes rainbow-shine {
+			0%, 100% {
+				filter: brightness(1) saturate(1);
+			}
+			50% {
+				filter: brightness(1.15) saturate(1.3);
+			}
+		}
+		
+		/* 传说卡脉动动画 */
+		@keyframes legendary-pulse {
+			0%, 100% {
+				filter: brightness(1);
+			}
+			50% {
+				filter: brightness(1.2);
+			}
+		}
+		
+		/* 光芒扫过动画 */
+		@keyframes shine-sweep {
+			0% {
+				transform: translate(-100%, -100%) rotate(45deg);
+			}
+			100% {
+				transform: translate(100%, 100%) rotate(45deg);
+			}
+		}
+	</style>
+</head>
+<body>
+	<header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+		<div class="container-fluid">
+			<a class="navbar-brand fw-semibold" href="index.html">← 返回主页</a>
+			<div class="d-flex align-items-center gap-3 ms-auto">
+				<span class="text-white-50 small">欢迎回来，
+					<strong class="text-white" id="user-display-name"></strong>
+				</span>
+				<button class="btn btn-outline-light btn-sm" id="logout-btn">退出登录</button>
+			</div>
+		</div>
+	</header>
+
+	<div class="borderland-header">
+		<!-- 战斗记录 -->
+		<div class="battle-log" id="battle-log">
+			<div class="battle-log-header">战斗记录</div>
+			<div class="battle-log-content" id="battle-log-content">
+				<!-- 战斗记录将在这里显示 -->
+			</div>
+		</div>
+		
+		<!-- 规则说明按钮 -->
+		<button type="button" class="rules-help-btn" data-bs-toggle="modal" data-bs-target="#borderlandRulesModal">
+			?
+		</button>
+		<div class="container text-center">
+			<h1 class="mb-2">
+				<i class="bi bi-exclamation-triangle"></i> 弥留之国 <i class="bi bi-exclamation-triangle"></i>
+			</h1>
+			<p class="lead">生存竞技模式 - 赢者通吃，败者淘汰</p>
+		</div>
+	</div>
+
+	<main class="container mb-5">
+		<!-- 签证状态卡片 -->
+		<div class="row mb-4">
+			<div class="col-md-8 mx-auto">
+				<div class="visa-card" id="visa-card">
+					<!-- 未办理签证状态 -->
+					<div id="no-visa-state" class="text-center">
+						<h3 class="mb-3">未持有签证</h3>
+						<p class="mb-4">办理签证可获得40张随机卡组，开启生存之旅</p>
+						<div id="punishment-notice" class="punishment-warning d-none">
+							<i class="bi bi-clock-history"></i> 
+							<span>您处于惩罚期中，剩余时间：<strong id="punishment-time">--</strong></span>
+						</div>
+						<button class="btn btn-light btn-lg" id="apply-visa-btn" onclick="applyVisa()">
+							<i class="bi bi-passport"></i> 办理签证
+						</button>
+					</div>
+					
+					<!-- 持有签证状态 -->
+					<div id="has-visa-state" class="d-none">
+						<div class="row align-items-center">
+							<div class="col-md-4 text-center">
+								<div class="visa-status">签证状态</div>
+								<div class="days-remaining">
+									<span id="days-remaining">10</span>
+									<small style="font-size: 1rem;">天</small>
+								</div>
+							</div>
+							<div class="col-md-4 text-center border-start border-end">
+								<div class="visa-status">卡组数量</div>
+								<div class="days-remaining">
+									<span id="deck-count">40</span>
+									<small style="font-size: 1rem;">张</small>
+								</div>
+							</div>
+							<div class="col-md-4 text-center">
+								<div class="visa-status">不同卡牌</div>
+								<div class="days-remaining">
+									<span id="unique-cards">0</span>
+									<small style="font-size: 1rem;">/54</small>
+								</div>
+							</div>
+						</div>
+						<div class="text-center mt-4">
+							<button class="btn btn-danger btn-lg me-2" id="match-ai-btn" onclick="startBorderlandAI()">
+								<i class="bi bi-robot"></i> 搜寻AI
+							</button>
+							<button class="btn btn-warning btn-lg me-2" id="match-pvp-btn" onclick="startBorderlandPvP()">
+								<i class="bi bi-people-fill"></i> 搜寻玩家
+							</button>
+							<button class="btn btn-outline-light" onclick="showDeckView()">
+								<i class="bi bi-card-list"></i> 查看卡组
+							</button>
+						</div>
+						<!-- 成就提示 -->
+						<div id="achievement-notice" class="mt-3 text-center d-none">
+							<div class="achievement-badge">
+								<i class="bi bi-star-fill"></i> 已达成54张不同卡牌！在你的下一次与玩家玩家的对战获胜后，可携带一张卡离开！
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 卡组视图 -->
+		<div id="deck-view" class="d-none">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h3>我的卡组</h3>
+				<div>
+					<span class="badge bg-primary me-2">总计：<span id="total-cards">0</span> 张</span>
+					<span class="badge bg-success">不同：<span id="unique-count">0</span> 种</span>
+				</div>
+			</div>
+			<div class="alert alert-warning">
+				<i class="bi bi-exclamation-circle"></i> 
+				右键点击卡牌可永久丢弃，丢弃后无法恢复！
+			</div>
+			<div class="card-deck-grid" id="borderland-deck-grid"></div>
+		</div>
+	</main>
+
+	<!-- 弥留之国规则说明模态框 -->
+	<div class="modal fade" id="borderlandRulesModal" tabindex="-1" aria-labelledby="borderlandRulesModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header bg-danger text-white">
+					<h5 class="modal-title" id="borderlandRulesModalLabel">
+						<i class="bi bi-book me-2"></i>弥留之国规则
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h6 class="text-danger mb-3">🎮 游戏规则</h6>
+					<ul class="list-unstyled">
+						<li class="mb-2">📋 <strong>签证办理：</strong>首次进入时自动获得40张随机卡组和10天签证</li>
+						<li class="mb-2">🎲 <strong>卡组独立：</strong>卡组与你的收藏无关，完全独立系统</li>
+						<li class="mb-2">🤖 <strong>搜寻AI：</strong>10秒等待期后与AI对战，击败获得随机1张卡+1天签证</li>
+						<li class="mb-2">⚠️ <strong>暴露期：</strong>搜寻AI的10秒等待期间，会被"搜寻玩家"的猎杀者入侵</li>
+						<li class="mb-2">🎯 <strong>搜寻玩家：</strong>主动猎杀正在搜寻AI的玩家，立即开始PVP对战</li>
+						<li class="mb-2">� <strong>PVP失败：</strong>输给玩家或AI都会失去签证、清空卡组，进入1分钟惩罚期</li>
+						<li class="mb-2">� <strong>PVP胜利：</strong>夺取败者全部卡牌和剩余天数</li>
+						<li class="mb-2">🎯 <strong>胜利条件：</strong>集齐54张不同的卡牌即可带出选定的卡牌</li>
+					</ul>
+					<div class="alert alert-warning mt-3">
+						<i class="bi bi-exclamation-circle me-2"></i>
+						<strong>注意：</strong>这是大逃杀模式！搜寻AI慢慢积累资源，搜寻玩家则猎杀其他玩家！
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 带出卡牌选择模态框 -->
+	<div class="modal fade export-card-modal" id="export-card-modal" tabindex="-1" data-bs-backdrop="static">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header bg-success text-white">
+					<h5 class="modal-title">
+						<i class="bi bi-trophy"></i> 恭喜通关！选择一张卡牌带出弥留之国
+					</h5>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-info">
+						<i class="bi bi-info-circle"></i> 
+						你已使用54张不同卡牌获得胜利！可以选择其中一张卡牌加入你的收藏。
+					</div>
+					<div class="card-deck-grid" id="export-card-options"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success btn-lg" id="confirm-export-btn" disabled onclick="confirmExport()">
+						确认带出选中的卡牌
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="auth-interceptor.js"></script>
+	<script src="context-menu.js"></script>
+	<script src="borderland.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>

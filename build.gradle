@@ -22,10 +22,26 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'jakarta.websocket:jakarta.websocket-api:2.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    
+    // Database
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.3.1'
+    implementation 'org.postgresql:postgresql:42.5.4'
+    
+    // Spring Session JDBC
+    implementation 'org.springframework.session:spring-session-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    
+    // Lombok
     implementation 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    
+    // Other
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10'
     implementation 'org.reflections:reflections:0.10.2'
-
-
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class SireDenathrius extends FollowCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     private String name = "德纳修斯大帝";
     private Integer cost = 10;
     private int atk = 10;

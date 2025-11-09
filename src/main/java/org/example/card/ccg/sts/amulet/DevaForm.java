@@ -10,10 +10,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.STRENGTH;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DevaForm extends AmuletCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "天人形态";
     public String job = "杀戮尖塔";

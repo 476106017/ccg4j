@@ -10,10 +10,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class TheKeyDraw extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 3;
     public String name = "关键一抽";
     public String job = "德鲁伊";

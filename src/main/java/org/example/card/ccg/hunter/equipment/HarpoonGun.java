@@ -9,10 +9,13 @@ import org.example.game.Effect;
 import org.example.game.Play;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class HarpoonGun extends EquipmentCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "鱼叉炮";
     public transient int addAtk = 3;

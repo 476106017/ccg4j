@@ -11,10 +11,13 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.Optional;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class LassyLoyalCompanion extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "忠犬拉叙";
     private Integer cost = 1;
     private int atk = 1;

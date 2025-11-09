@@ -9,10 +9,13 @@ import org.example.game.Effect;
 import org.example.game.Play;
 
 import static org.example.constant.CounterKey.PLAY_NUM;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DragonHeart extends EquipmentCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 4;
     public String name = "魔龙之心";
     public transient int addAtk = 0;

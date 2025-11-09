@@ -17,10 +17,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class RimefireBolt extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "霜火击";
     public String job = "法师";

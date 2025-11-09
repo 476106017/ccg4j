@@ -11,16 +11,19 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class HearthstoneBattleChess  extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
 
     public String name = "酒馆战棋";
     public String job = "游戏规则";
-    private List<String> race = Lists.ofStr("机器");
+    private List<String> race = Lists.ofStr("机械");
     public String mark = """
         若此卡在场上，双方全部随从获得【缴械】【疾驰】
         双方回合结束时，双方未攻击随从轮流发起攻击
@@ -60,7 +63,10 @@ public class HearthstoneBattleChess  extends AmuletCard {
     private void autoBattle() {
         while (true) {
             boolean end = true;
-            List<FollowCard> thisFollows = info.thisPlayer().getAreaFollowsAsFollowBy(f->f.isCanAttack()||f.isCanDash());
+            // 获取还能攻击的随从（未达到攻击次数上限）
+            List<FollowCard> thisFollows = info.thisPlayer().getAreaFollowsAsFollowBy(
+                f -> f.getTurnAttack() < f.getTurnAttackMax()
+            );
             if (!thisFollows.isEmpty()) {
                 end = false;
 
@@ -72,7 +78,10 @@ public class HearthstoneBattleChess  extends AmuletCard {
 
             }
 
-            List<FollowCard> thatFollows =  info.oppositePlayer().getAreaFollowsAsFollowBy(f->f.isCanAttack()||f.isCanDash());
+            // 获取还能攻击的随从（未达到攻击次数上限）
+            List<FollowCard> thatFollows =  info.oppositePlayer().getAreaFollowsAsFollowBy(
+                f -> f.getTurnAttack() < f.getTurnAttackMax()
+            );
             if (!thatFollows.isEmpty()) {
                 end = false;
 

@@ -13,6 +13,7 @@ import static org.example.constant.CounterKey.STRENGTH;
 @Getter
 @Setter
 public class Damage{
+
     GameObj from;
     GameObj to;
     int damage;

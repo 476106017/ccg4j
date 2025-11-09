@@ -72,12 +72,6 @@ import org.example.card.paripi.follow.DiscoZombie;
 import org.example.card.paripi.follow.LowKeyTalentScouts;
 import org.example.card.paripi.follow.OpeningAct;
 import org.example.game.Leader;
-import org.example.morecard.genshin.LittlePrincess;
-import org.example.morecard.genshin.amulet.FakeSky;
-import org.example.morecard.genshin.follow.Diluc;
-import org.example.morecard.genshin.follow.Keaya;
-import org.example.morecard.genshin.follow.Sucrose;
-import org.example.morecard.genshin.spell.*;
 import org.example.system.Database;
 import org.example.system.util.Maps;
 
@@ -90,6 +84,7 @@ import java.util.Map;
  * 预置牌组
  */
 public class DeckPreset {
+
     public static final Map<String,List<Class<? extends Card>>> decks = new HashMap<>();
     public static final Map<String,Class<? extends Leader>> deckLeader = new HashMap<>();
     static {
@@ -175,11 +170,6 @@ public class DeckPreset {
             MaskOfMadness.class, MaskOfMadness.class, ArcaneBoots.class,ArcaneBoots.class,ArcaneBoots.class,
             ShadowShaman.class,ShadowShaman.class,ShadowShaman.class,Zelgenea.class,Zelgenea.class
         ));
-        decks.put("原神",List.of(
-            Diluc.class, Keaya.class, Sucrose.class, FakeSky.class, ChaosMeteor.class,
-            DawnOfWinery.class, ForgeSummon.class, Kokomi.class, Kokomi.class, LuckyDay.class
-        ));
-        deckLeader.put("原神", LittlePrincess.class);
         decks.put("派对咖",List.of(
             CallingOtaku.class, CallingOtaku.class, CallingOtaku.class,
             DiscoZombie.class, DiscoZombie.class,DiscoZombie.class,

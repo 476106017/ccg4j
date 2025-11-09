@@ -8,10 +8,13 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class YagamiLight  extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "夜神月";
     private Integer cost = 2;
     private int atk = 2;

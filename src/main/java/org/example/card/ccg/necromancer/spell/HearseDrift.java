@@ -10,10 +10,13 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.Optional;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class HearseDrift extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 4;
     public String name = "灵车漂移";
     public String job = "死灵术士";

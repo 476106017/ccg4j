@@ -8,10 +8,13 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class ChasingNightmare extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 2;
     public String name = "追逐噩梦";
     public String job = "疾病";

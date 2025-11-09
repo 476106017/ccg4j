@@ -14,6 +14,7 @@ import java.util.Set;
 
 public class CardPackage {
 
+
     public static Class<? extends Card> randCard(String keyword){
         final List<Class<? extends Card>> classes = randCard(keyword, 1);
         if(classes.isEmpty())

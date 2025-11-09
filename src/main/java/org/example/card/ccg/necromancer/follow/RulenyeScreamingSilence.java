@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.DEATH_PREFIX;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class RulenyeScreamingSilence extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "绝叫沉默·鲁鲁纳伊";
     private Integer cost = 3;
     private int atk = 2;
@@ -56,6 +59,8 @@ public class RulenyeScreamingSilence extends FollowCard {
     @Getter
     @Setter
     public static class ScreamDiffusion extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
         public String name = "绝叫的扩散";
         public String job = "死灵术士";

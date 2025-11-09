@@ -3,6 +3,7 @@ package org.example.card.ccg.mage.spell;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.card.SpellCard;
+import org.example.constant.CardRarity;
 import org.example.constant.EffectTiming;
 import org.example.game.Effect;
 import org.example.game.Play;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class InfinitizeTheMaxitude extends SpellCard {
+    private CardRarity rarity = CardRarity.LEGENDARY;
     public Integer cost = 2;
     public String name = "巅峰无限";
     public String job = "法师";

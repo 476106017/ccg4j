@@ -10,10 +10,13 @@ import org.example.game.Effect;
 import org.example.game.Play;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DeathNote extends EquipmentCard {
+
+   private CardRarity rarity = CardRarity.LEGENDARY;
     private int apposition = 3;
     public Integer cost = 4;
     public String name = "死亡笔记";

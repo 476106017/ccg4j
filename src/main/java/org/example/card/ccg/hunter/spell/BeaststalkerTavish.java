@@ -13,11 +13,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class BeaststalkerTavish extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 6;
     public String name = "野兽追猎者塔维什";
     public String job = "猎人";
@@ -55,6 +58,8 @@ public class BeaststalkerTavish extends SpellCard {
     @Getter
     @Setter
     public static class SuperFoxSpiritWildseed extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "强化狐灵之种";
@@ -80,6 +85,8 @@ public class BeaststalkerTavish extends SpellCard {
     @Getter
     @Setter
     public static class SuperBearSpiritWildseed extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "强化熊灵之种";
@@ -106,6 +113,8 @@ public class BeaststalkerTavish extends SpellCard {
     @Getter
     @Setter
     public static class SuperStagSpiritWildseed extends AmuletCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 1;
 
         public String name = "强化鹿灵之种";

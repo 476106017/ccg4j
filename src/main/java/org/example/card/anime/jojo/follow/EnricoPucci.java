@@ -12,11 +12,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class EnricoPucci extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "普奇·白蛇";
     private Integer cost = 3;
     private int atk = 2;
@@ -61,6 +64,8 @@ public class EnricoPucci extends FollowCard {
     @Getter
     @Setter
     public static class EnricoPucciCMoon extends FollowCard {
+
+        private CardRarity rarity = CardRarity.SILVER;
         private String name = "普奇·新月";
         private Integer cost = 3;
         private int atk = 0;
@@ -105,6 +110,8 @@ public class EnricoPucci extends FollowCard {
     @Getter
     @Setter
     public static class EnricoPucciMadeInHeaven extends FollowCard {
+
+        private CardRarity rarity = CardRarity.LEGENDARY;
         private String name = "普奇·天堂制造";
         private Integer cost = 3;
         private int atk = 2;

@@ -7,10 +7,13 @@ import org.example.constant.EffectTiming;
 import org.example.game.Damage;
 import org.example.game.Effect;
 import org.example.game.Play;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class MaskOfMadness extends EquipmentCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "疯狂面具";
     public transient int addAtk = 0;

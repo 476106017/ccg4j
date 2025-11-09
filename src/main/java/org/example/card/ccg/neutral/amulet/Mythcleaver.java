@@ -11,12 +11,15 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class Mythcleaver extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 6;
 
     public String name = "神话战剑";

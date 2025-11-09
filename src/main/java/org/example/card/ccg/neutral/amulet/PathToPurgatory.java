@@ -12,12 +12,15 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class PathToPurgatory extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 4;
 
     public String name = "冥府之路";

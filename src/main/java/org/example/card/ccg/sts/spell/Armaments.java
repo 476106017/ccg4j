@@ -12,10 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.constant.CounterKey.BLOCK;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Armaments extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "武装";
     public String job = "杀戮尖塔";

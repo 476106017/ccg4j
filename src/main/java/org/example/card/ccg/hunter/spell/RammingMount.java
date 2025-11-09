@@ -10,11 +10,14 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class RammingMount extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "山羊坐骑";
     public String job = "猎人";
@@ -42,6 +45,8 @@ public class RammingMount extends SpellCard {
     @Getter
     @Setter
     public static class TavishsRam extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "塔维什的山羊";
         private Integer cost = 2;
         private int atk = 2;

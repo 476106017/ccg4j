@@ -15,12 +15,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class OutOfThinAir extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 1;
 
     public String name = "无中生有";

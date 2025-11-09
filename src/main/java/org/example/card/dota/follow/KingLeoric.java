@@ -11,10 +11,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class KingLeoric extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "骷髅王";
     private Integer cost = 5;
     private int atk = 2;
@@ -48,6 +51,8 @@ public class KingLeoric extends FollowCard {
     @Getter
     @Setter
     public static class StormBolt extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 2;
         public String name = "冥火暴击";
         public String job = "dota";

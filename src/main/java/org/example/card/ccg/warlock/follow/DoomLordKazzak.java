@@ -7,10 +7,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DoomLordKazzak extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "末日领主卡扎克";
     private Integer cost = 7;
     private int atk = 7;

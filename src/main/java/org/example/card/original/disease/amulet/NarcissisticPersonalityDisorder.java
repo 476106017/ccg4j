@@ -10,12 +10,15 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class NarcissisticPersonalityDisorder extends AmuletCard {
 
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 1;
 
     public String name = "自恋型人格障碍";

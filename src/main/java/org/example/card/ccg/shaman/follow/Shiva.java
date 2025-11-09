@@ -15,10 +15,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.NECROMANCY_NUM;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Shiva extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "湿婆";
     private Integer cost = 8;
     private int atk = 5;
@@ -54,7 +57,9 @@ public class Shiva extends FollowCard {
             false,
             target->{
                 if(target==null)return;
-                ownerPlayer().backToDeck((FollowCard)target);
+                if(target instanceof Card card) {
+                    ownerPlayer().backToDeck(card);
+                }
             }));
     }
 }

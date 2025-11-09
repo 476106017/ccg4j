@@ -12,11 +12,14 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class tbcz extends SpellCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     public Integer cost = 5;
     public String name = "跳吧，虫子！";
     public String job = "萨满";
@@ -30,7 +33,8 @@ public class tbcz extends SpellCard {
     public void init() {
         setPlay(new Play(
             ()->{
-                List<GameObj> _return = enemyPlayer().getAreaFollowsAsGameObj();
+                // 创建一个新的可变列表，避免UnsupportedOperationException
+                List<GameObj> _return = new ArrayList<>(enemyPlayer().getAreaFollowsAsGameObj());
                 _return.addAll(ownerPlayer().getAreaFollowsAsGameObj());
                 return _return;
             },true,
@@ -53,6 +57,8 @@ public class tbcz extends SpellCard {
     @Getter
     @Setter
     public static class ymzw extends FollowCard {
+
+        private CardRarity rarity = CardRarity.SILVER;
         public Integer cost = 8;
         public String name = "炎魔之王拉格纳罗斯";
         public String job = "中立";

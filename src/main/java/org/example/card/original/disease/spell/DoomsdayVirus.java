@@ -13,10 +13,13 @@ import org.example.system.util.Lists;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DoomsdayVirus extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 4;
     public String name = "末日病毒";
     public String job = "疾病";

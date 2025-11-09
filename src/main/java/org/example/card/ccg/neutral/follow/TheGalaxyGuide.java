@@ -10,11 +10,14 @@ import java.util.List;
 
 import static org.example.constant.CounterKey.ALL_COST;
 import static org.example.constant.CounterKey.PLAY_NUM_ALL;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class TheGalaxyGuide extends FollowCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     private String name = "银河系向导";
     private Integer cost = 3;
     private int atk = 4;

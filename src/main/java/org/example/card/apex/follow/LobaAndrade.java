@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class LobaAndrade extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "罗芭";
     private Integer cost = 3;
     private int atk = 3;
@@ -41,6 +44,8 @@ public class LobaAndrade extends FollowCard {
     @Getter
     @Setter
     public static class BlackMarket extends SpellCard {
+
+        private CardRarity rarity = CardRarity.GOLD;
         public Integer cost = 5;
         public String name = "黑店开张";
         public String job = "APEX";

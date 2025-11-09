@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static org.example.constant.CounterKey.EP_NUM;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ThePlayer extends Leader {
 
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "玩家";
     private String job = "中立";
 

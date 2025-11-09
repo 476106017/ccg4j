@@ -12,12 +12,15 @@ import org.example.system.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 
 @Getter
 @Setter
 public class CalamitysGenesis extends SpellCard {
+
+   private CardRarity rarity = CardRarity.RAINBOW;
     public Integer cost = 1;
     public String name = "灾祸模式";
     public String job = "复仇者";
@@ -46,6 +49,8 @@ public class CalamitysGenesis extends SpellCard {
     @Getter
     @Setter
     public static class MagisterialDreadnought extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private Integer cost = 5;
         private String name = "正义暴君";
         private String job = "复仇者";
@@ -84,6 +89,8 @@ public class CalamitysGenesis extends SpellCard {
     @Getter
     @Setter
     public static class RuinerOfEden extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private Integer cost = 8;
         private String name = "幻境粉碎者";
         private String job = "复仇者";
@@ -125,6 +132,8 @@ public class CalamitysGenesis extends SpellCard {
     @Getter
     @Setter
     public static class WorldEliminator extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private Integer cost = 5;
         private String name = "世界驱除者";
         private String job = "复仇者";
@@ -153,6 +162,8 @@ public class CalamitysGenesis extends SpellCard {
     @Getter
     @Setter
     public static class CalamitysEnd extends SpellCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         public Integer cost = 0;
         public String name = "灾祸降临";
         public String job = "复仇者";

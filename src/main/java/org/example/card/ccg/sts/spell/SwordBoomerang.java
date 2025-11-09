@@ -15,10 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class SwordBoomerang extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "飞剑回旋镖";
     public String job = "杀戮尖塔";

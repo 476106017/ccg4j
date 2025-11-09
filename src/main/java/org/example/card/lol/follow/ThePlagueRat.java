@@ -13,11 +13,14 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.POISON;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class ThePlagueRat extends FollowCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     private String name = "瘟疫之源";
     private Integer cost = 3;
     private int atk = 1;

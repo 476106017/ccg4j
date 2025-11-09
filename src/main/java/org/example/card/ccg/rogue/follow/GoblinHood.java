@@ -9,11 +9,14 @@ import org.example.system.util.Lists;
 
 import java.util.List;
 import java.util.function.Consumer;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class GoblinHood extends FollowCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     private String name = "兜帽哥布林";
     private Integer cost = 3;
     private int atk = 1;

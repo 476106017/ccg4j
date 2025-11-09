@@ -8,10 +8,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class HenAndEgg extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 2;
     public String name = "鸡与蛋的悖论";
     public String job = "游戏规则";
@@ -37,6 +40,8 @@ public class HenAndEgg extends SpellCard {
     @Getter
     @Setter
     public static class HatchBot366 extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "孵蛋机366型";
         private Integer cost = 2;
         private int atk = 2;
@@ -59,6 +64,8 @@ public class HenAndEgg extends SpellCard {
     @Getter
     @Setter
     public static class Egg extends FollowCard {
+
+        private CardRarity rarity = CardRarity.BRONZE;
         private String name = "鸡蛋";
         private Integer cost = 0;
         private int atk = 0;

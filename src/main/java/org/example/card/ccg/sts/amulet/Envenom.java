@@ -10,10 +10,13 @@ import org.example.system.util.Lists;
 import java.util.List;
 
 import static org.example.constant.CounterKey.POISON;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class Envenom extends AmuletCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 3;
     public String name = "涂毒";
     public String job = "杀戮尖塔";

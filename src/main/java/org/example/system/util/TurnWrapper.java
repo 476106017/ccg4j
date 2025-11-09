@@ -11,6 +11,7 @@ import java.util.Optional;
 @Getter
 @Setter
 public class TurnWrapper {
+
     final static int TURN_DISTANCE = 10000;
 
     private int age = 0;
@@ -53,6 +54,7 @@ public class TurnWrapper {
     @Getter
     @Setter
     public static class TestObject extends TurnObject{
+
         int speed = 105;
 
 

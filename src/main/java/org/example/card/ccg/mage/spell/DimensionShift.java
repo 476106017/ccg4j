@@ -10,17 +10,20 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class DimensionShift extends SpellCard {
+
+   private CardRarity rarity = CardRarity.BRONZE;
     public Integer cost = 20;
     public String name = "次元超越";
     public String job = "法师";
     private List<String> race = Lists.ofStr();
     public String mark = """
         魔力增幅 消费-1
-        回合结束时：还是我的回合
+        获得额外回合
         """;
 
     public String subMark = "";

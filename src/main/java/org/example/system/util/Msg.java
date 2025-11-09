@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Msg<T> {
+
     private String channel;
     private T data;
 
@@ -22,31 +23,35 @@ public class Msg<T> {
     }
 
     public synchronized static void story(Session session,String msg){
+        if(session == null || !session.isOpen()) return;
         try {
             session.getBasicRemote().sendObject(new Msg<>("story",msg));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // Session已关闭，忽略错误
         }
     }
     public synchronized static void send(Session session,String msg){
+        if(session == null || !session.isOpen()) return;
         try {
             session.getBasicRemote().sendObject(new Msg<>(msg));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // Session已关闭，忽略错误
         }
     }
     public synchronized static void warn(Session session, String msg){
+        if(session == null || !session.isOpen()) return;
         try {
             session.getBasicRemote().sendObject(new Msg<>("warn",msg));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // Session已关闭，忽略错误
         }
     }
     public synchronized static void send(Session session,String channel,Object data){
+        if(session == null || !session.isOpen()) return;
         try {
             session.getBasicRemote().sendObject(new Msg<>(channel,data));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // Session已关闭，忽略错误
         }
     }
 }

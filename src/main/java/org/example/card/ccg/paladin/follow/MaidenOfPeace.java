@@ -8,11 +8,14 @@ import org.example.game.Effect;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 
 @Getter
 @Setter
 public class MaidenOfPeace extends FollowCard {
+
+   private CardRarity rarity = CardRarity.GOLD;
     private String name = "和平圣女";
     private Integer cost = 3;
     private int atk = 0;

@@ -10,10 +10,13 @@ import org.example.game.Play;
 import org.example.system.util.Lists;
 
 import java.util.List;
+import org.example.constant.CardRarity;
 
 @Getter
 @Setter
 public class LightningBloom extends SpellCard {
+
+   private CardRarity rarity = CardRarity.SILVER;
     public Integer cost = 0;
     public String name = "雷霆绽放";
     public String job = "德鲁伊";
