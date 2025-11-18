@@ -1,4 +1,4 @@
-.container {
+﻿.container {
     width: 100%; /* 宽度可以根据需要进行调�?*/
     max-width: 1200px; /* 可选：设置最大宽度，以确保容器不会太�?*/
     margin: 0 auto; /* 使容器居中对�?*/
@@ -362,7 +362,7 @@
     height: 8px;
     background: #ddd;
     border-radius: 6px;
-    overflow: hidden;
+    overflow-y: auto; overflow-x: hidden;
     box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
   }
   .card .health-bar-small .health-bar-inner-small{
@@ -511,8 +511,7 @@
                    1px 1px 3px rgba(0,0,0,0.9);
       font-weight: bold;
       animation: legendary-glow 4s ease-in-out infinite,
-                 legendary-shine-diagonal 6s linear infinite,
-                 legendary-pulse 5s ease-in-out infinite;
+                 legendary-shine-diagonal 6s linear infinite;
       box-shadow: 0 0 20px rgba(220,20,60,0.8),
                   0 0 35px rgba(200,0,0,0.6),
                   inset 0 0 25px rgba(255,70,105,0.4),
@@ -1112,6 +1111,75 @@
   cursor: help;
 }
 
+/* 主战者状态警告图标（黄色感叹号） */
+.leader-status-warning {
+  display: inline-block;
+  font-size: 24px;
+  margin-right: 8px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  animation: pulse-warning 2s ease-in-out infinite;
+  transition: transform 0.2s;
+}
+
+.leader-status-warning:hover {
+  transform: scale(1.2);
+  animation: none;
+}
+
+@keyframes pulse-warning {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* 主战者状态弹窗样式 */
+#leader-status-modal .leader-status-content {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#leader-status-modal .status-item {
+  background: linear-gradient(135deg, #fff5e6, #ffe5cc);
+  border-color: #ffa500 !important;
+  transition: transform 0.2s;
+  font-size: 0.9rem;
+}
+
+#leader-status-modal .status-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#leader-status-modal .status-item h6 {
+  color: #ff8c00;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* 弹窗中的卡牌缩小显示 */
+#leader-status-modal .leader-status-cards .card {
+  transform: scale(0.6);
+  transform-origin: top center;
+  margin-bottom: -40px;
+}
+
+#leader-status-modal .leader-status-cards {
+  margin-bottom: 10px;
+}
+
+#leader-status-modal .leader-status-cards .col-4 {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
 /* 卡牌浮动展示容器 */
 .card-hover-display {
   position: fixed;
@@ -1275,3 +1343,4 @@
     transform: translate(-50%, -20px);
   }
 }
+

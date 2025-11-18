@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" modified="2025-11-15T12:35:00.000Z" agent="5.0 (Linux)" version="20.8.16">
+  <diagram id="system" name="系统架构">
+    <mxGraphModel dx="1480" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="玩家浏览器客户端" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="260" width="180" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="静态 Web UI&#xa;HTML/CSS/JS（app.js、borderland*.html、deck-edit*.js）" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="260" y="240" width="220" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="REST API 控制器&#xa;AuthController、UserCollectionController、UserDeckController、Rating/Borderland 等端点" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="520" y="180" width="240" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="WebSocket 网关&#xa;ApiServerEndpoint (/api/{name})" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="520" y="360" width="240" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="匹配/社交处理器&#xa;MatchHandler、DeckEditHandler、ChatHandler、CardSearchHandler" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="800" y="320" width="260" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="对战流程引擎&#xa;GameHandler + GameInfo/PlayerInfo/Leader&#xa;卡牌效果 (org.example.card.*)" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="800" y="470" width="260" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="持久化层&#xa;PostgreSQL / Supabase 表&#xa;(user_account, user_card_collection, user_deck, borderland_*, battle_record, config_dict, ...)" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#cce5ff;strokeColor=#4b89dc;" vertex="1" parent="1">
+          <mxGeometry x="520" y="40" width="540" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="内存运行态&#xa;Database.java 映射 (userRooms, userDecks, prototypes, roomGame...)" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#ffe6cc;strokeColor=#c09300;" vertex="1" parent="1">
+          <mxGeometry x="520" y="500" width="240" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="弥留之国 / AI 服务&#xa;BorderlandService、BorderlandAiController、对战日志" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#d0cee2;strokeColor=#8a7fa3;" vertex="1" parent="1">
+          <mxGeometry x="800" y="160" width="260" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="HTTP（登录、卡组、收藏 API）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="静态资源" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="WebSocket（指令与实时同步）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="3" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="匹配事件 / 卡组更新" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="回合结算、效果队列、战斗日志" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="卡牌目录、用户数据、日志" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4b89dc;" edge="1" parent="1" source="4" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="签证/卡组导出、AI 征召" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8a7fa3;" edge="1" parent="1" source="10" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="卡组缓存、房间状态、卡牌原型" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c09300;" edge="1" parent="1" source="9" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="运行期实体查找" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c09300;" edge="1" parent="1" source="9" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="卡牌原型加载" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c09300;" edge="1" parent="1" source="9" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="弥留卡组同步 / AI 排队" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8a7fa3;" edge="1" parent="1" source="6" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="对战结果、卡包奖励" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4b89dc;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="状态推送" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="7" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

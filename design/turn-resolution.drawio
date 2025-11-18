@@ -1,0 +1,89 @@
+<mxfile host="app.diagrams.net" modified="2025-11-15T12:37:00.000Z" agent="5.0 (Linux)" version="20.8.16">
+  <diagram id="turn" name="回合与结算">
+    <mxGraphModel dx="1480" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="开始阶段&#xa;GameInfo.startTurn()" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="200" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="准备步骤&#xa;PP 刷新、抽牌、主战者起手效果" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="110" width="230" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="玩家行动&#xa;出牌 / 攻击 / 主战者技能 / 发现" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="580" y="110" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="指令校验&#xa;GameHandler.play/attack/...&#xa;PlayerInfo 检查（PP、目标、卡槽）" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="860" y="80" width="260" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="效果队列&#xa;GameInfo.effectInstances FIFO" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="60" width="220" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="伤害 / 计数结算&#xa;GameInfo.incomingDamages、PlayerInfo 计数器" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="80" width="240" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="战场更新&#xa;AreaCard 状态、死亡、墓地计数、连锁触发" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#ffe6cc;strokeColor=#c09300;" vertex="1" parent="1">
+          <mxGeometry x="1680" y="90" width="250" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="胜负 / 绳子检测&#xa;生命归零、疲劳、特殊胜利&#xa;roomSchedule/rope 定时" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#d0cee2;strokeColor=#8a7fa3;" vertex="1" parent="1">
+          <mxGeometry x="1970" y="80" width="240" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="结束阶段&#xa;GameInfo.endTurnOfCommand()&#xa;触发 EndTurn / EnemyEndTurn" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="2240" y="110" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="对手回合" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="2500" y="110" width="120" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="进入发现？" style="rhombus;whiteSpace=wrap;html=1;rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="620" y="280" width="200" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="PlayerInfo.step &gt; 0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="执行发现线程 → 推送战况" style="shape=process;whiteSpace=wrap;html=1;rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="880" y="280" width="240" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="autoDiscover 循环" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="12" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="step 重置 → 返回行动" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="14" target="4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="820" y="180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="26" value="绳子超时" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2100" y="260" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -192,6 +192,10 @@ public class GameHandler {
 
             Integer targetId;
             try {
+                // 跳过空字符串
+                if(targetS == null || targetS.trim().isEmpty()){
+                    continue;
+                }
                 targetId = Integer.valueOf(targetS);
                 // 获取选择对象
                 Optional<GameObj> target = play.canTargets().get()
@@ -205,7 +209,7 @@ public class GameHandler {
                     targets.add(resolvedTarget);
                 }
             }catch (Exception e){
-                log.error("目标选择异常: {}", e.getMessage(), e);
+                log.error("目标选择异常: {}", e.getMessage());
             }
         }
         // endregion 获取选择目标

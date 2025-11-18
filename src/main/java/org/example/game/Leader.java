@@ -9,7 +9,9 @@ import org.example.system.util.Msg;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -130,6 +132,31 @@ public abstract class Leader extends GameObj {
                 }
             }
         }
+    }
+
+    public List<Card> snapshotAffectingCards(){
+        return affectingCards.stream()
+            .filter(Objects::nonNull)
+            .map(card -> {
+                try {
+                    PlayerInfo owner = card.ownerPlayer();
+                    if(owner != null){
+                        Card copy = card.copyBy(owner);
+                        copy.setInfo(null);
+                        return copy;
+                    }
+                } catch (Exception e) {
+                    System.err.println("复制影响卡牌失败: " + card.getName() + " - " + e.getMessage());
+                }
+                try {
+                    return card.prototype();
+                } catch (Exception e){
+                    System.err.println("获取卡牌原型失败: " + card.getName() + " - " + e.getMessage());
+                    return card;
+                }
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
 }

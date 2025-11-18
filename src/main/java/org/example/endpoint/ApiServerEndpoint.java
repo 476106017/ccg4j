@@ -3,6 +3,7 @@ package org.example.endpoint;
 import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.example.card.Card;
 import org.example.card.ccg.neutral.ThePlayer;
@@ -31,6 +32,7 @@ import java.util.*;
 
 import static org.example.system.Database.*;
 
+@Slf4j
 @ServerEndpoint(value = "/api/{name}",
     encoders = {GsonConfig.MyEncoder.class},
     configurator = WebSocketConfigurator.CustomSpringConfigurator.class)
@@ -49,20 +51,37 @@ public class ApiServerEndpoint {
     public void onOpen(Session session, EndpointConfig config) throws IOException {
         // handle open event
         final String name = session.getPathParameters().get("name");
+        log.info("=== WebSocket连接开始 ===");
+        log.info("Session ID: {}, Username: {}", session.getId(), name);
+        
         if(Strings.isBlank(name) || userNames.containsValue(name)){
+            log.warn("用户名无效或已被使用 - Name: {}, IsBlank: {}, AlreadyExists: {}", 
+                name, Strings.isBlank(name), userNames.containsValue(name));
             Msg.send(session,"用户名无法使用！");
             session.close();
             return;
         }
         session.getUserProperties().put("name",name);
         userNames.put(session,name);
+        log.info("用户名已注册 - Session: {}, Name: {}", session.getId(), name);
 
         HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        log.info("HttpSession检查 - IsNull: {}", httpSession == null);
+        
         if (httpSession != null) {
             Long userId = (Long) httpSession.getAttribute(SessionConstants.SESSION_USER_ID);
+            log.info("从HttpSession获取UserId - SessionId: {}, UserId: {}", httpSession.getId(), userId);
+            
             if (userId != null) {
                 sessionUserIds.put(session, userId);
+                log.info("用户认证成功 - WebSocketSession: {}, UserId: {}, Username: {}", 
+                    session.getId(), userId, name);
+            } else {
+                log.warn("HttpSession中没有UserId - HttpSessionId: {}, Username: {}", 
+                    httpSession.getId(), name);
             }
+        } else {
+            log.warn("无法获取HttpSession - Username: {}, 用户未登录或Session已过期", name);
         }
 
         // region
@@ -88,6 +107,9 @@ public class ApiServerEndpoint {
 Msg.send(session,name + "登录成功！");
         final int size = userNames.size();
         WebSocketConfig.broadcast("【全体】有玩家登陆了游戏！当前在线："+ size +"人");
+        
+        log.info("=== WebSocket连接完成 ===");
+        log.info("当前在线人数: {}, 已认证用户数: {}", userNames.size(), sessionUserIds.size());
     }
 
     @OnClose

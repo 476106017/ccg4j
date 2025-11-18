@@ -54,6 +54,52 @@ var dictShow = function(obj){
     }
     return show;
 }
+
+// 显示主战者状态与效果弹窗
+var showLeaderStatusModal = function(leaderStatuses, playerName) {
+    var $modalBody = $('#leader-status-list');
+    $modalBody.empty();
+    
+    if (!leaderStatuses || leaderStatuses.length === 0) {
+        $modalBody.html('<p class="text-muted">当前没有状态或效果</p>');
+    } else {
+        var html = '<div class="leader-status-content">';
+        
+        // 显示状态
+        var statuses = leaderStatuses.filter(s => s.type === 'status');
+        if (statuses.length > 0) {
+            html += '<div class="row mb-3">';
+            statuses.forEach(function(status) {
+                html += '<div class="col-6 mb-2">';
+                html += '<div class="status-item p-2 border rounded">';
+                html += '<div class="fw-bold">' + status.label + ' (' + status.value + ')</div>';
+                html += '<small class="text-muted">' + status.description + '</small>';
+                html += '</div></div>';
+            });
+            html += '</div>';
+        }
+        
+        // 显示效果卡牌
+        var effects = leaderStatuses.filter(s => s.type === 'effect' && s.card);
+        if (effects.length > 0) {
+            html += '<h6 class="mb-2">影响的卡牌效果</h6>';
+            html += '<div class="row leader-status-cards">';
+            effects.forEach(function(effect) {
+                html += '<div class="col-4">';
+                html += cardHtml(effect.card);
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+        
+        html += '</div>';
+        $modalBody.html(html);
+    }
+    
+    $('#leaderStatusLabel').text(playerName + ' 的主战者状态与效果');
+    $('#leader-status-modal').modal('show');
+}
+
 // 进入某个模式（选择/攻击）后用这个
 var initBoard = function(){
     $('#enemy-info').removeClass("selected");
@@ -78,23 +124,39 @@ var drawBoard = function(){
     $('#enemy-info').addClass('id-'+boardInfo.enemy.leader.id);
     $('#my-info').addClass('id-'+boardInfo.me.leader.id);
     
-    // 生成主战者影响列表图标（如果有影响的卡牌）
-    var enemyAffectingIcon = '';
-    if (boardInfo.enemy.leader.affectingCards && boardInfo.enemy.leader.affectingCards.length > 0) {
-        enemyAffectingIcon = '<div class="leader-affecting-indicator" title="受到' + boardInfo.enemy.leader.affectingCards.length + '张卡牌影响">❓</div>';
+    // 生成主战者状态/效果的警告图标（黄色感叹号）
+    function generateStatusWarning(leaderStatuses, playerType) {
+        if (!leaderStatuses || leaderStatuses.length === 0) {
+            return '';
+        }
+        var tooltipContent = leaderStatuses.map(function(status) {
+            if (status.type === 'status') {
+                return status.label + '(' + status.value + '): ' + status.description;
+            } else {
+                return '效果: ' + status.label;
+            }
+        }).join(' | ');
+        return '<div class="leader-status-warning" data-player="' + playerType + '" title="' + tooltipContent.replace(/"/g, '&quot;').replace(/'/g, '&#39;') + '">⚠️</div>';
     }
-    var myAffectingIcon = '';
-    if (boardInfo.me.leader.affectingCards && boardInfo.me.leader.affectingCards.length > 0) {
-        myAffectingIcon = '<div class="leader-affecting-indicator" title="受到' + boardInfo.me.leader.affectingCards.length + '张卡牌影响">❓</div>';
-    }
+    
+    var enemyStatusWarning = generateStatusWarning(boardInfo.enemy.leaderStatuses, 'enemy');
+    var myStatusWarning = generateStatusWarning(boardInfo.me.leaderStatuses, 'me');
+    
+    // 绑定点击事件显示状态详情弹窗
+    setTimeout(function() {
+        $('.leader-status-warning').off('click').on('click', function() {
+            var playerType = $(this).data('player');
+            var statuses = playerType === 'enemy' ? boardInfo.enemy.leaderStatuses : boardInfo.me.leaderStatuses;
+            showLeaderStatusModal(statuses, playerType === 'enemy' ? boardInfo.enemy.name : boardInfo.me.name);
+        });
+    }, 100);
+
     
     // 显示卡组计数与坟场，并用小红圈显示主战者当前生命值（不显示百分比/分子分母）
     $('#enemy-info').html('<span class="leader-health" title="'+boardInfo.enemy.hp+'/'+boardInfo.enemy.hpMax+'">'+boardInfo.enemy.hp+'</span>'
-         + "<p title='超抽效果："+boardInfo.enemy.leader.overDrawMark+"'>🗃️"+ boardInfo.enemy.deckCount+"</p>💀"+ boardInfo.enemy.graveyardCount
-         + enemyAffectingIcon);
+         + enemyStatusWarning + "<p title='超抽效果："+boardInfo.enemy.leader.overDrawMark+"'>🗃️"+ boardInfo.enemy.deckCount+"</p>💀"+ boardInfo.enemy.graveyardCount);
     $('#my-info').html("💀"+ boardInfo.me.graveyardCount + "<br/><p title='超抽效果："+boardInfo.me.leader.overDrawMark+"'>🗃️"+ boardInfo.me.deckCount+"</p>"
-         + '<span class="leader-health" title="'+boardInfo.me.hp+'/'+boardInfo.me.hpMax+'">'+boardInfo.me.hp+'</span>'
-         + myAffectingIcon);
+         + '<span class="leader-health" title="'+boardInfo.me.hp+'/'+boardInfo.me.hpMax+'">'+boardInfo.me.hp+'</span>' + myStatusWarning);
 
     $('#enemy-info-detail').html("<p class='skill' title='"+boardInfo.enemy.leader.skillMark+"'>"+ boardInfo.enemy.leader.skillName + "(" + boardInfo.enemy.leader.skillCost + ")</p>" +
     "<p title='"+boardInfo.enemy.leader.mark+"'>主战者："+ boardInfo.enemy.leader.name + "</p>" );
@@ -579,11 +641,11 @@ if(hasBoardUi && pendingAutoMatchMode){
 
 function initWebSocket(userName) {
 if ($.trim(userName)) {
-    if(window.location.host.indexOf("card4j") <= 0)
+    if(window.location.host.indexOf("8.216.80.59") < 0)
         // 本地运行
-        websocket = new WebSocket("ws://localhost:18081/api/"+userName);
+        websocket = new WebSocket("ws://localhost/api/"+userName);
     else
-        websocket = new WebSocket("ws://www.card4j.top:18081/api/"+userName);
+        websocket = new WebSocket("ws://8.216.80.59/api/"+userName);
 
     $("username").html(userName);
     console.log("征集有趣的自定义卡牌、主战者、玩法、卡面。联系方式：（Bilibili）漆黑Ganker");

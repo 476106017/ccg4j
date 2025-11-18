@@ -118,40 +118,73 @@ public class MatchHandler {
      * 搜寻AI - 进入10秒暴露期，可被猎杀
      */
     private void startBorderlandAIDirectly(Session client) {
+        log.info("=== 开始弥留之国AI匹配调试 ===");
+        log.info("Session ID: {}", client.getId());
+        log.info("Session isOpen: {}", client.isOpen());
+        
         String room = userRoom.get(client);
         if (room != null) {
+            log.warn("玩家重复进入房间 - Session: {}, Room: {}", client.getId(), room);
             Msg.warn(client, "请不要重复进入房间！");
             return;
         }
+        
+        // 详细日志：检查用户认证
         Long userId = sessionUserIds.get(client);
+        String username = userNames.get(client);
+        log.info("用户认证检查 - Session: {}, UserName: {}, UserId: {}", client.getId(), username, userId);
+        log.info("所有已认证Session: {}", sessionUserIds.keySet().stream()
+            .map(s -> String.format("Session[%s]->User[%s]", s.getId(), sessionUserIds.get(s)))
+            .collect(java.util.stream.Collectors.joining(", ")));
+        
         if (userId == null) {
-            Msg.warn(client, "弥留之国模式需要先登录账号！");
+            log.error("用户ID为空！尝试从用户名恢复... UserName: {}", username);
+            Msg.warn(client, "弥留之国模式需要先登录账号！当前Session未关联用户ID，请刷新页面重新登录。");
             return;
         }
+        
+        log.info("开始获取签证状态 - UserId: {}", userId);
         BorderlandVisa visa = borderlandService.getVisaStatus(userId);
-        if (visa == null || !"ACTIVE".equalsIgnoreCase(visa.getStatus())) {
+        if (visa == null) {
+            log.warn("未找到签证 - UserId: {}", userId);
             Msg.warn(client, "当前没有有效的弥留之国签证，请先在页面上办理。");
             return;
         }
+        
+        log.info("签证信息 - UserId: {}, Status: {}, DaysRemaining: {}", userId, visa.getStatus(), visa.getDaysRemaining());
+        
+        if (!"ACTIVE".equalsIgnoreCase(visa.getStatus())) {
+            log.warn("签证状态不是ACTIVE - UserId: {}, Status: {}", userId, visa.getStatus());
+            Msg.warn(client, "当前没有有效的弥留之国签证，请先在页面上办理。");
+            return;
+        }
+        
         PlayerDeck playerDeck = buildDeckFromVisa(visa);
+        log.info("卡组构建完成 - UserId: {}, DeckSize: {}", userId, playerDeck.getActiveDeck().size());
+        
         if (playerDeck.getActiveDeck().isEmpty()) {
+            log.warn("签证卡组为空 - UserId: {}", userId);
             Msg.warn(client, "签证卡组为空，无法开始战斗。");
             return;
         }
 
         // 进入10秒暴露期，期间可被搜寻玩家入侵
         Msg.send(client, "borderland-ai-waiting", String.valueOf(gameConfig.getAiMatchWaitSeconds()));
-        log.info("玩家 {} 开始搜寻AI，进入{}秒暴露期", userId, gameConfig.getAiMatchWaitSeconds());
+        log.info("玩家 {} ({}) 开始搜寻AI，进入{}秒暴露期", username, userId, gameConfig.getAiMatchWaitSeconds());
 
         ScheduledFuture<?> task = matchScheduler.schedule(() -> {
             // 10秒后如果没被猎杀，开始AI战斗
             PlayerDeckWithTask removed = aiWaitingPool.remove(client);
             if (removed != null) {
+                log.info("暴露期结束，开始AI战斗 - UserId: {}", userId);
                 startBorderlandAI(client, playerDeck);
+            } else {
+                log.warn("玩家已被移除等待池 - UserId: {}", userId);
             }
         }, gameConfig.getAiMatchWaitSeconds(), TimeUnit.SECONDS);
 
         aiWaitingPool.put(client, new PlayerDeckWithTask(playerDeck, task));
+        log.info("玩家已加入等待池 - UserId: {}, 当前等待池大小: {}", userId, aiWaitingPool.size());
     }
 
     /**

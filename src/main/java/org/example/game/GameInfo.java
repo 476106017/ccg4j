@@ -153,7 +153,9 @@ public class GameInfo implements Serializable {
             f.setCanAttack(canAttack);
             f.setCanDash(canDash);
         });
-
+        
+        thisPlayer.refreshLeaderStatuses();
+        oppositePlayer.refreshLeaderStatuses();
 
         Msg.send(thisPlayer.getSession(),"battleInfo",
             Maps.newMap("me", thisPlayer,"enemy", oppositePlayer));

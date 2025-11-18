@@ -8,6 +8,7 @@ import org.example.card.Card;
 import org.example.card.FollowCard;
 import org.example.constant.CounterKey;
 import org.example.constant.EffectTiming;
+import org.example.game.dto.LeaderStatusInfo;
 import org.example.system.Database;
 import org.example.system.util.FunctionN;
 import org.example.system.util.Lists;
@@ -60,10 +61,14 @@ public class PlayerInfo implements Serializable {
     Map<String,Integer> counter = new ConcurrentHashMap<>();// 计数器
     Leader leader;
 
+    List<LeaderStatusInfo> leaderStatuses = new ArrayList<>();
 
     transient Set<Card> abandon = new HashSet<>();
     List<Card> playedCard = new ArrayList<>();// 本回合使用卡牌计数器
 
+    private static final Map<String, StatusDescriptor> LEADER_STATUS_MAP = Map.of(
+        CounterKey.POISON, new StatusDescriptor("中毒", "回合结束时受到伤害")
+    );
 
     public void countToGraveyard(int count){
         graveyardCount = Math.max(0, graveyardCount + count);
@@ -165,6 +170,39 @@ public class PlayerInfo implements Serializable {
     public PlayerInfo(GameInfo info,boolean initative) {
         this.info = info;
         this.initative = initative;
+    }
+
+    public void refreshLeaderStatuses(){
+        List<LeaderStatusInfo> statuses = new ArrayList<>();
+
+        try {
+            LEADER_STATUS_MAP.forEach((key, descriptor) -> {
+                int value = getCount(key);
+                if(value > 0){
+                    statuses.add(LeaderStatusInfo.status(
+                        key,
+                        descriptor.label(),
+                        descriptor.description(),
+                        value
+                    ));
+                }
+            });
+
+            if(leader != null){
+                try {
+                    leader.snapshotAffectingCards().forEach(card ->
+                        statuses.add(LeaderStatusInfo.effect(card)));
+                } catch (Exception e) {
+                    // 如果获取影响卡牌失败，记录错误但不影响游戏继续
+                    System.err.println("获取主战者影响卡牌时出错: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            // 如果刷新状态失败，记录错误但不影响游戏继续
+            System.err.println("刷新主战者状态时出错: " + e.getMessage());
+        }
+
+        leaderStatuses = statuses;
     }
 
     public PlayerInfo getEnemy(){
@@ -685,4 +723,6 @@ public class PlayerInfo implements Serializable {
 
         private String name = "疲劳";
     }
+
+    private record StatusDescriptor(String label, String description){}
 }

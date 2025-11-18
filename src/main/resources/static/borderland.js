@@ -34,6 +34,7 @@
 
     // 页面加载时检查签证状态
     $(document).ready(function() {
+        // 按钮已在HTML中默认禁用
         loadVisaStatus();
         loadBattleLog();
         // 每30秒检查一次惩罚期状态
@@ -63,6 +64,9 @@
             } else if (xhr.status === 401) {
                 alert('请先登录');
                 window.location.href = 'index.html';
+            } else {
+                // 其他错误也要启用按钮，避免永久禁用
+                $('#apply-visa-btn').prop('disabled', false);
             }
         });
     };
@@ -84,6 +88,10 @@
         $('#no-visa-state').removeClass('d-none');
         $('#has-visa-state').addClass('d-none');
         $('#deck-view').addClass('d-none');
+        // 只有在不处于惩罚期时才启用按钮
+        if (!$('#punishment-notice').is(':visible')) {
+            $('#apply-visa-btn').prop('disabled', false);
+        }
     }
 
     // 显示有签证状态
@@ -150,9 +158,18 @@
 
     // 办理签证
     window.applyVisa = function() {
+        // 检查是否已有有效签证
+        if (currentVisa && currentVisa.status === 'ACTIVE') {
+            alert('您已持有有效签证，无需重复办理');
+            return;
+        }
+        
         if (!confirm('确定要办理新签证吗？将获得10天期限和40张随机卡组。')) {
             return;
         }
+        
+        // 禁用按钮防止重复点击
+        $('#apply-visa-btn').prop('disabled', true);
         
         $.ajax({
             url: '/api/borderland/visa/apply',
@@ -162,6 +179,7 @@
                 loadVisaStatus();
             },
             error: function(xhr) {
+                $('#apply-visa-btn').prop('disabled', false);
                 if (xhr.status === 400) {
                     alert(xhr.responseJSON?.message || '签证办理失败');
                 } else {

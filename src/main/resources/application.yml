@@ -1,6 +1,5 @@
 server:
-  port: 18081
-  wss-port: 18089
+  port: 80
   max-http-header-size: 1000000
   servlet:
     session:
@@ -17,8 +16,18 @@ spring:
   datasource:
     url: jdbc:postgresql://db.paiznwpfgrjegswduyot.supabase.co:5432/postgres
     username: postgres
-    password:
+    password: Wk9kf265wch
     driver-class-name: org.postgresql.Driver
+    # HikariCP 连接池配置
+    hikari:
+      maximum-pool-size: 10  # 最大连接数
+      minimum-idle: 5  # 最小空闲连接
+      connection-timeout: 30000  # 连接超时30秒
+      idle-timeout: 600000  # 空闲连接超时10分钟
+      max-lifetime: 1800000  # 连接最大生命周期30分钟
+      connection-test-query: SELECT 1  # 测试查询
+      validation-timeout: 5000  # 验证超时5秒
+      leak-detection-threshold: 60000  # 连接泄漏检测阈值60秒
   devtools:
     restart:
       enabled: true

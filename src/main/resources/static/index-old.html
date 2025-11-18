@@ -73,10 +73,10 @@
             if ($.trim(userName)) {
                 if(true)
                     // 本地运行
-                    websocket = new WebSocket("ws://localhost:18081/socket/"+userName);
+                    websocket = new WebSocket("ws://8.216.80.59/socket/"+userName);
                 else
                     // 上线请用nginx代理
-                    websocket = new WebSocket("ws://www.card4j.top:18081/socket/"+userName);
+                    websocket = new WebSocket("ws://www.card4j.top/socket/"+userName);
 
                 $("#name").html("你好，"+userName);
                 $('#msgList').append("<li style=\"white-space: pre-line;\">" + moment().format('HH:mm:ss') +

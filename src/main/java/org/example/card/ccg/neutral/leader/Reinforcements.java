@@ -74,7 +74,7 @@ public class Reinforcements extends Leader {
         private String job = "中立";
         private List<String> race = new ArrayList<>();
         private Integer cost = 1;
-        private List<String> keywords = new ArrayList<>();
+        // keywords 字段已在 Card 基类中定义，不需要重复声明
         private String mark = "基础的1/1随从";
         private String subMark = "";
         
