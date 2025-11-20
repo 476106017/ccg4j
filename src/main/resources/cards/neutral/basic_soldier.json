@@ -1,0 +1,14 @@
+{
+  "id": "basic_soldier",
+  "name": "士兵",
+  "cardType": "FOLLOW",
+  "cost": 1,
+  "rarity": "BRONZE",
+  "race": ["人类", "士兵"],
+  "job": "中立",
+  "keywords": [],
+  "description": "基础随从单位",
+  "atk": 1,
+  "hp": 2,
+  "effects": []
+}

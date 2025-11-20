@@ -1,0 +1,24 @@
+{
+  "id": "dragon_knight",
+  "name": "龙骑士",
+  "cardType": "FOLLOW",
+  "cost": 3,
+  "rarity": "SILVER",
+  "race": ["人类", "龙"],
+  "job": "中立",
+  "keywords": ["突进"],
+  "description": "战吼：如果我方场上有龙族随从，获得+2/+2",
+  "atk": 2,
+  "hp": 3,
+  "effects": [
+    {
+      "timing": "Entering",
+      "type": "SCRIPT",
+      "script": "buff_if_dragon",
+      "params": {
+        "buffAtk": 2,
+        "buffHp": 2
+      }
+    }
+  ]
+}

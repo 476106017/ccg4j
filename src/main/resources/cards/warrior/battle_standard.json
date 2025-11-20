@@ -1,0 +1,23 @@
+{
+  "id": "battle_standard",
+  "name": "战旗",
+  "cardType": "AMULET",
+  "cost": 3,
+  "rarity": "SILVER",
+  "race": [],
+  "job": "战士",
+  "keywords": [],
+  "description": "倒数2。回合结束时，使所有我方随从获得+1/+0",
+  "countdown": 2,
+  "effects": [
+    {
+      "timing": "EndTurn",
+      "type": "BUFF",
+      "script": "buff_all_allies",
+      "params": {
+        "buffAtk": 1,
+        "buffHp": 0
+      }
+    }
+  ]
+}

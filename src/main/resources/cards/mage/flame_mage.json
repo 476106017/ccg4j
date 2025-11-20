@@ -1,0 +1,23 @@
+{
+  "id": "flame_mage",
+  "name": "火焰法师",
+  "cardType": "FOLLOW",
+  "cost": 3,
+  "rarity": "SILVER",
+  "race": ["人类", "法师"],
+  "job": "法师",
+  "keywords": [],
+  "description": "战吼：对敌方主战者造成2点伤害",
+  "atk": 2,
+  "hp": 3,
+  "effects": [
+    {
+      "timing": "Entering",
+      "type": "DEAL_DAMAGE",
+      "target": "ENEMY_LEADER",
+      "params": {
+        "amount": 2
+      }
+    }
+  ]
+}

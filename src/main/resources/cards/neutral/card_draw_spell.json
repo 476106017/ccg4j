@@ -1,0 +1,21 @@
+{
+  "id": "card_draw_spell",
+  "name": "占卜术",
+  "cardType": "SPELL",
+  "cost": 1,
+  "rarity": "BRONZE",
+  "race": [],
+  "job": "中立",
+  "keywords": [],
+  "description": "抽2张牌",
+  "effects": [
+    {
+      "timing": "Entering",
+      "type": "DRAW_CARD",
+      "target": "SELF",
+      "params": {
+        "amount": 2
+      }
+    }
+  ]
+}

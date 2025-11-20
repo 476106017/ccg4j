@@ -149,7 +149,9 @@ public abstract class Leader extends GameObj {
                     System.err.println("复制影响卡牌失败: " + card.getName() + " - " + e.getMessage());
                 }
                 try {
-                    return card.prototype();
+                    Card prototype = card.prototype();
+                    prototype.init(); // 初始化原型卡牌
+                    return prototype;
                 } catch (Exception e){
                     System.err.println("获取卡牌原型失败: " + card.getName() + " - " + e.getMessage());
                     return card;
