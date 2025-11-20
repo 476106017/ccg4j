@@ -99,9 +99,11 @@ public class ApiServerEndpoint {
             return Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers);
         });
         // 随机取30张
-        List<Class<? extends Card>> classes = new ArrayList<>(subTypesOf.stream().toList());
-        Collections.shuffle(classes);
-        playerDeck.getActiveDeck().addAll(classes.subList(0,30));
+        List<String> cardCodes = subTypesOf.stream()
+            .map(Class::getName)
+            .collect(Collectors.toList());
+        Collections.shuffle(cardCodes);
+        playerDeck.getActiveDeck().addAll(cardCodes.subList(0, Math.min(30, cardCodes.size())));
         userDecks.put(session, playerDeck);
         // endregion
 Msg.send(session,name + "登录成功！");

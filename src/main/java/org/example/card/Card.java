@@ -257,7 +257,7 @@ public abstract class Card extends GameObj implements Serializable {
         // 当从原型复制时（原型可能没有绑定到任何 GameInfo），避免调用 createCard（会访问 this.info）
         Card card;
         try {
-            card = this.getClass().getDeclaredConstructor().newInstance();
+            card = createInstance();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -394,6 +394,10 @@ public abstract class Card extends GameObj implements Serializable {
         info.startEffect();
         info.pushInfo();
 
+    }
+
+    public Card createInstance() throws Exception {
+        return this.getClass().getDeclaredConstructor().newInstance();
     }
 
 }

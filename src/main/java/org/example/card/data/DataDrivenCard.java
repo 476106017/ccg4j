@@ -139,6 +139,11 @@ public class DataDrivenCard {
         public Card prototype() {
             return new DataFollowCard(data);
         }
+
+        @Override
+        protected Card createInstance() {
+            return new DataFollowCard(data);
+        }
     }
     
     /**
@@ -233,6 +238,11 @@ public class DataDrivenCard {
         
         @Override
         public Card prototype() {
+            return new DataSpellCard(data);
+        }
+
+        @Override
+        protected Card createInstance() {
             return new DataSpellCard(data);
         }
     }
@@ -332,6 +342,11 @@ public class DataDrivenCard {
         public Card prototype() {
             return new DataAmuletCard(data);
         }
+
+        @Override
+        protected Card createInstance() {
+            return new DataAmuletCard(data);
+        }
     }
     
     /**
@@ -428,6 +443,11 @@ public class DataDrivenCard {
         
         @Override
         public Card prototype() {
+            return new DataEquipmentCard(data);
+        }
+
+        @Override
+        protected Card createInstance() {
             return new DataEquipmentCard(data);
         }
     }

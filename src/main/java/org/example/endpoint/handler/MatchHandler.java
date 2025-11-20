@@ -368,7 +368,7 @@ public class MatchHandler {
     private PlayerDeck buildDeckFromVisa(BorderlandVisa visa) {
         PlayerDeck deck = new PlayerDeck();
         deck.setLeaderClass(ThePlayer.class);
-        List<Class<? extends Card>> cards = new ArrayList<>();
+        List<String> cards = new ArrayList<>();
         if (visa.getDeckData() == null || visa.getDeckData().isBlank()) {
             deck.setActiveDeck(cards);
             return deck;
@@ -376,8 +376,7 @@ public class MatchHandler {
         Arrays.stream(visa.getDeckData().split(","))
             .map(String::trim)
             .filter(s -> !s.isEmpty())
-            .map(this::safeCardClass)
-            .filter(Objects::nonNull)
+            .filter(code -> cardCatalogService.getByCode(code) != null)
             .forEach(cards::add);
         deck.setActiveDeck(cards);
         return deck;
@@ -390,16 +389,13 @@ public class MatchHandler {
         if (allCards.isEmpty()) {
             return deck;
         }
-        List<Class<? extends Card>> classes = new ArrayList<>();
+        List<String> codes = new ArrayList<>();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < size; i++) {
             CardSummary summary = allCards.get(random.nextInt(allCards.size()));
-            Class<? extends Card> clazz = safeCardClass(summary.getCode());
-            if (clazz != null) {
-                classes.add(clazz);
-            }
+            codes.add(summary.getCode());
         }
-        deck.setActiveDeck(classes);
+        deck.setActiveDeck(codes);
         return deck;
     }
 

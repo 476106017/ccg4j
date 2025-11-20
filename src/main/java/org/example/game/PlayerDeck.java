@@ -13,8 +13,8 @@ import java.util.*;
 public class PlayerDeck {
 
     Class<? extends Leader> leaderClass;
-    List<Class<? extends Card>> activeDeck = new ArrayList<>();
-    List<Class<? extends Card>> availableDeck = new ArrayList<>();
+    List<String> activeDeck = new ArrayList<>();
+    List<String> availableDeck = new ArrayList<>();
 
     public Leader getLeader(int owner, GameInfo info){
         try {
@@ -30,15 +30,17 @@ public class PlayerDeck {
 
     public List<Card> getActiveDeckInstance(int owner, GameInfo info) {
         List<Card> _return = new ArrayList<>();
-        activeDeck.forEach(cardClass->{
+        activeDeck.forEach(code -> {
             try {
-                Card card = cardClass.getDeclaredConstructor().newInstance();
-                card.setOwner(owner);
-                card.setInfo(info);
-                card.init();
-                _return.add(card);
-            } catch (NoSuchMethodException | InstantiationException |
-                     IllegalAccessException | InvocationTargetException e) {
+                Card prototype = Database.getPrototypeByName(code);
+                if (prototype != null) {
+                    Card card = prototype.createInstance();
+                    card.setOwner(owner);
+                    card.setInfo(info);
+                    card.init();
+                    _return.add(card);
+                }
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -53,7 +55,9 @@ public class PlayerDeck {
         }catch (Exception ignored){}
 
         List<? extends Card> deckCards = activeDeck.stream()
-            .map(Database::getPrototype).sorted(Comparator.comparing(Card::getCost)).toList();
+            .map(Database::getPrototypeByName)
+            .filter(Objects::nonNull)
+            .sorted(Comparator.comparing(Card::getCost)).toList();
         _return.put("deck", deckCards);
         return _return;
     }

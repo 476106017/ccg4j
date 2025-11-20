@@ -129,19 +129,22 @@ public class CardPackService {
             "ccg_neutral",
             "中立纪念卡包",
             "收录CCG系列的中立随从与法术",
-            summary -> summary.getCode().contains(".card.ccg.neutral.")
+            summary -> summary.getCode().contains(".card.ccg.neutral.") || 
+                       (summary.getCode().startsWith("data:") && "中立".equals(summary.getJob()))
         ));
         map.put("ccg_fairy", new CardPackDefinition(
             "ccg_fairy",
             "妖精森林包",
             "来自妖精职业的经典卡牌",
-            summary -> summary.getCode().contains(".card.ccg.fairy.")
+            summary -> summary.getCode().contains(".card.ccg.fairy.") || 
+                       (summary.getCode().startsWith("data:") && "妖精".equals(summary.getJob()))
         ));
         map.put("ccg_druid", new CardPackDefinition(
             "ccg_druid",
             "德鲁伊秘典",
             "大自然的力量与伙伴",
-            summary -> summary.getCode().contains(".card.ccg.druid.")
+            summary -> summary.getCode().contains(".card.ccg.druid.") || 
+                       (summary.getCode().startsWith("data:") && "德鲁伊".equals(summary.getJob()))
         ));
         map.put("festival", new CardPackDefinition(
             "festival",
@@ -153,7 +156,8 @@ public class CardPackService {
             "nemesis",
             "复合兵装包",
             "复合兵装与神器组合",
-            summary -> summary.getCode().contains(".card.ccg.nemesis.")
+            summary -> summary.getCode().contains(".card.ccg.nemesis.") || 
+                       (summary.getCode().startsWith("data:") && "复仇者".equals(summary.getJob()))
         ));
         map.put("anime", new CardPackDefinition(
             "anime",
@@ -165,7 +169,8 @@ public class CardPackService {
             "original",
             "原创收藏",
             "原创主题与自制卡牌合集",
-            summary -> summary.getCode().contains(".card.original.")
+            summary -> summary.getCode().contains(".card.original.") || 
+                       (summary.getCode().startsWith("data:") && !"中立".equals(summary.getJob()) && !"妖精".equals(summary.getJob()) && !"德鲁伊".equals(summary.getJob()) && !"复仇者".equals(summary.getJob()))
         ));
         return Collections.unmodifiableMap(map);
     }

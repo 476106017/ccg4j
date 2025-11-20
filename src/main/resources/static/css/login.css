@@ -1,0 +1,101 @@
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
+.auth-wrapper {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+.auth-header h1 {
+    color: white;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    margin-bottom: 10px;
+}
+.auth-header p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+}
+.auth-card {
+    border: none;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+.auth-card .card-body {
+    padding: 2.5rem !important;
+}
+.nav-pills .nav-link {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+.nav-pills .nav-link:not(.active) {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+.nav-pills .nav-link:not(.active):hover {
+    background: rgba(102, 126, 234, 0.2);
+}
+.nav-pills .nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+.form-control {
+    border-radius: 10px;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+.btn {
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+.btn-outline-primary {
+    border: 2px solid #667eea;
+    color: #667eea;
+    background: transparent;
+}
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+.auth-pane {
+    display: none;
+}
+.auth-pane.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

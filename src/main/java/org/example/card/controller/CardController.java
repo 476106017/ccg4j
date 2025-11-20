@@ -71,7 +71,6 @@ public class CardController {
             .health(summary.getHp())
             .countdown(summary.getCountdown())
             .addAtk(summary.getAddAtk())
-            .description("") // CardSummary 没有description字段，可能需要从Card实例获取
             .keywords(summary.getKeywords())
             .rarity(summary.getRarity())
             .build();

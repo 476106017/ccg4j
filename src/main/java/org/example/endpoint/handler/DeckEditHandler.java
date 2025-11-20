@@ -39,10 +39,18 @@ public class DeckEditHandler {
             Msg.warn(client,"牌组最多100张牌！");
             return;
         }
-        List<Class<? extends Card>> newDeck = new ArrayList<>();
+        List<String> newDeck = new ArrayList<>();
         cardNames.forEach(name->{
-            final Class<? extends Card> aClass = Database.nameToCardClass.get(name);
-            if(aClass!=null) newDeck.add(aClass);
+            Card prototype = Database.getPrototypeByName(name);
+            if(prototype!=null) {
+                String code;
+                if (prototype.getClass().getName().startsWith("org.example.card.data.DataDrivenCard$")) {
+                     code = "data:" + prototype.getName();
+                } else {
+                     code = prototype.getClass().getName();
+                }
+                newDeck.add(code);
+            }
         });
         if(newDeck.size()<10){
             Msg.warn(client,"牌组至少需要10张牌！");
@@ -79,9 +87,9 @@ public class DeckEditHandler {
             return;
         }
 
-        List<Class<? extends Card>> activeDeck = playerDeck.getActiveDeck();
+        List<String> activeDeck = playerDeck.getActiveDeck();
         activeDeck.clear();
-        activeDeck.addAll(deck);
+        deck.stream().map(Class::getName).forEach(activeDeck::add);
         playerDeck.setLeaderClass(leader);
 
         Msg.send(client, "成功使用预设牌组：" + data);
