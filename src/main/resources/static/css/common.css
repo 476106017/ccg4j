@@ -9,14 +9,21 @@
 
   .card {
     position: relative;
-    width: 220px !important;
-    height: 356px !important;
+    width: var(--card-width, 220px) !important;
+    height: var(--card-height, 356px) !important;
     margin: 20px;
     padding: 0; /* 确保没有内边距 */
-    border-radius: 5px;
-    border: 1px solid #4b4b4b;
-    box-shadow: 0 0 20px #4b4b4b;
-    background-color: #f7f7f7;
+    border-radius: 10px;
+    border: var(--card-border, 1px solid #444);
+    box-shadow: var(--card-shadow, 0 4px 6px rgba(0,0,0,0.3));
+    background: var(--card-bg-gradient, #2a2a2a);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--card-hover-shadow, 0 8px 12px rgba(0,0,0,0.5));
+      z-index: 10;
   }
 
   .card .card-inner {

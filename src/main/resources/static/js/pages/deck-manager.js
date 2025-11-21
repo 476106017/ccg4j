@@ -347,21 +347,40 @@
 
     // 搜索卡牌
     function searchCards() {
-        const name = $('#card-search-name').val().trim();
-        const cost = $('#card-search-cost').val();
+        const nameInput = $('#card-search-name').val().trim().toLowerCase();
+        const typeFilter = $('#card-search-type').val();
+        const costFilterRaw = $('#card-search-cost').val();
 
-        let results = allCards;
+        let results = allCards.slice();
 
-        if (name) {
-            const searchTerm = name.toLowerCase();
-            results = results.filter(c => 
-                c.name && c.name.toLowerCase().includes(searchTerm)
-            );
+        // 费用过滤（支持7+）
+        if (costFilterRaw !== '') {
+            const costFilter = parseInt(costFilterRaw, 10);
+            results = results.filter(c => {
+                if (costFilter === 7) return c.cost >= 7;
+                return c.cost === costFilter;
+            });
         }
-        
-        if (cost !== '') {
-            const costNum = parseInt(cost);
-            results = results.filter(c => c.cost === costNum);
+
+        // 类型过滤（兼容 card.type 和 card.cardType）
+        if (typeFilter) {
+            results = results.filter(c => (c.cardType || c.type) === typeFilter);
+        }
+
+        // 全文模糊匹配：名称 / mark / description / keywords / race / job
+        if (nameInput) {
+            const terms = nameInput.split(/\s+/).filter(t => t.length > 0);
+            results = results.filter(c => {
+                const haystack = [
+                    c.name || '',
+                    c.mark || '',
+                    c.description || '',
+                    (c.keywords || []).join(' '),
+                    (c.race || []).join(' '),
+                    c.job || ''
+                ].join(' ').toLowerCase();
+                return terms.every(t => haystack.includes(t));
+            });
         }
 
         renderSearchResults(results);

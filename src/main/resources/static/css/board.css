@@ -13,7 +13,7 @@
 }
 
 .board {
-  background-color: green;
+  background: radial-gradient(circle at center, #1e3c1e 0%, #0a1a0a 100%);
   margin: 0;
   height: 100%;
   position: relative;
@@ -61,18 +61,22 @@
 .enemy-pp-num{
   top: -80px; /* 向上移动，远离中间按钮 */
   width: 110px;
-  background: linear-gradient(to bottom, green, #ffd700,#fffacd );
+  background: linear-gradient(to bottom, #2e7d32, #ffd700, #fffacd);
 }
 .my-pp-num{
   bottom: -80px; /* 向下移动，远离中间按钮 */
   width: 110px;
-  background: linear-gradient(to bottom, #fffacd, #ffd700, green);
+  background: linear-gradient(to bottom, #fffacd, #ffd700, #2e7d32);
 }
 .right-panel{
   position: absolute;
   top: 30%;
   right: 5px;
-  background: radial-gradient(white, #fffacd);
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid #444;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
 }
 .right-panel p{
   margin: 0;
@@ -173,15 +177,58 @@
   position: relative;
   width: 61.8px !important;
   height: 100px !important;
-  background-size: 100% 100%;
-  background-image: url('yugioh.webp');
-  background-repeat: no-repeat;
+  background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+  border: 1px solid #666;
+  border-radius: 4px;
   margin-left: -10px;
   margin-top: -50px !important;
+  box-shadow: -2px 2px 5px rgba(0,0,0,0.5);
+}
+.card-back::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 2px;
 }
 .card-back:hover{
   z-index: 999;
   transform: scale(1.5) ;
+}
+
+.skill {
+    cursor: default;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.skill.canUse {
+    cursor: pointer;
+    background: rgba(255, 215, 0, 0.15);
+    border-color: #ffd700;
+    color: #ffd700;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    animation: skill-pulse 2s infinite;
+}
+
+.skill.canUse:hover {
+    background: rgba(255, 215, 0, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes skill-pulse {
+    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
+    50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
 }
 
 .hand {

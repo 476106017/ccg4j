@@ -1,8 +1,8 @@
 // 工具函数和组件已提取到 common/utils.js, components/card.js, components/leader-status.js
-}
 
 // 进入某个模式（选择/攻击）后用这个
 var initBoard = function(){
+    $(document).off("click.cancelSkill");
     $('#enemy-info').removeClass("selected");
     $('#enemy-info').unbind();
     $('#my-info').removeClass("selected");
@@ -26,7 +26,7 @@ var drawBoard = function(){
     $('#my-info').addClass('id-'+boardInfo.me.leader.id);
     
     // 生成主战者状态/效果的警告图标（黄色感叹号）
-    function generateStatusWarning(leaderStatuses, playerType) {
+    function generateStatusWarning(leaderStatuses, playerType ) {
         if (!leaderStatuses || leaderStatuses.length === 0) {
             return '';
         }
@@ -840,6 +840,16 @@ if ($.trim(userName)) {
 
                     });
                 })
+                
+                // 点击空白处取消
+                setTimeout(() => {
+                    $(document).on("click.cancelSkill", function(e){
+                        // 如果点击的不是目标，也不是技能按钮
+                        if(!$(e.target).closest(".selected").length && !$(e.target).closest(".skill").length){
+                            initBoard();
+                        }
+                    });
+                }, 100);
                 break;
             case "target":
                 $(".end-button").html("效果<br/>目标");

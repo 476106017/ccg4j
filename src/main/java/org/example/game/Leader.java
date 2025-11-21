@@ -60,9 +60,9 @@ public abstract class Leader extends GameObj {
             Msg.warn(me, "没有足够的pp以使用主战者技能！");
             throw new RuntimeException();
         }
-        if(target!=null && !targetable().contains(target)){
+        if(target!=null && targetable().stream().noneMatch(t -> t.id == target.id)){
             Msg.warn(me, "无法指定该目标！");
-            throw new RuntimeException();
+            return;
         }
         info.msg(ownerPlayer().getName() + "使用了"+getName()+"的主战者技能："+getSkillName());
         setCanUseSkill(false);

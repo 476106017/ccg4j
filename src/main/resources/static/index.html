@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
     <title>Card4j（内测版）</title>
 	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/theme.css">
 	<link rel="stylesheet" href="css/board.css">
 	<link rel="stylesheet" href="css/search.css">
 	<link rel="stylesheet" href="css/deck-list.css">
@@ -73,7 +74,7 @@
 						<div class="row g-4 justify-content-center mb-5">
 							<!-- 常规匹配 -->
 							<div class="col-lg-6 col-md-6 d-flex justify-content-center">
-								<div class="card h-100 shadow-lg hover-card border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); max-width: 400px; width: 100%;">
+								<div class="card h-100 shadow-lg hover-card border-0" style="background: linear-gradient(135deg, #311b92 0%, #4527a0 100%); max-width: 400px; width: 100%;">
 									<div class="card-body text-center p-4 d-flex flex-column text-white">
 										<div class="mb-3">
 											<i class="bi bi-trophy" style="font-size: 3rem; color: #ffd700;"></i>
@@ -81,20 +82,20 @@
 										<h4 class="card-title mb-3 text-white">常规匹配</h4>
 										<p class="card-text mb-2" style="color: rgba(255,255,255,0.9);">与其他玩家进行天梯对战</p>
 										<div class="mb-3">
-											<span class="badge fs-6" style="background: rgba(255,255,255,0.25); color: white;">当前分数：<span id="user-rating">1000</span></span>
+											<span class="badge fs-6" style="background: rgba(255,255,255,0.1); color: white;">当前分数：<span id="user-rating">1000</span></span>
 										</div>
-										<p class="card-text small mb-4" style="color: rgba(255,255,255,0.8);">
+										<p class="card-text small mb-4" style="color: rgba(255,255,255,0.7);">
 											胜利可从对手身上夺取分数<br/>
 											分差越大，获得的分数越多
 										</p>
-										<button class="btn btn-light btn-lg w-100 mt-auto shadow" style="color: #667eea; font-weight: bold;" onclick="websocket.send('joinRoom::normal');">开始匹配</button>
+										<button class="btn btn-outline-light btn-lg w-100 mt-auto shadow" onclick="websocket.send('joinRoom::normal');">开始匹配</button>
 									</div>
 								</div>
 							</div>
 							
 							<!-- 弥留之国 -->
 							<div class="col-lg-6 col-md-6 d-flex justify-content-center">
-								<div class="card h-100 shadow-lg hover-card border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); max-width: 400px; width: 100%;">
+								<div class="card h-100 shadow-lg hover-card border-0" style="background: linear-gradient(135deg, #880e4f 0%, #b71c1c 100%); max-width: 400px; width: 100%;">
 									<div class="card-body text-center p-4 d-flex flex-column text-white">
 										<div class="mb-3 position-relative">
 											<i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #ffd700;"></i>

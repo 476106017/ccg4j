@@ -59,16 +59,35 @@ public class Database {
      * 根据卡牌名称获取原型（支持Java类和数据驱动）
      */
     public static Card getPrototypeByName(String cardName) {
-        // 优先从数据驱动卡牌中查找
+        // 1. 处理 data: 前缀（来自 CardCatalogService）
+        if (cardName.startsWith("data:")) {
+            String realName = cardName.substring(5);
+            Card dataCard = CardDataLoader.getPrototypeByName(realName);
+            if (dataCard != null) {
+                return dataCard;
+            }
+        }
+
+        // 2. 优先从数据驱动卡牌中查找（直接使用名称）
         Card dataCard = CardDataLoader.getPrototypeByName(cardName);
         if (dataCard != null) {
             return dataCard;
         }
         
-        // 从Java类卡牌中查找
+        // 3. 从Java类卡牌中查找（通过名称映射）
         Class<? extends Card> cardClass = nameToCardClass.get(cardName);
         if (cardClass != null) {
             return getPrototype(cardClass);
+        }
+
+        // 4. 尝试作为类名加载（来自 CardCatalogService 的 Java 卡牌 code）
+        try {
+            Class<?> clazz = Class.forName(cardName);
+            if (Card.class.isAssignableFrom(clazz)) {
+                return getPrototype((Class<? extends Card>) clazz);
+            }
+        } catch (ClassNotFoundException | ClassCastException e) {
+            // 忽略，说明不是类名
         }
         
         return null;

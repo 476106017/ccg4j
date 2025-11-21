@@ -1,0 +1,96 @@
+:root {
+    /* Dark Theme Palette */
+    --bg-body: #121212;
+    --bg-surface: #1e1e1e;
+    --bg-surface-hover: #2d2d2d;
+    --bg-sidebar: #181818;
+    
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-muted: #6c757d;
+    
+    --primary-color: #6200ea;
+    --primary-hover: #7c4dff;
+    --accent-color: #03dac6;
+    
+    --border-color: #333333;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+    
+    /* Card Specifics */
+    --card-width: 220px;
+    --card-height: 356px;
+    --card-bg-gradient: linear-gradient(145deg, #2a2a2a, #222222);
+    --card-border: 1px solid #444;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Bootstrap Overrides for Dark Theme */
+.card {
+    background-color: var(--bg-surface);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.bg-light {
+    background-color: var(--bg-sidebar) !important;
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.border-bottom {
+    border-bottom-color: var(--border-color) !important;
+}
+
+.modal-content {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-color);
+}
+
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.form-control, .form-select {
+    background-color: var(--bg-body);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(98, 0, 234, 0.25);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-body); 
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: #555; 
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777; 
+}

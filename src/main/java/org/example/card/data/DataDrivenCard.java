@@ -141,7 +141,7 @@ public class DataDrivenCard {
         }
 
         @Override
-        protected Card createInstance() {
+        public Card createInstance() {
             return new DataFollowCard(data);
         }
     }
@@ -242,7 +242,7 @@ public class DataDrivenCard {
         }
 
         @Override
-        protected Card createInstance() {
+        public Card createInstance() {
             return new DataSpellCard(data);
         }
     }
@@ -344,7 +344,7 @@ public class DataDrivenCard {
         }
 
         @Override
-        protected Card createInstance() {
+        public Card createInstance() {
             return new DataAmuletCard(data);
         }
     }
@@ -447,7 +447,7 @@ public class DataDrivenCard {
         }
 
         @Override
-        protected Card createInstance() {
+        public Card createInstance() {
             return new DataEquipmentCard(data);
         }
     }

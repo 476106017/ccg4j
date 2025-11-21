@@ -43,14 +43,14 @@
     border-radius: 999px;
     font-size: 14px;
     line-height: 1;
-    background: #f5f7fb;
-    color: #333;
-    border: 1px solid #e5e9f2;
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
 }
 .deck-badges .badge-dust {
-    background: #fff7e6;
-    color: #8a6d3b;
-    border-color: #ffe1a8;
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border-color: rgba(255, 193, 7, 0.3);
 }
 .deck-badges strong { font-weight: 700; }
 
@@ -168,4 +168,28 @@
 .card-item .card-type,
 .card-item .card-description {
     color: white;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    min-height: 100vh;
+}
+
+.sidebar .nav-link {
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(98, 0, 234, 0.1);
+    border-right: 3px solid var(--primary-color);
+}
+
+.sidebar .nav-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-surface-hover);
 }

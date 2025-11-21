@@ -1,3 +1,6 @@
+// 立即定义全局搜索函数（避免 onclick 触发时未定义）并延后赋值实现
+window.searchCards = function(){ console.warn('searchCards 仍在初始化，请稍后重试'); };
+
 $(document).ready(function() {
     let currentDeck = null;
     let myDeck = [];
@@ -147,20 +150,42 @@ $(document).ready(function() {
 
     // 搜索卡牌
     function searchCards() {
-        const name = $('#card-search-name').val().trim();
-        const type = $('#card-search-type').val();
-        const cost = $('#card-search-cost').val();
+        const nameInput = $('#card-search-name').val().trim().toLowerCase();
+        const typeFilter = $('#card-search-type').val();
+        const costFilterRaw = $('#card-search-cost').val();
 
-        let results = allCards;
+        let results = allCards.slice();
 
-        if (name) {
-            results = results.filter(c => c.name.includes(name));
+        // 费用过滤（支持7+）
+        if (costFilterRaw !== '') {
+            const costFilter = parseInt(costFilterRaw, 10);
+            results = results.filter(c => {
+                if (costFilter === 7) {
+                    return c.cost >= 7;
+                }
+                return c.cost === costFilter;
+            });
         }
-        if (type) {
-            results = results.filter(c => c.cardType === type);
+
+        // 类型过滤
+        if (typeFilter) {
+            results = results.filter(c => (c.cardType || c.type) === typeFilter);
         }
-        if (cost !== '') {
-            results = results.filter(c => c.cost === parseInt(cost));
+
+        // 关键词 / 名称 / 描述 / 种族 / 职业 全文模糊匹配
+        if (nameInput) {
+            const terms = nameInput.split(/\s+/).filter(t => t.length > 0);
+            results = results.filter(c => {
+                const haystack = [
+                    c.name || '',
+                    c.mark || '',
+                    c.description || '',
+                    (c.keywords || []).join(' '),
+                    (c.race || []).join(' '),
+                    c.job || ''
+                ].join(' ').toLowerCase();
+                return terms.every(t => haystack.includes(t));
+            });
         }
 
         renderSearchResults(results);
@@ -184,6 +209,10 @@ $(document).ready(function() {
             $results.append($card);
         });
     }
+
+    // 将搜索函数暴露为全局，兼容 index.html / 其他页面的 onclick 调用
+    // 覆盖初始化占位的全局函数
+    window.searchCards = searchCards;
 
     // 添加卡牌到卡组
     function addCardToDeck(card) {
@@ -263,7 +292,8 @@ $(document).ready(function() {
     // 创建卡牌HTML
     function createCardHtml(card) {
         const rarityClass = card.rarity ? card.rarity.toLowerCase() : 'bronze';
-        const typeClass = card.cardType || 'FOLLOW';
+        const _cardType = card.cardType || card.type || 'FOLLOW';
+        const typeClass = _cardType;
         const keywords = card.keywords || [];
         const keywordsHtml = keywords.map(k => `<span class="keyword">${k}</span>`).join(' ');
         
@@ -283,7 +313,7 @@ $(document).ready(function() {
                     <span class="card-name">${escapeHtml(card.name)}</span>
                     <span class="card-cost">${card.cost}</span>
                 </div>
-                <div class="card-type">${getTypeLabel(card.cardType)}</div>
+                <div class="card-type">${getTypeLabel(_cardType)} (${_cardType})</div>
                 ${statsHtml}
                 <div class="card-description">${escapeHtml(card.description || '')}</div>
                 ${keywords.length > 0 ? `<div class="card-keywords">${keywordsHtml}</div>` : ''}

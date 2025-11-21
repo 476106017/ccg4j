@@ -336,9 +336,7 @@ public class MatchHandler {
         aiPlayer.setName(BORDERLAND_AI_NAME);
 
         // 保存AI的初始卡组代码列表，用于结算时获取
-        List<String> aiDeckCodes = aiDeck.getActiveDeck().stream()
-            .map(Class::getName)
-            .collect(java.util.stream.Collectors.toList());
+        List<String> aiDeckCodes = new java.util.ArrayList<>(aiDeck.getActiveDeck());
         info.setAiInitialDeckCodes(aiDeckCodes);
 
         userRoom.put(client, borderlandRoom);
