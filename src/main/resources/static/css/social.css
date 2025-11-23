@@ -1,0 +1,259 @@
+/* Social Panel Container */
+.social-panel {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid #444;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+    transform: translateY(360px); /* Collapsed state */
+}
+
+.social-panel.expanded {
+    transform: translateY(0);
+}
+
+/* Header / Toggle */
+.social-header {
+    height: 40px;
+    background: #333;
+    border-bottom: 1px solid #444;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: pointer;
+    color: #eee;
+    font-weight: bold;
+}
+
+.social-header:hover {
+    background: #444;
+}
+
+.social-tabs {
+    display: flex;
+    height: 30px;
+    background: #222;
+}
+
+.social-tab {
+    flex: 1;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    color: #888;
+    font-size: 12px;
+    border-bottom: 2px solid transparent;
+}
+
+.social-tab.active {
+    color: #fff;
+    border-bottom: 2px solid #007bff;
+    background: #2a2a2a;
+}
+
+/* Content Area */
+.social-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.social-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+}
+
+.social-view.active {
+    display: flex;
+}
+
+/* Chat Styles */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 12px;
+    color: #ddd;
+}
+
+.chat-message {
+    margin-bottom: 5px;
+    word-wrap: break-word;
+}
+
+.chat-message .sender {
+    font-weight: bold;
+    color: #4da6ff;
+    cursor: pointer;
+}
+
+.chat-message .content {
+    color: #eee;
+}
+
+.chat-message.global .sender { color: #ffcc00; }
+.chat-message.private .sender { color: #ff66cc; }
+.chat-message.system { color: #aaa; font-style: italic; }
+
+.chat-message .timestamp {
+    color: #888;
+    font-size: 10px;
+    margin-right: 5px;
+}
+
+
+.chat-input-area {
+    height: 40px;
+    padding: 5px;
+    border-top: 1px solid #444;
+    display: flex;
+}
+
+.chat-input {
+    flex: 1;
+    background: #222;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.chat-send-btn {
+    width: 50px;
+    margin-left: 5px;
+    background: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.chat-send-btn:hover {
+    background: #0056b3;
+}
+
+/* Friend List Styles */
+.friend-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+
+.friend-item:hover {
+    background: #333;
+}
+
+.friend-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background: #555;
+}
+
+.friend-status.online { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
+.friend-status.offline { background: #555; }
+
+.friend-name {
+    flex: 1;
+    color: #eee;
+    font-size: 13px;
+}
+
+.friend-actions {
+    display: none;
+}
+
+.friend-item:hover .friend-actions {
+    display: block;
+}
+
+.friend-action-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 5px;
+}
+
+.friend-action-btn:hover {
+    color: #fff;
+}
+
+/* Add Friend Input */
+.add-friend-area {
+    padding: 10px;
+    border-top: 1px solid #444;
+    display: flex;
+}
+
+
+/* Context Menu */
+.context-menu {
+    display: none;
+    position: absolute;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    z-index: 10002;
+    min-width: 120px;
+}
+
+.context-menu-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #fff !important;
+    font-size: 14px;
+    background: transparent;
+    opacity: 1 !important;
+}
+
+.context-menu-item:hover {
+    background: #555 !important;
+    color: #fff !important;
+}
+
+/* Modal Styles override if needed, assuming Bootstrap modal is used */
+.modal-content {
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+.modal-header {
+    border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+    border-top: 1px solid #444;
+}
+
+.btn-close {
+    filter: invert(1);
+}

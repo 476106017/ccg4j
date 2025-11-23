@@ -1,521 +1,1435 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Card4j（内测版）</title>
-	<link rel="stylesheet" href="css/common.css">
-	<link rel="stylesheet" href="css/theme.css">
-	<link rel="stylesheet" href="css/board.css">
-	<link rel="stylesheet" href="css/search.css">
-	<link rel="stylesheet" href="css/deck-list.css">
-	<link rel="stylesheet" href="css/deck-edit.css">
-	<script src="js/jquery-3.6.4.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-	<!-- 开发环境启用 LiveReload -->
-	<script>
-		// 检测是否是本地开发环境
-		if(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-			document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
-			':35729/livereload.js?snipver=1"></' + 'script>');
-		}
-	</script>
-</head>
-<body>
-	<header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-		<div class="container-fluid">
-			<a class="navbar-brand fw-semibold" href="index.html">Card4j</a>
-			<div class="d-flex align-items-center gap-3 ms-auto">
-				<span class="text-white-50 small">欢迎回来，
-					<strong class="text-white" id="user-display-name"></strong>
-				</span>
-				<button class="btn btn-outline-light btn-sm" id="logout-btn">退出登录</button>
-			</div>
-		</div>
-	</header>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/board.css" />
+    <link rel="stylesheet" href="css/search.css" />
+    <link rel="stylesheet" href="css/deck-list.css" />
+    <link rel="stylesheet" href="css/deck-edit.css" />
+    <link rel="stylesheet" href="css/social.css" />
+    <link rel="stylesheet" href="css/community.css" />
+    <link rel="stylesheet" href="css/ui-fixes.css" />
+    <link rel="stylesheet" href="css/workshop.css" />
+    <script src="js/jquery-3.6.4.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- 开发环境启用 LiveReload -->
+    <script>
+      // 检测是否是本地开发环境
+      if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      ) {
+        document.write(
+          '<script src="http://' +
+            (location.host || "localhost").split(":")[0] +
+            ':35729/livereload.js?snipver=1"></' +
+            "script>"
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-semibold" href="index.html">Card4j</a>
+        <div class="d-flex align-items-center gap-3 ms-auto">
+          <span class="text-white-50 small"
+            >欢迎回来，
+            <strong class="text-white" id="user-display-name"></strong>
+          </span>
+          <button class="btn btn-outline-light btn-sm" id="logout-btn">
+            退出登录
+          </button>
+        </div>
+      </div>
+    </header>
 
-	<main>
-	<!-- 浮动提示框 -->
-	<div id="page-alert" class="alert d-none position-fixed top-0 start-50 translate-middle-x mt-3" 
-		 role="alert" style="z-index: 9999; min-width: 300px; max-width: 600px;"></div>
+    <main>
+      <!-- 浮动提示框 -->
+      <div
+        id="page-alert"
+        class="alert d-none position-fixed top-0 start-50 translate-middle-x mt-3"
+        role="alert"
+        style="z-index: 9999; min-width: 300px; max-width: 600px"
+      ></div>
 
-	<div class="container mt-4 d-none" id="user-info-container">
-		<!-- Tab导航栏 -->
-		<ul class="nav nav-tabs" id="mainTabs" role="tablist">
-			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="battle-tab" data-bs-toggle="tab" data-bs-target="#battle-panel" type="button" role="tab">
-					匹配对战
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="collection-tab" data-bs-toggle="tab" data-bs-target="#collection-panel" type="button" role="tab">
-					我的收藏
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="pack-tab" data-bs-toggle="tab" data-bs-target="#pack-panel" type="button" role="tab">
-					卡包抽奖
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="deck-tab" data-bs-toggle="tab" data-bs-target="#deck-panel" type="button" role="tab">
-					我的卡组
-				</button>
-			</li>
-		</ul>
+      <div class="container mt-4 d-none" id="user-info-container">
+        <!-- Tab导航栏 -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="battle-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#battle-panel"
+              type="button"
+              role="tab"
+            >
+              匹配对战
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="collection-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#collection-panel"
+              type="button"
+              role="tab"
+            >
+              我的收藏
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="pack-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#pack-panel"
+              type="button"
+              role="tab"
+            >
+              商店
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="deck-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#deck-panel"
+              type="button"
+              role="tab"
+            >
+              我的卡组
+            </button>
+          </li>
+            <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="community-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#community-panel"
+              type="button"
+              role="tab"
+            >
+              社区
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="workshop-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#workshop-panel"
+              type="button"
+              role="tab"
+            >
+              卡牌工坊
+            </button>
+          </li>
+        </ul>
 
-		<!-- Tab内容区 -->
-		<div class="tab-content" id="mainTabsContent">
-			<!-- 匹配对战标签页 -->
-			<div class="tab-pane fade show active" id="battle-panel" role="tabpanel">
-				<div class="mt-4 mb-5">
-					<div class="text-center">
-						<div class="row g-4 justify-content-center mb-5">
-							<!-- 常规匹配 -->
-							<div class="col-lg-6 col-md-6 d-flex justify-content-center">
-								<div class="card h-100 shadow-lg hover-card border-0" style="background: linear-gradient(135deg, #311b92 0%, #4527a0 100%); max-width: 400px; width: 100%;">
-									<div class="card-body text-center p-4 d-flex flex-column text-white">
-										<div class="mb-3">
-											<i class="bi bi-trophy" style="font-size: 3rem; color: #ffd700;"></i>
-										</div>
-										<h4 class="card-title mb-3 text-white">常规匹配</h4>
-										<p class="card-text mb-2" style="color: rgba(255,255,255,0.9);">与其他玩家进行天梯对战</p>
-										<div class="mb-3">
-											<span class="badge fs-6" style="background: rgba(255,255,255,0.1); color: white;">当前分数：<span id="user-rating">1000</span></span>
-										</div>
-										<p class="card-text small mb-4" style="color: rgba(255,255,255,0.7);">
-											胜利可从对手身上夺取分数<br/>
-											分差越大，获得的分数越多
-										</p>
-										<button class="btn btn-outline-light btn-lg w-100 mt-auto shadow" onclick="websocket.send('joinRoom::normal');">开始匹配</button>
-									</div>
-								</div>
-							</div>
-							
-							<!-- 弥留之国 -->
-							<div class="col-lg-6 col-md-6 d-flex justify-content-center">
-								<div class="card h-100 shadow-lg hover-card border-0" style="background: linear-gradient(135deg, #880e4f 0%, #b71c1c 100%); max-width: 400px; width: 100%;">
-									<div class="card-body text-center p-4 d-flex flex-column text-white">
-										<div class="mb-3 position-relative">
-											<i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #ffd700;"></i>
-											<!-- 规则说明图标 -->
-											<button type="button" class="btn btn-sm rounded-circle position-absolute" 
-													style="width: 30px; height: 30px; padding: 0; top: -10px; right: calc(50% - 80px); background: rgba(255,255,255,0.25); color: white; border: none;"
-													data-bs-toggle="modal" data-bs-target="#borderlandRulesModal">
-												<i class="bi bi-question-lg"></i>
-											</button>
-										</div>
-										<h4 class="card-title mb-3 text-white">弥留之国</h4>
-										<p class="card-text mb-2" style="color: rgba(255,255,255,0.9);">生存竞技模式</p>
-										<div class="mb-3" id="borderland-status">
-											<span class="badge" style="background: rgba(255,255,255,0.25); color: white;">未办理签证</span>
-										</div>
-										<p class="card-text small mb-4" style="color: rgba(255,255,255,0.8);">
-											获取40张随机卡组进行对战<br/>
-											赢家通吃，败者出局
-										</p>
-										<button class="btn btn-light btn-lg w-100 mt-auto shadow" style="color: #f5576c; font-weight: bold;" onclick="window.location.href='borderland.html'">进入弥留之国</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+        <!-- Tab内容区 -->
+        <div class="tab-content" id="mainTabsContent">
+          <!-- 匹配对战标签页 -->
+          <div
+            class="tab-pane fade show active"
+            id="battle-panel"
+            role="tabpanel"
+          >
+            <div class="mt-4 mb-5">
+              <div class="text-center">
+                <div class="row g-4 justify-content-center mb-5">
+                  <!-- 常规匹配 -->
+                  <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+                    <div
+                      class="card h-100 shadow-lg hover-card border-0"
+                      style="
+                        background: linear-gradient(
+                          135deg,
+                          #311b92 0%,
+                          #4527a0 100%
+                        );
+                        max-width: 400px;
+                        width: 100%;
+                      "
+                    >
+                      <div
+                        class="card-body text-center p-4 d-flex flex-column text-white"
+                      >
+                        <div class="mb-3">
+                          <i
+                            class="bi bi-trophy"
+                            style="font-size: 3rem; color: #ffd700"
+                          ></i>
+                        </div>
+                        <h4 class="card-title mb-3 text-white">常规匹配</h4>
+                        <p
+                          class="card-text mb-2"
+                          style="color: rgba(255, 255, 255, 0.9)"
+                        >
+                          与其他玩家进行天梯对战
+                        </p>
+                        <div class="mb-3">
+                          <span
+                            class="badge fs-6"
+                            style="
+                              background: rgba(255, 255, 255, 0.1);
+                              color: white;
+                            "
+                            >当前分数：<span id="user-rating">1000</span></span
+                          >
+                        </div>
+                        <p
+                          class="card-text small mb-4"
+                          style="color: rgba(255, 255, 255, 0.7)"
+                        >
+                          胜利可从对手身上夺取分数<br />
+                          分差越大，获得的分数越多
+                        </p>
+                        <button
+                          class="btn btn-outline-light btn-lg w-100 mt-auto shadow"
+                          onclick="websocket.send('joinRoom::normal');"
+                        >
+                          开始匹配
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-			<!-- 弥留之国规则说明模态框 -->
-			<div class="modal fade" id="borderlandRulesModal" tabindex="-1" aria-labelledby="borderlandRulesModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header bg-danger text-white">
-							<h5 class="modal-title" id="borderlandRulesModalLabel">
-								<i class="bi bi-exclamation-triangle me-2"></i>弥留之国规则
-							</h5>
-							<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							<h6 class="text-danger mb-3">🎮 游戏规则</h6>
-							<ul class="list-unstyled">
-								<li class="mb-2">📋 <strong>签证办理：</strong>首次进入时自动获得40张随机卡组和10天签证</li>
-								<li class="mb-2">⚔️ <strong>对战机制：</strong>使用随机卡组与其他玩家对战</li>
-								<li class="mb-2">🏆 <strong>胜者奖励：</strong>夺取败者的所有卡牌和剩余天数</li>
-								<li class="mb-2">💀 <strong>败者惩罚：</strong>失去签证，进入24小时惩罚期</li>
-								<li class="mb-2">🗑️ <strong>卡牌管理：</strong>可丢弃不需要的卡牌（不可恢复）</li>
-								<li class="mb-2">🎯 <strong>胜利条件：</strong>集齐54张不同的卡牌即可带出选定的卡牌</li>
-								<li class="mb-2">⏰ <strong>天数限制：</strong>签证到期后自动退出弥留之国</li>
-							</ul>
-							<div class="alert alert-warning mt-3">
-								<i class="bi bi-exclamation-circle me-2"></i>
-								<strong>注意：</strong>这是一个高风险高回报的模式，败者将失去一切！
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-							<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="window.location.href='borderland.html'">
-								我已了解，进入弥留之国
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
+                  <!-- 弥留之国 -->
+                  <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+                    <div
+                      class="card h-100 shadow-lg hover-card border-0"
+                      style="
+                        background: linear-gradient(
+                          135deg,
+                          #880e4f 0%,
+                          #b71c1c 100%
+                        );
+                        max-width: 400px;
+                        width: 100%;
+                      "
+                    >
+                      <div
+                        class="card-body text-center p-4 d-flex flex-column text-white"
+                      >
+                        <div class="mb-3 position-relative">
+                          <i
+                            class="bi bi-exclamation-triangle"
+                            style="font-size: 3rem; color: #ffd700"
+                          ></i>
+                          <!-- 规则说明图标 -->
+                          <button
+                            type="button"
+                            class="btn btn-sm rounded-circle position-absolute"
+                            style="
+                              width: 30px;
+                              height: 30px;
+                              padding: 0;
+                              top: -10px;
+                              right: calc(50% - 80px);
+                              background: rgba(255, 255, 255, 0.25);
+                              color: white;
+                              border: none;
+                            "
+                            data-bs-toggle="modal"
+                            data-bs-target="#borderlandRulesModal"
+                          >
+                            <i class="bi bi-question-lg"></i>
+                          </button>
+                        </div>
+                        <h4 class="card-title mb-3 text-white">弥留之国</h4>
+                        <p
+                          class="card-text mb-2"
+                          style="color: rgba(255, 255, 255, 0.9)"
+                        >
+                          生存竞技模式
+                        </p>
+                        <div class="mb-3" id="borderland-status">
+                          <span
+                            class="badge"
+                            style="
+                              background: rgba(255, 255, 255, 0.25);
+                              color: white;
+                            "
+                            >未办理签证</span
+                          >
+                        </div>
+                        <p
+                          class="card-text small mb-4"
+                          style="color: rgba(255, 255, 255, 0.8)"
+                        >
+                          获取40张随机卡组进行对战<br />
+                          赢家通吃，败者出局
+                        </p>
+                        <button
+                          class="btn btn-light btn-lg w-100 mt-auto shadow"
+                          style="color: #f5576c; font-weight: bold"
+                          onclick="window.location.href='borderland.html'"
+                        >
+                          进入弥留之国
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-			<!-- 收藏标签页 -->
-			<div class="tab-pane fade" id="collection-panel" role="tabpanel">
-				<div class="mt-4">
-					<!-- 奥术之尘和一键分解区域 -->
-					<div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
-						<div class="d-flex align-items-center gap-3">
-							<div class="d-inline-block px-4 py-2 bg-white rounded-pill shadow-sm">
-								<span class="text-muted">奥术之尘：</span>
-								<strong class="text-warning fs-5" id="user-dust-count-collection">0</strong>
-								<span class="text-muted">🌟</span>
-							</div>
-						</div>
-						<button class="btn btn-warning" id="batch-disenchant-btn" onclick="batchDisenchantCards()">
-							<i class="bi bi-magic"></i> ✨ 一键分解所有多余卡牌
-						</button>
-					</div>
-					
-					<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-						<input type="text" class="form-control flex-grow-1" id="collection-search-input" placeholder="搜索卡牌名称、职业、关键词">
-						<select class="form-select" id="collection-type-filter" style="max-width: 200px;">
-							<option value="">全部类型</option>
-							<option value="随从">随从</option>
-							<option value="法术">法术</option>
-							<option value="护符">护符</option>
-							<option value="装备">装备</option>
-						</select>
-					</div>
-					<div class="row" id="collection-grid"></div>
-				</div>
-			</div>
+          <!-- 弥留之国规则说明模态框 -->
+          <div
+            class="modal fade"
+            id="borderlandRulesModal"
+            tabindex="-1"
+            aria-labelledby="borderlandRulesModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title" id="borderlandRulesModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i>弥留之国规则
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <h6 class="text-danger mb-3">🎮 游戏规则</h6>
+                  <ul class="list-unstyled">
+                    <li class="mb-2">
+                      📋
+                      <strong>签证办理：</strong
+                      >首次进入时自动获得40张随机卡组和10天签证
+                    </li>
+                    <li class="mb-2">
+                      ⚔️ <strong>对战机制：</strong>使用随机卡组与其他玩家对战
+                    </li>
+                    <li class="mb-2">
+                      🏆 <strong>胜者奖励：</strong>夺取败者的所有卡牌和剩余天数
+                    </li>
+                    <li class="mb-2">
+                      💀 <strong>败者惩罚：</strong>失去签证，进入24小时惩罚期
+                    </li>
+                    <li class="mb-2">
+                      🗑️
+                      <strong>卡牌管理：</strong>可丢弃不需要的卡牌（不可恢复）
+                    </li>
+                    <li class="mb-2">
+                      🎯
+                      <strong>胜利条件：</strong
+                      >集齐54张不同的卡牌即可带出选定的卡牌
+                    </li>
+                    <li class="mb-2">
+                      ⏰ <strong>天数限制：</strong>签证到期后自动退出弥留之国
+                    </li>
+                  </ul>
+                  <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong>注意：</strong
+                    >这是一个高风险高回报的模式，败者将失去一切！
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    关闭
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    onclick="window.location.href='borderland.html'"
+                  >
+                    我已了解，进入弥留之国
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-			<!-- 抽卡标签页（轮播图） -->
-			<div class="tab-pane fade" id="pack-panel" role="tabpanel">
-				<div class="mt-4">
-					<!-- 卡包轮播图 -->
-					<div id="packCarousel" class="carousel slide" data-bs-ride="false">
-						<div class="d-inline-block px-4 py-2 bg-light rounded-pill">
-							<span class="text-muted">当前抽奖券：</span>
-							<strong class="text-primary fs-5" id="user-ticket-count">0</strong>
-							<span class="text-muted">张</span>
-						</div>
-						<div class="carousel-indicators" id="pack-carousel-indicators"></div>
-						<div class="carousel-inner" id="pack-carousel-inner"></div>
-						<button class="carousel-control-prev" type="button" data-bs-target="#packCarousel" data-bs-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Previous</span>
-						</button>
-						<button class="carousel-control-next" type="button" data-bs-target="#packCarousel" data-bs-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Next</span>
-						</button>
-					</div>
-				</div>
-			</div>
+          <!-- 收藏标签页 -->
+          <div class="tab-pane fade" id="collection-panel" role="tabpanel">
+            <div class="mt-4">
+              <!-- 奥术之尘和一键分解区域 -->
+              <div
+                class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded"
+              >
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="d-inline-block px-4 py-2 bg-white rounded-pill shadow-sm"
+                  >
+                    <span class="text-muted">奥术之尘：</span>
+                    <strong
+                      class="text-warning fs-5"
+                      id="user-dust-count-collection"
+                      >0</strong
+                    >
+                    <span class="text-muted">🌟</span>
+                  </div>
+                </div>
+                <button
+                  class="btn btn-warning"
+                  id="batch-disenchant-btn"
+                  onclick="batchDisenchantCards()"
+                >
+                  <i class="bi bi-magic"></i> ✨ 一键分解所有多余卡牌
+                </button>
+              </div>
 
-			<!-- 卡组标签页 -->
-			<div class="tab-pane fade" id="deck-panel" role="tabpanel">
-				<div class="mt-4">
-					<div id="deck-grid" class="row g-3"></div>
-					<div id="deck-edit-view" class="d-none">
-						<div class="d-flex justify-content-between align-items-center mb-2">
-							<h4 id="deck-edit-title">编辑卡组</h4>
-							<div>
-								<button id="back-to-list-btn" class="btn btn-sm btn-outline-secondary me-2">
-									← 返回列表
-								</button>
-								<button id="save-deck-btn" class="btn btn-sm btn-primary me-2">💾 保存</button>
-								<button id="quick-edit-btn" class="btn btn-sm btn-outline-secondary me-2">快速编辑</button>
-								<button id="search-cards-btn" class="btn btn-sm btn-success">🔍 添加卡牌</button>
-							</div>
-						</div>
-						<!-- 紧凑统计条 -->
-						<div class="deck-meta mb-3">
-							<div class="deck-badges">
-								<span class="badge-count" title="卡牌数量">卡牌：<strong id="deck-count">0</strong></span>
-								<span class="badge-dust" title="合成消耗">尘：<strong id="deck-dust">0</strong></span>
-							</div>
-						</div>
-						<div id="card-gridview" class="card-grid"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <input
+                  type="text"
+                  class="form-control flex-grow-1"
+                  id="collection-search-input"
+                  placeholder="搜索卡牌名称、职业、关键词"
+                />
+                <select
+                  class="form-select"
+                  id="collection-type-filter"
+                  style="max-width: 200px"
+                >
+                  <option value="">全部类型</option>
+                  <option value="随从">随从</option>
+                  <option value="法术">法术</option>
+                  <option value="护符">护符</option>
+                  <option value="装备">装备</option>
+                </select>
+              </div>
+              <div class="row" id="collection-grid"></div>
+            </div>
+          </div>
+
+          <!-- 抽卡标签页（轮播图） -->
+          <div class="tab-pane fade" id="pack-panel" role="tabpanel">
+            <div class="mt-4">
+              <!-- 卡包轮播图 -->
+              <div
+                id="packCarousel"
+                class="carousel slide"
+                data-bs-ride="false"
+              >
+                <div class="d-inline-block px-4 py-2 bg-light rounded-pill">
+                  <span class="text-muted">当前抽奖券：</span>
+                  <strong class="text-primary fs-5" id="user-ticket-count"
+                    >0</strong
+                  >
+                  <span class="text-muted">张</span>
+                </div>
+                <div
+                  class="carousel-indicators"
+                  id="pack-carousel-indicators"
+                ></div>
+                <div class="carousel-inner" id="pack-carousel-inner"></div>
+                <button
+                  class="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#packCarousel"
+                  data-bs-slide="prev"
+                >
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button
+                  class="carousel-control-next"
+                  type="button"
+                  data-bs-target="#packCarousel"
+                  data-bs-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 卡组标签页 -->
+          <div class="tab-pane fade" id="deck-panel" role="tabpanel">
+            <div class="mt-4">
+              <div id="deck-grid" class="row g-3"></div>
+              <div id="deck-edit-view" class="d-none">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-2"
+                >
+                  <h4 id="deck-edit-title">编辑卡组</h4>
+                  <div>
+                    <button
+                      id="back-to-list-btn"
+                      class="btn btn-sm btn-outline-secondary me-2"
+                    >
+                      ← 返回列表
+                    </button>
+                    <button
+                      id="save-deck-btn"
+                      class="btn btn-sm btn-primary me-2"
+                    >
+                      💾 保存
+                    </button>
+                    <button
+                      id="quick-edit-btn"
+                      class="btn btn-sm btn-outline-secondary me-2"
+                    >
+                      快速编辑
+                    </button>
+                    <button
+                      id="search-cards-btn"
+                      class="btn btn-sm btn-success"
+                    >
+                      🔍 添加卡牌
+                    </button>
+                  </div>
+                </div>
+                <!-- 紧凑统计条 -->
+                <div class="deck-meta mb-3">
+                  <div class="deck-badges">
+                    <span class="badge-count" title="卡牌数量"
+                      >卡牌：<strong id="deck-count">0</strong></span
+                    >
+                    <span class="badge-dust" title="合成消耗"
+                      >尘：<strong id="deck-dust">0</strong></span
+                    >
+                  </div>
+                </div>
+                <div id="card-gridview" class="card-grid"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 社区标签页 -->
+          <div class="tab-pane fade" id="community-panel" role="tabpanel">
+            <div class="container-fluid p-0 h-100">
+              <div class="row g-0 h-100">
+                <!-- 左侧频道列表 -->
+                <div class="col-md-3 border-end bg-light d-flex flex-column" style="height: calc(100vh - 100px);">
+                  <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="m-0">频道列表</h5>
+                    <button class="btn btn-sm btn-primary" onclick="showCreateChannelModal()">
+                      <i class="bi bi-plus-lg"></i>
+                    </button>
+                  </div>
+                  <div class="list-group list-group-flush overflow-auto flex-grow-1" id="channel-list">
+                    <!-- 频道列表项将通过JS动态加载 -->
+                    <div class="text-center p-3 text-muted">加载中...</div>
+                  </div>
+                </div>
+                
+                <!-- 右侧内容区 -->
+                <div class="col-md-9 d-flex flex-column" style="height: calc(100vh - 100px);">
+                  <div id="community-content-area" class="flex-grow-1 overflow-hidden d-flex flex-column">
+                    <div class="h-100 d-flex align-items-center justify-content-center text-muted">
+                      <div class="text-center">
+                        <i class="bi bi-chat-square-text fs-1 mb-3"></i>
+                        <p>请选择一个频道开始浏览</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 卡牌工坊标签页 -->
+          <div class="tab-pane fade" id="workshop-panel" role="tabpanel">
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="workshop-submitted-tab" href="#">提交卡牌列表</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="workshop-implemented-tab" href="#">已实装卡牌</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="workshop-sort-select" style="width: auto;">
+                            <option value="newest">最新发布</option>
+                            <option value="likes">最多点赞</option>
+                        </select>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCardModal">
+                            <i class="bi bi-plus-lg"></i> 提交新卡牌
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row" id="workshop-card-list">
+                    <!-- Cards will be loaded here -->
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="pack-result-modal"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-xl" style="max-width: 60vw">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">抽卡结果</h4>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div
+              class="modal-body"
+              style="min-height: 550px; overflow: visible"
+            >
+              <div class="row" id="pack-result-grid"></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+              >
+                继续抽卡
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="deck-preset-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel1">选择预设卡组</h4>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              选择预设卡组
+              <p id="deck-preset"></p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                关闭
+              </button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <div
+        class="modal fade"
+        id="wait-room-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel2">匹配中</h4>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p id="roomCode" class="tiktok"></p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-danger"
+                data-bs-dismiss="modal"
+                onclick="websocket.send('leave');"
+              >
+                取消
+              </button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <div
+        class="modal fade"
+        id="card-search-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="cardSearchModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="cardSearchModalLabel">卡牌搜索</h4>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row mb-3">
+                <div class="col-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="card-search-name"
+                    placeholder="卡牌名称或类型"
+                  />
+                </div>
+                <div class="col-4">
+                  <select class="form-select" id="card-search-cost">
+                    <option value="">所有费用</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7+</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="searchCards()"
+                  >
+                    搜索
+                  </button>
+                </div>
+              </div>
+              <div class="row" id="search-results"></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                关闭
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="swap-card-modal"
+        tabindex="-1"
+        role="dialog"
+        data-bs-backdrop="static"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel3">换牌</h4>
+            </div>
+            <div class="modal-body">
+              选择任意张牌交换：<br /><br />
+              <div class="row" id="swap-card"></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                id="swap-confirm"
+                type="button"
+                class="btn btn-primary"
+                onclick="swap()"
+              >
+                确认选择
+              </button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <div
+        class="modal fade"
+        id="senjou-modal"
+        tabindex="-1"
+        role="dialog"
+        data-bs-backdrop="static"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-fullscreen">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel4"></h4>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onclick="websocket.send('leave');"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="board">
+                <div class="enemy">
+                  <div class="hero" id="enemy-hero"></div>
+                  <div class="enemy-hand row" id="enemy-hand"></div>
+                  <div class="battlefield row" id="enemy-battlefield"></div>
+                </div>
+                <div class="right-panel">
+                  <div class="pp-num enemy-pp-num">0/0</div>
+                  <div id="enemy-info-detail"></div>
+                  <div id="enemy-info"></div>
+                  <div
+                    class="end-button"
+                    onclick="endTurn();"
+                    disabled="disabled"
+                  >
+                    对方<br />回合
+                  </div>
+                  <div id="my-info"></div>
+                  <div id="my-info-detail"></div>
+                  <div class="pp-num my-pp-num">0/0</div>
+                </div>
+                <div class="player">
+                  <div class="battlefield row" id="my-battlefield"></div>
+                  <div class="hand row" id="my-hand"></div>
+                  <div class="hero" id="my-hero"></div>
+                </div>
+
+                <div id="msg-log-div" style="display: none"></div>
+                <button
+                  type="button"
+                  id="msg-log"
+                  class="btn btn-sm btn-secondary"
+                  onclick="showMsg();"
+                >
+                  日志
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <div
+        class="modal fade"
+        id="discover-card-modal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel5">发现</h4>
+            </div>
+            <div class="modal-body">
+              发现一张卡牌：<br /><br />
+              <div class="row" id="discover-card"></div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <!-- 主战者状态/效果弹窗 -->
+      <div
+        class="modal fade"
+        id="leader-status-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="leaderStatusLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="leaderStatusLabel">
+                主战者状态与效果
+              </h4>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div id="leader-status-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pack Opening Overlay (Full Screen) -->
+      <div
+        id="pack-opening-overlay"
+        class="d-none"
+        style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.95);
+          z-index: 10000;
+          overflow-y: auto;
+        "
+      >
+        <div
+          class="container h-100 d-flex flex-column justify-content-center align-items-center"
+        >
+          <h2
+            class="text-white mb-5"
+            style="font-size: 3rem; text-shadow: 0 0 20px #ffd700"
+          >
+            获得卡牌
+          </h2>
+          <div
+            id="pack-result-grid"
+            class="d-flex flex-wrap justify-content-center gap-4"
+            style="perspective: 1000px"
+          >
+            <!-- Cards will be injected here -->
+          </div>
+          <button
+            class="btn btn-outline-light btn-lg mt-5 px-5 rounded-pill"
+            onclick="document.getElementById('pack-opening-overlay').classList.add('d-none')"
+          >
+            收下卡牌
+          </button>
+        </div>
+      </div>
+
+      <!-- 创建卡组对话框 -->
+      <div class="modal fade" id="createDeckModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">创建新卡组</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="deck-name-input" class="form-label">卡组名称</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="deck-name-input"
+                  placeholder="输入卡组名称"
+                  maxlength="50"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="confirm-create-btn"
+              >
+                创建
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 重命名对话框 -->
+      <div class="modal fade" id="renameDeckModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">重命名卡组</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="rename-input" class="form-label">新名称</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="rename-input"
+                  maxlength="50"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="confirm-rename-btn"
+              >
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡牌搜索对话框 -->
+      <div class="modal fade" id="card-search-modal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">搜索卡牌</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row mb-3">
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="card-search-name"
+                    placeholder="卡牌名称"
+                  />
+                </div>
+                <div class="col-md-2">
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="card-search-cost"
+                    placeholder="费用"
+                    min="0"
+                    max="20"
+                  />
+                </div>
+                <div class="col-md-2">
+                  <button class="btn btn-primary w-100" id="do-search-btn">
+                    搜索
+                  </button>
+                </div>
+              </div>
+              <div id="search-results" class="card-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 快速编辑对话框 -->
+      <div class="modal fade" id="quick-edit-modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">快速编辑卡组</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">卡牌名称（使用 # 分隔）</label>
+                <textarea
+                  class="form-control"
+                  id="quick-edit-textarea"
+                  rows="10"
+                  placeholder="例如: 火球术#寒冰箭#小精灵"
+                ></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="confirm-quick-edit-btn"
+              >
+                应用
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">快速编辑卡组</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">卡牌名称（使用 # 分隔）</label>
+                <textarea
+                  class="form-control"
+                  id="quick-edit-textarea"
+                  rows="10"
+                  placeholder="例如: 火球术#寒冰箭#小精灵"
+                ></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="confirm-quick-edit-btn"
+              >
+                应用
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 社区面板 -->
+      <div
+        class="tab-pane fade"
+        id="community-panel"
+        role="tabpanel"
+        aria-labelledby="community-tab"
+      >
+        <div class="row mt-3 h-100">
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>频道列表</span>
+                        <button class="btn btn-sm btn-primary" onclick="showCreateChannelModal()">+</button>
+                    </div>
+                    <div class="card-body p-0" style="overflow-y: auto; max-height: 80vh;">
+                        <div class="list-group list-group-flush" id="channel-list">
+                            <!-- Channels will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="community-content-area" class="h-100">
+                    <!-- Post list or Post detail will be loaded here -->
+                    <div class="text-center mt-5 text-muted">请选择一个频道</div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Tab Content -->
+
+    <!-- Community Modals -->
+    <div class="modal fade" id="create-channel-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">创建频道</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">频道名称</label>
+                        <input type="text" class="form-control" id="new-channel-name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">描述</label>
+                        <textarea class="form-control" id="new-channel-desc"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">类型</label>
+                        <select class="form-select" id="new-channel-type">
+                            <option value="PRIVATE">私人频道</option>
+                            <option value="PUBLIC">公共频道 (仅管理员)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createChannel()">创建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="create-post-modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">发布帖子</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">标题</label>
+                        <input type="text" class="form-control" id="new-post-title">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">内容</label>
+                        <textarea class="form-control" id="new-post-content" rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createPost()">发布</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ban-user-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">禁言用户</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="ban-user-id">
+                    <input type="hidden" id="ban-channel-id">
+                    <div class="mb-3">
+                        <label class="form-label">时长</label>
+                        <select class="form-select" id="ban-duration">
+                            <option value="1">1小时</option>
+                            <option value="2">1天</option>
+                            <option value="3">1周</option>
+                            <option value="4">1个月</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmBanUser()">禁言</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </main>
+
+    <script src="js/common/utils.js"></script>
+    <script src="js/common/unified-modal.js"></script>
+    <script src="js/common/auth-interceptor.js"></script>
+    <script src="js/common/request.js"></script>
+    
+    <script src="js/components/card.js"></script>
+    <script src="js/components/leader-status.js"></script>
+    <script src="js/components/context-menu.js"></script>
+    <script src="js/components/pack-animation.js"></script>
+    <script src="js/components/social.js"></script>
+    <script src="js/components/community.js"></script>
+    <!-- Workshop Modals -->
+    <div class="modal fade" id="createCardModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">提交新卡牌</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-card-form">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">卡牌名称</label>
+                                <input type="text" class="form-control" id="ws-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">职业</label>
+                                <input class="form-control" list="job-options" id="ws-job" placeholder="选择或输入职业">
+                                <datalist id="job-options">
+                                    <option value="中立">中立</option>
+                                    <option value="精灵">精灵</option>
+                                    <option value="皇家">皇家</option>
+                                    <option value="巫师">巫师</option>
+                                    <option value="龙族">龙族</option>
+                                    <option value="死灵">死灵</option>
+                                    <option value="吸血鬼">吸血鬼</option>
+                                    <option value="主教">主教</option>
+                                    <option value="复仇者">复仇者</option>
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">类型</label>
+                                <select class="form-select" id="ws-type" onchange="updateWorkshopFormStats()">
+                                    <option value="FOLLOWER">随从</option>
+                                    <option value="SPELL">法术</option>
+                                    <option value="AMULET">护符</option>
+                                    <option value="EQUIPMENT">装备</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">种族</label>
+                                <input type="text" class="form-control" id="ws-race" placeholder="例如：指挥官、机械">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label">费用</label>
+                                <input type="number" class="form-control" id="ws-cost" value="1" min="0">
+                            </div>
+                            <!-- Dynamic Stats -->
+                            <div class="col-md-3 stat-field" id="field-attack">
+                                <label class="form-label">攻击力</label>
+                                <input type="number" class="form-control" id="ws-attack" value="1" min="0">
+                            </div>
+                            <div class="col-md-3 stat-field" id="field-health">
+                                <label class="form-label">生命值</label>
+                                <input type="number" class="form-control" id="ws-health" value="1" min="1">
+                            </div>
+                            <div class="col-md-3 stat-field d-none" id="field-countdown">
+                                <label class="form-label">倒计时/耐久</label>
+                                <input type="number" class="form-control" id="ws-countdown" value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">卡牌描述</label>
+                            <textarea class="form-control" id="ws-desc" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="submitWorkshopCard()">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade workshop-detail-modal" id="workshopDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">卡牌详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5 text-center mb-3" id="workshop-detail-preview">
+                            <!-- Preview Card will be rendered here -->
+                        </div>
+                        <div class="col-md-7">
+                            <div class="mb-3">
+                                <h6 id="workshop-detail-title" class="mb-2"></h6>
+                                <small class="text-muted">提交者：<span id="workshop-detail-author"></span></small>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mb-4">
+                                <button class="btn btn-outline-primary" id="workshop-vote-btn">
+                                    <i class="bi bi-hand-thumbs-up"></i> 点赞
+                                </button>
+                                <span class="align-self-center text-muted"><span id="workshop-detail-likes">0</span> 人点赞</span>
+                                
+                                <button class="btn btn-success ms-auto d-none" id="workshop-implement-btn">
+                                    <i class="bi bi-check-circle"></i> 实装
+                                </button>
+                            </div>
+
+                            <h6>评论</h6>
+                            <div class="workshop-comment-list mb-3" id="workshop-comment-list">
+                                <!-- Comments -->
+                            </div>
+                            
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="workshop-comment-input" placeholder="写下你的评论...">
+                                <button class="btn btn-outline-secondary" type="button" id="workshop-comment-submit">发送</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-	<div class="modal fade" id="pack-result-modal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-xl" style="max-width: 60vw;">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">抽卡结果</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body" style="min-height: 550px; overflow: visible;">
-					<div class="row" id="pack-result-grid"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">继续抽卡</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <script src="js/pages/game.js"></script>
+    <script src="js/pages/collection.js"></script>
+    <script src="js/pages/deck-manager.js"></script>
+    <script src="js/pages/borderland.js"></script>
 
- 
-	<div class="modal fade" id="deck-preset-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel1">选择预设卡组</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">选择预设卡组
-					<p id="deck-preset"></p></div>
-					<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div>
-
-	<div class="modal fade" id="wait-room-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel2">匹配中</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<p id="roomCode" class="tiktok"></p></div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="websocket.send('leave');">取消</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div>
-
-	<div class="modal fade" id="card-search-modal" tabindex="-1" role="dialog" aria-labelledby="cardSearchModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="cardSearchModalLabel">卡牌搜索</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="row mb-3">
-						<div class="col-8">
-							<input type="text" class="form-control" id="card-search-name" placeholder="卡牌名称或类型">
-						</div>
-						<div class="col-4">
-							<select class="form-select" id="card-search-cost">
-								<option value="">所有费用</option>
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="6">6</option>
-								<option value="7">7+</option>
-							</select>
-						</div>
-						<div class="col">
-							<button type="button" class="btn btn-primary" onclick="searchCards()">搜索</button>
-						</div>
-					</div>
-					<div class="row" id="search-results"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="modal fade"  id="swap-card-modal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel3">换牌</h4>
-				</div>
-				<div class="modal-body">选择任意张牌交换：<br/><br/>
-					<div class="row" id="swap-card"></div></div>
-				<div class="modal-footer">
-					<button id="swap-confirm" type="button" class="btn btn-primary" onclick="swap()">确认选择</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div>
-
-	<div class="modal fade"  id="senjou-modal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-fullscreen">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel4"></h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="websocket.send('leave');"></button>
-				</div>
-				<div class="modal-body">
-					<div class="board">
-						<div class="enemy">
-							<div class="hero" id="enemy-hero"></div>
-							<div class="enemy-hand row" id="enemy-hand"></div>
-							<div class="battlefield row" id="enemy-battlefield"></div>
-						</div>
-						<div class="right-panel">
-							<div class="pp-num enemy-pp-num">0/0</div>
-							<div id="enemy-info-detail"></div>
-							<div id="enemy-info"></div>
-							<div class="end-button" onclick="endTurn();" disabled="disabled">对方<br/>回合</div>
-							<div id="my-info"></div>
-							<div id="my-info-detail"></div>
-							<div class="pp-num my-pp-num">0/0</div>
-						</div>
-						<div class="player">
-							<div class="battlefield row" id="my-battlefield"></div>
-							<div class="hand row" id="my-hand"></div>
-							<div class="hero" id="my-hero"></div>
-						</div>
-
-						<div id="msg-log-div" style="display: none;"></div>
-						<button type="button" id="msg-log" class="btn btn-sm btn-secondary" onclick="showMsg();">日志</button>
-
-					  </div>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div>
-
-	<div class="modal fade"  id="discover-card-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel5">发现</h4>
-				</div>
-				<div class="modal-body">发现一张卡牌：<br/><br/>
-					<div class="row" id="discover-card"></div></div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div>
-
-	<!-- 主战者状态/效果弹窗 -->
-	<div class="modal fade" id="leader-status-modal" tabindex="-1" role="dialog" aria-labelledby="leaderStatusLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="leaderStatusLabel">主战者状态与效果</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div id="leader-status-list"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- 创建卡组对话框 -->
-	<div class="modal fade" id="createDeckModal" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">创建新卡组</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<div class="mb-3">
-						<label for="deck-name-input" class="form-label">卡组名称</label>
-						<input type="text" class="form-control" id="deck-name-input" placeholder="输入卡组名称" maxlength="50">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" id="confirm-create-btn">创建</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- 重命名对话框 -->
-	<div class="modal fade" id="renameDeckModal" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">重命名卡组</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<div class="mb-3">
-						<label for="rename-input" class="form-label">新名称</label>
-						<input type="text" class="form-control" id="rename-input" maxlength="50">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" id="confirm-rename-btn">确定</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- 卡牌搜索对话框 -->
-	<div class="modal fade" id="card-search-modal" tabindex="-1">
-		<div class="modal-dialog modal-xl">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">搜索卡牌</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<div class="row mb-3">
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="card-search-name" placeholder="卡牌名称">
-						</div>
-						<div class="col-md-2">
-							<input type="number" class="form-control" id="card-search-cost" placeholder="费用" min="0" max="20">
-						</div>
-						<div class="col-md-2">
-							<button class="btn btn-primary w-100" id="do-search-btn">搜索</button>
-						</div>
-					</div>
-					<div id="search-results" class="card-grid"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- 快速编辑对话框 -->
-	<div class="modal fade" id="quick-edit-modal" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">快速编辑卡组</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<div class="mb-3">
-						<label class="form-label">卡牌名称（使用 # 分隔）</label>
-						<textarea class="form-control" id="quick-edit-textarea" rows="10" placeholder="例如: 火球术#寒冰箭#小精灵"></textarea>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" id="confirm-quick-edit-btn">应用</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	</main>
-
-	<script src="js/common/utils.js"></script>
-	<script src="js/common/auth-interceptor.js"></script>
-	<script src="js/components/card.js"></script>
-	<script src="js/components/leader-status.js"></script>
-	<script src="js/components/context-menu.js"></script>
-	<script src="js/components/pack-animation.js"></script>
-	<script src="js/pages/game.js"></script>
-	<script src="js/pages/collection.js"></script>
-	<script src="js/pages/deck-manager.js"></script>
-</body>
+    <script src="js/workshop.js"></script>
+  </body>
 </html>

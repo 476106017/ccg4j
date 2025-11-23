@@ -20,10 +20,10 @@ import java.util.Map;
 @RequestMapping("/api/borderland")
 @RequiredArgsConstructor
 public class BorderlandController {
-    
+
     private final BorderlandService borderlandService;
     private final UserAccountService userAccountService;
-    
+
     /**
      * 获取签证状态
      */
@@ -31,14 +31,14 @@ public class BorderlandController {
     public ResponseEntity<?> getVisaStatus(HttpSession session) {
         UserAccount user = requireUser(session);
         BorderlandVisa visa = borderlandService.getVisaStatus(user.getId());
-        
+
         if (visa == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(Map.of());
         }
-        
+
         return ResponseEntity.ok(visa);
     }
-    
+
     /**
      * 办理签证
      */
@@ -51,10 +51,10 @@ public class BorderlandController {
         } catch (Exception e) {
             log.error("办理签证失败", e);
             return ResponseEntity.badRequest()
-                .body(Map.of("message", e.getMessage()));
+                    .body(Map.of("message", e.getMessage()));
         }
     }
-    
+
     /**
      * 丢弃卡牌
      */
@@ -70,10 +70,10 @@ public class BorderlandController {
         } catch (Exception e) {
             log.error("丢弃卡牌失败", e);
             return ResponseEntity.badRequest()
-                .body(Map.of("message", e.getMessage()));
+                    .body(Map.of("message", e.getMessage()));
         }
     }
-    
+
     /**
      * 带出卡牌
      */
@@ -89,10 +89,10 @@ public class BorderlandController {
         } catch (Exception e) {
             log.error("带出卡牌失败", e);
             return ResponseEntity.badRequest()
-                .body(Map.of("message", e.getMessage()));
+                    .body(Map.of("message", e.getMessage()));
         }
     }
-    
+
     private UserAccount requireUser(HttpSession session) {
         Long userId = (Long) session.getAttribute(SessionConstants.SESSION_USER_ID);
         if (userId == null) {

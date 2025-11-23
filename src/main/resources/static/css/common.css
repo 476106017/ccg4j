@@ -1,221 +1,473 @@
 ﻿.container {
-    width: 100%; /* 宽度可以根据需要进行调�?*/
-    max-width: 1200px; /* 可选：设置最大宽度，以确保容器不会太�?*/
-    margin: 0 auto; /* 使容器居中对�?*/
-    padding: 20px; /* 可选：设置内边距以增加内容和容器之间的空白 */
-    border: 1px solid #ccc; /* 可选：添加边框样式 */
-    box-sizing: border-box; /* �?padding �?border 计算在内，避免盒模型的问�?*/
+    width: 100%;
+    max-width: 1400px; /* Increased max-width for better board view */
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
   }
 
+  /* 
+   * Card Base Styling 
+   */
   .card {
     position: relative;
-    width: var(--card-width, 220px) !important;
-    height: var(--card-height, 356px) !important;
-    margin: 20px;
-    padding: 0; /* 确保没有内边距 */
-    border-radius: 10px;
-    border: var(--card-border, 1px solid #444);
-    box-shadow: var(--card-shadow, 0 4px 6px rgba(0,0,0,0.3));
-    background: var(--card-bg-gradient, #2a2a2a);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: var(--card-width, 180px) !important; /* Slightly smaller default for better fit */
+    height: var(--card-height, 280px) !important;
+    margin: 10px;
+    padding: 0;
+    border-radius: 12px;
+    /* Default border (Bronze/Common) */
+    border: 2px solid #8c7b75;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    background: #2a2a2a; /* Fallback */
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s ease;
+    transform-style: preserve-3d;
+    overflow: visible; /* Allow elements to pop out */
   }
 
-  .card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--card-hover-shadow, 0 8px 12px rgba(0,0,0,0.5));
-      z-index: 10;
-  }
-
+  /* Card Inner Container - for the art and content */
   .card .card-inner {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border-radius: 10px;
     overflow: hidden;
-    border-radius: inherit;
+    background: radial-gradient(circle at center, #4a4a4a 0%, #2a2a2a 100%);
+    z-index: 0;
   }
 
-  .card .image {
-
-    /* 卡图不再展示：隐藏图片元素，保留占位和兼容�?*/
-    display: none;
-    position: absolute;
-    left: -5px;
-    width: 100%;
-    height: 0%;
-    object-fit: contain;
-    transition: transform 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.2s ease-in-out;
-    overflow: hidden;
+  /* Hover Effect */
+  .card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+      z-index: 100;
   }
 
-	img .error  {
-    top: 30px;
-    left: 40px;
-    width: 10%;
-    height: 10%;
-	}
-
-  .card .type {
-    z-index: 2;
-    position: absolute;
-    top: 16px;
-    right: 10px;
-    font-size: 32px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.618);
-    text-shadow: 0 0 3px #000;
+  /* Mulligan Selection State */
+  .card.selected {
+      filter: grayscale(100%) brightness(0.6);
   }
-  .card .race {
-    z-index: 4;
-    position: absolute;
-    top: 30px;
-    right: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 0 3px #000;
+  .card.selected::before {
+      content: "X";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6rem;
+      color: rgba(255, 50, 50, 0.9);
+      z-index: 20;
+      pointer-events: none;
+      text-shadow: 0 0 10px #000;
+      font-family: sans-serif;
   }
 
+  /* 
+   * Card Text & Stats 
+   */
   .card .name {
     z-index: 5;
     position: absolute;
-    top: 5px;
-    right: 10px;
-    font-size: 20px;
+    top: 75%; /* Moved down as requested */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
+    font-size: clamp(0.75rem, 1.1rem, 1.1rem); /* Auto-scale for long names */
     font-weight: bold;
-    color: white;
-    text-shadow: -1px -1px 0 #0ff,
-                    1px 1px 0 #f00,
-                    0 0 3px #000;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Scale down font for really long names (>12 chars) */
+  .card .name:is([data-length="long"]) {
+    font-size: 0.9rem;
+  }
+  
+  /* On hover, allow name to overflow and display fully */
+  .card:hover .name {
+    z-index: 105; /* Higher than hover state z-index */
+    width: auto;
+    min-width: 90%;
+    max-width: 300px; /* Reasonable max width */
+    overflow: visible;
+    white-space: normal;
+    word-break: keep-all;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1.3;
+    font-size: 1.1rem; /* Reset to normal size on hover */
   }
 
-  .card .cost {
-    z-index: 5;
+  .card .type {
+    display: none; /* Hide type icon for cleaner look, or move it */
+  }
+  
+  .card .race {
+    z-index: 4;
     position: absolute;
-    top: 5px;
-    left: 5px;
+    bottom: 45px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #ccc;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.5);
+    padding: 2px 0;
+  }
+
+  /* Cost Crystal (Top Left) */
+  .card .cost {
+    z-index: 10;
+    position: absolute;
+    top: -12px; /* Overhang */
+    left: -12px; /* Overhang */
     width: 40px;
     height: 40px;
     color: #fff;
     border-radius: 50%;
-    font-size: 1.7rem;
-    text-shadow: 0px 0px 4px #000000;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
     text-align: center;
-    border: 2px solid #f0fff0;
-    background: radial-gradient(#adff2f, #2f4f4f9f);
-    transition: color 0.3s ease-in-out;
-  }
-  .card:hover .cost {
-    animation: blink 1s infinite;
-
+    line-height: 36px;
+    border: 2px solid #fff;
+    background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
   }
 
-  /* 手牌可用/不可用样�?*/
-  .card.can-play .cost{
-    /* 原有的亮绿色效果（更明显�?*/
-    background: radial-gradient(#7CFC00, #228B22);
-    border-color: #7CFC00;
-    color: #002200;
-    box-shadow: 0 0 12px #7CFC00;
-  }
-  .card.not-enough-pp .cost{
-    /* 灰色化显示，表示不足 */
-    background: linear-gradient(#e0e0e0, #a0a0a0);
-    border-color: #b0b0b0;
-    color: #666666;
-    filter: grayscale(80%);
-    box-shadow: none;
-  }
-  .card.not-enough-pp .card-inner{
-    /* 不可用卡片的内容区域半透明，但保留稀有度背景 */
-    opacity: 0.6;
-  }
-  .card.not-enough-pp .cost{
-    /* 费用圈不透明，保持清晰可见 */
-    opacity: 1 !important;
+  /* Attack (Bottom Left) */
+  .card .attack {
+    z-index: 10;
+    position: absolute;
+    bottom: -10px; /* Overhang */
+    left: -10px; /* Overhang */
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    text-align: center;
+    line-height: 32px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: radial-gradient(circle at 30% 30%, #ff9a9e, #fecfef); /* Pinkish/Yellow for attack */
+    background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00); /* Gold/Orange */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    font-weight: bold;
   }
 
-@keyframes blink {
-    0% {
-      color: #f00;
-    }
-    50% {
-      color: #fcc;
-    }
-    100% {
-      color: #f00;
-    }
+  /* Health (Bottom Right) */
+  .card .health {
+    z-index: 10;
+    position: absolute;
+    bottom: -10px; /* Overhang */
+    right: -10px; /* Overhang */
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    text-align: center;
+    line-height: 32px; /* Center text vertically */
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #ee5253); /* Red */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    font-weight: bold;
+    display: flex; /* Ensure centering */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card .health-text {
+      /* Helper for centering if needed, but flex on parent handles it */
+      display: block; 
   }
 
+  /* Countdown Bubble (Amulets) */
+  .card .countDown {
+      z-index: 10;
+      position: absolute;
+      bottom: -10px; /* Overhang */
+      right: -10px; /* Overhang */
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      text-align: center;
+      line-height: 32px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); /* Blue for time */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  /* Equipment Stats */
+  .equipment-atk, .equipment-durability {
+      z-index: 10;
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      font-size: 1.1rem;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      text-align: center;
+      line-height: 28px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  
+  .equipment-atk {
+      bottom: -10px;
+      left: -10px;
+      background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00);
+  }
+  
+  .equipment-durability {
+      bottom: -10px;
+      right: -10px;
+      background: radial-gradient(circle at 30% 30%, #a8e063, #56ab2f); /* Greenish for durability */
+  }
+
+  /* Small Health Bar (Hidden by default or redesigned) */
+  .card .health-bar-small {
+    display: none; /* Hiding small bar for cleaner look, relying on number */
+  }
+
+  /* Description Text - Reverted to fill card */
+  .card .description {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align to top */
+    align-items: center;
+    position: absolute;
+    top: 40px; /* Start lower to clear cost crystal */
+    left: 4px;
+    right: 4px;
+    bottom: 35px; /* Extend lower, just above stats */
+    font-size: 0.9rem;
+    color: #fff;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,1);
+    overflow: hidden;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4); /* Dark background for the whole box */
+    border-radius: 6px;
+    padding: 4px;
+  }
+  
+  /* Keywords Row */
+  .card .keywords-row {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 2px;
+  }
+
+  .card .keyword-item {
+      display: inline-block;
+      font-weight: bold;
+      color: #ffd700; /* Gold for keywords */
+      margin: 0 2px;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+
+  .card .description p {
+      margin: 0;
+      line-height: 1.3;
+      width: 100%;
+      /* Removed individual p background */
+  }
+
+  /* Hover Overlay for Card Inner */
+  .card:hover .card-inner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black overlay */
+      z-index: 5; /* Above description but below tooltips */
+      pointer-events: none;
+      border-radius: 8px;
+  }
+
+  /* Tooltips Container */
+  .card-tooltips {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 110; /* Above hovered cards (z-index: 100) */
+      display: none;
+  }
+
+  .card:hover .card-tooltips {
+      display: block;
+  }
+
+  /* Keyword Tooltips (Left - Attributes) */
+  .keyword-tooltips-left {
+      position: absolute;
+      top: 50%;
+      left: -140px; /* Position to the left of the card */
+      transform: translateY(-50%);
+      width: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+  }
+
+  /* Keyword Tooltips (Right - Triggers) */
+  .keyword-tooltips-right {
+      position: absolute;
+      top: 50%;
+      right: -140px; /* Position to the right of the card */
+      transform: translateY(-50%);
+      width: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+  }
+
+  .tooltip-item {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      border: 1px solid #ffd700;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      text-align: left;
+  }
+
+  /* Race Badge */
+  .card .race-badge {
+      position: absolute;
+      bottom: 15px; /* Just above stats */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      color: #ccc;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      z-index: 6; /* Above hover overlay */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Job Badge - Top Right of Card */
+  .card .job-badge {
+      position: absolute;
+      top: 20px; /* Align with top of description box */
+      right: 8px;
+      font-size: 0.75rem;
+      color: #f0e68c; /* Distinct gold color */
+      font-weight: 600;
+      font-family: 'Georgia', serif; /* Distinct from race font */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+      z-index: 15; /* Above most elements but below cost */
+      letter-spacing: 0.5px;
+  }
+
+  /* 
+   * Rarity Styles 
+   */
+  /* Bronze (Common) */
+  .card.BRONZE {
+    border-color: #cd7f32;
+  }
+  
+  /* Silver (Rare) */
+  .card.SILVER {
+    border-color: #c0c0c0;
+    box-shadow: 0 0 10px rgba(192,192,192,0.4);
+  }
+  .card.SILVER .card-inner {
+      background: radial-gradient(circle at center, #5a5a5a 0%, #2a2a2a 100%);
+  }
+
+  /* Gold (Epic) */
+  .card.GOLD {
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+  .card.GOLD .card-inner {
+      background: radial-gradient(circle at center, #5a4a2a 0%, #2a2a2a 100%);
+  }
+
+  /* Legendary */
+  .card.LEGENDARY {
+    border-color: #ff4500;
+    box-shadow: 0 0 20px rgba(255, 69, 0, 0.6);
+    animation: legendary-pulse 3s infinite;
+  }
+  .card.LEGENDARY .card-inner {
+      background: radial-gradient(circle at center, #5a2a2a 0%, #2a2a2a 100%);
+  }
+  
+  /* Rainbow (Special) */
+  .card.RAINBOW {
+      border-color: transparent;
+      /* Use background gradient for the border effect */
+      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) !important;
+      background-size: 400%;
+      animation: rainbow-border 10s linear infinite;
+      z-index: 0;
+      overflow: visible; /* Allow border to show fully */
+  }
+  /* Remove pseudo-element */
+  .card.RAINBOW::after {
+      display: none;
+  }
+  /* Ensure stats are above the rainbow border */
+  .card.RAINBOW .cost,
+  .card.RAINBOW .attack,
+  .card.RAINBOW .health,
+  .card.RAINBOW .countDown,
+  .card.RAINBOW .equipment-atk,
+  .card.RAINBOW .equipment-durability {
+      z-index: 100;
+  }
+  @keyframes rainbow-border {
+      0% { background-position: 0 0; }
+      50% { background-position: 400% 0; }
+      100% { background-position: 0 0; }
+  }
+
+  /* 
+   * Animations 
+   */
+   
+  /* Tiktok Glitch Effect for Name on Hover */
   .card:hover .name {
     z-index: 9;
     animation: tiktok 1s infinite;
-    .card-use-animate {
-      animation: cardUseHover 1s ease-in-out;
-      z-index: 9999;
-      box-shadow: 0 0 40px 10px #ffd700;
-      transform: scale(1.15) translateY(-20px);
-    }
-
-    @keyframes cardUseHover {
-      0% {
-        box-shadow: 0 0 0 0 #ffd700;
-        transform: scale(1) translateY(0);
-      }
-      50% {
-        box-shadow: 0 0 40px 10px #ffd700;
-        transform: scale(1.15) translateY(-20px);
-      }
-      100% {
-        box-shadow: 0 0 0 0 #ffd700;
-        transform: scale(1) translateY(0);
-      }
-    }
-    /* 随从攻击时撞击动�?*/
-    .card-attack-animate {
-      animation: cardAttackMove 0.5s ease-in-out;
-      z-index: 9999;
-    }
-
-    @keyframes cardAttackMove {
-      0% {
-        transform: scale(1) translateX(0);
-      }
-      30% {
-        transform: scale(1.1) translateX(40px);
-      }
-      70% {
-        transform: scale(1.1) translateX(-20px);
-      }
-      100% {
-        transform: scale(1) translateX(0);
-      }
-    }
-
-    /* 受击抖动动画 */
-    .card-hit {
-      animation: cardHitShake 0.6s ease-in-out;
-      box-shadow: 0 0 10px 3px rgba(255,0,0,0.6);
-    }
-
-    @keyframes cardHitShake {
-      0% { transform: translateX(0); }
-      15% { transform: translateX(-6px) rotate(-3deg); }
-      30% { transform: translateX(6px) rotate(3deg); }
-      45% { transform: translateX(-4px) rotate(-2deg); }
-      60% { transform: translateX(4px) rotate(2deg); }
-      75% { transform: translateX(-2px) rotate(-1deg); }
-      100% { transform: translateX(0) rotate(0); }
-    }
-    transform: scale(1.5);
-    margin-right: 10px;
+    transform: translate(-50%, -50%) scale(1.3); /* Scale up but keep centered */
   }
-  .tiktok {
-    z-index: 9;
-    animation: tiktok 1s infinite;
-  }
-@keyframes tiktok {
+  
+  @keyframes tiktok {
     0% {
         text-shadow: -1px -1px 0 #0ff,
                     1px 1px 0 #f00 ;
@@ -237,568 +489,163 @@
                     1px 1px 0 #f00 ;
     }
   }
-
-  .card .countDown {
-    z-index: 5;
-    position: absolute;
-    bottom: 0px;
-    left: 80px;
-    width: 70px;
-    height: 30px;
-    font-size: 0.6rem;
-    color: #fff;
-    text-shadow: 0px 0px 3px #000080;
-    text-align: center;
-    border: 2px solid #ffffff;
-    background: linear-gradient(to bottom, #fffacd, #ffd700, #b8860b);
-    border: 1px solid #4b4b4b;
-    font-weight: bold;
-    line-height: 30px;
-  }
-
-
-  .card .attack {
-    z-index: 5;
-    position: absolute;
-    bottom: 5px;
-    left: 10px;
-    width: 30px;
-    height: 30px;
-    font-size: 1rem;
-    color: #f0ffff;
-    text-shadow: 0px 0px 2px #000080;
-    text-align: center;
-    border-radius: 50%;
-    border: 2px solid #f0ffff;
-    background: radial-gradient(#0000cd, #333333);
-    font-weight: bold;
-    line-height: 30px;
-  }
-
-  /* 抽卡结果 - 3D散开效果容器 */
-  #pack-result-grid.pack-result-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    position: relative;
-    width: 100%;
-    min-height: 700px;
-    perspective: 1200px;
-    perspective-origin: 50% 50%;
-  }
-  .pack-card-wrap {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 200px !important;
-    height: 280px !important;
-    margin-left: -100px;
-    margin-top: -140px;
-    transform-style: preserve-3d;
-    opacity: 0;
-    will-change: transform, opacity;
-    overflow: visible;
-    z-index: 1;
-  }
-  .pack-card-wrap:hover {
-    z-index: 9999 !important;
-  }
-  .pack-card-wrap .card {
-    width: 200px;
-    height: 280px;
-    cursor: pointer;
-    transform-style: preserve-3d;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  /* 悬停时卡片动画 - 抬起并放大 */
-  .pack-card-wrap .card:hover {
-    transform: translateY(-10px) scale(1.05) !important;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important;
-  }
-  .pack-card-wrap .card .cost,
-  .pack-card-wrap .card .type {
-    width: 30px;
-    height: 30px;
-    font-size: 0.9rem;
-    line-height: 30px;
-  }
-  .pack-card-wrap .card .name {
-    font-size: 1.05rem;
-    padding: 4px 10px;
-  }
-  .pack-card-wrap .card .description {
-    font-size: 14px;
-    padding: 7px;
-  }
-  .pack-card-wrap .card .atk,
-  .pack-card-wrap .card .health {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
-    line-height: 30px;
-  }
-
-
-    /* 生命值改为红色圆圈数字显示（右下角），替代之前的进度条样�?*/
-    .card .health {
-        z-index: 6;
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        width: 32px;
-        height: 32px;
-        background: radial-gradient(#ff4d4d, #8b0000);
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        box-shadow: 0 0 6px #800;
-        font-size: 14px;
-    }
-
-  /* 小型生命进度条，位于红圈左侧 */
-  .card .health-bar-small{
-    z-index: 6;
-    position: absolute;
-    bottom: 14px;
-    right: 48px; /* 在红圈左�?*/
-    width: 60px;
-    height: 8px;
-    background: #ddd;
-    border-radius: 6px;
-    overflow-y: auto; overflow-x: hidden;
-    box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
-  }
-  .card .health-bar-small .health-bar-inner-small{
-    height: 100%;
-    background: linear-gradient(to right, #ff4d4d, #8b0000);
-    width: 100%;
-    transition: width 0.3s ease-in-out;
-  }
-
-    .card .description {
-    display: flex;
-    position: absolute;
-    /* 占据去掉卡图后的主要空间：从顶端若干偏移到底部预留位�?*/
-    top: 60px;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    padding: 8px;
-    box-sizing: border-box;
-    font-size: 16px; /* 起始字体，后面会�?JS 根据溢出情况缩小 */
-    font-weight: bold;
-    color: #8b4513;
-    border-radius: 5%;
-    background: transparent;
-    transition: background 0.2s ease-in-out;
-    z-index: 1;
-    white-space: pre-line;
-    overflow: hidden;
-  align-items: flex-start;
-    }
-    
-    /* 给description内的文字添加半透明背景以保证可读性 */
-    .card .description p {
-      background: rgba(255, 255, 255, 0.7);
-      padding: 4px 6px;
-      border-radius: 4px;
-      margin: 0;
-    }
-
-    /* 稀有度样式 - 铜卡(默认) */
-    .card.BRONZE .description,
-    .card.BRONZE .mark {
-      background: linear-gradient(145deg, 
-        rgba(212, 197, 169, 0.7) 0%,
-        rgba(201, 185, 147, 0.7) 25%,
-        rgba(186, 165, 126, 0.7) 50%,
-        rgba(179, 152, 114, 0.7) 75%,
-        rgba(200, 180, 151, 0.7) 100%);
-      color: #000;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
-      box-shadow: inset 0 2px 5px rgba(212,197,169,0.5),
-                  inset 0 -2px 5px rgba(0,0,0,0.2);
-    }
-
-    /* 稀有度样式 - 银卡 */
-    .card.SILVER .description,
-    .card.SILVER .mark {
-      background: linear-gradient(to bottom, rgba(232, 232, 232, 0.7), rgba(192, 192, 192, 0.7), rgba(245, 245, 245, 0.7));
-      color: #4a4a4a;
-    }
-
-    /* 稀有度样式 - 金卡 */
-    .card.GOLD .description,
-    .card.GOLD .mark {
-      background: linear-gradient(to bottom, rgba(255, 215, 0, 0.7), rgba(255, 179, 71, 0.7), rgba(255, 248, 220, 0.7));
-      color: #8b4513;
-    }
-
-    /* 稀有度样式 - 彩虹卡 - 柔和炫彩透明感 */
-    .card.RAINBOW .description, .card.RAINBOW .mark {
-      background: 
-        linear-gradient(90deg,
-          rgba(255,182,193,0.85) 0%,     /* 浅粉 */
-          rgba(255,218,185,0.85) 10%,    /* 桃色 */
-          rgba(255,250,205,0.85) 20%,    /* 柠檬绸 */
-          rgba(240,255,240,0.85) 30%,    /* 蜜瓜色 */
-          rgba(224,255,255,0.85) 40%,    /* 浅青 */
-          rgba(230,230,250,0.85) 50%,    /* 淡紫 */
-          rgba(255,228,225,0.85) 60%,    /* 雾玫瑰 */
-          rgba(255,240,245,0.85) 70%,    /* 淡紫红 */
-          rgba(245,245,220,0.85) 80%,    /* 米黄 */
-          rgba(255,250,240,0.85) 90%,    /* 花白 */
-          rgba(255,182,193,0.85) 100%),  /* 回到浅粉 */
-        linear-gradient(135deg,
-          rgba(255,255,255,0.4) 0%,
-          rgba(255,255,255,0.1) 50%,
-          rgba(255,255,255,0.4) 100%);
-      background-size: 400% 100%, 100% 100%;
-      background-blend-mode: overlay;
-      color: #2a2a2a;
-      text-shadow: 0 0 8px rgba(255,255,255,0.9),
-                   0 0 15px rgba(255,255,255,0.6),
-                   1px 1px 3px rgba(255,255,255,0.8);
-      font-weight: bold;
-      animation: rainbow-gradient 5s linear infinite,
-                 rainbow-shimmer 3s ease-in-out infinite;
-      box-shadow: 0 0 25px rgba(255,255,255,0.6),
-                  0 0 40px rgba(200,180,255,0.4),
-                  inset 0 0 30px rgba(255,255,255,0.5),
-                  inset 0 0 60px rgba(255,240,255,0.3);
-      backdrop-filter: blur(1px);
-    }
-
-    @keyframes rainbow-gradient {
-      0% { background-position: 0% 50%, 0% 0%; }
-      100% { background-position: 400% 50%, 0% 0%; }
-    }
-
-    @keyframes rainbow-shimmer {
-      0%, 100% { 
-        box-shadow: 0 0 25px rgba(255,255,255,0.6),
-                    0 0 40px rgba(200,180,255,0.4),
-                    inset 0 0 30px rgba(255,255,255,0.5),
-                    inset 0 0 60px rgba(255,240,255,0.3);
+  
+  /* Draw Card Animation (Slide in) */
+  @keyframes drawCard {
+      from { 
+          transform: translate(-100%, 50%) scale(0.5) rotate(-20deg); 
+          opacity: 0; 
       }
-      33% { 
-        box-shadow: 0 0 30px rgba(255,200,220,0.7),
-                    0 0 50px rgba(180,200,255,0.5),
-                    inset 0 0 40px rgba(255,250,240,0.6),
-                    inset 0 0 70px rgba(240,255,255,0.4);
+      to { 
+          transform: translate(0, 0) scale(1) rotate(0deg); 
+          opacity: 1; 
       }
-      66% { 
-        box-shadow: 0 0 28px rgba(240,220,255,0.65),
-                    0 0 45px rgba(255,180,200,0.45),
-                    inset 0 0 35px rgba(255,240,250,0.55),
-                    inset 0 0 65px rgba(255,255,240,0.35);
-      }
-    }
+  }
+  .card.drawing {
+      animation: drawCard 0.5s ease-out forwards;
+  }
 
-    /* 稀有度样式 - 传说卡 - 红水晶效果 */
-    .card.LEGENDARY .description, .card.LEGENDARY .mark {
-      background: linear-gradient(135deg, 
-        #8b0000 0%,    /* 深红 */
-        #a50000 15%,   /* 暗红 */
-        #c00000 30%,   /* 红色 */
-        #dc143c 45%,   /* 猩红 */
-        #ff1744 60%,   /* 亮红 */
-        #ff4569 75%,   /* 粉红 */
-        #ff6b8a 90%,   /* 浅粉红 */
-        #ffb3c1 100%); /* 淡粉 */
-      background-size: 400% 400%;
-      color: #fff;
-      text-shadow: 0 0 5px rgba(220,20,60,1),
-                   0 0 10px rgba(200,0,0,0.8),
-                   0 0 15px rgba(139,0,0,0.6),
-                   1px 1px 3px rgba(0,0,0,0.9);
-      font-weight: bold;
-      animation: legendary-glow 4s ease-in-out infinite,
-                 legendary-shine-diagonal 6s linear infinite;
-      box-shadow: 0 0 20px rgba(220,20,60,0.8),
-                  0 0 35px rgba(200,0,0,0.6),
-                  inset 0 0 25px rgba(255,70,105,0.4),
-                  inset 0 2px 10px rgba(255,179,193,0.5);
-    }
+  /* Play Card Animation (Fly to board) */
+  @keyframes playCard {
+      0% { transform: scale(1); z-index: 1000; }
+      50% { transform: scale(1.5) translateY(-100px); z-index: 1000; box-shadow: 0 0 50px rgba(255,215,0,0.8); }
+      100% { transform: scale(1); z-index: 1; }
+  }
+  .card-use-animate {
+      animation: playCard 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
 
-    @keyframes legendary-glow {
-      0%, 100% { 
-        box-shadow: 0 0 20px rgba(220,20,60,0.8),
-                    0 0 35px rgba(200,0,0,0.6),
-                    inset 0 0 25px rgba(255,70,105,0.4),
-                    inset 0 2px 10px rgba(255,179,193,0.5);
-      }
-      50% { 
-        box-shadow: 0 0 30px rgba(220,20,60,1),
-                    0 0 50px rgba(200,0,0,0.8),
-                    0 0 70px rgba(255,23,68,0.4),
-                    inset 0 0 35px rgba(255,70,105,0.6),
-                    inset 0 2px 15px rgba(255,179,193,0.7);
-      }
-    }
+  /* Attack Animation (Slam) */
+  @keyframes attackSlam {
+      0% { transform: scale(1) translateZ(0); }
+      40% { transform: scale(1.2) translateZ(50px) translateY(-30px); } /* Wind up */
+      60% { transform: scale(1.1) translateZ(20px) translateY(20px); } /* Slam */
+      100% { transform: scale(1) translateZ(0); }
+  }
+  .card-attack-animate {
+      animation: attackSlam 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+  }
 
-    @keyframes legendary-shine-diagonal {
-      0% { background-position: 400% 400%; }
-      100% { background-position: -100% -100%; }
-    }
-
-    @keyframes legendary-pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.008); }
-    }
-
-    /* 移除描述�?hover 放大/展开效果（按用户要求不再�?hover 特效�?*/
-
-    .card .description p {
-      margin: 5px;
-      text-align: left;
-      line-height: 1.2;
-    }
-
-    .job {
-      z-index: 5;
-      display: inline-block;
+  /* Hit/Damage Shake */
+  @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }
+  .card-hit {
+      animation: shake 0.5s;
+      box-shadow: 0 0 20px rgba(255,0,0,0.8);
+  }
+  .card-hit::after {
+      content: '';
       position: absolute;
-      bottom: 26px; /* 放在血条上方一点（血条14px + 8px高度 + 4px间隔）*/
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.6rem;
-      color: #8b4513;
-      text-align: center;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,0,0,0.3);
+      border-radius: 12px;
+      animation: flash-red 0.5s;
+  }
+  @keyframes flash-red {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+  }
+
+  /* 
+   * Utility Classes 
+   */
+  .keyword {
+    color: #ffd700;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+  }
+
+  .countDown {
+    z-index: 5;
+    position: absolute;
+    bottom: 12px;
+    right: 50px; /* Next to health */
+    transform: none;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    color: #fff;
+    text-align: center;
+    border: 2px solid #fff;
+    background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); /* Blue bubble */
+    border-radius: 50%;
+    line-height: 28px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  }
+
+  /* Not enough PP state */
+  .card.not-enough-pp {
+      filter: grayscale(0.8) brightness(0.7);
+      cursor: not-allowed;
+  }
+  .card.not-enough-pp:hover {
+      transform: none;
+      box-shadow: none;
+  }
+
+  /* Dragging state */
+  .card.dragging {
+      opacity: 0.8;
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      cursor: grabbing;
+  }
+
+  /* Possible Target Highlight */
+  .possible-target {
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.6) !important;
+      border-color: #ff4500 !important;
+      animation: target-pulse 1s infinite;
+  }
+  @keyframes target-pulse {
+      0% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
+      50% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.9); }
+      100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
+  }
+
+  /* Leader Health (in info panel) */
+  .leader-health {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ff6b6b, #ee5253);
+      color: #fff;
       font-weight: bold;
-      background-color: white;
-      border: 1px solid #8b4513;
-      border-radius: 3px;
-      padding: 1px 3px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-      white-space: nowrap;
-    }
+      margin-left: 8px;
+      font-size: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      border: 2px solid #fff;
+  }
 
-/* 拖拽态样式：被拖动的卡牌微透明 */
-.card.dragging{
-  opacity: 0.6;
-  transform: scale(0.98);
-}
-
-/* 可选目标高亮（拖动时使用） */
-.possible-target{
-  box-shadow: 0 0 16px 4px rgba(255,215,0,0.9) !important;
-  border: 2px solid rgba(255,215,0,0.9) !important;
-  transform: translateZ(0);
-}
-
-/* 领导者生命（卡组信息区域）的小红�?*/
-.leader-health{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  background: radial-gradient(#ff4d4d, #900);
-  color: #fff;
-  font-weight:bold;
-  margin-left:6px;
-  font-size:14px;
-}
-
-/* PP 宝石显示 */
-.pp-gems{
-  display:flex;
-  flex-direction: column;
-  gap:2px;
-  align-items:center;
-  width: 100%;
-}
-
-/* 我方PP从上往下 */
-.pp-gems-player {
-  flex-direction: column;
-}
-
-/* 敌方PP从下往上 */
-.pp-gems-enemy {
-  flex-direction: column-reverse;
-}
-
-.pp-gems-row {
-  display: flex;
-  gap: 2px;
-  justify-content: center;
-}
-
-.pp-gems .gem{
-  font-size:18px;
-  line-height:1;
-}
-.pp-gems .gem.used{
-  opacity: 0.7;
-  filter: grayscale(100%);
-}
-
-    .keyword {
-      color: #8b0000;
-      text-shadow: 0px 0px 1px #500000;
-    }
-
-
-    .health-bar {
-        z-index: 5;
-        width: 120px;
-        height: 20px;
-        background-color: #333333;
-        border-radius: 10px;
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        overflow: hidden;
-      }
-
-      .health-bar-inner {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, #f00, #8b0000, #dc143c);
-        transition: width 0.3s ease-in-out;
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-
-      .health-bar-text {
-        color: white;
-        text-align: center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        text-shadow: 0px 0px 3px #600;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 12px;
-      }
-
-      .health-bar:hover .health-bar-inner {
-        width: 100%;
-        background-color: #c0392b;
-      }
-
-      .health-bar:hover .health-bar-text {
-        font-size: 14px;
-        transform: scale(1.2);
-      }
-
-.mny-alert-position{
-  position:absolute;
-  float: left;
-  top:5%;
-  left:50%;
-  width: 62%;
-  /*margin-left: -81px;*/
-  z-index: 999999;
-  opacity: 0.618;
-}
-.upgrade{
-  color: #3F3 !important;
-}
-
-.selected{
-  border: 1px solid #f00;
-  box-shadow: 0 0 20px #f00;
-  text-shadow: 0 0 3px #f00;
-}
-
-.selected .name{
-  color: #000;
-}
-.selected .cost{
-  color: #000;
-}
-.selected .description{
-  color: #000;
-}
-
-
-#swap-card .card{
-  margin: 5px;
-}
-/* 卡牌左右提示框（关键�?/ 触发器） */
-.card-tooltip-left, .card-tooltip-right{
-  position: absolute; /* 相对于容器定�?*/
-  width: max-content;
-  max-width: 240px;
-  background: rgba(0,0,0,0.95);
-  color: #fff;
-  padding: 8px 10px;
-  pointer-events: none; /* 防止tooltip挡住鼠标事件 */
-  border-radius: 6px;
-  font-size: 13px;
-  line-height: 1.3;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6), 0 0 1px #fff;
-  z-index: 999999; /* 提高 z-index */
-  pointer-events: none;
-  display: none;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.card-tooltip-left{
-  margin-right: 10px; /* 改用 margin 控制间距 */
-  text-align: left;
-}
-.card-tooltip-right{
-  margin-left: 10px; /* 改用 margin 控制间距 */
-  text-align: left;
-}
-.card .keyword-inline{
-  display:block;
-  margin-bottom:6px;
-}
-.card-tooltip-title{
-  font-weight:700;
-  margin-bottom:6px;
-  color:#ffd700;
-}
-.collection-card{
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-.collection-card:hover{
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-}
-.collection-card.owned{
-  filter: none;
-  opacity: 1;
-}
-.collection-card.missing{
-  filter: grayscale(1);
-  opacity: 0.35;
-}
-.collection-card .badge{
-  font-size: 0.75rem;
-}
-.pack-card{
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-.pack-card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.auth-body {
-  background: #f4f6f9;
-}
-.auth-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 15px;
-}
+  /* Auth pages background */
+  .auth-body {
+      background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+      min-height: 100vh;
+  }
+  .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 15px;
+  }
 .auth-card {
   width: 100%;
   max-width: 420px;
@@ -1219,12 +1066,10 @@
   box-shadow: 0 0 35px rgba(0, 0, 0, 0.7);
   animation: rainbow-shine 3s ease-in-out infinite;
   position: relative;
-  overflow: hidden;
 }
 .card.LEGENDARY {
   animation: legendary-pulse 2s ease-in-out infinite;
   position: relative;
-  overflow: hidden;
 }
 
 /* ========== 稀有度背景色 ========== */
@@ -1274,34 +1119,7 @@
   color: #8b4513 !important;
 }
 
-/* 虹卡和传说卡高光特效 */
-.card.RAINBOW::before,
-.card.LEGENDARY::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
-  z-index: 999;
-}
-.card.RAINBOW::before {
-  background: linear-gradient(45deg, 
-    transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
-  animation: shine-sweep 4s ease-in-out infinite;
-}
-.card.LEGENDARY::before {
-  background: linear-gradient(45deg, 
-    transparent 30%, rgba(255, 215, 0, 0.4) 50%, transparent 70%);
-  animation: shine-sweep 3s ease-in-out infinite;
-}
-
 /* 稀有度动画 */
-@keyframes rainbow-shine {
-  0%, 100% { filter: brightness(1) saturate(1); }
-  50% { filter: brightness(1.15) saturate(1.3); }
-}
 @keyframes legendary-pulse {
   0%, 100% { filter: brightness(1); }
   50% { filter: brightness(1.2); }

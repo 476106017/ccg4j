@@ -216,7 +216,8 @@
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : null;
         if (statusElement) {
           if (data && data.status === 'ACTIVE') {
             // 持有签证：显示进度
@@ -497,23 +498,31 @@
       };
       const typeEn = typeMap[card.type] || card.type || '未知';
       
-      col.innerHTML = `
-        <div class="card ${typeEn} ${card.rarity || 'BRONZE'}" data-card-code="${card.code}" data-keywords='${JSON.stringify(keywords)}' data-mark='${mark.replace(/'/g, "\\'")}'>
-          <div class="card-inner">
-            <div class="cost">${card.cost ?? 0}</div>
-            <div class="type">${typeEn}</div>
-            ${raceHtml}
-            <div class="name">${card.name}</div>
-            ${card.type === '随从' && card.atk !== undefined && card.hp !== undefined ? 
-              `<div class="atk">${card.atk}</div><div class="hp">${card.hp}</div>` : ''}
-            <div class="description">
-              <p>${descriptionContent}</p>
-            </div>
-            ${card.quantity > 1 ? `<div class="quantity">×${card.quantity}</div>` : ''}
-          </div>
-          <div class="job" style="display: inline-block;">${card.job || ''}</div>
-        </div>
-      `;
+      col.innerHTML = cardHtml(card);
+      
+      // Add quantity badge if > 1
+      if (card.quantity > 1) {
+          const cardDiv = col.querySelector('.card');
+          if (cardDiv) {
+              const qtyDiv = document.createElement('div');
+              qtyDiv.className = 'quantity';
+              qtyDiv.textContent = '×' + card.quantity;
+              // Style directly here or add to css
+              qtyDiv.style.position = 'absolute';
+              qtyDiv.style.top = '-10px';
+              qtyDiv.style.right = '-10px';
+              qtyDiv.style.background = '#28a745';
+              qtyDiv.style.color = 'white';
+              qtyDiv.style.borderRadius = '50%';
+              qtyDiv.style.padding = '2px 8px';
+              qtyDiv.style.fontSize = '0.9rem';
+              qtyDiv.style.fontWeight = 'bold';
+              qtyDiv.style.boxShadow = '0 2px 5px rgba(0,0,0,0.5)';
+              qtyDiv.style.zIndex = '25'; // Above everything
+              
+              cardDiv.appendChild(qtyDiv); // Append to card, not card-inner, so it can overhang
+          }
+      }
       
       // 添加右键菜单（仅当数量>3时显示分解选项）
       const cardElement = col.querySelector('.card');
@@ -693,83 +702,51 @@
   }
 
   // 显示抽卡结果
+  // 显示抽卡结果
   function renderPackResults(cards) {
-    const resultGrid = document.getElementById('pack-result-grid');
-    if (!resultGrid) return;
+    const overlay = document.getElementById('pack-opening-overlay');
+    const resultGrid = overlay.querySelector('#pack-result-grid');
+    
+    if (!overlay || !resultGrid) return;
 
     resultGrid.innerHTML = '';
-    resultGrid.classList.add('pack-result-row');
     const fragment = document.createDocumentFragment();
-    const cardElements = [];
-
+    
     cards.forEach((card, index) => {
       const wrap = document.createElement('div');
       wrap.className = 'pack-card-wrap';
+      wrap.style.opacity = '0';
+      wrap.style.transform = 'translateY(50px) rotateY(90deg)';
+      wrap.style.transition = `all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${index * 0.1}s`;
       
-      // 构建关键词标签
-      let raceHtml = '';
-      if (card.race && card.race.length > 0) {
-        raceHtml = `<div class="race">${card.race.join(' ')}</div>`;
+      // Use shared cardHtml function
+      wrap.innerHTML = cardHtml(card);
+      
+      // Add hover effect for 3D tilt (optional, handled by CSS mostly)
+      const cardEl = wrap.querySelector('.card');
+      if (cardEl) {
+          cardEl.style.transform = 'scale(1)';
+          cardEl.style.transition = 'transform 0.3s ease';
+          cardEl.onmouseenter = () => cardEl.style.transform = 'scale(1.1) rotate(2deg)';
+          cardEl.onmouseleave = () => cardEl.style.transform = 'scale(1)';
       }
-      
-      // 准备关键词和标记数据用于hover提示
-      // 如果没有 keywords 字段，使用 race 作为 keywords
-      const keywords = card.keywords || card.race || [];
-      const keywordsJson = JSON.stringify(keywords);
-      const keywordsHtml = Array.isArray(keywords) && keywords.length > 0 ? 
-        `<b class="keyword">${keywords.join(' ')}</b>` : '';
-      const mark = card.mark || '';
-      const descriptionContent = keywordsHtml || mark ? 
-        `${keywordsHtml}${keywordsHtml && mark ? '\n' : ''}${mark}` : '';
-      const markText = mark.replace(/'/g, "\\'");
-      
-      // 将中文 type 映射为英文 TYPE（用于灰色水印显示）
-      const typeMap = {
-        '随从': 'FOLLOW',
-        '法术': 'SPELL',
-        '护符': 'AMULET',
-        '装备': 'EQUIP'
-      };
-      const typeEn = typeMap[card.type] || card.type || '未知';
-      
-      wrap.innerHTML = `
-        <div class="card ${typeEn} ${card.rarity || 'BRONZE'}" data-keywords='${keywordsJson}' data-mark='${markText}'>
-          <div class="card-inner">
-            <div class="cost">${card.cost ?? 0}</div>
-            <div class="type">${typeEn}</div>
-            ${raceHtml}
-            <div class="name">${card.name}</div>
-            ${card.type === '随从' && card.atk !== undefined && card.hp !== undefined ? 
-              `<div class="atk">${card.atk}</div><div class="hp">${card.hp}</div>` : ''}
-            <div class="description">
-              <p>${descriptionContent}</p>
-            </div>
-          </div>
-          <div class="job" style="display: inline-block;">${card.job || ''}</div>
-        </div>
-      `;
+
       fragment.appendChild(wrap);
-      cardElements.push(wrap.querySelector('.card'));
     });
 
     resultGrid.appendChild(fragment);
     
-    // 显示模态框
-    const modal = new bootstrap.Modal(document.getElementById('pack-result-modal'));
-    modal.show();
+    // Show overlay
+    overlay.classList.remove('d-none');
     
-    // 等待模态框完全显示后启动动画
-    const modalElement = document.getElementById('pack-result-modal');
-    modalElement.addEventListener('shown.bs.modal', function onShown() {
-      modalElement.removeEventListener('shown.bs.modal', onShown);
-      
-      // 启动3D散开动画
-      if (window.PackAnimation) {
-        setTimeout(() => {
-          window.PackAnimation.start(resultGrid, cardElements);
-        }, 100);
-      }
-    });
+    // Trigger animations after a brief delay
+    setTimeout(() => {
+        const wraps = resultGrid.querySelectorAll('.pack-card-wrap');
+        wraps.forEach(wrap => {
+            wrap.style.opacity = '1';
+            wrap.style.transform = 'translateY(0) rotateY(0)';
+        });
+    }, 100);
   }
 
   // 退出登录

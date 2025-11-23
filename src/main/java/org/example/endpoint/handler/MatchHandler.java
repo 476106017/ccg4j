@@ -121,28 +121,28 @@ public class MatchHandler {
         log.info("=== 开始弥留之国AI匹配调试 ===");
         log.info("Session ID: {}", client.getId());
         log.info("Session isOpen: {}", client.isOpen());
-        
+
         String room = userRoom.get(client);
         if (room != null) {
             log.warn("玩家重复进入房间 - Session: {}, Room: {}", client.getId(), room);
             Msg.warn(client, "请不要重复进入房间！");
             return;
         }
-        
+
         // 详细日志：检查用户认证
         Long userId = sessionUserIds.get(client);
         String username = userNames.get(client);
         log.info("用户认证检查 - Session: {}, UserName: {}, UserId: {}", client.getId(), username, userId);
         log.info("所有已认证Session: {}", sessionUserIds.keySet().stream()
-            .map(s -> String.format("Session[%s]->User[%s]", s.getId(), sessionUserIds.get(s)))
-            .collect(java.util.stream.Collectors.joining(", ")));
-        
+                .map(s -> String.format("Session[%s]->User[%s]", s.getId(), sessionUserIds.get(s)))
+                .collect(java.util.stream.Collectors.joining(", ")));
+
         if (userId == null) {
             log.error("用户ID为空！尝试从用户名恢复... UserName: {}", username);
             Msg.warn(client, "弥留之国模式需要先登录账号！当前Session未关联用户ID，请刷新页面重新登录。");
             return;
         }
-        
+
         log.info("开始获取签证状态 - UserId: {}", userId);
         BorderlandVisa visa = borderlandService.getVisaStatus(userId);
         if (visa == null) {
@@ -150,18 +150,18 @@ public class MatchHandler {
             Msg.warn(client, "当前没有有效的弥留之国签证，请先在页面上办理。");
             return;
         }
-        
+
         log.info("签证信息 - UserId: {}, Status: {}, DaysRemaining: {}", userId, visa.getStatus(), visa.getDaysRemaining());
-        
+
         if (!"ACTIVE".equalsIgnoreCase(visa.getStatus())) {
             log.warn("签证状态不是ACTIVE - UserId: {}, Status: {}", userId, visa.getStatus());
             Msg.warn(client, "当前没有有效的弥留之国签证，请先在页面上办理。");
             return;
         }
-        
+
         PlayerDeck playerDeck = buildDeckFromVisa(visa);
         log.info("卡组构建完成 - UserId: {}, DeckSize: {}", userId, playerDeck.getActiveDeck().size());
-        
+
         if (playerDeck.getActiveDeck().isEmpty()) {
             log.warn("签证卡组为空 - UserId: {}", userId);
             Msg.warn(client, "签证卡组为空，无法开始战斗。");
@@ -193,7 +193,7 @@ public class MatchHandler {
     public void cancelBorderlandAISearch(Session client) {
         PlayerDeckWithTask removed = aiWaitingPool.remove(client);
         if (removed != null) {
-            // 取消定时任务
+            // 取消AI任务
             removed.task.cancel(false);
             Msg.send(client, "borderland-ai-cancelled", "已取消搜寻AI");
             log.info("玩家 {} 取消了搜寻AI", sessionUserIds.get(client));
@@ -256,16 +256,17 @@ public class MatchHandler {
 
     /**
      * 开始弥留之国PVP战斗
+     * 
      * @param isInvasion 是否为入侵模式（猎杀）
      */
-    private void startBorderlandPvP(Session hunter, Session target, PlayerDeck hunterDeck, PlayerDeck targetDeck, boolean isInvasion) {
+    private void startBorderlandPvP(Session hunter, Session target, PlayerDeck hunterDeck, PlayerDeck targetDeck,
+            boolean isInvasion) {
         String borderlandRoom = "borderland-pvp-" + UUID.randomUUID();
         GameInfo info = new GameInfo(borderlandRoom);
 
         info.zeroTurnWithDecks(
-            target, targetDeck, userNames.get(target),
-            hunter, hunterDeck, userNames.get(hunter)
-        );
+                target, targetDeck, userNames.get(target),
+                hunter, hunterDeck, userNames.get(hunter));
 
         userRoom.put(target, borderlandRoom);
         userRoom.put(hunter, borderlandRoom);
@@ -280,12 +281,11 @@ public class MatchHandler {
 
             // 保存战斗记录到数据库
             org.example.game.BorderlandBattleLog matchLog = new org.example.game.BorderlandBattleLog(
-                "match",
-                userNames.get(target),
-                userNames.get(hunter) + "(入侵)",
-                null,
-                null
-            );
+                    "match",
+                    userNames.get(target),
+                    userNames.get(hunter) + "(入侵)",
+                    null,
+                    null);
             battleLogService.save(matchLog);
 
             // 广播给所有在线玩家
@@ -297,12 +297,11 @@ public class MatchHandler {
 
             // 保存战斗记录到数据库
             org.example.game.BorderlandBattleLog matchLog = new org.example.game.BorderlandBattleLog(
-                "match",
-                userNames.get(target),
-                userNames.get(hunter),
-                null,
-                null
-            );
+                    "match",
+                    userNames.get(target),
+                    userNames.get(hunter),
+                    null,
+                    null);
             battleLogService.save(matchLog);
 
             // 广播给所有在线玩家
@@ -328,7 +327,7 @@ public class MatchHandler {
         String borderlandRoom = "borderland-ai-" + UUID.randomUUID();
         GameInfo info = new GameInfo(borderlandRoom);
         info.zeroTurnWithDecks(client, playerDeck, userNames.get(client),
-            null, aiDeck, BORDERLAND_AI_NAME);
+                null, aiDeck, BORDERLAND_AI_NAME);
 
         PlayerInfo aiPlayer = info.anotherPlayerBySession(client);
         aiPlayer.setStep(0);
@@ -349,12 +348,11 @@ public class MatchHandler {
 
         // 保存AI匹配记录到数据库
         org.example.game.BorderlandBattleLog matchLog = new org.example.game.BorderlandBattleLog(
-            "match",
-            userNames.get(client),
-            BORDERLAND_AI_NAME,
-            null,
-            null
-        );
+                "match",
+                userNames.get(client),
+                BORDERLAND_AI_NAME,
+                null,
+                null);
         battleLogService.save(matchLog);
 
         // 广播给所有在线玩家
@@ -372,10 +370,10 @@ public class MatchHandler {
             return deck;
         }
         Arrays.stream(visa.getDeckData().split(","))
-            .map(String::trim)
-            .filter(s -> !s.isEmpty())
-            .filter(code -> cardCatalogService.getByCode(code) != null)
-            .forEach(cards::add);
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .filter(code -> cardCatalogService.getByCode(code) != null)
+                .forEach(cards::add);
         deck.setActiveDeck(cards);
         return deck;
     }
@@ -397,64 +395,91 @@ public class MatchHandler {
         return deck;
     }
 
-    @SuppressWarnings("unchecked")
-    private Class<? extends Card> safeCardClass(String code) {
-        try {
-            Class<?> clazz = Class.forName(code);
-            if (Card.class.isAssignableFrom(clazz)) {
-                return (Class<? extends Card>) clazz;
-            }
-        } catch (ClassNotFoundException e) {
-            log.warn("Card class not found: {}", code);
-        }
-        return null;
+    private void broadcastBattleLog(org.example.game.BorderlandBattleLog log) {
+        WebSocketConfig.broadcast("borderland-log", log);
     }
 
-    public void leave(Session client) throws IOException {
+    public void handleChallengeRequest(Session session, Long targetUserId) {
+        String name = userNames.get(session);
+        Long userId = org.example.system.Database.sessionUserIds.get(session);
+
+        if (userId == null) {
+            Msg.send(session, "请先登录！");
+            return;
+        }
+
+        // Check if target is online
+        Session targetSession = null;
+        for (java.util.Map.Entry<Session, Long> entry : org.example.system.Database.sessionUserIds.entrySet()) {
+            if (entry.getValue().equals(targetUserId)) {
+                targetSession = entry.getKey();
+                break;
+            }
+        }
+
+        if (targetSession == null) {
+            Msg.send(session, "对方不在线！");
+            return;
+        }
+
+        // Create a private room
+        String roomId = java.util.UUID.randomUUID().toString();
+        joinNormalRoom(session, roomId); // Use joinNormalRoom logic but with specific ID
+
+        // Send challenge request to target
+        java.util.Map<String, Object> data = new java.util.HashMap<>();
+        data.put("sender", name);
+        data.put("roomId", roomId);
+
+        Msg.send(targetSession, "challenge_request", data);
+        Msg.send(session, "已向 " + userNames.get(targetSession) + " 发送挑战邀请！");
+    }
+
+    // Overload joinNormalRoom to accept roomId
+    private void joinNormalRoom(Session client, String roomId) {
         String room = userRoom.get(client);
-        if(room==null){
-            Msg.send(client,"你不在任何房间中");
+        if (room != null) {
+            Msg.warn(client, "请不要重复进入房间！");
             return;
         }
+
+        userRoom.put(client, roomId);
+        Msg.send(client, "进入房间：" + roomId);
+
+        // Wait for opponent
+        waitUser = client;
+        waitRoom = roomId;
+
+        Msg.send(client, "等待对手加入...");
+    }
+
+    public void leave(Session session) {
+        String room = userRoom.get(session);
+        if (room == null) {
+            Msg.send(session, "你不在任何房间中！");
+            return;
+        }
+
         GameInfo info = roomGame.get(room);
-        if(info!=null){
-            PlayerInfo player = info.playerBySession(client);
-            PlayerInfo enemy = info.anotherPlayerBySession(client);
-            info.msg(player.getName() + "离开了游戏！");
-            info.gameset(enemy);
-            return;
+        if (info != null) {
+            PlayerInfo player = info.playerBySession(session);
+            PlayerInfo enemy = info.anotherPlayerBySession(session);
+            if (player != null) {
+                info.msg(player.getName() + "已离开房间！");
+                if (enemy != null) {
+                    info.gameset(enemy);
+                }
+            }
+            roomGame.remove(room);
         }
-        userRoom.remove(client);
-        Msg.send(client,"离开房间成功");
-        // release resources
-        roomGame.remove(room);
-        if(client.equals(waitUser) || room.equals(waitRoom) ){
+
+        userRoom.remove(session);
+        Msg.send(session, "已退出房间：" + room);
+
+        if (room.equals(waitRoom)) {
             waitRoom = "";
             waitUser = null;
             WebSocketConfig.broadcast("【全体】匹配中的玩家已经退出了！");
-        }
-        // exit room
-    }
-
-    /**
-     * 广播战斗记录给所有在线玩家
-     */
-    private void broadcastBattleLog(org.example.game.BorderlandBattleLog msg) {
-        java.util.Map<String, Object> data = new java.util.HashMap<>();
-        data.put("type", msg.getEventType());
-        data.put("player1", msg.getPlayer1Name());
-        data.put("player2", msg.getPlayer2Name());
-        data.put("winner", msg.getWinnerName());
-        data.put("timestamp", msg.getTimestamp().toString());
-        data.put("punishmentSeconds", msg.getPunishmentSeconds());
-
-        // 广播给所有玩家
-        for (Session session : userNames.keySet()) {
-            try {
-                Msg.send(session, "borderland-battle-log", data);
-            } catch (Exception e) {
-                log.warn("Failed to broadcast battle log to session", e);
-            }
         }
     }
 }

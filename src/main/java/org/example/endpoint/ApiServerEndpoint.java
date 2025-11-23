@@ -38,19 +38,24 @@ import java.util.*;
 import static org.example.system.Database.*;
 
 @Slf4j
-@ServerEndpoint(value = "/api/{name}",
-    encoders = {GsonConfig.MyEncoder.class},
-    configurator = WebSocketConfigurator.CustomSpringConfigurator.class)
+@ServerEndpoint(value = "/api/{name}", encoders = {
+        GsonConfig.MyEncoder.class }, configurator = WebSocketConfigurator.CustomSpringConfigurator.class)
 @Service
-@DependsOn({"chatHandler","deckEditHandler","gameHandler","matchHandler"})
+@DependsOn({ "chatHandler", "deckEditHandler", "gameHandler", "matchHandler" })
 public class ApiServerEndpoint {
 
-    @Autowired ChatHandler chatHandler;
-    @Autowired DeckEditHandler deckEditHandler;
-    @Autowired GameHandler gameHandler;
-    @Autowired MatchHandler matchHandler;
-    @Autowired CardSearchHandler cardSearchHandler;
-    @Autowired Gson gson;
+    @Autowired
+    ChatHandler chatHandler;
+    @Autowired
+    DeckEditHandler deckEditHandler;
+    @Autowired
+    GameHandler gameHandler;
+    @Autowired
+    MatchHandler matchHandler;
+    @Autowired
+    CardSearchHandler cardSearchHandler;
+    @Autowired
+    Gson gson;
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) throws IOException {
@@ -58,32 +63,38 @@ public class ApiServerEndpoint {
         final String name = session.getPathParameters().get("name");
         log.info("=== WebSocket连接开始 ===");
         log.info("Session ID: {}, Username: {}", session.getId(), name);
-        
-        if(Strings.isBlank(name) || userNames.containsValue(name)){
-            log.warn("用户名无效或已被使用 - Name: {}, IsBlank: {}, AlreadyExists: {}", 
-                name, Strings.isBlank(name), userNames.containsValue(name));
-            Msg.send(session,"用户名无法使用！");
+
+        if (Strings.isBlank(name) || userNames.containsValue(name)) {
+            log.warn("用户名无效或已被使用 - Name: {}, IsBlank: {}, AlreadyExists: {}",
+                    name, Strings.isBlank(name), userNames.containsValue(name));
+            Msg.send(session, "用户名无法使用！");
             session.close();
             return;
         }
-        session.getUserProperties().put("name",name);
-        userNames.put(session,name);
+        session.getUserProperties().put("name", name);
+        userNames.put(session, name);
         log.info("用户名已注册 - Session: {}, Name: {}", session.getId(), name);
 
+        // Get HttpSession from config
         HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
         log.info("HttpSession检查 - IsNull: {}", httpSession == null);
-        
+
         if (httpSession != null) {
             Long userId = (Long) httpSession.getAttribute(SessionConstants.SESSION_USER_ID);
             log.info("从HttpSession获取UserId - SessionId: {}, UserId: {}", httpSession.getId(), userId);
-            
+
             if (userId != null) {
                 sessionUserIds.put(session, userId);
-                log.info("用户认证成功 - WebSocketSession: {}, UserId: {}, Username: {}", 
-                    session.getId(), userId, name);
+                // Record Login Activity
+                org.example.user.service.UserAccountService userService = org.example.system.ApplicationContextHelper
+                        .getBean(org.example.user.service.UserAccountService.class);
+                userService.recordLogin(userId);
+
+                log.info("用户认证成功 - WebSocketSession: {}, UserId: {}, Username: {}",
+                        session.getId(), userId, name);
             } else {
-                log.warn("HttpSession中没有UserId - HttpSessionId: {}, Username: {}", 
-                    httpSession.getId(), name);
+                log.warn("HttpSession中没有UserId - HttpSessionId: {}, Username: {}",
+                        httpSession.getId(), name);
             }
         } else {
             log.warn("无法获取HttpSession - Username: {}, 用户未登录或Session已过期", name);
@@ -93,28 +104,27 @@ public class ApiServerEndpoint {
         PlayerDeck playerDeck = new PlayerDeck();
         playerDeck.setLeaderClass(ThePlayer.class);
 
-        Set<Class<? extends Card>> subTypesOf =
-            new Reflections(new ConfigurationBuilder()
+        Set<Class<? extends Card>> subTypesOf = new Reflections(new ConfigurationBuilder()
                 .filterInputsBy(s -> !s.contains("morecard"))
                 .forPackage("org.example.card"))
                 .getSubTypesOf(Card.class);
         // 移除不符合的卡牌类型
-        subTypesOf.removeIf(aClass ->{
+        subTypesOf.removeIf(aClass -> {
             int modifiers = aClass.getModifiers();
             return Modifier.isAbstract(modifiers) || Modifier.isStatic(modifiers);
         });
         // 随机取30张
         List<String> cardCodes = subTypesOf.stream()
-            .map(Class::getName)
-            .collect(Collectors.toList());
+                .map(Class::getName)
+                .collect(Collectors.toList());
         Collections.shuffle(cardCodes);
         playerDeck.getActiveDeck().addAll(cardCodes.subList(0, Math.min(30, cardCodes.size())));
         userDecks.put(session, playerDeck);
         // endregion
-Msg.send(session,name + "登录成功！");
+        Msg.send(session, name + "登录成功！");
         final int size = userNames.size();
-        WebSocketConfig.broadcast("【全体】有玩家登陆了游戏！当前在线："+ size +"人");
-        
+        WebSocketConfig.broadcast("【全体】有玩家登陆了游戏！当前在线：" + size + "人");
+
         log.info("=== WebSocket连接完成 ===");
         log.info("当前在线人数: {}, 已认证用户数: {}", userNames.size(), sessionUserIds.size());
     }
@@ -126,12 +136,13 @@ Msg.send(session,name + "登录成功！");
         userNames.remove(session);
         sessionUserIds.remove(session);
         final int size = userNames.size();
-        WebSocketConfig.broadcast("【全体】有玩家退出了游戏！当前在线："+ size +"人");
+        WebSocketConfig.broadcast("【全体】有玩家退出了游戏！当前在线：" + size + "人");
         String room = userRoom.get(session);
-        if(room==null)return;
+        if (room == null)
+            return;
 
         GameInfo info = roomGame.get(room);
-        if(info!=null){
+        if (info != null) {
             PlayerInfo player = info.playerBySession(session);
             PlayerInfo enemy = info.anotherPlayerBySession(session);
             info.msg(player.getName() + "已断开连接！");
@@ -141,7 +152,7 @@ Msg.send(session,name + "登录成功！");
         // 释放资源
         roomGame.remove(room);
         userRoom.remove(session);
-        if(session==waitUser || room.equals(waitRoom) ){
+        if (session == waitUser || room.equals(waitRoom)) {
             waitRoom = "";
             waitUser = null;
             WebSocketConfig.broadcast("【全体】匹配中的玩家已经退出了！");
@@ -159,7 +170,8 @@ Msg.send(session,name + "登录成功！");
 
             // 检查是否是JSON格式的消息
             if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
-                Type type = new TypeToken<Map<String, Object>>(){}.getType();
+                Type type = new TypeToken<Map<String, Object>>() {
+                }.getType();
                 Map<String, Object> jsonMsg = gson.fromJson(trimmed, type);
                 String messageType = (String) jsonMsg.get("type");
                 Map<String, Object> data = (Map<String, Object>) jsonMsg.get("data");
@@ -167,6 +179,11 @@ Msg.send(session,name + "登录成功！");
                 switch (messageType) {
                     case "search_cards" -> cardSearchHandler.searchCards(session, data);
                     case "update_deck" -> deckEditHandler.setdeck(session, gson.toJson(data));
+                    case "chat_global" -> chatHandler.handleGlobalChat(session, (String) data.get("content"));
+                    case "chat_private" -> {
+                        Double targetId = (Double) data.get("targetId");
+                        chatHandler.handlePrivateChat(session, targetId.longValue(), (String) data.get("content"));
+                    }
                     default -> Msg.send(session, "不支持的JSON消息类型！");
                 }
                 return;
@@ -186,15 +203,15 @@ Msg.send(session,name + "登录成功！");
             }
 
             // 兼容：如果没有使用"::"分隔，但命令包含空格（如 "discover 1"），把空格后的部分视为参数
-            if(command.contains(" ")){
+            if (command.contains(" ")) {
                 String[] parts = command.split("\\s+", 2);
                 command = parts[0];
-                if(param.isBlank() && parts.length>1){
+                if (param.isBlank() && parts.length > 1) {
                     param = parts[1];
                 }
             }
 
-            switch (command){
+            switch (command) {
                 case "joinRoom" -> matchHandler.joinRoom(session, param);
                 case "leave" -> matchHandler.leave(session);
                 case "cancelAISearch" -> matchHandler.cancelBorderlandAISearch(session);
@@ -203,6 +220,14 @@ Msg.send(session,name + "登录成功！");
                 case "usedeck" -> deckEditHandler.usedeck(session, param);
                 case "setdeck" -> deckEditHandler.setdeck(session, param);
                 case "chat" -> chatHandler.chat(session, param);
+                case "challenge" -> {
+                    try {
+                        Long targetId = Long.parseLong(param);
+                        matchHandler.handleChallengeRequest(session, targetId);
+                    } catch (NumberFormatException e) {
+                        Msg.send(session, "无效的用户ID");
+                    }
+                }
 
                 case "swap" -> gameHandler.swap(session, param);
                 case "play" -> gameHandler.play(session, param);
@@ -212,9 +237,9 @@ Msg.send(session,name + "登录成功！");
 
                 case "end" -> gameHandler.end(session, param);
                 case "test" -> gameHandler.test(session);
-                default -> Msg.send(session,"不存在的指令！");
+                default -> Msg.send(session, "不存在的指令！");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -224,6 +249,5 @@ Msg.send(session,name + "登录成功！");
     public void onError(Throwable t) {
         // handle error event
     }
-
 
 }

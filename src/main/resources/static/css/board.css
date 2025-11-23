@@ -1,126 +1,76 @@
 #senjou-modal .modal-header {
   height: 0;
-  background-color: green;
+  background-color: transparent;
   border: none;
+  z-index: 10000;
 }
 #senjou-modal .modal-content {
   overflow: hidden;
+  background: transparent;
+  border: none;
 }
 #senjou-modal .modal-body {
   padding: 0;
   overflow: visible;
   border: none;
+  background: transparent;
 }
 
+/* 
+ * Board Background & Layout 
+ * Using radial gradients to simulate a dark wooden/stone table surface with lighting
+ */
 .board {
-  background: radial-gradient(circle at center, #1e3c1e 0%, #0a1a0a 100%);
+  /* Dark wood texture simulation */
+  background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    ),
+    linear-gradient(135deg, #2c1e10 0%, #1a120b 100%);
   margin: 0;
-  height: 100%;
+  height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(10px);
+  overflow: hidden;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+}
+
+/* Add a subtle "felt" or "mat" area in the middle for the battlefield */
+.board::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  bottom: 15%;
+  left: 10%;
+  right: 10%;
+  background: radial-gradient(circle at center, #3a4a5a 0%, #1e2a3a 100%);
+  border-radius: 20px;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Perspective container for 3D feel */
+.enemy,
+.player {
+  position: relative;
+  z-index: 1;
+  perspective: 1000px;
 }
 
 .enemy {
   display: flex;
   height: 45%;
   flex-direction: column;
-}
-
-.pp-num {
-  z-index: 5;
-  position: absolute;
-  right: 0;
-  width: auto; /* 改为自动宽度 */
-  min-width: 70px; /* 最小宽度 */
-  max-width: 140px; /* 最大宽度 */
-  min-height: 30px;
-  height: auto;
-  font-size: 0.6rem;
-  color: #fff;
-  text-shadow: 0px 0px 3px #000080;
-  text-align: center;
-  border: 2px solid #ffffff;
-  border: 1px solid #4b4b4b;
-  font-weight: bold;
-  line-height: 30px;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: translateX(0); /* 默认位置 */
-  transition: transform 0.2s ease; /* 平滑移动动画 */
-}
-
-/* 当内容变成两行时，向右移动避免遮挡UI */
-.pp-num:has(br),
-.pp-num[style*="flex-wrap"] {
-  transform: translateX(10px);
-}
-.enemy-pp-num{
-  top: -80px; /* 向上移动，远离中间按钮 */
-  width: 110px;
-  background: linear-gradient(to bottom, #2e7d32, #ffd700, #fffacd);
-}
-.my-pp-num{
-  bottom: -80px; /* 向下移动，远离中间按钮 */
-  width: 110px;
-  background: linear-gradient(to bottom, #fffacd, #ffd700, #2e7d32);
-}
-.right-panel{
-  position: absolute;
-  top: 30%;
-  right: 5px;
-  background: rgba(30, 30, 30, 0.8);
-  border: 1px solid #444;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
-}
-.right-panel p{
-  margin: 0;
-}
-.end-button {
-  z-index: 5;
-  width: 100px;
-  height: 100px;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 1.7rem;
-  text-shadow: 0px 0px 4px #000000;
-  text-align: center;
-  border: 2px solid #000000;
-  background: radial-gradient(red, #2f4f4f9f);
-  transition: color 0.3s ease-in-out;
-  padding-top: 16px;
-  line-height: 30px;
-}
-.end-button:hover {
-  z-index: 9;
-  animation: tiktok 1s infinite;
-}
-@keyframes tiktok {
-  0% {
-      text-shadow: -1px -1px 0 #0ff,
-                  1px 1px 0 #f00 ;
-  }
-  25% {
-      text-shadow: 1px -1px 0 #0ff,
-                  -1px 1px 0 #f00 ;
-  }
-  50% {
-      text-shadow: 1px 1px 0 #0ff,
-                  -1px -1px 0 #f00 ;
-  }
-  75% {
-      text-shadow: -1px 1px 0 #0ff,
-                  1px -1px 0 #f00 ;
-  }
-  100% {
-      text-shadow: -1px -1px 0 #0ff,
-                  1px 1px 0 #f00 ;
-  }
+  /* Slight tint for enemy side */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .player {
@@ -128,161 +78,439 @@
   height: 55%;
   flex-direction: column;
   overflow: visible;
+  /* Slight tint for player side */
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
+/* 
+ * Battlefield (The Play Area)
+ */
 .battlefield {
-  background-color: green;
+  background-color: transparent; /* Removed green */
   height: 100%;
   margin-bottom: -20px;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* 改为顶部对齐，避免重叠 */
+  align-items: center;
   flex-wrap: wrap;
-  gap: 15px; /* 进一步增大间距 */
+  gap: 10px;
+  padding: 0 50px;
+  transform-style: preserve-3d;
 }
 
-/* 双方场上的卡牌适当缩小，避免重叠 */
+/* Enemy battlefield slightly tilted towards player */
+#enemy-battlefield {
+  align-items: flex-end;
+  padding-bottom: 20px;
+}
+
+/* Player battlefield slightly tilted away */
+#my-battlefield {
+  align-items: flex-start;
+  padding-top: 20px;
+}
+
+/* Cards on battlefield */
 .battlefield .card {
-  transform: scale(0.85) !important;
-  margin: 0 -18px !important; /* 增加左右间距 */
-  flex-shrink: 0 !important; /* 防止卡牌被压缩 */
+  transform: scale(0.85) translateZ(0);
+  margin: 0 -10px !important;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
+.battlefield .card:hover {
+  transform: scale(1.1) translateZ(20px) !important;
+  z-index: 100;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Status Highlights */
 .canUse {
-  color: rgb(64, 255, 64);
-  border: 3px solid aquamarine;
+  box-shadow: 0 0 15px #00ff00, inset 0 0 10px #00ff00;
+  border-color: #00ff00;
 }
 .battlefield .canAttack {
-  border: 2px solid rgb(64, 255, 64);
-  box-shadow: 0 0 50px rgb(64, 255, 64);
+  box-shadow: 0 0 20px #00ff00;
+  animation: pulse-green 2s infinite;
 }
 .battlefield .canDash {
-  border: 2px solid rgb(255, 255, 0);
-  box-shadow: 0 0 50px rgb(255, 255, 0);
+  box-shadow: 0 0 20px #ffff00;
+  animation: pulse-yellow 2s infinite;
 }
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 10px #00ff00;
+  }
+  50% {
+    box-shadow: 0 0 25px #00ff00;
+  }
+  100% {
+    box-shadow: 0 0 10px #00ff00;
+  }
+}
+@keyframes pulse-yellow {
+  0% {
+    box-shadow: 0 0 10px #ffff00;
+  }
+  50% {
+    box-shadow: 0 0 25px #ffff00;
+  }
+  100% {
+    box-shadow: 0 0 10px #ffff00;
+  }
+}
+
+/* 
+ * Hand Area 
+ */
 .enemy-hand {
-  background-color: green;
+  background-color: transparent; /* Removed green */
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: visible;
+  perspective: 600px;
 }
 
-.board .card {
-  transform: scale(0.8);
-  margin: -60px -60px -60px -40px;
-}
-.board .card:hover{
-  z-index: 999;
-  transform: scale(1) ;
-}
-
-.card-back{
+.hand {
+  background-color: transparent; /* Removed green */
+  padding: 0 20px;
   position: relative;
-  width: 61.8px !important;
-  height: 100px !important;
-  background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
-  border: 1px solid #666;
-  border-radius: 4px;
-  margin-left: -10px;
-  margin-top: -50px !important;
-  box-shadow: -2px 2px 5px rgba(0,0,0,0.5);
+  overflow: visible;
+  height: 120px; /* Increased height for better interaction */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  perspective: 800px;
+}
+
+/* Card Backs (Enemy Hand) */
+.card-back {
+  position: relative;
+  width: 80px !important;
+  height: 110px !important;
+  background: linear-gradient(135deg, #2c1e10 0%, #4a3b2a 100%);
+  border: 2px solid #1a120b;
+  border-radius: 8px;
+  margin: 0 -20px;
+  box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.5);
+  transform: rotate(180deg) translateY(40px); /* Tucked away */
 }
 .card-back::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
   height: 80%;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 2px;
-}
-.card-back:hover{
-  z-index: 999;
-  transform: scale(1.5) ;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 0, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 20px
+  );
 }
 
+/* Player Hand Cards */
+.hand .card {
+  margin: 0 -30px !important;
+  transform-origin: bottom center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  bottom: -40px; /* Raised significantly to be visible */
+  position: relative;
+}
+
+/* Fan effect for hand */
+.hand:hover .card {
+  margin: 0 -10px !important; /* Spread out on hover */
+  bottom: 0px; /* Fully visible on hover */
+}
+
+.hand .card:hover {
+  z-index: 1000 !important;
+  transform: scale(1.3) translateY(-250px) !important;
+  margin: 0 20px !important; /* Push neighbors */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+}
+
+/* Fix for flickering: Invisible tail to keep mouse captured */
+.hand .card::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: -20%; /* Widen the capture area */
+  width: 140%; /* Widen the capture area */
+  height: 500px; /* Extend further down */
+  background: transparent;
+  pointer-events: auto;
+}
+
+/* 
+ * Right Panel (Info & End Turn) 
+ */
+.right-panel {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  z-index: 100;
+  /* Parchment background */
+  background: linear-gradient(to right, #f4e4bc, #e6d2aa);
+  border: 1px solid #c0a060;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(139, 69, 19, 0.2);
+  padding: 20px 10px;
+}
+/* Roll ends for parchment */
+.right-panel::before,
+.right-panel::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  height: 15px;
+  background: linear-gradient(to right, #8b4513, #cd853f, #8b4513);
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+.right-panel::before {
+  top: -8px;
+}
+.right-panel::after {
+  bottom: -8px;
+}
+
+.right-panel p {
+  margin: 0;
+  color: #3e2723;
+  font-family: serif;
+  font-weight: bold;
+  text-shadow: none;
+}
+
+/* End Turn Button */
+.end-button {
+  width: 110px;
+  height: 50px; /* Rectangular button looks better for "End Turn" */
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  line-height: 50px;
+  padding: 0;
+  cursor: pointer;
+  border: 2px solid #ffd700;
+  box-shadow: 0 4px 0 #b8860b, 0 5px 10px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+    to bottom,
+    #4facfe 0%,
+    #00f2fe 100%
+  ); /* Default blue */
+  transition: all 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.end-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #b8860b, 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Shine effect */
+.end-button::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg) translateY(-100%);
+  transition: transform 0.5s;
+}
+.end-button:hover::after {
+  transform: rotate(45deg) translateY(100%);
+}
+
+/* Enemy turn state (Red) */
+.end-button[disabled] {
+  background: linear-gradient(to bottom, #ff6b6b 0%, #ee5253 100%);
+  border-color: #8b0000;
+  box-shadow: 0 4px 0 #5c0000, 0 5px 10px rgba(0, 0, 0, 0.5);
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+/* 
+ * Mana (PP) Gems 
+ */
+.pp-num {
+  position: static; /* Inside right panel now */
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #3e2723;
+  text-shadow: none;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.pp-gems {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.pp-gems .gem {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe);
+  box-shadow: 0 0 5px #00f2fe;
+  border: 1px solid #fff;
+}
+
+.pp-gems .gem.used {
+  background: #555;
+  box-shadow: inset 0 0 5px #000;
+  border: 1px solid #333;
+}
+
+/* 
+ * Logs & Messages 
+ */
+#msg-log-div {
+  z-index: 999;
+  overflow: auto;
+  max-height: 300px;
+  position: absolute;
+  left: 10px; /* Moved to left */
+  top: 80px;
+  width: 250px;
+  color: #eee;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+}
+
+#msg-log {
+  position: absolute;
+  left: 10px;
+  top: 40px;
+}
+
+/* Skill Button in Info Panel */
 .skill {
-    cursor: default;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: all 0.3s;
-    border: 1px solid transparent;
-    display: inline-block;
-    margin-bottom: 5px;
+  cursor: default;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  display: inline-block;
+  margin-bottom: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
+  width: 140px; /* Fixed width for uniformity */
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .skill.canUse {
-    cursor: pointer;
-    background: rgba(255, 215, 0, 0.15);
-    border-color: #ffd700;
-    color: #ffd700;
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
-    animation: skill-pulse 2s infinite;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #ffd700, #ffa500);
+  border-color: #fff;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  animation: skill-pulse 2s infinite;
 }
 
 .skill.canUse:hover {
-    background: rgba(255, 215, 0, 0.3);
-    transform: scale(1.05);
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}
+
+/* Info Panel Details Alignment */
+#enemy-info-detail, #my-info-detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#enemy-info, #my-info {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #3e2723;
+  font-weight: bold;
+}
+
+#enemy-info p, #my-info p {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.leader-health {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 50%;
+  background: #ff6b6b;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  margin: 0 5px;
 }
 
 @keyframes skill-pulse {
-    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
-    50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-    100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
-}
-
-.hand {
-  background-color: green;
-  padding-left: 80px;
-  position: relative;
-  overflow: visible;
-  height: 60px; /* 只显示卡牌顶部（费用部分），约60px */
-  display: flex;
-  align-items: flex-end; /* 卡牌从底部对齐 */
-}
-
-/* 手牌区域整体hover - 让所有手牌略微展开 */
-.hand:hover .card{
-  margin-bottom: -150px !important;
-}
-
-/* 单张卡牌默认状态 */
-.hand .card{
-  margin-bottom: -296px !important; /* 卡牌高度356px - 显示60px = -296px */
-  transform: rotate(-15deg);
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-/* 单张卡牌hover - 完全展开并放大，向上凸出 */
-.hand .card:hover{
-  z-index: 9999 !important;
-  transform: scale(1.2) rotate(0deg) translateY(-340px) !important;
-  margin-bottom: -296px !important;
-}
-
-.hero-power {
-  background-color: #555;
-}
-
-#msg-log{
-  z-index: 999;
-  overflow: auto;
-  position: absolute;
-  right: 10px;
-  top: 50px;
-
-}
-
-#msg-log-div{
-  z-index: 999;
-  overflow: auto;
-  max-height: 70%;
-  position: absolute;
-  right: 10px;
-  top: 80px;
-  color: white;
-  backdrop-filter: blur(3px);
-  background-color: rgba(0, 0, 0, 0.382);
-  padding: 5px;
+  0% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+  }
 }

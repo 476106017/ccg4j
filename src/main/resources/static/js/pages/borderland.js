@@ -252,67 +252,39 @@
 
     // 创建弥留之国卡牌HTML（与deck-manager保持一致的显示逻辑）
     function createBorderlandCardHtml(card, count) {
-        const rarityClass = card.rarity || 'BRONZE';
-        const race = card.race || [];
-        const raceStr = Array.isArray(race) ? race.join(' ') : (race || '');
-        const keywords = card.keywords || [];
-        const keywordsStr = Array.isArray(keywords) && keywords.length > 0 ? 
-            '<b class="keyword">' + keywords.join(' ') + '</b>' : '';
-        const hasStats = card.cardType === '随从' && card.attack !== undefined && card.health !== undefined;
-        const mark = card.mark || '';
+        // 使用通用的 cardHtml 生成卡牌基础结构
+        // Use window.cardHtml to avoid ReferenceError if card.js failed to load or scope issues
+        console.log('Checking window.cardHtml:', typeof window.cardHtml, window.cardHtml);
+        const htmlGenerator = window.cardHtml;
         
-        // 将中文 cardType 映射为英文 TYPE（用于灰色水印显示）
-        const typeMap = {
-            '随从': 'FOLLOW',
-            '法术': 'SPELL',
-            '护符': 'AMULET',
-            '装备': 'EQUIP'
-        };
-        const typeEn = typeMap[card.cardType] || card.cardType || '';
-        
-        // 护符卡显示倒数（样式和装备卡耐久度一样）
-        const isAmulet = card.cardType === '护符' || typeEn === 'AMULET';
-        let amuletCountdownHtml = '';
-        if (isAmulet && card.countdown !== undefined && card.countdown !== null) {
-            const countdownVal = card.countdown >= 0 ? card.countdown : '∞';
-            amuletCountdownHtml = `<div class="equipment-durability">${countdownVal}</div>`;
+        if (typeof htmlGenerator !== 'function') {
+            console.error('cardHtml function is not defined! Check if card.js is loaded correctly.');
+            console.error('window object keys:', Object.keys(window).filter(k => k.includes('card')));
+            return `<div class="card error-card">Error: cardHtml missing</div>`;
         }
+        const $card = $(htmlGenerator(card));
         
-        // 装备卡显示攻击力和耐久度（使用 addAtk 和 countdown）
-        const isEquipment = card.cardType === '装备' || typeEn === 'EQUIP';
-        let equipmentStatsHtml = '';
-        if (isEquipment) {
-            const atk = card.addAtk !== undefined ? card.addAtk : 0;
-            const durability = card.countdown !== undefined ? (card.countdown >= 0 ? card.countdown : '∞') : '∞';
-            equipmentStatsHtml = `<div class="equipment-atk">${atk}</div><div class="equipment-durability">${durability}</div>`;
-        }
+        // 添加弥留之国特有的样式和数据
+        $card.attr('data-count', count);
         
         // 根据重复数量计算阴影强度（应用到card-inner）
-        const shadowIntensity = Math.min(count, 5); // 最多5层效果
-        const shadowOffset = shadowIntensity * 2;
-        const shadowBlur = shadowIntensity * 4;
-        const shadowOpacity = 0.3 + shadowIntensity * 0.1;
+        if (count > 1) {
+            const shadowIntensity = Math.min(count, 5); // 最多5层效果
+            const shadowOffset = shadowIntensity * 2;
+            const shadowBlur = shadowIntensity * 4;
+            const shadowOpacity = 0.3 + shadowIntensity * 0.1;
+            $card.find('.card-inner').css('box-shadow', `${shadowOffset}px ${shadowOffset}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity}) !important`);
+        }
+
+        // 包装在 borderland-card 容器中
+        const $wrapper = $('<div class="borderland-card"></div>');
+        $wrapper.append($card);
         
-        return `
-            <div class="borderland-card">
-                <div class="card ${typeEn} ${rarityClass} card-type-${typeEn.toLowerCase()}" data-code="${card.code}" data-keywords='${JSON.stringify(keywords)}' data-mark='${mark.replace(/'/g, "\\'")}' data-count="${count}">
-                    <div class="card-inner" style="${count > 1 ? `box-shadow: ${shadowOffset}px ${shadowOffset}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity}) !important;` : ''}">
-                        <div class="cost">${card.cost ?? 0}</div>
-                        <div class="type">${typeEn}</div>
-                        ${raceStr ? `<div class="race">${raceStr}</div>` : ''}
-                        <div class="name">${escapeHtml(card.name)}</div>
-                        ${hasStats ? `<div class="atk">${card.attack}</div><div class="hp">${card.health}</div>` : ''}
-                        ${amuletCountdownHtml}
-                        ${equipmentStatsHtml}
-                        <div class="description">
-                            <p>${keywordsStr}${keywordsStr && mark ? '\n' : ''}${escapeHtml(mark)}</p>
-                        </div>
-                        <div class="job" style="display: inline-block;">${card.job || ''}</div>
-                    </div>
-                </div>
-                ${count > 1 ? `<div class="card-count-badge">×${count}</div>` : ''}
-            </div>
-        `;
+        if (count > 1) {
+            $wrapper.append(`<div class="card-count-badge">×${count}</div>`);
+        }
+        
+        return $wrapper.prop('outerHTML');
     }
 
     // 丢弃卡牌

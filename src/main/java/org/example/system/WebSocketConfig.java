@@ -12,16 +12,18 @@ import static org.example.system.Database.userNames;
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig  {
+public class WebSocketConfig {
 
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
 
+    public static void broadcast(String msg) {
+        userNames.keySet().forEach(userSession -> Msg.send(userSession, msg));
+    }
 
-
-    public static void broadcast(String msg){
-        userNames.keySet().forEach(userSession-> Msg.send(userSession,msg));
+    public static void broadcast(String channel, Object data) {
+        userNames.keySet().forEach(userSession -> Msg.send(userSession, channel, data));
     }
 }

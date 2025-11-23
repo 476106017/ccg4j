@@ -1,0 +1,63 @@
+/* UI Fixes for z-index and positioning issues */
+
+/* Fix mny-width alert to show on top-right corner */
+.mny-alert-position {
+    position: fixed !important;
+    top: 80px !important;
+    right: 20px !important;
+    z-index: 100000 !important;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Ensure game log button shows on top */
+#msg-log {
+    z-index: 10001 !important;
+}
+
+#msg-log-div {
+    z-index: 10000 !important;
+}
+
+/* Ensure context menu shows properly and is not gray */
+.context-menu {
+    z-index: 10002 !important;
+}
+
+.context-menu-item {
+    background: transparent;
+    color: #666 !important;
+    opacity: 1 !important;
+}
+
+.context-menu-item:hover {
+    background: #444 !important;
+    color: white !important;
+}
+
+/* Fix unified modal z-index */
+#unified-modal {
+    z-index: 100001 !important;
+}
+
+#unified-modal .modal-backdrop {
+    z-index: 100000 !important;
+}
+
+/* Ensure player info modal shows properly */
+#player-info-modal {
+    z-index: 10003 !important;
+}

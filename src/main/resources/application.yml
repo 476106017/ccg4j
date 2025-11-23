@@ -3,7 +3,7 @@ server:
   max-http-header-size: 1000000
   servlet:
     session:
-      timeout: 30m  # session超时时间30分钟
+      timeout: 30m # session超时时间30分钟
 
 spring:
   session:
@@ -11,8 +11,8 @@ spring:
     jdbc:
       initialize-schema: always
       table-name: SPRING_SESSION
-      flush-mode: on-save  # 在请求结束时才保存session
-      save-mode: on-set-attribute  # 只在属性变更时保存
+      flush-mode: on-save # 在请求结束时才保存session
+      save-mode: on-set-attribute # 只在属性变更时保存
   datasource:
     url: jdbc:postgresql://db.paiznwpfgrjegswduyot.supabase.co:5432/postgres
     username: postgres
@@ -20,32 +20,32 @@ spring:
     driver-class-name: org.postgresql.Driver
     # HikariCP 连接池配置
     hikari:
-      maximum-pool-size: 10  # 最大连接数
-      minimum-idle: 5  # 最小空闲连接
-      connection-timeout: 30000  # 连接超时30秒
-      idle-timeout: 600000  # 空闲连接超时10分钟
-      max-lifetime: 1800000  # 连接最大生命周期30分钟
-      connection-test-query: SELECT 1  # 测试查询
-      validation-timeout: 5000  # 验证超时5秒
-      leak-detection-threshold: 60000  # 连接泄漏检测阈值60秒
+      maximum-pool-size: 10 # 最大连接数
+      minimum-idle: 5 # 最小空闲连接
+      connection-timeout: 30000 # 连接超时30秒
+      idle-timeout: 600000 # 空闲连接超时10分钟
+      max-lifetime: 1800000 # 连接最大生命周期30分钟
+      connection-test-query: SELECT 1 # 测试查询
+      validation-timeout: 5000 # 验证超时5秒
+      leak-detection-threshold: 60000 # 连接泄漏检测阈值60秒
   devtools:
     restart:
       enabled: true
       poll-interval: 2s
       quiet-period: 1s
-      additional-paths: src/main/java  # 添加额外的监控路径
+      additional-paths: src/main/java # 添加额外的监控路径
     livereload:
-      enabled: true  # 启用 livereload
-      port: 35729    # livereload 默认端口
+      enabled: true # 启用 livereload
+      port: 35729 # livereload 默认端口
   web:
     resources:
-      static-locations: classpath:/static/
+      static-locations: file:src/main/resources/static/,classpath:/static/
       chain:
         cache: false
       cache:
-        period: 0    # 禁用缓存
+        period: 0 # 禁用缓存
   thymeleaf:
-    cache: false     # 禁用模板缓存
+    cache: false # 禁用模板缓存
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

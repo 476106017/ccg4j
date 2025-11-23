@@ -515,58 +515,7 @@
 
     // 创建卡牌HTML
     function createCardHtml(card) {
-        const rarityClass = card.rarity || 'BRONZE';
-        const race = card.race || [];
-        const raceStr = Array.isArray(race) ? race.join(' ') : (race || '');
-        const keywords = card.keywords || [];
-        const keywordsStr = Array.isArray(keywords) && keywords.length > 0 ? 
-            '<b class="keyword">' + keywords.join(' ') + '</b>' : '';
-        const hasStats = card.cardType === '随从' && card.attack !== undefined && card.health !== undefined;
-        const mark = card.mark || '';
-        
-        // 将中文 cardType 映射为英文 TYPE（用于灰色水印显示）
-        const typeMap = {
-            '随从': 'FOLLOW',
-            '法术': 'SPELL',
-            '护符': 'AMULET',
-            '装备': 'EQUIP'
-        };
-        const typeEn = typeMap[card.cardType] || card.cardType || '';
-        
-        // 护符卡显示倒数（样式和装备卡耐久度一样）
-        const isAmulet = card.cardType === '护符' || typeEn === 'AMULET';
-        let amuletCountdownHtml = '';
-        if (isAmulet && card.countdown !== undefined && card.countdown !== null) {
-            const countdownVal = card.countdown >= 0 ? card.countdown : '∞';
-            amuletCountdownHtml = `<div class="equipment-durability">${countdownVal}</div>`;
-        }
-        
-        // 装备卡显示攻击力和耐久度（使用 addAtk 和 countdown）
-        const isEquipment = card.cardType === '装备' || typeEn === 'EQUIP';
-        let equipmentStatsHtml = '';
-        if (isEquipment) {
-            const atk = card.addAtk !== undefined ? card.addAtk : 0;
-            const durability = card.countdown !== undefined ? (card.countdown >= 0 ? card.countdown : '∞') : '∞';
-            equipmentStatsHtml = `<div class="equipment-atk">${atk}</div><div class="equipment-durability">${durability}</div>`;
-        }
-        
-        return `
-            <div class="card ${rarityClass} card-type-${typeEn.toLowerCase()}" data-code="${card.code}" data-keywords='${JSON.stringify(keywords)}' data-mark='${mark.replace(/'/g, "\\'")}'>
-                <div class="card-inner">
-                    <div class="cost">${card.cost ?? 0}</div>
-                    <div class="type">${typeEn}</div>
-                    ${raceStr ? `<div class="race">${raceStr}</div>` : ''}
-                    <div class="name">${escapeHtml(card.name)}</div>
-                    ${hasStats ? `<div class="atk">${card.attack}</div><div class="hp">${card.health}</div>` : ''}
-                    ${amuletCountdownHtml}
-                    ${equipmentStatsHtml}
-                    <div class="description">
-                        <p>${keywordsStr}${keywordsStr && mark ? '\n' : ''}${escapeHtml(mark)}</p>
-                    </div>
-                    <div class="job" style="display: inline-block;">${card.job || ''}</div>
-                </div>
-            </div>
-        `;
+        return cardHtml(card);
     }
 
     // 格式化时间

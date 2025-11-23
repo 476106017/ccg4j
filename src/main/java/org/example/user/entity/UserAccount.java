@@ -19,4 +19,9 @@ public class UserAccount {
     private Integer matchRating;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
+
+    // Activity System
+    private Integer activityScore;
+    private java.time.LocalDate lastLoginDate;
+    private java.time.LocalDate lastDailyWinDate;
 }

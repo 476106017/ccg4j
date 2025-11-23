@@ -24,15 +24,15 @@ public class Reinforcements extends Leader {
 
     private String skillName = "援军";
     private String skillMark = """
-        召唤一个1/1的白银之手新兵
-        """;
+            召唤一个1/1的白银之手新兵
+            """;
     private int skillCost = 2;
 
     private String mark = "召唤基础随从";
 
     private String overDrawMark = """
-        对自己造成疲劳伤害
-        """;
+            对自己造成疲劳伤害
+            """;
 
     private Consumer<Integer> overDraw = integer -> {
         for (int i = 0; i < integer; i++) {
@@ -54,41 +54,40 @@ public class Reinforcements extends Leader {
     @Override
     public void skill(GameObj target) {
         super.skill(target);
-        
+
         // 召唤一个1/1的白银之手新兵
         FollowCard recruit = new SilverHandRecruit();
         recruit.setOwner(getOwner());
         recruit.setInfo(getInfo());
         ownerPlayer().summon(List.of(recruit));
     }
-    
+
     /**
      * 白银之手新兵 - 1/1 白板随从
      */
     @Getter
     @Setter
     public static class SilverHandRecruit extends FollowCard {
-        
+
         private CardRarity rarity = CardRarity.BRONZE;
         private String name = "白银之手新兵";
         private String job = "中立";
         private List<String> race = new ArrayList<>();
         private Integer cost = 1;
+        private int atk = 1;
+        private int hp = 1;
         // keywords 字段已在 Card 基类中定义，不需要重复声明
         private String mark = "基础的1/1随从";
         private String subMark = "";
-        
+
         @Override
         public String getSubMark() {
             return subMark;
         }
-        
+
         @Override
         public void init() {
-            // 设置初始属性（使用继承的字段）
-            setAtk(1);
-            setHp(1);
-            setMaxHp(1);
+            setMaxHp(getHp());
         }
     }
 }

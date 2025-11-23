@@ -29,7 +29,7 @@ var showLeaderStatusModal = function(leaderStatuses, playerName) {
         // 显示效果卡牌
         var effects = leaderStatuses.filter(s => s.type === 'effect' && s.card);
         if (effects.length > 0) {
-            html += '<h6 class="mb-2">影响的卡牌效果</h6>';
+            html += '<h6 class="mb-2">造成了影响的卡牌效果</h6>';
             html += '<div class="row leader-status-cards">';
             effects.forEach(function(effect) {
                 html += '<div class="col-4">';
